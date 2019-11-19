@@ -1,6 +1,6 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.sem.pool.scene.Ball3D;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,7 +15,7 @@ class Ball3DTest {
     @Test
     public void testConstructor() {
         final int id = 3;
-        final Model model = Mockito.mock(Model.class);
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Ball3D ball = new Ball3D(id, model);
 
@@ -26,7 +26,7 @@ class Ball3DTest {
     @Test
     public void testEquals() {
         final int id = 1;
-        final Model model = Mockito.mock(Model.class);
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Ball3D ball1 = new Ball3D(id, model);
         Ball3D ball2 = new Ball3D(id, model);
@@ -38,7 +38,7 @@ class Ball3DTest {
     public void testNotEqualId() {
         final int id1 = 1;
         final int id2 = 2;
-        final Model model = Mockito.mock(Model.class);
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Ball3D ball1 = new Ball3D(id1, model);
         Ball3D ball2 = new Ball3D(id2, model);
@@ -47,10 +47,10 @@ class Ball3DTest {
     }
 
     @Test
-    public void testNotEqualsModel() {
+    public void testNotEqualsModelInstance() {
         final int id = 1;
-        final Model model1 = Mockito.mock(Model.class);
-        final Model model2 = Mockito.mock(Model.class);
+        final ModelInstance model1 = Mockito.mock(ModelInstance.class);
+        final ModelInstance model2 = Mockito.mock(ModelInstance.class);
 
         Ball3D ball1 = new Ball3D(id, model1);
         Ball3D ball2 = new Ball3D(id, model2);
