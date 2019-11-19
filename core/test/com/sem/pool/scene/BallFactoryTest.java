@@ -19,24 +19,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class BallFactoryTest {
     BallFactory factory;
     List<Texture> textures;
-    AssetManager assetManager;
+    AssetLoader assetLoader;
 
     @BeforeEach
     public void setup() {
         textures = new ArrayList<Texture>();
-        assetManager = Mockito.mock(AssetManager.class);
-        factory = new BallFactory(textures, assetManager);
+        assetLoader = Mockito.mock(AssetLoader.class);
+        factory = new BallFactory(textures, assetLoader);
     }
 
     @Test
     public void testCreateBall() {
         final int id = 0;
+        final ModelInstance model = Mockito.spy(ModelInstance.class);
 
-        // Create spy instance of the Model to be able to make the asset manager
-        // return it. To prevent null pointer exceptions in the internal code
-        // of the AssetManager loading, we use a spy instead of a mock.
-        final Model model = Mockito.spy(Model.class);
-        Mockito.when(assetManager.get(BallFactory.MODEL_PATH, Model.class)).thenReturn(model);
+        Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
 
         Ball3D ball = factory.createBall(id);
 
