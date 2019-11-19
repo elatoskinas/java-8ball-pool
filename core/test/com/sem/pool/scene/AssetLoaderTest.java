@@ -1,6 +1,7 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g3d.Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,5 +31,25 @@ class AssetLoaderTest {
     @Test
     public void testConstructor() {
         assertEquals(manager, loader.getAssetManager());
+    }
+
+    @Test
+    public void testLoadModel() {
+        loader.loadModel(AssetLoader.BALL_MODEL_PATH);
+        Mockito.verify(manager, Mockito.times(1))
+                .get(AssetLoader.BALL_MODEL_PATH, Model.class);
+    }
+
+    @Test
+    public void testInitializeModels() {
+        loader.initializeModels();
+
+        Mockito.verify(manager, Mockito.times(1))
+                .load(AssetLoader.BALL_MODEL_PATH, Model.class);
+
+        Mockito.verify(manager, Mockito.times(1))
+                .load(AssetLoader.BOARD_MODEL_PATH, Model.class);
+
+        Mockito.verifyNoMoreInteractions(manager);
     }
 }
