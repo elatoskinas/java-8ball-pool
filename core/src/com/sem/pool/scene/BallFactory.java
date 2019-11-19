@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 
 import java.util.List;
 
@@ -32,8 +33,9 @@ public class BallFactory {
 
     public Ball3D createBall(int id) {
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
-        Ball3D ball = new Ball3D(id, ballInstance);
 
-        return ball;
+        // TODO: Set texture according to id
+
+        return new Ball3D(id, ballInstance);
     }
 }
