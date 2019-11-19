@@ -20,7 +20,7 @@ plugins {
 
 group 'nl.tudelft.cse.sem.pool'
 version '1.0-SNAPSHOT'
-sourceCompatibility = 8
+sourceCompatibility = 12
 
 allprojects {
 
@@ -47,6 +47,8 @@ allprojects {
 dependencies {
     testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
 }
 
 test {
@@ -131,5 +133,6 @@ project(":core") {
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
     }
 }
