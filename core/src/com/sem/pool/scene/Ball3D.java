@@ -1,6 +1,6 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 /**
  * Class representing a 3D Pool Ball while also
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
  */
 public class Ball3D {
     private int id;
-    private Model model;
+    private ModelInstance model;
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -16,7 +16,7 @@ public class Ball3D {
      * @param id  ID of the ball
      * @param model  Model object of the ball
      */
-    public Ball3D(int id, Model model) {
+    public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;
     }
@@ -31,7 +31,7 @@ public class Ball3D {
     /**
      * @return  3D Ball model object
      */
-    public Model getModel() {
+    public ModelInstance getModel() {
         return model;
     }
 
