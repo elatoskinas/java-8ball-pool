@@ -31,7 +31,7 @@ class BallFactoryTest {
     @Test
     public void testCreateBall() {
         final int id = 0;
-        final ModelInstance model = Mockito.spy(ModelInstance.class);
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
 

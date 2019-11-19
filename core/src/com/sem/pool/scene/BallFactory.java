@@ -12,10 +12,10 @@ import java.util.List;
  * of Ball3D objects from the specified texture set.
  */
 public class BallFactory {
-    protected static final String MODEL_PATH = "models/ball.obj";
+    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
 
     private List<Texture> textures;
-    private AssetManager assetManager;
+    private AssetLoader assetLoader;
 
     /**
      * Creates a new Ball Factory instance with the specified
@@ -25,16 +25,14 @@ public class BallFactory {
      *
      * @param textures  List of textures for the balls
      */
-    public BallFactory(List<Texture> textures, AssetManager assetManager) {
+    public BallFactory(List<Texture> textures, AssetLoader assetLoader) {
         this.textures = textures;
-        this.assetManager = assetManager;
+        this.assetLoader = assetLoader;
     }
 
     public Ball3D createBall(int id) {
-        Model ballModel = assetManager.get(MODEL_PATH, Model.class);
-        ModelInstance ballInstance = new ModelInstance(ballModel);
-
-        Ball3D ball = new Ball3D(id, ballModel);
+        ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
+        Ball3D ball = new Ball3D(id, ballInstance);
 
         return ball;
     }
