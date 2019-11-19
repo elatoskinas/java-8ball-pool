@@ -22,4 +22,43 @@ class Ball3DTest {
         assertEquals(id, ball.getId());
         assertEquals(model, ball.getModel());
     }
+
+    @Test
+    public void testEquals() {
+        final int id = 1;
+        final Model model = Mockito.mock(Model.class);
+
+        Ball3D ball1 = new Ball3D(id, model);
+        Ball3D ball2 = new Ball3D(id, model);
+
+        assertEquals(ball1, ball2);
+    }
+
+    @Test
+    public void testNotEqualId() {
+        final int id1 = 1;
+        final int id2 = 2;
+        final Model model = Mockito.mock(Model.class);
+
+        Ball3D ball1 = new Ball3D(id1, model);
+        Ball3D ball2 = new Ball3D(id2, model);
+
+        assertNotEquals(ball1, ball2);
+    }
+
+    @Test
+    public void testNotEqualsModel() {
+        final int id = 1;
+
+        // Create two models that are not equal to each other
+        // (we predefine this with a mocked equals method)
+        final Model model1 = Mockito.mock(Model.class);
+        final Model model2 = Mockito.mock(Model.class);
+        Mockito.when(model1.equals(model2)).thenReturn(false);
+
+        Ball3D ball1 = new Ball3D(id, model1);
+        Ball3D ball2 = new Ball3D(id, model2);
+
+        assertNotEquals(ball1, ball2);
+    }
 }
