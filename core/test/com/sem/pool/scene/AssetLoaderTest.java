@@ -35,7 +35,12 @@ class AssetLoaderTest {
 
     @Test
     public void testLoadModel() {
-        loader.loadModel(AssetLoader.BALL_MODEL_PATH);
+        Model model = Mockito.spy(Model.class);
+
+        Mockito.when(manager.get(AssetLoader.BALL_MODEL_PATH, Model.class))
+                .thenReturn(model);
+
+        loader.loadModel(AssetLoader.ModelType.BALL);
         Mockito.verify(manager, Mockito.times(1))
                 .get(AssetLoader.BALL_MODEL_PATH, Model.class);
     }
