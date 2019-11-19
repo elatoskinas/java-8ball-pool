@@ -2,6 +2,8 @@ package com.sem.pool.scene;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 import java.util.List;
 
@@ -10,6 +12,8 @@ import java.util.List;
  * of Ball3D objects from the specified texture set.
  */
 public class BallFactory {
+    private static final String MODEL_PATH = "models/ball.obj";
+
     private List<Texture> textures;
     private AssetManager assetManager;
 
@@ -24,5 +28,14 @@ public class BallFactory {
     public BallFactory(List<Texture> textures, AssetManager assetManager) {
         this.textures = textures;
         this.assetManager = assetManager;
+    }
+
+    public Ball3D createBall(int id) {
+        Model ballModel = assetManager.get(MODEL_PATH, Model.class);
+        ModelInstance ballInstance = new ModelInstance(ballModel);
+
+        Ball3D ball = new Ball3D(id, ballModel);
+
+        return ball;
     }
 }
