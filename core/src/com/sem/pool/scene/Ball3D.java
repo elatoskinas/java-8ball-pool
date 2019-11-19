@@ -1,4 +1,4 @@
-package com.sem.pool;
+package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.g3d.Model;
 
