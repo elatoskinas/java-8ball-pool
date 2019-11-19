@@ -1,5 +1,6 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.assets.AssetManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,10 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AssetLoaderTest {
     AssetLoader loader;
+    AssetManager manager;
 
     @BeforeEach
     public void setup() {
-        loader = new AssetLoader();
+        manager = Mockito.mock(AssetManager.class);
+        loader = new AssetLoader(manager);
     }
 
     @Test
@@ -26,6 +29,6 @@ class AssetLoaderTest {
 
     @Test
     public void testConstructor() {
-        assertNotNull(loader.getAssetManager());
+        assertEquals(manager, loader.getAssetManager());
     }
 }

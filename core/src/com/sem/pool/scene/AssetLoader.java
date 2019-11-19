@@ -23,8 +23,8 @@ public class AssetLoader {
 
     private AssetManager assetManager;
 
-    public AssetLoader() {
-        this.assetManager = new AssetManager();
+    public AssetLoader(AssetManager assetManager) {
+        this.assetManager = assetManager;
     }
 
     public AssetManager getAssetManager() {
