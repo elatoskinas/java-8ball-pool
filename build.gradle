@@ -18,13 +18,37 @@ plugins {
     id "com.github.spotbugs" version "2.0.1"
 }
 
-group 'nl.tudelft.cse.sem.template'
+group 'nl.tudelft.cse.sem.pool'
 version '1.0-SNAPSHOT'
+sourceCompatibility = 12
 
-sourceCompatibility = 8
+allprojects {
 
-repositories {
-    mavenCentral()
+    version = '1.0'
+    ext {
+        appName = "pool"
+        gdxVersion = '1.9.10'
+        roboVMVersion = '2.3.7'
+        box2DLightsVersion = '1.4'
+        ashleyVersion = '1.7.0'
+        aiVersion = '1.8.0'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+}
+
+dependencies {
+    testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
 }
 
 test {
@@ -35,11 +59,6 @@ test {
         includes = ['nl.tudelft.cse.sem.*']
         excludes = []
     }
-}
-
-dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
 }
 
 jacocoTestCoverageVerification {
@@ -88,28 +107,6 @@ wrapper {
 
 
 // LibGDX
-allprojects {
-
-    version = '1.0'
-    ext {
-        appName = "pool"
-        gdxVersion = '1.9.10'
-        roboVMVersion = '2.3.7'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.0'
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        google()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    }
-}
-
 project(":desktop") {
     apply plugin: "java-library"
 
@@ -121,7 +118,6 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-
     }
 }
 
@@ -136,6 +132,7 @@ project(":core") {
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-
+        testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
     }
 }
