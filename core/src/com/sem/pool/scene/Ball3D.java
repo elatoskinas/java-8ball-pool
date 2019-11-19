@@ -34,4 +34,16 @@ public class Ball3D {
     public Model getModel() {
         return model;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Ball3D) {
+            Ball3D otherBall = (Ball3D) other;
+
+            return this.id == otherBall.id
+                    && this.model.equals(otherBall.model);
+        }
+
+        return false;
+    }
 }
