@@ -12,7 +12,7 @@ import java.util.List;
  * of Ball3D objects from the specified texture set.
  */
 public class BallFactory {
-    private static final String MODEL_PATH = "models/ball.obj";
+    protected static final String MODEL_PATH = "models/ball.obj";
 
     private List<Texture> textures;
     private AssetManager assetManager;
