@@ -1,5 +1,6 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  */
 public class BallFactory {
     private List<Texture> textures;
+    private AssetManager assetManager;
 
     /**
      * Creates a new Ball Factory instance with the specified
@@ -19,7 +21,8 @@ public class BallFactory {
      *
      * @param textures  List of textures for the balls
      */
-    public BallFactory(List<Texture> textures) {
+    public BallFactory(List<Texture> textures, AssetManager assetManager) {
         this.textures = textures;
+        this.assetManager = assetManager;
     }
 }
