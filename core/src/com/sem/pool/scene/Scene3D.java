@@ -20,6 +20,13 @@ public class Scene3D {
     private Camera camera;
     private List<ModelInstance> models;
 
+    /**
+     * Creates an instance of a 3D Pool Game scene.
+     * The models for the scene will be loaded via the specified asset loader,
+     * and rendered on the specified ModelBatch.
+     * @param assetLoader  Asset Loader to use for loading assets
+     * @param batch  Model Batch to use for rendering
+     */
     public Scene3D(AssetLoader assetLoader, ModelBatch batch) {
         this.assetLoader = assetLoader;
         this.modelBatch = batch;
@@ -53,6 +60,12 @@ public class Scene3D {
         return models;
     }
 
+    /**
+     * Instantiates the 3D scene by setting up the environment, camera
+     * and models. The method instantiates all the necessary models,
+     * positions them in the necessary locations and sets the camera
+     * in its right location.
+     */
     public void instantiate() {
         environment =  new Environment();
         camera = new PerspectiveCamera();
