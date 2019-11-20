@@ -73,4 +73,10 @@ class AssetLoaderTest {
 
         Mockito.verifyNoMoreInteractions(manager);
     }
+
+    @Test
+    public void testDispose() {
+        loader.dispose();
+        Mockito.verify(manager).dispose();
+    }
 }
