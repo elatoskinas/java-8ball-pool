@@ -1,5 +1,7 @@
 package com.sem.pool.scene;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.badlogic.gdx.graphics.Texture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
