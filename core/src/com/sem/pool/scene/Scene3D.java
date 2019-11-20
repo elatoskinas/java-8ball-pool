@@ -2,6 +2,7 @@ package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -13,6 +14,9 @@ import java.util.List;
  * 3D Scene representation of a single Pool game.
  */
 public class Scene3D {
+    // TODO: Change value to support all 16 balls
+    private static final int ballCount = 2;
+
     private AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
 
@@ -21,7 +25,6 @@ public class Scene3D {
     private transient List<ModelInstance> models;
 
     private transient List<Ball3D> poolBalls;
-
     private transient Table3D table;
 
     /**
@@ -74,5 +77,20 @@ public class Scene3D {
         environment =  new Environment();
         camera = new PerspectiveCamera();
         models = new ArrayList<>();
+        poolBalls = new ArrayList<>();
+
+        ArrayList<Texture> ballTexures = new ArrayList<Texture>();
+        BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
+
+        for (int i = 0; i < ballCount; ++i) {
+            Ball3D ball = ballFactory.createBall(i);
+            models.add(ball.getModel());
+        }
+
+        Texture tableTexture = null;
+        TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
+        table = tableFactory.createBoard();
+
+        models.add(table.getModel());
     }
 }

@@ -91,7 +91,7 @@ class Scene3DTest {
 
         assertNotNull(scene.getModels());
 
-        // TODO: Change this to check for all 15 balls
+        // TODO: Change this to check for all 16 balls
         // Total amount of models to load: ball count + 1 for the board
         final int ballCount = 2;
         final int modelCount = ballCount + 1;
