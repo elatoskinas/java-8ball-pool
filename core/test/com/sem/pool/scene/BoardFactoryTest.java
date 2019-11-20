@@ -3,6 +3,7 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -54,5 +55,17 @@ class BoardFactoryTest {
 
         factory.setTexture(sampleTexture);
         assertEquals(sampleTexture, factory.getTexture());
+    }
+
+    @Test
+    public void testCreateBoard() {
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+
+        Mockito.when(assetLoader.loadModel(BoardFactory.MODEL_TYPE)).thenReturn(model);
+
+        Board3D board = factory.createBoard();
+
+        Board3D expectedBoard = new Board3D(model);
+        assertEquals(expectedBoard, board);
     }
 }
