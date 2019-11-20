@@ -82,8 +82,28 @@ checkstyle {
 	configFile = rootProject.file('config/checkstyle/checkstyle.xml')
 }
 
+checkstyleMain {
+    source 'core/src'
+    source 'desktop/src'
+}
+
+checkstyleTest {
+    source 'core/test'
+    source 'desktop/test'
+}
+
 pmd {
     incrementalAnalysis = true
+}
+
+pmdMain {
+    source 'core/src'
+    source 'desktop/src'
+}
+
+pmdTest {
+    source 'core/test'
+    source 'desktop/tset'
 }
 
 spotbugs {
@@ -93,6 +113,16 @@ spotbugs {
     reportLevel = "high"
     visitors = ["FindSqlInjection", "SwitchFallthrough"]
     excludeFilter = file("$rootProject.projectDir/config/spotbugs/excludeFilter.xml")
+}
+
+spotbugsMain {
+    source 'core/src'
+    source 'desktop/src'
+}
+
+spotbugsTest {
+    source 'core/test'
+    source 'desktop/tset'
 }
 
 tasks.withType(SpotBugsTask) {
