@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.List;
 
 class Scene3DTest {
     Scene3D scene;
@@ -96,5 +99,25 @@ class Scene3DTest {
         final int ballCount = 2;
         final int modelCount = ballCount + 1;
         assertEquals(modelCount, scene.getModels().size());
+    }
+
+    /**
+     * Test case to verify that the necessary render-related
+     * calls are made with the scene's elements.
+     */
+    @Test
+    public void testRenderModels() {
+        scene.render();
+
+        // Get the elements of the scene that should be used
+        // in the rendering process
+        Camera camera = scene.getCamera();
+        List<ModelInstance> models = scene.getModels();
+        Environment environment = scene.getEnvironment();
+
+        // Verify that all the necessary render calls have been made
+        Mockito.verify(batch).begin(camera);
+        Mockito.verify(batch).render(models, environment);
+        Mockito.verify(batch).end();
     }
 }
