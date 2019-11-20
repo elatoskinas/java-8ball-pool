@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import sun.tools.java.Environment;
 
 class Scene3DTest {
     Scene3D scene;
@@ -59,6 +59,7 @@ class Scene3DTest {
 
     @Test
     public void testInstantiate() {
+        scene.instantiate();
         assertNotNull(scene.getEnvironment());
         assertNotNull(scene.getCamera());
         assertNotNull(scene.getModels());
