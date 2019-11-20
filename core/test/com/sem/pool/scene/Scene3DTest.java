@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,11 +14,13 @@ import org.mockito.Mockito;
 class Scene3DTest {
     Scene3D scene;
     AssetLoader assetLoader;
+    ModelBatch batch;
 
     @BeforeEach
     public void setUp() {
         assetLoader = Mockito.mock(AssetLoader.class);
-        scene = new Scene3D(assetLoader);
+        batch = Mockito.mock(ModelBatch.class);
+        scene = new Scene3D(assetLoader, batch);
     }
 
     public Scene3D getScene() {
