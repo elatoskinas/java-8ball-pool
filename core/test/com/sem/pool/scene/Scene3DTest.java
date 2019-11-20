@@ -74,5 +74,12 @@ class Scene3DTest {
         assertNotNull(scene.getEnvironment());
         assertNotNull(scene.getCamera());
         assertNotNull(scene.getModels());
+
+        // TODO: Change this to check for all 15 balls
+        // Total amount of models to load: ball count + 1 for the board
+        final int ballCount = 2;
+        final int modelCount = ballCount + 1;
+
+        assertEquals(modelCount, scene.getModels().size());
     }
 }
