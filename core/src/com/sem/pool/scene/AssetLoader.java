@@ -60,4 +60,12 @@ public class AssetLoader {
 
         return new ModelInstance(model);
     }
+
+    /**
+     * Disposes the asset loader. To be used when the lifecycle of
+     * an application using the asset loader ends.
+     */
+    public void dispose() {
+        assetManager.dispose();
+    }
 }

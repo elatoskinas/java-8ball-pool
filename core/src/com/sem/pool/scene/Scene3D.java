@@ -80,6 +80,7 @@ public class Scene3D {
         poolBalls = new ArrayList<>();
 
         ArrayList<Texture> ballTexures = new ArrayList<Texture>();
+        
         BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
 
         for (int i = 0; i < ballCount; ++i) {
