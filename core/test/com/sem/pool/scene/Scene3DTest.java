@@ -74,6 +74,8 @@ class Scene3DTest {
         assertNotNull(scene.getEnvironment());
         assertNotNull(scene.getCamera());
         assertNotNull(scene.getModels());
+        assertNotNull(scene.getPoolBalls());
+        assertNotNull(scene.getTable());
 
         // TODO: Change this to check for all 15 balls
         // Total amount of models to load: ball count + 1 for the board

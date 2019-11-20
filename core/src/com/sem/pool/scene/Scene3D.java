@@ -20,6 +20,10 @@ public class Scene3D {
     private transient Camera camera;
     private transient List<ModelInstance> models;
 
+    private transient List<Ball3D> poolBalls;
+
+    private transient Table3D table;
+
     /**
      * Creates an instance of a 3D Pool Game scene.
      * The models for the scene will be loaded via the specified asset loader,
@@ -50,6 +54,14 @@ public class Scene3D {
 
     public List<ModelInstance> getModels() {
         return models;
+    }
+
+    public List<Ball3D> getPoolBalls() {
+        return poolBalls;
+    }
+
+    public Table3D getTable() {
+        return table;
     }
 
     /**
