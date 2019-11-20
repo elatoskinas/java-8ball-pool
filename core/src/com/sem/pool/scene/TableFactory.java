@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 /**
  * Factory class which allows the instantiation
- * of Board3D objects from the specified texture.
+ * of Table3D objects from the specified texture.
  */
-public class BoardFactory extends Base3DFactory {
-    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BOARD;
+public class TableFactory extends Base3DFactory {
+    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.TABLE;
 
     private Texture texture;
 
@@ -18,7 +18,7 @@ public class BoardFactory extends Base3DFactory {
      *
      * @param texture  Texture to use for the board
      */
-    public BoardFactory(Texture texture, AssetLoader assetLoader) {
+    public TableFactory(Texture texture, AssetLoader assetLoader) {
         super(assetLoader);
         this.texture = texture;
     }
@@ -34,14 +34,14 @@ public class BoardFactory extends Base3DFactory {
     /**
      * Creates a 3D Board object instance.
      * The appearance of the board is set accordingly to the
-     * internal texture of the BoardFactory class.
-     * @return  New Board3D object instance corresponding to the specified id
+     * internal texture of the TableFactory class.
+     * @return  New Table3D object instance corresponding to the specified id
      */
-    public Board3D createBoard() {
+    public Table3D createBoard() {
         ModelInstance boardInstance = assetLoader.loadModel(MODEL_TYPE);
 
         // TODO: Set texture accordingly
 
-        return new Board3D(boardInstance);
+        return new Table3D(boardInstance);
     }
 }

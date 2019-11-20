@@ -69,7 +69,7 @@ class AssetLoaderTest {
                 .load(AssetLoader.BALL_MODEL_PATH, Model.class);
 
         Mockito.verify(manager, Mockito.times(1))
-                .load(AssetLoader.BOARD_MODEL_PATH, Model.class);
+                .load(AssetLoader.TABLE_MODEL_PATH, Model.class);
 
         Mockito.verifyNoMoreInteractions(manager);
     }

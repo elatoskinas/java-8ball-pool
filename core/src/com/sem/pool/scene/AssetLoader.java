@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 public class AssetLoader {
     public static final String BALL_MODEL_PATH = "models/ball.obj";
-    public static final String BOARD_MODEL_PATH = "models/board.obj";
+    public static final String TABLE_MODEL_PATH = "models/table.obj";
 
     /**
      * Enum to represent loadable model types.
      */
     public enum ModelType {
         BALL(BALL_MODEL_PATH),
-        BOARD(BOARD_MODEL_PATH);
+        TABLE(TABLE_MODEL_PATH);
 
         private String path;
 

@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-class BoardFactoryTest {
-    BoardFactory factory;
+class TableFactoryTest {
+    TableFactory factory;
     Texture texture;
     AssetLoader assetLoader;
 
@@ -17,14 +17,14 @@ class BoardFactoryTest {
     public void setUp() {
         texture = Mockito.mock(Texture.class);
         assetLoader = Mockito.mock(AssetLoader.class);
-        factory = new BoardFactory(texture, assetLoader);
+        factory = new TableFactory(texture, assetLoader);
     }
 
-    public BoardFactory getFactory() {
+    public TableFactory getFactory() {
         return factory;
     }
 
-    public void setFactory(BoardFactory factory) {
+    public void setFactory(TableFactory factory) {
         this.factory = factory;
     }
 
@@ -61,11 +61,11 @@ class BoardFactoryTest {
     public void testCreateBoard() {
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
-        Mockito.when(assetLoader.loadModel(BoardFactory.MODEL_TYPE)).thenReturn(model);
+        Mockito.when(assetLoader.loadModel(TableFactory.MODEL_TYPE)).thenReturn(model);
 
-        Board3D board = factory.createBoard();
+        Table3D board = factory.createBoard();
 
-        Board3D expectedBoard = new Board3D(model);
+        Table3D expectedBoard = new Table3D(model);
         assertEquals(expectedBoard.getModel(), board.getModel());
     }
 }
