@@ -2,6 +2,8 @@ package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
+import java.util.Objects;
+
 /**
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
@@ -47,5 +49,10 @@ public class Ball3D {
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, model);
     }
 }
