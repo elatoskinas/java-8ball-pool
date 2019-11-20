@@ -12,8 +12,24 @@ class AssetLoaderTest {
     AssetLoader loader;
     AssetManager manager;
 
+    public AssetLoader getLoader() {
+        return loader;
+    }
+
+    public void setLoader(AssetLoader loader) {
+        this.loader = loader;
+    }
+
+    public AssetManager getManager() {
+        return manager;
+    }
+
+    public void setManager(AssetManager manager) {
+        this.manager = manager;
+    }
+
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         manager = Mockito.mock(AssetManager.class);
         loader = new AssetLoader(manager);
     }

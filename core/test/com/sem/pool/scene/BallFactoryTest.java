@@ -15,8 +15,32 @@ class BallFactoryTest {
     List<Texture> textures;
     AssetLoader assetLoader;
 
+    public BallFactory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(BallFactory factory) {
+        this.factory = factory;
+    }
+
+    public List<Texture> getTextures() {
+        return textures;
+    }
+
+    public void setTextures(List<Texture> textures) {
+        this.textures = textures;
+    }
+
+    public AssetLoader getAssetLoader() {
+        return assetLoader;
+    }
+
+    public void setAssetLoader(AssetLoader assetLoader) {
+        this.assetLoader = assetLoader;
+    }
+
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         textures = new ArrayList<Texture>();
         assetLoader = Mockito.mock(AssetLoader.class);
         factory = new BallFactory(textures, assetLoader);
