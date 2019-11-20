@@ -16,7 +16,7 @@ public class BallFactory {
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
 
     private List<Texture> textures;
-    private AssetLoader assetLoader;
+    private transient AssetLoader assetLoader;
 
     /**
      * Creates a new Ball Factory instance with the specified

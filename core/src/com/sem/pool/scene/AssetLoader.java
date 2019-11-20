@@ -26,7 +26,7 @@ public class AssetLoader {
         }
     }
 
-    private AssetManager assetManager;
+    private transient AssetManager assetManager;
 
     public AssetLoader(AssetManager assetManager) {
         this.assetManager = assetManager;

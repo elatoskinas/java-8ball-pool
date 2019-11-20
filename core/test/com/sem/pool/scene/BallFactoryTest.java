@@ -23,6 +23,11 @@ class BallFactoryTest {
     }
 
     @Test
+    public void testConstructor() {
+        assertEquals(textures, factory.getTextures());
+    }
+
+    @Test
     public void testCreateBall() {
         final int id = 0;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
@@ -33,5 +38,16 @@ class BallFactoryTest {
 
         Ball3D expectedBall = new Ball3D(id, model);
         assertEquals(expectedBall, ball);
+    }
+
+    @Test
+    public void testSetTextures() {
+        List<Texture> newTextures = new ArrayList<>();
+        Texture sampleTexture = Mockito.mock(Texture.class);
+        newTextures.add(sampleTexture);
+
+        factory.setTextures(textures);
+
+        assertEquals(newTextures, factory.getTextures());
     }
 }
