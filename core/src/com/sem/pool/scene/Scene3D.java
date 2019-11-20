@@ -16,9 +16,9 @@ public class Scene3D {
     private AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
 
-    private Environment environment;
-    private Camera camera;
-    private List<ModelInstance> models;
+    private transient Environment environment;
+    private transient Camera camera;
+    private transient List<ModelInstance> models;
 
     /**
      * Creates an instance of a 3D Pool Game scene.
@@ -44,24 +44,12 @@ public class Scene3D {
         return environment;
     }
 
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-
     public Camera getCamera() {
         return camera;
     }
 
-    public void setCamera(Camera camera) {
-        this.camera = camera;
-    }
-
     public List<ModelInstance> getModels() {
         return models;
-    }
-
-    public void setModels(List<ModelInstance> models) {
-        this.models = models;
     }
 
     /**

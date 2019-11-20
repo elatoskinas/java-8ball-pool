@@ -52,7 +52,7 @@ class Scene3DTest {
         assertEquals(assetLoader, scene.getAssetLoader());
     }
 
-    @Test
+    /*@Test
     public void testSetEnvironment() {
         Environment environment = new Environment();
         scene.setEnvironment(environment);
@@ -66,7 +66,7 @@ class Scene3DTest {
         scene.setCamera(camera);
 
         assertEquals(camera, scene.getCamera());
-    }
+    }*/
 
     @Test
     public void testInstantiate() {
