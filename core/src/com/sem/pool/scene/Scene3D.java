@@ -60,6 +60,10 @@ public class Scene3D {
         return models;
     }
 
+    public void setModels(List<ModelInstance> models) {
+        this.models = models;
+    }
+
     /**
      * Instantiates the 3D scene by setting up the environment, camera
      * and models. The method instantiates all the necessary models,

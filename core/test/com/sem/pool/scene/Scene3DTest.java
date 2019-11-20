@@ -39,6 +39,14 @@ class Scene3DTest {
         this.assetLoader = assetLoader;
     }
 
+    public ModelBatch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(ModelBatch batch) {
+        this.batch = batch;
+    }
+
     @Test
     public void testConstructor() {
         assertEquals(assetLoader, scene.getAssetLoader());
