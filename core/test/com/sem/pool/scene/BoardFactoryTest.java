@@ -66,6 +66,6 @@ class BoardFactoryTest {
         Board3D board = factory.createBoard();
 
         Board3D expectedBoard = new Board3D(model);
-        assertEquals(expectedBoard, board);
+        assertEquals(expectedBoard.getModel(), board.getModel());
     }
 }
