@@ -22,6 +22,7 @@ public class Ball3D {
     }
 
     /**
+     * Returns the ID of the 3D Ball.
      * @return  ID of the 3D Ball
      */
     public int getId() {
@@ -29,6 +30,7 @@ public class Ball3D {
     }
 
     /**
+     * Returns the Model Instance object of the 3D Ball.
      * @return  3D Ball model object
      */
     public ModelInstance getModel() {

@@ -31,6 +31,13 @@ public class BallFactory {
         this.assetLoader = assetLoader;
     }
 
+    /**
+     * Creates a 3D Pool Ball object instance with the specified id.
+     * The appearance of the ball is set accordingly to the id and
+     * the internal textures parameter of the BallFactory.
+     * @param id  Id of the ball to instantiate
+     * @return  New Ball3D object instance corresponding to the specified id
+     */
     public Ball3D createBall(int id) {
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
 
