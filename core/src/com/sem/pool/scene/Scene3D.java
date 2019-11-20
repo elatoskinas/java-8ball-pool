@@ -1,10 +1,12 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,8 +20,9 @@ public class Scene3D {
     private Camera camera;
     private List<ModelInstance> models;
 
-    public Scene3D(AssetLoader assetLoader) {
+    public Scene3D(AssetLoader assetLoader, ModelBatch batch) {
         this.assetLoader = assetLoader;
+        this.modelBatch = batch;
     }
 
     public AssetLoader getAssetLoader() {
@@ -48,5 +51,11 @@ public class Scene3D {
 
     public List<ModelInstance> getModels() {
         return models;
+    }
+
+    public void instantiate() {
+        environment =  new Environment();
+        camera = new PerspectiveCamera();
+        models = new ArrayList<>();
     }
 }
