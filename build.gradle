@@ -23,6 +23,10 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 12
 
 allprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
+    apply plugin: 'com.github.spotbugs'
 
     version = '1.0'
     ext {
@@ -42,104 +46,72 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
-}
 
-dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
-    // https://mvnrepository.com/artifact/org.mockito/mockito-core
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
-}
-
-test {
-    useJUnitPlatform()
-
-    jacoco {
-        enabled = true
-        includes = ['nl.tudelft.cse.sem.*']
-        excludes = []
+    checkstyle {
+        toolVersion "8.25"
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
     }
-}
 
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
+    pmd {
+        incrementalAnalysis = true
+    }
+
+    spotbugs {
+        sourceSets = [sourceSets.main]
+        ignoreFailures = false
+        effort = "default"
+        reportLevel = "high"
+        visitors = ["FindSqlInjection", "SwitchFallthrough"]
+        excludeFilter = file("$rootProject.projectDir/config/spotbugs/excludeFilter.xml")
+    }
+
+    tasks.withType(SpotBugsTask) {
+        reports.xml.enabled = false
+        reports.html.enabled = true
+    }
+
+    test {
+        useJUnitPlatform()
+
+        jacoco {
             enabled = true
-            element = 'CLASS'
             includes = ['nl.tudelft.cse.sem.*']
+            excludes = []
+        }
+    }
 
-            limit {
-                counter = 'LINE'
-                value = 'TOTALCOUNT'
-                maximum = 0.3
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                enabled = true
+                element = 'CLASS'
+                includes = ['nl.tudelft.cse.sem.*']
+
+                limit {
+                    counter = 'LINE'
+                    value = 'TOTALCOUNT'
+                    maximum = 0.3
+                }
             }
         }
     }
-}
 
-checkstyle {
-    toolVersion "8.25"
-	configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-}
-
-checkstyleMain {
-    source 'core/src'
-    source 'desktop/src'
-}
-
-checkstyleTest {
-    source 'core/test'
-    source 'desktop/test'
-}
-
-pmd {
-    incrementalAnalysis = true
-}
-
-pmdMain {
-    source 'core/src'
-    source 'desktop/src'
-}
-
-pmdTest {
-    source 'core/test'
-    source 'desktop/tset'
-}
-
-spotbugs {
-    sourceSets = [sourceSets.main]
-    ignoreFailures = false
-    effort = "default"
-    reportLevel = "high"
-    visitors = ["FindSqlInjection", "SwitchFallthrough"]
-    excludeFilter = file("$rootProject.projectDir/config/spotbugs/excludeFilter.xml")
-}
-
-spotbugsMain {
-    source 'core/src'
-    source 'desktop/src'
-}
-
-spotbugsTest {
-    source 'core/test'
-    source 'desktop/tset'
-}
-
-tasks.withType(SpotBugsTask) {
-    reports.xml.enabled = false
-    reports.html.enabled = true
+    dependencies {
+        spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+        testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+        // https://mvnrepository.com/artifact/org.mockito/mockito-core
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+    }
 }
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-
-
 // LibGDX
 project(":desktop") {
     apply plugin: "java-library"
-
 
     dependencies {
         implementation project(":core")
