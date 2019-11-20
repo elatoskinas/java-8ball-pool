@@ -31,6 +31,14 @@ public class BallFactory {
         this.assetLoader = assetLoader;
     }
 
+    public List<Texture> getTextures() {
+        return textures;
+    }
+
+    public void setTextures(List<Texture> textures) {
+        this.textures = textures;
+    }
+
     /**
      * Creates a 3D Pool Ball object instance with the specified id.
      * The appearance of the ball is set accordingly to the id and

@@ -46,7 +46,7 @@ class BallFactoryTest {
         Texture sampleTexture = Mockito.mock(Texture.class);
         newTextures.add(sampleTexture);
 
-        factory.setTextures(textures);
+        factory.setTextures(newTextures);
 
         assertEquals(newTextures, factory.getTextures());
     }
