@@ -40,9 +40,13 @@ public class AssetLoader {
      * Initializes all of the models of the AssetLoader.
      * To be called during the create() stage of the game lifecycle.
      */
+    // type.getPath() in the loop seems to cause an UR anomaly.
+    // Using a value other than the ModelType's getPath seems
+    // to not cause the issue. Thus, we suppress it here.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void initializeModels() {
         for (ModelType type : ModelType.values()) {
-            assetManager.load(type.path, Model.class);
+            assetManager.load(type.getPath(), Model.class);
         }
     }
 
@@ -52,7 +56,7 @@ public class AssetLoader {
      * @return  Model Instance of the specified type.
      */
     public ModelInstance loadModel(ModelType type) {
-        Model model = assetManager.get(type.path, Model.class);
+        Model model = assetManager.get(type.getPath(), Model.class);
 
         return new ModelInstance(model);
     }
