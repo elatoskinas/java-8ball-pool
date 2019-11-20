@@ -14,7 +14,7 @@ public abstract class Base3DFactory {
      * Uses the provided asset loader for loading models.
      * @param assetLoader  Asset Loader to use for model loading
      */
-    public Base3DFactory(AssetLoader assetLoader) {
+    protected Base3DFactory(AssetLoader assetLoader) {
         this.assetLoader = assetLoader;
     }
 }

@@ -12,11 +12,10 @@ import java.util.List;
  * Factory class which allows the instantiation
  * of Ball3D objects from the specified texture set.
  */
-public class BallFactory {
+public class BallFactory extends Base3DFactory {
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
 
     private List<Texture> textures;
-    private transient AssetLoader assetLoader;
 
     /**
      * Creates a new Ball Factory instance with the specified
@@ -27,8 +26,8 @@ public class BallFactory {
      * @param textures  List of textures for the balls
      */
     public BallFactory(List<Texture> textures, AssetLoader assetLoader) {
+        super(assetLoader);
         this.textures = textures;
-        this.assetLoader = assetLoader;
     }
 
     public List<Texture> getTextures() {
