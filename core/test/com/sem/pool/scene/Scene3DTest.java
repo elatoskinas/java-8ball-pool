@@ -68,20 +68,33 @@ class Scene3DTest {
         assertEquals(camera, scene.getCamera());
     }*/
 
+    /**
+     * Test case to ensure that all the required elements of
+     * the 3D scene are instantiated after calling instantiate().
+     */
     @Test
-    public void testInstantiate() {
+    public void testInstantiateSuccessful() {
         scene.instantiate();
         assertNotNull(scene.getEnvironment());
         assertNotNull(scene.getCamera());
-        assertNotNull(scene.getModels());
         assertNotNull(scene.getPoolBalls());
         assertNotNull(scene.getTable());
+    }
+
+    /**
+     * Test to verify that the models are properly instantiated
+     * after calling instantiate() on the scene.
+     */
+    @Test
+    public void testInstantiateModels() {
+        scene.instantiate();
+
+        assertNotNull(scene.getModels());
 
         // TODO: Change this to check for all 15 balls
         // Total amount of models to load: ball count + 1 for the board
         final int ballCount = 2;
         final int modelCount = ballCount + 1;
-
         assertEquals(modelCount, scene.getModels().size());
     }
 }
