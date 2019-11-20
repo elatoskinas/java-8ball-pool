@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class Ball3D {
     private int id;
-    private ModelInstance model;
+    private transient ModelInstance model;
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -23,18 +23,14 @@ public class Ball3D {
         this.model = model;
     }
 
-    /**
-     * Returns the ID of the 3D Ball.
-     * @return  ID of the 3D Ball
-     */
     public int getId() {
         return id;
     }
 
-    /**
-     * Returns the Model Instance object of the 3D Ball.
-     * @return  3D Ball model object
-     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public ModelInstance getModel() {
         return model;
     }

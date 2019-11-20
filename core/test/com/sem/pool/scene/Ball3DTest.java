@@ -25,6 +25,17 @@ class Ball3DTest {
     }
 
     @Test
+    public void testIdSetter() {
+        final int initId = 0;
+        final int id = 2;
+        Ball3D ball = new Ball3D(initId, null);
+
+        ball.setId(id);
+
+        assertEquals(id, ball.getId());
+    }
+
+    @Test
     public void testEquals() {
         final int id = 1;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
@@ -74,7 +85,7 @@ class Ball3DTest {
     }
 
     @Test
-    public void tesetHashCodeNotEqual() {
+    public void testHashCodeNotEqual() {
         final int id1 = 0;
         final int id2 = 5;
         final ModelInstance model = null;
