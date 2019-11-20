@@ -93,4 +93,24 @@ public class Scene3D {
 
         models.add(table.getModel());
     }
+
+    /**
+     * Renders the scene with the scene's models, environment
+     * and camera. Should be called on every game loop iteration.
+     */
+    public void render() {
+        modelBatch.begin(camera);
+        modelBatch.render(models, environment);
+        modelBatch.end();
+    }
+
+    /** Disposes & completely cleans up the scene of models.
+     * To be used when the lifecycle of the game making use
+     * of the 3D scene ends.
+     */
+    public void dispose() {
+        modelBatch.dispose();
+        models.clear();
+        assetLoader.dispose();
+    }
 }

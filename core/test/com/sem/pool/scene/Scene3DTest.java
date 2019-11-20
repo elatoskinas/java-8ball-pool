@@ -125,13 +125,15 @@ class Scene3DTest {
      * Test case to ensure that after calling the dispose method
      * on the scene, all the necessary calls are made to clean
      * up the scene & models.
+     * The test case covers the transition from game instantiation to disposal.
      */
     @Test
     public void testDispose() {
+        scene.instantiate();
         scene.dispose();
 
         Mockito.verify(batch).dispose();
         assertEquals(0, scene.getModels().size());
-        Mockito.verify(scene).getAssetLoader().dispose();
+        Mockito.verify(assetLoader).dispose();
     }
 }
