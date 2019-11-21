@@ -68,10 +68,10 @@ class AssetLoaderTest {
         loader.initializeModels();
 
         Mockito.verify(manager, Mockito.times(1))
-                .load(AssetLoader.BALL_MODEL_PATH, Model.class);
+                .load(AssetLoader.BALL_MODEL_PATH, Model.class, loader.getObjectLoaderParameters());
 
         Mockito.verify(manager, Mockito.times(1))
-                .load(AssetLoader.TABLE_MODEL_PATH, Model.class);
+                .load(AssetLoader.TABLE_MODEL_PATH, Model.class, loader.getObjectLoaderParameters());
 
         Mockito.verifyNoMoreInteractions(manager);
     }

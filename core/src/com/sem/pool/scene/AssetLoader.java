@@ -9,6 +9,8 @@ public class AssetLoader {
     public static final String BALL_MODEL_PATH = "models/ball.obj";
     public static final String TABLE_MODEL_PATH = "models/table.obj";
 
+    private transient ObjLoader.ObjLoaderParameters objectLoaderParameters;
+
     /**
      * Enum to represent loadable model types.
      */
@@ -31,10 +33,17 @@ public class AssetLoader {
 
     public AssetLoader(AssetManager assetManager) {
         this.assetManager = assetManager;
+
+        // Iniitalize object loader parameters to flip the texture coordinates
+        objectLoaderParameters = new ObjLoader.ObjLoaderParameters(true);
     }
 
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    public ObjLoader.ObjLoaderParameters getObjectLoaderParameters() {
+        return objectLoaderParameters;
     }
 
     /**
