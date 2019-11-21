@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class Scene3D {
     // TODO: Change value to support all 16 balls
-    private static final int ballCount = 2;
+    private static final int ballCount = 16;
 
     private AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
@@ -105,6 +105,21 @@ public class Scene3D {
         for (int i = 0; i < ballCount; ++i) {
             Ball3D ball = ballFactory.createBall(i);
             models.add(ball.getModel());
+
+            // TODO: Temporary code to randomly spread out the
+            // TODO: Initialized balls. To be replaced with
+            // TODO: proper positioning of the balls later on.
+            // TODO: Here, we also move the cue ball further away
+            // TODO: with the intention of easier integration testing if needed.
+            float xtranslate = i * (float) Math.random() * 0.2f;
+            float ztranslate = i * (float) Math.random() * 0.1f;
+
+            if (i == 0) {
+                xtranslate = -1f;
+                ztranslate = 0f;
+            }
+
+            ball.getModel().transform.translate(xtranslate, 0, ztranslate);
         }
 
         Texture tableTexture = null;

@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class Scene3DTest {
+    private static final int BALL_COUNT = 16;
+
     Scene3D scene;
     AssetLoader assetLoader;
     ModelBatch batch;
@@ -92,10 +94,8 @@ class Scene3DTest {
 
         assertNotNull(scene.getModels());
 
-        // TODO: Change this to check for all 16 balls
         // Total amount of models to load: ball count + 1 for the board
-        final int ballCount = 2;
-        final int modelCount = ballCount + 1;
+        final int modelCount = BALL_COUNT + 1;
         assertEquals(modelCount, scene.getModels().size());
     }
 
