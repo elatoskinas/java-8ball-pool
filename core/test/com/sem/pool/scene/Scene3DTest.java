@@ -9,7 +9,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+
+import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,33 +21,54 @@ class Scene3DTest {
     private static final int BALL_COUNT = 16;
 
     transient Scene3D scene;
-    transient AssetLoader assetLoader;
-    transient ModelBatch batch;
 
-    transient BallFactory ballFactory;
-    transient TableFactory tableFactory;
+    transient ModelBatch batch;
     transient Camera camera;
+    transient Environment environment;
+
+    transient List<Ball3D> poolBalls;
+    transient Table3D table;
 
     @BeforeEach
     public void setUp() {
-        assetLoader = Mockito.mock(AssetLoader.class);
         batch = Mockito.mock(ModelBatch.class);
-        //scene = new Scene3D(assetLoader, batch);
-
-        ballFactory = Mockito.mock(BallFactory.class);
-        tableFactory = Mockito.mock(TableFactory.class);
         camera = Mockito.mock(Camera.class);
+        environment = Mockito.mock(Environment.class);
 
-        Ball3D ballMock = Mockito.mock(Ball3D.class);
-        Table3D tableMock = Mockito.mock(Table3D.class);
+        Table3D table = Mockito.mock(Table3D.class);
+        poolBalls = new ArrayList<Ball3D>();
 
-        Mockito.when(ballFactory.createBall(Mockito.anyInt())).thenReturn(ballMock);
-        Mockito.when(tableFactory.createBoard()).thenReturn(tableMock);
+        scene = new Scene3D(environment, camera, poolBalls, table, batch);
     }
 
     @Test
     public void testConstructor() {
-        //assertEquals(assetLoader, scene.getAssetLoader());
+        assertEquals(camera, scene.getCamera());
+        assertEquals(environment, scene.getEnvironment());
+        assertEquals(poolBalls, scene.getPoolBalls());
+        assertEquals(table, scene.getTable());
+    }
+
+    @Test
+    public void testConstructorModelsSize() {
+        int expectedSize = poolBalls.size() + 1;
+        int actualSize = scene.getModels().size();
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Test
+    public void testConstructorModelsSizeBallsPresent() {
+        final int ballCount = 6;
+
+        List<Ball3D> poolBalls2 = new ArrayList<Ball3D>();
+
+        for (int i = 0; i < ballCount; ++i) {
+            poolBalls2.add(Mockito.mock(Ball3D.class));
+        }
+
+        int expectedSize = poolBalls2.size() + 1;
+        int actualSize = scene.getModels().size();
+        assertEquals(expectedSize, actualSize);
     }
 
     /*@Test
@@ -95,6 +119,5 @@ class Scene3DTest {
 
         Mockito.verify(batch).dispose();
         assertEquals(0, scene.getModels().size());
-        Mockito.verify(assetLoader).dispose();
     }
 }
