@@ -42,4 +42,8 @@ public class SceneFactory {
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
+
+    public Scene3D createScene() {
+        return null;
+    }
 }

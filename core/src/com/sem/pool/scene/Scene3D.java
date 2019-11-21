@@ -1,26 +1,16 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 3D Scene representation of a single Pool game.
  */
 public class Scene3D {
-    // TODO: Change value to support all 16 balls
-    private static final int ballCount = 16;
-
-    private AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
 
     private transient Environment environment;
@@ -31,24 +21,18 @@ public class Scene3D {
     private transient Table3D table;
 
     /**
-     * Creates an instance of a 3D Pool Game scene.
-     * The models for the scene will be loaded via the specified asset loader,
-     * and rendered on the specified ModelBatch.
+     * Creates an instance of a 3D Pool Game scene from the specified
+     * parameters of the scene.
      *
-     * @param assetLoader Asset Loader to use for loading assets
+     * @param environment Environment settings of the scene (e.g. light)
+     * @param camera      Camera used in the scene
+     * @param poolBalls   List of pool balls part of the scene
+     * @param table       The table to use for the scene
      * @param batch       Model Batch to use for rendering
      */
-    public Scene3D(AssetLoader assetLoader, ModelBatch batch) {
-        this.assetLoader = assetLoader;
-        this.modelBatch = batch;
-    }
-
-    public AssetLoader getAssetLoader() {
-        return assetLoader;
-    }
-
-    public void setAssetLoader(AssetLoader assetLoader) {
-        this.assetLoader = assetLoader;
+    public Scene3D(Environment environment, Camera camera, List<Ball3D> poolBalls,
+                   Table3D table, ModelBatch batch) {
+        // TODO
     }
 
     public Environment getEnvironment() {
@@ -81,41 +65,41 @@ public class Scene3D {
     // though it is initialized and used to create the pool
     // balls properly. Seems like a false positive here.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void instantiate(BallFactory ballFactory, TableFactory tableFactory, Camera camera) {
-        // TODO: Move this to it's own Environment factory or method.
-        environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
-
-        this.camera = camera;
-
-        models = new ArrayList<>();
-        poolBalls = new ArrayList<>();
-
-        for (int i = 0; i < ballCount; ++i) {
-            Ball3D ball = ballFactory.createBall(i);
-            models.add(ball.getModel());
-
-            // TODO: Temporary code to randomly spread out the
-            // TODO: Initialized balls. To be replaced with
-            // TODO: proper positioning of the balls later on.
-            // TODO: Here, we also move the cue ball further away
-            // TODO: with the intention of easier integration testing if needed.
-            /*float xtranslate = i * (float) Math.random() * 0.2f;
-            float ztranslate = i * (float) Math.random() * 0.1f;
-
-            if (i == 0) {
-                xtranslate = -1f;
-                ztranslate = 0f;
-            }
-
-            ball.getModel().transform.translate(xtranslate, 0, ztranslate);*/
-        }
-
-        table = tableFactory.createBoard();
-
-        models.add(table.getModel());
-    }
+//    public void instantiate(BallFactory ballFactory, TableFactory tableFactory, Camera camera) {
+//        // TODO: Move this to it's own Environment factory or method.
+//        environment = new Environment();
+//        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+//        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
+//
+//        this.camera = camera;
+//
+//        models = new ArrayList<>();
+//        poolBalls = new ArrayList<>();
+//
+//        for (int i = 0; i < ballCount; ++i) {
+//            Ball3D ball = ballFactory.createBall(i);
+//            models.add(ball.getModel());
+//
+//            // TODO: Temporary code to randomly spread out the
+//            // TODO: Initialized balls. To be replaced with
+//            // TODO: proper positioning of the balls later on.
+//            // TODO: Here, we also move the cue ball further away
+//            // TODO: with the intention of easier integration testing if needed.
+//            /*float xtranslate = i * (float) Math.random() * 0.2f;
+//            float ztranslate = i * (float) Math.random() * 0.1f;
+//
+//            if (i == 0) {
+//                xtranslate = -1f;
+//                ztranslate = 0f;
+//            }
+//
+//            ball.getModel().transform.translate(xtranslate, 0, ztranslate);*/
+//        }
+//
+//        table = tableFactory.createBoard();
+//
+//        models.add(table.getModel());
+//    }
 
     /**
      * Renders the scene with the scene's models, environment
@@ -135,6 +119,5 @@ public class Scene3D {
     public void dispose() {
         modelBatch.dispose();
         models.clear();
-        assetLoader.dispose();
     }
 }
