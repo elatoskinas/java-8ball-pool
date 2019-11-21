@@ -35,7 +35,7 @@ class Scene3DTest {
         camera = Mockito.mock(Camera.class);
         environment = Mockito.mock(Environment.class);
 
-        Table3D table = Mockito.mock(Table3D.class);
+        table = Mockito.mock(Table3D.class);
         poolBalls = new ArrayList<Ball3D>();
 
         scene = new Scene3D(environment, camera, poolBalls, table, batch);
@@ -65,6 +65,8 @@ class Scene3DTest {
         for (int i = 0; i < ballCount; ++i) {
             poolBalls2.add(Mockito.mock(Ball3D.class));
         }
+
+        scene = new Scene3D(environment, camera, poolBalls2, table, batch);
 
         int expectedSize = poolBalls2.size() + 1;
         int actualSize = scene.getModels().size();
