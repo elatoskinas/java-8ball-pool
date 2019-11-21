@@ -23,6 +23,10 @@ class PoolTest {
         AssetLoader loader = pool.getAssetLoader();
         Scene3D scene = pool.getScene();
 
+        // Assert that loader & scene have been properly created
+        assertNotNull(loader);
+        assertNotNull(scene);
+
         // Ensure asset loader is set to the game's Asset Loader
         assertEquals(loader, scene.getAssetLoader());
 
