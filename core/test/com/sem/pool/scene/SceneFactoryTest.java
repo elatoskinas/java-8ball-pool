@@ -9,6 +9,8 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SceneFactoryTest {
+    private static final int BALL_COUNT = 16;
+
     SceneFactory sceneFactory;
 
     transient BallFactory ballFactory;
@@ -57,4 +59,34 @@ class SceneFactoryTest {
 
         assertEquals(camera, sceneFactory.getCamera());
     }
+
+    /**
+     * Test case to ensure that all the required elements of
+     * the 3D scene are instantiated after constructing a Scene.
+     */
+    @Test
+    public void testInstantiateSuccessful() {
+        Scene3D scene = sceneFactory.createScene();
+
+        assertNotNull(scene.getEnvironment());
+        assertNotNull(scene.getCamera());
+        assertNotNull(scene.getPoolBalls());
+        assertNotNull(scene.getTable());
+    }
+
+    /**
+     * Test to verify that the models are properly instantiated
+     * after instantiating the scene.
+     */
+    @Test
+    public void testInstantiateModels() {
+        Scene3D scene = sceneFactory.createScene();
+
+        assertNotNull(scene.getModels());
+
+        // Total amount of models to load: ball count + 1 for the board
+        final int modelCount = BALL_COUNT + 1;
+        assertEquals(modelCount, scene.getModels().size());
+    }
+
 }
