@@ -31,6 +31,9 @@ public class Pool extends ApplicationAdapter {
 
         // Initialize models by queueing them for loading
         assetLoader.initializeModels();
+
+        // Initialize viewport to the relevant width & height
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     public AssetLoader getAssetLoader() {
@@ -43,12 +46,16 @@ public class Pool extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        //scene.instantiate();
+
+        // Clear depth buffer & color buffer masks
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        //scene.render();
     }
 
     @Override
     public void dispose() {
-
+        scene.dispose();
     }
 }
