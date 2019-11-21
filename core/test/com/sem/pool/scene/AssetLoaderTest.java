@@ -71,7 +71,8 @@ class AssetLoaderTest {
                 .load(AssetLoader.BALL_MODEL_PATH, Model.class, loader.getObjectLoaderParameters());
 
         Mockito.verify(manager, Mockito.times(1))
-                .load(AssetLoader.TABLE_MODEL_PATH, Model.class, loader.getObjectLoaderParameters());
+                .load(AssetLoader.TABLE_MODEL_PATH, Model.class,
+                        loader.getObjectLoaderParameters());
 
         Mockito.verifyNoMoreInteractions(manager);
     }

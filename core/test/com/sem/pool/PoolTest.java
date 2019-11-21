@@ -1,11 +1,6 @@
 package com.sem.pool;
 
-import com.sem.pool.scene.AssetLoader;
-import com.sem.pool.scene.Scene3D;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Sample test class. To be removed in the future.

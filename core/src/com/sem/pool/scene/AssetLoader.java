@@ -31,6 +31,11 @@ public class AssetLoader {
 
     private transient AssetManager assetManager;
 
+    /**
+     * Creates a new Asset Loader from the specified Asset Manager
+     * object instance.
+     * @param assetManager  Asset Manager to use to load assets (LibGDX dependency)
+     */
     public AssetLoader(AssetManager assetManager) {
         this.assetManager = assetManager;
 
