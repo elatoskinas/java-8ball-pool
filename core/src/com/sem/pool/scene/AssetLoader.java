@@ -56,7 +56,7 @@ public class AssetLoader {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void initializeModels() {
         for (ModelType type : ModelType.values()) {
-            assetManager.load(type.getPath(), Model.class, new ObjLoader.ObjLoaderParameters(true));
+            assetManager.load(type.getPath(), Model.class, objectLoaderParameters);
         }
     }
 
