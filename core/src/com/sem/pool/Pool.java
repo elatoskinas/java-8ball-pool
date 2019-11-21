@@ -2,17 +2,25 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.sem.pool.scene.AssetLoader;
 import com.sem.pool.scene.Scene3D;
 
 public class Pool extends ApplicationAdapter {
+    private AssetLoader assetLoader;
+    private Scene3D scene;
+
     @Override
     public void create() {
+
+    }
+
+    private void initializeAssetLoader() {
+        
+    }
+
+    private void initializeScene() {
 
     }
 
