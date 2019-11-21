@@ -1,11 +1,14 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,14 +76,27 @@ public class Scene3D {
      * positions them in the necessary locations and sets the camera
      * in its right location.
      */
+    // ballFactory variable gets tagged as a DU anomaly, even
+    // though it is initialized and used to create the pool
+    // balls properly. Seems like a false positive here.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void instantiate() {
         environment =  new Environment();
-        camera = new PerspectiveCamera();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
+
+        camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(0f, 5f, 0f);
+        camera.lookAt(0,0,0);
+        camera.near = 1f;
+        camera.far = 300f;
+        camera.update();
+
         models = new ArrayList<>();
         poolBalls = new ArrayList<>();
 
         ArrayList<Texture> ballTexures = new ArrayList<Texture>();
-        
+
         BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
 
         for (int i = 0; i < ballCount; ++i) {

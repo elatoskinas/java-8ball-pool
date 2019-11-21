@@ -3,6 +3,7 @@ package com.sem.pool.scene;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 
 public class AssetLoader {
     public static final String BALL_MODEL_PATH = "models/ball.obj";
@@ -46,7 +47,7 @@ public class AssetLoader {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void initializeModels() {
         for (ModelType type : ModelType.values()) {
-            assetManager.load(type.getPath(), Model.class);
+            assetManager.load(type.getPath(), Model.class, new ObjLoader.ObjLoaderParameters(true));
         }
     }
 
