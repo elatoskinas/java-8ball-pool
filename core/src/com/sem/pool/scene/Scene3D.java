@@ -81,10 +81,13 @@ public class Scene3D {
     // balls properly. Seems like a false positive here.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void instantiate() {
+        // TODO: Move this to it's own Environment factory or method.
         environment =  new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
 
+        // TODO: Move this to it's own CameraFactory class (or separate method)
+        // TODO: For now, this is only a placeholder to be able to minimally system test.
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(0f, 5f, 0f);
         camera.lookAt(0,0,0);
