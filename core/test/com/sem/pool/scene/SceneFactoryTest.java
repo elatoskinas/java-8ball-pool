@@ -53,7 +53,7 @@ class SceneFactoryTest {
     @Test
     public void testSetCamera() {
         Camera camera = Mockito.mock(Camera.class);
-        sceneFactory.setCamera(newFactory);
+        sceneFactory.setCamera(camera);
 
         assertEquals(camera, sceneFactory.getCamera());
     }
