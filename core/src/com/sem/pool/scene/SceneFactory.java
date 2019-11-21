@@ -17,6 +17,14 @@ public class SceneFactory {
     private transient Camera camera;
     private transient ModelBatch modelBatch;
 
+    /**
+     * Creates a new Scene Factory instance with the
+     * specified parameters to be used for scene instantiation.
+     * @param tableFactory  Table Factory to use for Table instantiation
+     * @param ballFactory   Ball Factory to use for Pool Ball instantiation
+     * @param camera        Camera to use for the scene
+     * @param modelBatch    Model Batch to use for scene rendering
+     */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
                         Camera camera, ModelBatch modelBatch) {
         this.tableFactory = tableFactory;

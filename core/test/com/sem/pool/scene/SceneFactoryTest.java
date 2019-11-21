@@ -1,17 +1,18 @@
 package com.sem.pool.scene;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SceneFactoryTest {
     private static final int BALL_COUNT = 16;
 
-    SceneFactory sceneFactory;
+    transient SceneFactory sceneFactory;
 
     transient BallFactory ballFactory;
     transient TableFactory tableFactory;
