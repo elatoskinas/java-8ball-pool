@@ -70,52 +70,6 @@ public class Scene3D {
     }
 
     /**
-     * Instantiates the 3D scene by setting up the environment, camera
-     * and models. The method instantiates all the necessary models,
-     * positions them in the necessary locations and sets the camera
-     * in its right location.
-     */
-    // ballFactory variable gets tagged as a DU anomaly, even
-    // though it is initialized and used to create the pool
-    // balls properly. Seems like a false positive here.
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-//    public void instantiate(BallFactory ballFactory, TableFactory tableFactory, Camera camera) {
-//        // TODO: Move this to it's own Environment factory or method.
-//        environment = new Environment();
-//        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-//        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
-//
-//        this.camera = camera;
-//
-//        models = new ArrayList<>();
-//        poolBalls = new ArrayList<>();
-//
-//        for (int i = 0; i < ballCount; ++i) {
-//            Ball3D ball = ballFactory.createBall(i);
-//            models.add(ball.getModel());
-//
-//            // TODO: Temporary code to randomly spread out the
-//            // TODO: Initialized balls. To be replaced with
-//            // TODO: proper positioning of the balls later on.
-//            // TODO: Here, we also move the cue ball further away
-//            // TODO: with the intention of easier integration testing if needed.
-//            /*float xtranslate = i * (float) Math.random() * 0.2f;
-//            float ztranslate = i * (float) Math.random() * 0.1f;
-//
-//            if (i == 0) {
-//                xtranslate = -1f;
-//                ztranslate = 0f;
-//            }
-//
-//            ball.getModel().transform.translate(xtranslate, 0, ztranslate);*/
-//        }
-//
-//        table = tableFactory.createBoard();
-//
-//        models.add(table.getModel());
-//    }
-
-    /**
      * Renders the scene with the scene's models, environment
      * and camera. Should be called on every game loop iteration.
      */

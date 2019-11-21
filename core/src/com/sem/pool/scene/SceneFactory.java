@@ -1,7 +1,13 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SceneFactory {
     private static final int BALL_COUNT = 16;
@@ -43,7 +49,50 @@ public class SceneFactory {
         this.camera = camera;
     }
 
+    /**
+     * Instantiates the 3D scene by setting up the environment, camera
+     * and models. The method instantiates all the necessary models,
+     * positions them in the necessary locations and sets the camera
+     * in its right location.
+     */
+    // ballFactory variable gets tagged as a DU anomaly, even
+    // though it is initialized and used to create the pool
+    // balls properly. Seems like a false positive here.
+    //@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public Scene3D createScene() {
-        return null;
+        // TODO: Move this to it's own Environment factory or method.
+        // Instantiate environment for the Scene
+        Environment environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
+
+        // Create pool balls
+        List<Ball3D> poolBalls = new ArrayList<>();
+
+        for (int i = 0; i < BALL_COUNT; ++i) {
+            Ball3D ball = ballFactory.createBall(i);
+            poolBalls.add(ball);
+
+            // TODO: Temporary code to randomly spread out the
+            // TODO: Initialized balls. To be replaced with
+            // TODO: proper positioning of the balls later on.
+            // TODO: Here, we also move the cue ball further away
+            // TODO: with the intention of easier integration testing if needed.
+            /*float xtranslate = i * (float) Math.random() * 0.2f;
+            float ztranslate = i * (float) Math.random() * 0.1f;
+
+            if (i == 0) {
+                xtranslate = -1f;
+                ztranslate = 0f;
+            }
+
+            ball.getModel().transform.translate(xtranslate, 0, ztranslate);*/
+        }
+
+        // Create table
+        Table3D table = tableFactory.createBoard();
+
+        // Create scene with the constructed objects
+        return new Scene3D(environment, camera, poolBalls, table, modelBatch);
     }
 }
