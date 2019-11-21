@@ -82,11 +82,12 @@ class SceneFactoryTest {
     public void testInstantiateModels() {
         Scene3D scene = sceneFactory.createScene();
 
-        assertNotNull(scene.getModels());
+        // Verify the required amount of pool balls for scene
+        assertNotNull(scene.getPoolBalls());
+        assertEquals(BALL_COUNT, scene.getPoolBalls().size());
 
-        // Total amount of models to load: ball count + 1 for the board
-        final int modelCount = BALL_COUNT + 1;
-        assertEquals(modelCount, scene.getModels().size());
+        // Verify that the table is instantiated
+        assertNotNull(scene.getTable());
     }
 
 }
