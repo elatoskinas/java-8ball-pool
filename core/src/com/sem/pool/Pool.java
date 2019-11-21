@@ -13,6 +13,8 @@ public class Pool extends ApplicationAdapter {
 
     private transient Scene3D scene;
 
+    private transient boolean loaded;
+
     @Override
     public void create() {
         initializeAssetLoader();
@@ -36,6 +38,26 @@ public class Pool extends ApplicationAdapter {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
+    private void initializeScene() {
+        // If the game has not yet been loaded, and an
+        // assetLoader update event is received in current iteration,
+        // then load the game.
+        if (!loaded && assetLoader.getAssetManager().update()) {
+            // Instantiate the scene
+            scene.instantiate();
+
+            // The assets of the game are now fully loaded
+            loaded = true;
+        }
+    }
+
+    private void renderScene() {
+        // Render the scene only if the game is loaded
+        if (loaded) {
+            scene.render();
+        }
+    }
+
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }
@@ -46,12 +68,14 @@ public class Pool extends ApplicationAdapter {
 
     @Override
     public void render() {
-        //scene.instantiate();
+        // Initialize scene if uninitialized
+        initializeScene();
 
         // Clear depth buffer & color buffer masks
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        //scene.render();
+        // Render the scene if initialized
+        renderScene();
     }
 
     @Override
