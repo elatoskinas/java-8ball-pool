@@ -20,6 +20,8 @@ class PoolTest {
 
     @Test
     public void testCreate() {
+        pool.create();
+
         AssetLoader loader = pool.getAssetLoader();
         Scene3D scene = pool.getScene();
 
