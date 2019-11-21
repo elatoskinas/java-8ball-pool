@@ -34,6 +34,12 @@ class Scene3DTest {
         ballFactory = Mockito.mock(BallFactory.class);
         tableFactory = Mockito.mock(TableFactory.class);
         camera = Mockito.mock(Camera.class);
+
+        Ball3D ballMock = Mockito.mock(Ball3D.class);
+        Table3D tableMock = Mockito.mock(Table3D.class);
+
+        Mockito.when(ballFactory.createBall(Mockito.anyInt())).thenReturn(ballMock);
+        Mockito.when(tableFactory.createBoard()).thenReturn(tableMock);
     }
 
     @Test
@@ -63,7 +69,7 @@ class Scene3DTest {
      */
     @Test
     public void testInstantiateSuccessful() {
-        scene.instantiate();
+        scene.instantiate(ballFactory, tableFactory, camera);
         assertNotNull(scene.getEnvironment());
         assertNotNull(scene.getCamera());
         assertNotNull(scene.getPoolBalls());

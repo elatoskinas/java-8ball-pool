@@ -34,8 +34,9 @@ public class Scene3D {
      * Creates an instance of a 3D Pool Game scene.
      * The models for the scene will be loaded via the specified asset loader,
      * and rendered on the specified ModelBatch.
-     * @param assetLoader  Asset Loader to use for loading assets
-     * @param batch  Model Batch to use for rendering
+     *
+     * @param assetLoader Asset Loader to use for loading assets
+     * @param batch       Model Batch to use for rendering
      */
     public Scene3D(AssetLoader assetLoader, ModelBatch batch) {
         this.assetLoader = assetLoader;
@@ -80,26 +81,16 @@ public class Scene3D {
     // though it is initialized and used to create the pool
     // balls properly. Seems like a false positive here.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void instantiate() {
+    public void instantiate(BallFactory ballFactory, TableFactory tableFactory, Camera camera) {
         // TODO: Move this to it's own Environment factory or method.
-        environment =  new Environment();
+        environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
 
-        // TODO: Move this to it's own CameraFactory class (or separate method)
-        // TODO: For now, this is only a placeholder to be able to minimally system test.
-        camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(0f, 5f, 0f);
-        camera.lookAt(0,0,0);
-        camera.near = 1f;
-        camera.far = 300f;
+        this.camera = camera;
 
         models = new ArrayList<>();
         poolBalls = new ArrayList<>();
-
-        ArrayList<Texture> ballTexures = new ArrayList<Texture>();
-
-        BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
 
         for (int i = 0; i < ballCount; ++i) {
             Ball3D ball = ballFactory.createBall(i);
@@ -110,7 +101,7 @@ public class Scene3D {
             // TODO: proper positioning of the balls later on.
             // TODO: Here, we also move the cue ball further away
             // TODO: with the intention of easier integration testing if needed.
-            float xtranslate = i * (float) Math.random() * 0.2f;
+            /*float xtranslate = i * (float) Math.random() * 0.2f;
             float ztranslate = i * (float) Math.random() * 0.1f;
 
             if (i == 0) {
@@ -118,11 +109,9 @@ public class Scene3D {
                 ztranslate = 0f;
             }
 
-            ball.getModel().transform.translate(xtranslate, 0, ztranslate);
+            ball.getModel().transform.translate(xtranslate, 0, ztranslate);*/
         }
 
-        Texture tableTexture = null;
-        TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
         table = tableFactory.createBoard();
 
         models.add(table.getModel());
@@ -138,7 +127,8 @@ public class Scene3D {
         modelBatch.end();
     }
 
-    /** Disposes & completely cleans up the scene of models.
+    /**
+     * Disposes & completely cleans up the scene of models.
      * To be used when the lifecycle of the game making use
      * of the 3D scene ends.
      */
