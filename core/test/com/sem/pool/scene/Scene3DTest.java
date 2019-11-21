@@ -17,40 +17,23 @@ import org.mockito.Mockito;
 class Scene3DTest {
     private static final int BALL_COUNT = 16;
 
-    Scene3D scene;
-    AssetLoader assetLoader;
-    ModelBatch batch;
+    transient Scene3D scene;
+    transient AssetLoader assetLoader;
+    transient ModelBatch batch;
+
+    transient BallFactory ballFactory;
+    transient TableFactory tableFactory;
+    transient Camera camera;
 
     @BeforeEach
     public void setUp() {
         assetLoader = Mockito.mock(AssetLoader.class);
         batch = Mockito.mock(ModelBatch.class);
         scene = new Scene3D(assetLoader, batch);
-        Gdx.graphics = Mockito.mock(Graphics.class);
-    }
 
-    public Scene3D getScene() {
-        return scene;
-    }
-
-    public void setScene(Scene3D scene) {
-        this.scene = scene;
-    }
-
-    public AssetLoader getAssetLoader() {
-        return assetLoader;
-    }
-
-    public void setAssetLoader(AssetLoader assetLoader) {
-        this.assetLoader = assetLoader;
-    }
-
-    public ModelBatch getBatch() {
-        return batch;
-    }
-
-    public void setBatch(ModelBatch batch) {
-        this.batch = batch;
+        ballFactory = Mockito.mock(BallFactory.class);
+        tableFactory = Mockito.mock(TableFactory.class);
+        camera = Mockito.mock(Camera.class);
     }
 
     @Test
@@ -93,7 +76,7 @@ class Scene3DTest {
      */
     @Test
     public void testInstantiateModels() {
-        scene.instantiate();
+        scene.instantiate(ballFactory, tableFactory, camera);
 
         assertNotNull(scene.getModels());
 
@@ -130,7 +113,7 @@ class Scene3DTest {
      */
     @Test
     public void testDispose() {
-        scene.instantiate();
+        scene.instantiate(ballFactory, tableFactory, camera);
         scene.dispose();
 
         Mockito.verify(batch).dispose();
