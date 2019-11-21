@@ -8,16 +8,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.sem.pool.scene.AssetLoader;
-import com.sem.pool.scene.BallFactory;
-import com.sem.pool.scene.Scene3D;
-import com.sem.pool.scene.TableFactory;
+import com.sem.pool.scene.*;
 
 import java.util.ArrayList;
 
 public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
-
+    private transient ModelBatch modelBatch;
     private transient Scene3D scene;
 
     private transient boolean loaded;
@@ -27,10 +24,10 @@ public class Pool extends ApplicationAdapter {
         initializeAssetLoader();
 
         // Initialize model batch for rendering
-        ModelBatch batch = new ModelBatch();
+        modelBatch = new ModelBatch();
 
         // Create scene
-        scene = new Scene3D(assetLoader, batch);
+        //scene = new Scene3D(assetLoader, batch);
     }
 
     private void initializeAssetLoader() {
@@ -59,15 +56,17 @@ public class Pool extends ApplicationAdapter {
             camera.near = 1f;
             camera.far = 300f;
 
-            // TODO: This part can most likely be factored into its own SceneFactory.
             ArrayList<Texture> ballTexures = new ArrayList<Texture>();
             BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
 
             Texture tableTexture = null;
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
 
+            SceneFactory sceneFactory = new SceneFactory(tableFactory,
+                    ballFactory, camera, modelBatch);
+
             // Instantiate the scene
-            scene.instantiate(ballFactory, tableFactory, camera);
+            scene = sceneFactory.createScene();
 
             // Update the camera of the scene to point to the right location
             scene.getCamera().update();
