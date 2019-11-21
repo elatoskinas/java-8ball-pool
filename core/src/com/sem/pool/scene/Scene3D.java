@@ -93,7 +93,6 @@ public class Scene3D {
         camera.lookAt(0,0,0);
         camera.near = 1f;
         camera.far = 300f;
-        camera.update();
 
         models = new ArrayList<>();
         poolBalls = new ArrayList<>();

@@ -46,6 +46,9 @@ public class Pool extends ApplicationAdapter {
             // Instantiate the scene
             scene.instantiate();
 
+            // Update the camera of the scene to point to the right location
+            scene.getCamera().update();
+
             // The assets of the game are now fully loaded
             loaded = true;
         }

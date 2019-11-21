@@ -3,6 +3,8 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -24,6 +26,7 @@ class Scene3DTest {
         assetLoader = Mockito.mock(AssetLoader.class);
         batch = Mockito.mock(ModelBatch.class);
         scene = new Scene3D(assetLoader, batch);
+        Gdx.graphics = Mockito.mock(Graphics.class);
     }
 
     public Scene3D getScene() {
