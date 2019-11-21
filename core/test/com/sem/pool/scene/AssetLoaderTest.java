@@ -1,9 +1,11 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -78,5 +80,13 @@ class AssetLoaderTest {
     public void testDispose() {
         loader.dispose();
         Mockito.verify(manager).dispose();
+    }
+
+    @Test
+    public void testGetObjectLoaderParameters() {
+        ObjLoader.ObjLoaderParameters objLoaderParameters = loader.getObjectLoaderParameters();
+
+        // Make sure that the texture coordinates are flipped
+        assertTrue(objLoaderParameters.flipV);
     }
 }
