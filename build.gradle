@@ -76,9 +76,12 @@ allprojects {
 
         jacoco {
             enabled = true
-            includes = ['nl.tudelft.cse.sem.*']
+            includes = ['com.sem.pool.*']
             excludes = []
         }
+
+        finalizedBy jacocoTestReport
+        finalizedBy jacocoTestCoverageVerification
     }
 
     jacocoTestCoverageVerification {
@@ -86,12 +89,12 @@ allprojects {
             rule {
                 enabled = true
                 element = 'CLASS'
-                includes = ['nl.tudelft.cse.sem.*']
+                includes = ['com.sem.pool.*']
 
                 limit {
                     counter = 'LINE'
                     value = 'TOTALCOUNT'
-                    maximum = 0.3
+                    maximum = 200
                 }
             }
         }
