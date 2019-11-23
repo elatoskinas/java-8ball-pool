@@ -13,6 +13,7 @@ import java.util.List;
  * of Ball3D objects from the specified texture set.
  */
 public class BallFactory extends Base3DFactory {
+    // Fixed constant path to use for the ball model asset
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
 
     private List<Texture> textures;

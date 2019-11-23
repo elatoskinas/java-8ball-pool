@@ -10,10 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SceneFactory {
+    // Fixed count of pool balls to create:
+    // Cue ball + 8-ball + 7 striped + 7 solid balls
     private static final int BALL_COUNT = 16;
 
+    // Factories used to create Tables & Pool Balls
     private transient TableFactory tableFactory;
     private transient BallFactory ballFactory;
+
     private transient Camera camera;
     private transient ModelBatch modelBatch;
 
@@ -98,7 +102,7 @@ public class SceneFactory {
         }
 
         // Create table
-        Table3D table = tableFactory.createBoard();
+        Table3D table = tableFactory.createTable();
 
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, modelBatch);

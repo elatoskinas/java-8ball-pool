@@ -11,33 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class BallFactoryTest {
-    BallFactory factory;
-    List<Texture> textures;
-    AssetLoader assetLoader;
-
-    public BallFactory getFactory() {
-        return factory;
-    }
-
-    public void setFactory(BallFactory factory) {
-        this.factory = factory;
-    }
-
-    public List<Texture> getTextures() {
-        return textures;
-    }
-
-    public void setTextures(List<Texture> textures) {
-        this.textures = textures;
-    }
-
-    public AssetLoader getAssetLoader() {
-        return assetLoader;
-    }
-
-    public void setAssetLoader(AssetLoader assetLoader) {
-        this.assetLoader = assetLoader;
-    }
+    transient BallFactory factory;
+    transient List<Texture> textures;
+    transient AssetLoader assetLoader;
 
     @BeforeEach
     public void setUp() {
@@ -46,16 +22,26 @@ class BallFactoryTest {
         factory = new BallFactory(textures, assetLoader);
     }
 
+    /**
+     * Test case to verify that the BallFactory constructor
+     * properly assigns the textures to the BallFactory.
+     */
     @Test
     public void testConstructor() {
         assertEquals(textures, factory.getTextures());
     }
 
+    /**
+     * Test case to ensure that creating a Pool Ball via the
+     * BallFactory returns a Pool Ball with the correct id and
+     * a new Ball model.
+     */
     @Test
     public void testCreateBall() {
         final int id = 0;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
+        // We must also verify that the appropriate call is made in the asset loader.
         Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
 
         Ball3D ball = factory.createBall(id);
@@ -64,8 +50,13 @@ class BallFactoryTest {
         assertEquals(expectedBall, ball);
     }
 
+    /**
+     * Test case to ensure that the setter for the textures of
+     * the BallFactory accordingly sets the textures.
+     */
     @Test
     public void testSetTextures() {
+        // Create some new List of textures
         List<Texture> newTextures = new ArrayList<>();
         Texture sampleTexture = Mockito.mock(Texture.class);
         newTextures.add(sampleTexture);

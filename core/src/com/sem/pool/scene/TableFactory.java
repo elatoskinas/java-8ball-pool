@@ -37,7 +37,7 @@ public class TableFactory extends Base3DFactory {
      * internal texture of the TableFactory class.
      * @return  New Table3D object instance corresponding to the specified id
      */
-    public Table3D createBoard() {
+    public Table3D createTable() {
         ModelInstance boardInstance = assetLoader.loadModel(MODEL_TYPE);
 
         // TODO: Set texture accordingly

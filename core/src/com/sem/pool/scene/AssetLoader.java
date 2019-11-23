@@ -5,14 +5,26 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 
+/**
+ * Class used for loading assets to the scene.
+ * Simplifies the usage of the AssetManager for loading scenes
+ * by providing a simpler to use interface.
+ */
 public class AssetLoader {
-    public static final String BALL_MODEL_PATH = "models/ball.obj";
-    public static final String TABLE_MODEL_PATH = "models/table.obj";
+    // Paths to models for loading
+    protected static final String BALL_MODEL_PATH = "models/ball.obj";
+    protected static final String TABLE_MODEL_PATH = "models/table.obj";
 
+    // Parameters for loading 3D models
     private transient ObjLoader.ObjLoaderParameters objectLoaderParameters;
+
+    // Underlying AssetManager (LibGDX dependency) to use
+    // for loading assets
+    private transient AssetManager assetManager;
 
     /**
      * Enum to represent loadable model types.
+     * Simplifies the specification of paths for models to load.
      */
     public enum ModelType {
         BALL(BALL_MODEL_PATH),
@@ -29,8 +41,6 @@ public class AssetLoader {
         }
     }
 
-    private transient AssetManager assetManager;
-
     /**
      * Creates a new Asset Loader from the specified Asset Manager
      * object instance.
@@ -39,7 +49,9 @@ public class AssetLoader {
     public AssetLoader(AssetManager assetManager) {
         this.assetManager = assetManager;
 
-        // Iniitalize object loader parameters to flip the texture coordinates
+        // Initialize object loader parameters to flip the texture coordinates.
+        // Otherwise, the Blender object textures will appear wrong due to
+        // the textures being flipped by default in LibGDX.
         objectLoaderParameters = new ObjLoader.ObjLoaderParameters(true);
     }
 
@@ -66,9 +78,9 @@ public class AssetLoader {
     }
 
     /**
-     * Loads the model of the specified type.
+     * Creates a model of the specified type.
      * @param type  Type of the model to load
-     * @return  Model Instance of the specified type.
+     * @return  new Model Instance corresponding to the specified type.
      */
     public ModelInstance loadModel(ModelType type) {
         Model model = assetManager.get(type.getPath(), Model.class);

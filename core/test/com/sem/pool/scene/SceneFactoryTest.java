@@ -28,7 +28,7 @@ class SceneFactoryTest {
 
         sceneFactory = new SceneFactory(tableFactory, ballFactory, camera, modelBatch);
 
-        Mockito.when(tableFactory.createBoard())
+        Mockito.when(tableFactory.createTable())
                 .thenReturn(Mockito.mock(Table3D.class));
 
         Mockito.when(ballFactory.createBall(Mockito.anyInt()))

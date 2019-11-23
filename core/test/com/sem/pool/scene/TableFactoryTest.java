@@ -63,7 +63,7 @@ class TableFactoryTest {
 
         Mockito.when(assetLoader.loadModel(TableFactory.MODEL_TYPE)).thenReturn(model);
 
-        Table3D board = factory.createBoard();
+        Table3D board = factory.createTable();
 
         Table3D expectedBoard = new Table3D(model);
         assertEquals(expectedBoard.getModel(), board.getModel());

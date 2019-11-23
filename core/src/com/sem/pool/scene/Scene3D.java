@@ -12,12 +12,15 @@ import java.util.List;
  * 3D Scene representation of a single Pool game.
  */
 public class Scene3D {
+    // ModelBatch LibGDX dependency that allows rendering
     private transient ModelBatch modelBatch;
 
+    // Scene elements
     private transient Environment environment;
     private transient Camera camera;
     private transient List<ModelInstance> models;
 
+    // Game elements
     private transient List<Ball3D> poolBalls;
     private transient Table3D table;
 
@@ -40,7 +43,7 @@ public class Scene3D {
         this.modelBatch = batch;
 
         // For all the pool balls and the table, add the models
-        // of the entities to a single List for rendering..
+        // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
         models.add(table.getModel());
 

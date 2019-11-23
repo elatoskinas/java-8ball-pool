@@ -16,11 +16,18 @@ import com.sem.pool.scene.TableFactory;
 
 import java.util.ArrayList;
 
+/**
+ * Main Pool Game application class that handles
+ * the 3D pool scene and all the interactions.
+ * TODO: Split this off into smaller components?
+ */
 public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
 
+    // State flag to keep track of whether asset loading
+    // has finished.
     private transient boolean loaded;
 
     @Override
@@ -30,10 +37,14 @@ public class Pool extends ApplicationAdapter {
         // Initialize model batch for rendering
         modelBatch = new ModelBatch();
 
-        // Create scene
-        //scene = new Scene3D(assetLoader, batch);
+        // Initialize viewport to the relevant width & height
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
+    /**
+     * Initializes the asset loader & loads the necessary
+     * models into the asset loader.
+     */
     private void initializeAssetLoader() {
         // Initialize objects to handle asset loading
         AssetManager manager = new AssetManager();
@@ -41,11 +52,12 @@ public class Pool extends ApplicationAdapter {
 
         // Initialize models by queueing them for loading
         assetLoader.initializeModels();
-
-        // Initialize viewport to the relevant width & height
-        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
+    /**
+     * Initializes the scene if loading of assets has
+     * been completed and the scene is not yet initialized.
+     */
     private void initializeScene() {
         // If the game has not yet been loaded, and an
         // assetLoader update event is received in current iteration,
@@ -80,6 +92,9 @@ public class Pool extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Renders the scene only if the scene has finished loading.
+     */
     private void renderScene() {
         // Render the scene only if the game is loaded
         if (loaded) {
@@ -110,5 +125,6 @@ public class Pool extends ApplicationAdapter {
     @Override
     public void dispose() {
         scene.dispose();
+        assetLoader.dispose();
     }
 }
