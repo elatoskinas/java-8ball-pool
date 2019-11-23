@@ -9,6 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+/**
+ * Test class containing unit tests for the SceneFactory class and
+ * some integration testing to test integration between SceneFactory and
+ * Scene3D classes.
+ */
 class SceneFactoryTest {
     private static final int BALL_COUNT = 16;
 
@@ -19,6 +24,12 @@ class SceneFactoryTest {
     transient Camera camera;
     transient ModelBatch modelBatch;
 
+    /**
+     * Handles setting up the test fixture by
+     * creating mock dependencies for the SceneFactory
+     * which return non-null objects upon using the create
+     * functionality.
+     */
     @BeforeEach
     public void setUp() {
         ballFactory = Mockito.mock(BallFactory.class);
@@ -36,6 +47,11 @@ class SceneFactoryTest {
     }
 
 
+    /**
+     * Test to verify that the construction of a SceneFactory
+     * object instance sets the elements of the SceneFactory
+     * properly.
+     */
     @Test
     public void testConstructor() {
         assertEquals(ballFactory, sceneFactory.getBallFactory());
@@ -43,6 +59,10 @@ class SceneFactoryTest {
         assertEquals(camera, sceneFactory.getCamera());
     }
 
+    /**
+     * Test case to verify the BallFactory setter of
+     * the SceneFactory.
+     */
     @Test
     public void testSetBallFactory() {
         BallFactory newFactory = Mockito.mock(BallFactory.class);
@@ -51,6 +71,10 @@ class SceneFactoryTest {
         assertEquals(newFactory, sceneFactory.getBallFactory());
     }
 
+    /**
+     * Test case to verify the TableFactory setter of
+     * the SceneFactory.
+     */
     @Test
     public void testSetTableFactory() {
         TableFactory newFactory = Mockito.mock(TableFactory.class);
@@ -59,6 +83,10 @@ class SceneFactoryTest {
         assertEquals(newFactory, sceneFactory.getTableFactory());
     }
 
+    /**
+     * Test case to verify the Camera setter of
+     * the SceneFactory.
+     */
     @Test
     public void testSetCamera() {
         Camera camera = Mockito.mock(Camera.class);
@@ -82,8 +110,9 @@ class SceneFactoryTest {
     }
 
     /**
-     * Test to verify that the models are properly instantiated
-     * after instantiating the scene.
+     * Test to verify that the game elements
+     * (pool balls and table) are properly instantiated
+     * in the scene created by the SceneFactory.
      */
     @Test
     public void testInstantiateModels() {

@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 
+/**
+ * Test class containing unit tests for the Ball3D class.
+ */
 class Ball3DTest {
     /**
      * Test method to verify that the Ball3D object instance

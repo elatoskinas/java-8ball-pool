@@ -10,6 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+/**
+ * Test class containing unit tests for the BallFactory class and
+ * some integration testing to test integration between BallFactory and
+ * Ball3D classes.
+ */
 class BallFactoryTest {
     transient BallFactory factory;
     transient List<Texture> textures;

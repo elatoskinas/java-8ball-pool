@@ -17,6 +17,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+/**
+ * Test class containing unit tests for the Scene3D class.
+ */
 class Scene3DTest {
     private static final int BALL_COUNT = 16;
 
@@ -29,6 +32,11 @@ class Scene3DTest {
     transient List<Ball3D> poolBalls;
     transient Table3D table;
 
+    /**
+     * Handles setting up the test fixture by
+     * creating mocks of all the required dependencies
+     * for creating a Scene object instance.
+     */
     @BeforeEach
     public void setUp() {
         batch = Mockito.mock(ModelBatch.class);
@@ -41,6 +49,10 @@ class Scene3DTest {
         scene = new Scene3D(environment, camera, poolBalls, table, batch);
     }
 
+    /**
+     * Test to verify that the correct objects are set to the
+     * scene's parameters upon constructing a new Scene.
+     */
     @Test
     public void testConstructor() {
         assertEquals(camera, scene.getCamera());
@@ -49,6 +61,11 @@ class Scene3DTest {
         assertEquals(table, scene.getTable());
     }
 
+    /**
+     * Test to verify that the correct number of models
+     * are added to the scene's model List upon constructing
+     * a Scene object.
+     */
     @Test
     public void testConstructorModelsSize() {
         int expectedSize = poolBalls.size() + 1;
@@ -56,6 +73,12 @@ class Scene3DTest {
         assertEquals(expectedSize, actualSize);
     }
 
+    /**
+     * Test to verify that the correct number of models
+     * are added to the scene's model list upon specifying
+     * a non-empty List of pool balls as one of the parameters
+     * for the Scene to instantiate.
+     */
     @Test
     public void testConstructorModelsSizeBallsPresent() {
         final int ballCount = 6;
@@ -113,7 +136,6 @@ class Scene3DTest {
      * Test case to ensure that after calling the dispose method
      * on the scene, all the necessary calls are made to clean
      * up the scene & models.
-     * The test case covers the transition from game instantiation to disposal.
      */
     @Test
     public void testDispose() {

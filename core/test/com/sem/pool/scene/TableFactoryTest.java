@@ -8,11 +8,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+/**
+ * Test class containing unit tests for the TableFactory class and
+ * some integration testing to test integration between TableFactory and
+ * Table3D classes.
+ */
 class TableFactoryTest {
-    TableFactory factory;
-    Texture texture;
-    AssetLoader assetLoader;
+    transient TableFactory factory;
+    transient Texture texture;
+    transient AssetLoader assetLoader;
 
+    /**
+     * Sets up the test fixture by creating mock
+     * dependencies & instantiating a TableFactory with
+     * the mocked dependencies.
+     */
     @BeforeEach
     public void setUp() {
         texture = Mockito.mock(Texture.class);
@@ -20,35 +30,19 @@ class TableFactoryTest {
         factory = new TableFactory(texture, assetLoader);
     }
 
-    public TableFactory getFactory() {
-        return factory;
-    }
-
-    public void setFactory(TableFactory factory) {
-        this.factory = factory;
-    }
-
-    public Texture getTexture() {
-        return texture;
-    }
-
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
-
-    public AssetLoader getAssetLoader() {
-        return assetLoader;
-    }
-
-    public void setAssetLoader(AssetLoader assetLoader) {
-        this.assetLoader = assetLoader;
-    }
-
+    /**
+     * Test to verify that the dependencies are set correctly
+     * upon instantiating a TableFactory object.
+     */
     @Test
     public void testConstructor() {
         assertEquals(texture, factory.getTexture());
     }
 
+    /**
+     * Test to verify the setter of the Texture for the
+     * TextureFactory.
+     */
     @Test
     public void testSetTexture() {
         Texture sampleTexture = Mockito.mock(Texture.class);
@@ -57,6 +51,10 @@ class TableFactoryTest {
         assertEquals(sampleTexture, factory.getTexture());
     }
 
+    /**
+     * Test case to verify that creating a Table via the TableFactory
+     * creates a Table with the appropriate table model.
+     */
     @Test
     public void testCreateBoard() {
         final ModelInstance model = Mockito.mock(ModelInstance.class);

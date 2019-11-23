@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
- * Test class for the Asset Loader object
+ * Test class containing unit tests for the AssetLoader class.
  */
 class AssetLoaderTest {
     transient AssetLoader loader;
