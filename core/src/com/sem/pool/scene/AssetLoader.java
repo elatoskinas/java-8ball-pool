@@ -17,6 +17,7 @@ public class AssetLoader {
     // Paths to models for loading
     protected static final String BALL_MODEL_PATH = "models/ball.obj";
     protected static final String TABLE_MODEL_PATH = "models/table.obj";
+    protected static final String BALL_TEXTURE_PATH = "models/Textures/ball%d.jpg";
 
     // Parameters for loading 3D models
     private transient ObjLoader.ObjLoaderParameters objectLoaderParameters;

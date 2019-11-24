@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,8 +96,22 @@ class AssetLoaderTest {
         Mockito.verify(manager, Mockito.times(1))
                 .load(AssetLoader.TABLE_MODEL_PATH, Model.class,
                         loader.getObjectLoaderParameters());
+    }
 
-        Mockito.verifyNoMoreInteractions(manager);
+    /**
+     * Test case to ensure that calling the initializeAssets
+     * method on the AssetLoader initializes the Ball textures
+     * properly by making the right AssetManager calls.
+     */
+    @Test
+    public void testInitializeTextures() {
+        // TODO: Replace this with shared constant (e.g. from SceneFactory?)
+        final int ballCount = 16;
+
+        loader.initializeAssets();
+
+        Mockito.verify(manager, Mockito.times(ballCount))
+                .load(Mockito.anyString(), Texture.class);
     }
 
     /**
