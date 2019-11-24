@@ -76,8 +76,8 @@ class Ball3DTest {
     }
 
     /**
-     * Test casee to ensure that comparing equality between
-     * two diferent objects with different models returns false.
+     * Test case to ensure that comparing equality between
+     * two different objects with different models returns false.
      */
     @Test
     public void testNotEqualsModelInstance() {
@@ -89,6 +89,20 @@ class Ball3DTest {
         Ball3D ball2 = new Ball3D(id, model2);
 
         assertNotEquals(ball1, ball2);
+    }
+
+    /**
+     * Test case to ensure that comparing equality between a Ball3D
+     * object with an object of a differnt type returns false.
+     */
+    @Test
+    public void testNotEqualsDifferentObjectType() {
+        final int id = 3;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+
+        Ball3D ball = new Ball3D(id, model);
+        Integer x = 3;
+        assertNotEquals(x, ball);
     }
 
     /**
