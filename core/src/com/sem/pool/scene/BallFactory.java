@@ -2,10 +2,14 @@ package com.sem.pool.scene;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Attributes;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +53,12 @@ public class BallFactory extends Base3DFactory {
     public Ball3D createBall(int id) {
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
 
-        // TODO: Set texture according to id
+        // Set texture to the ball
+        int index = id;
+        Texture texture = textures.get(index);
+        TextureAttribute attribute = TextureAttribute.createDiffuse(texture);
+        // TODO: Move "ball" to it's own static final variable
+        ballInstance.getMaterial("ball").set(attribute);
 
         return new Ball3D(id, ballInstance);
     }

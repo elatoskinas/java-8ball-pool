@@ -3,12 +3,14 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.utils.Array;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -102,23 +104,40 @@ class BallFactoryTest {
     }
 
     private void testBallTextureAssignHelper(int ballId, int textureId, int textureCount) {
+        // Add the specified texture count of textures to the
+        // textures of the BallFactory
         for (int i = 0; i < textureCount; ++i) {
             Texture mockTexture = Mockito.mock(Texture.class);
             textures.add(mockTexture);
         }
 
+        // Create model dependency and make the AssetLoader return
+        // the specified Model when loading Pool Ball models
         final ModelInstance model = Mockito.mock(ModelInstance.class);
-        final Material material = Mockito.mock(Material.class);
-        final String materialId = "0";
-
         Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
+
+        // Create material dependency (note that a non-mock is used, this is to
+        // prevent errors when using material.set(), which causes an NPE
+        // when done with a mock)
+        final Material material = new Material();
+
+        // Make the model return the specified material when getting
+        // a material for the name "ball"
+        // TODO: Move this material ID to static variable in BallFactory
+        final String materialId = "ball";
+
         Mockito.when(model.getMaterial(materialId)).thenReturn(material);
 
+        // Get the expected texture ID, and create the required attribute
+        // for the texture
         Texture texture = textures.get(textureId);
         TextureAttribute attribute = TextureAttribute.createDiffuse(texture);
 
+        // Finally, create the Ball model using the factory and
+        // ensure that the texture attribute has been set correctly.
         Ball3D ball = factory.createBall(ballId);
 
-        Mockito.verify(material).set(attribute);
+        Attribute resultingAttribute = material.get(attribute.type);
+        assertEquals(attribute, resultingAttribute);
     }
 }
