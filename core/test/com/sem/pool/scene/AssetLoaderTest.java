@@ -81,13 +81,13 @@ class AssetLoaderTest {
     }
 
     /**
-     * Test case to ensure that calling the initializeModels
+     * Test case to ensure that calling the initializeAssets
      * method on the AssetLoader initializes the Ball & Table models
      * properly by making the right AssetManager calls.
      */
     @Test
     public void testInitializeModels() {
-        loader.initializeModels();
+        loader.initializeAssets();
 
         Mockito.verify(manager, Mockito.times(1))
                 .load(AssetLoader.BALL_MODEL_PATH, Model.class, loader.getObjectLoaderParameters());

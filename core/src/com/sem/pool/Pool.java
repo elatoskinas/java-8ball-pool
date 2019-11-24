@@ -51,7 +51,7 @@ public class Pool extends ApplicationAdapter {
         assetLoader = new AssetLoader(manager);
 
         // Initialize models by queueing them for loading
-        assetLoader.initializeModels();
+        assetLoader.initializeAssets();
     }
 
     /**

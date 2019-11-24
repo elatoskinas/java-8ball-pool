@@ -1,9 +1,12 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+
+import java.util.List;
 
 /**
  * Class used for loading assets to the scene.
@@ -64,17 +67,31 @@ public class AssetLoader {
     }
 
     /**
-     * Initializes all of the models of the AssetLoader.
+     * Initializes all of the assets needed for a Pool game, including
+     * models and textures.
      * To be called during the create() stage of the game lifecycle.
      */
     // type.getPath() in the loop seems to cause an UR anomaly.
     // Using a value other than the ModelType's getPath seems
     // to not cause the issue. Thus, we suppress it here.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void initializeModels() {
+    public void initializeAssets() {
         for (ModelType type : ModelType.values()) {
             assetManager.load(type.getPath(), Model.class, objectLoaderParameters);
         }
+    }
+
+    /**
+     * Returns a List of Pool Ball textures, where each entry's
+     * index in the List corresponds to the specific ball, i.e.:
+     * 0 - cue ball
+     * 1 - solid 1
+     * 8 - 8-ball
+     * 9 - striped 1
+     * @return List of pool ball textures containing 16 texture entries
+     */
+    public List<Texture> getBallTextures() {
+        return null;
     }
 
     /**
