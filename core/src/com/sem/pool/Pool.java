@@ -15,6 +15,7 @@ import com.sem.pool.scene.SceneFactory;
 import com.sem.pool.scene.TableFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main Pool Game application class that handles
@@ -72,7 +73,7 @@ public class Pool extends ApplicationAdapter {
             camera.near = 1f;
             camera.far = 300f;
 
-            ArrayList<Texture> ballTexures = new ArrayList<Texture>();
+            List<Texture> ballTexures = assetLoader.getBallTextures();
             BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
 
             Texture tableTexture = null;
