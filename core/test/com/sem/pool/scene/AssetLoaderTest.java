@@ -2,6 +2,7 @@ package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -111,7 +112,7 @@ class AssetLoaderTest {
         loader.initializeAssets();
 
         Mockito.verify(manager, Mockito.times(ballCount))
-                .load(Mockito.anyString(), Texture.class);
+                .load(Mockito.anyString(), eq(Texture.class));
     }
 
     /**

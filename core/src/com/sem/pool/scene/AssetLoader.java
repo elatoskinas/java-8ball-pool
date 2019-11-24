@@ -80,6 +80,14 @@ public class AssetLoader {
         for (ModelType type : ModelType.values()) {
             assetManager.load(type.getPath(), Model.class, objectLoaderParameters);
         }
+
+        // TODO: Replace this with shared constant (e.g. from SceneFactory?)
+        final int ballCount = 16;
+
+        for (int i = 0; i < ballCount; ++i) {
+            String texturePath = String.format(BALL_TEXTURE_PATH, i);
+            assetManager.load(texturePath, Texture.class);
+        }
     }
 
     /**
