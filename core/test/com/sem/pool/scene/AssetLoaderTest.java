@@ -130,7 +130,7 @@ class AssetLoaderTest {
             expectedTextures.add(mockTexture);
         }
 
-        Mockito.when(manager.get(Mockito.anyString(), Texture.class))
+        Mockito.when(manager.get(Mockito.anyString(), eq(Texture.class)))
                 .thenReturn(mockTexture);
 
         List<Texture> textures = loader.getBallTextures();

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,7 +101,18 @@ public class AssetLoader {
      * @return List of pool ball textures containing 16 texture entries
      */
     public List<Texture> getBallTextures() {
-        return null;
+        // TODO: Replace this with shared constant (e.g. from SceneFactory?)
+        final int ballCount = 16;
+
+        List<Texture> ballTextures = new ArrayList<>();
+
+        for (int i = 0; i < ballCount; ++i) {
+            String texturePath = String.format(BALL_TEXTURE_PATH, i);
+            Texture ballTexture = assetManager.get(texturePath, Texture.class);
+            ballTextures.add(ballTexture);
+        }
+
+        return ballTextures;
     }
 
     /**
