@@ -12,6 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Test class containing unit tests for the AssetLoader class.
  */
@@ -113,6 +116,26 @@ class AssetLoaderTest {
 
         Mockito.verify(manager, Mockito.times(ballCount))
                 .load(Mockito.anyString(), eq(Texture.class));
+    }
+
+    @Test
+    public void testGetBallTextures() {
+        // TODO: Replace this with shared constant (e.g. from SceneFactory?)
+        final int ballCount = 16;
+
+        Texture mockTexture = Mockito.mock(Texture.class);
+
+        List<Texture> expectedTextures = new ArrayList<>();
+        for (int i = 0; i < ballCount; ++i) {
+            expectedTextures.add(mockTexture);
+        }
+
+        Mockito.when(manager.get(Mockito.anyString(), Texture.class))
+                .thenReturn(mockTexture);
+
+        List<Texture> textures = loader.getBallTextures();
+
+        assertEquals(expectedTextures, textures);
     }
 
     /**
