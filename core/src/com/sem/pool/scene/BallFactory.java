@@ -53,12 +53,14 @@ public class BallFactory extends Base3DFactory {
     public Ball3D createBall(int id) {
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
 
-        // Set texture to the ball
-        int index = id;
-        Texture texture = textures.get(index);
-        TextureAttribute attribute = TextureAttribute.createDiffuse(texture);
-        // TODO: Move "ball" to it's own static final variable
-        ballInstance.getMaterial("ball").set(attribute);
+        if (!textures.isEmpty()) {
+            // Set texture to the ball
+            int index = id;
+            Texture texture = textures.get(index);
+            TextureAttribute attribute = TextureAttribute.createDiffuse(texture);
+            // TODO: Move "ball" to it's own static final variable
+            ballInstance.getMaterial("ball").set(attribute);
+        }
 
         return new Ball3D(id, ballInstance);
     }

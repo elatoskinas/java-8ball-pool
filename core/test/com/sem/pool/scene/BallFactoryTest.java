@@ -95,6 +95,15 @@ class BallFactoryTest {
     }
 
     @Test
+    public void testBallTextureAssignedLargerIndex() {
+        final int ballId = 3;
+        final int textureId = 0;
+        final int textureCount = 2;
+
+        testBallTextureAssignHelper(ballId, textureId, textureCount);
+    }
+
+    @Test
     public void testBallTextureAssignedLastBall() {
         final int ballId = 3;
         final int textureId = 3;
@@ -137,7 +146,7 @@ class BallFactoryTest {
         // ensure that the texture attribute has been set correctly.
         Ball3D ball = factory.createBall(ballId);
 
-        Attribute resultingAttribute = material.get(attribute.type);
+        Attribute resultingAttribute = ball.getModel().getMaterial(materialId).get(attribute.type);
         assertEquals(attribute, resultingAttribute);
     }
 }
