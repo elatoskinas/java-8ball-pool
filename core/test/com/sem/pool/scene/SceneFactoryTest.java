@@ -3,6 +3,7 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,9 @@ class SceneFactoryTest {
 
         Mockito.when(ballFactory.createBall(Mockito.anyInt()))
                 .thenReturn(Mockito.mock(Ball3D.class));
+
+        Mockito.when(cameraFactory.createCamera())
+                .thenReturn(Mockito.mock(Camera.class));
     }
 
 
