@@ -3,7 +3,6 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ class SceneFactoryTest {
 
     transient BallFactory ballFactory;
     transient TableFactory tableFactory;
-    transient Camera camera;
+    transient CameraFactory cameraFactory;
     transient ModelBatch modelBatch;
 
     /**
@@ -34,10 +33,10 @@ class SceneFactoryTest {
     public void setUp() {
         ballFactory = Mockito.mock(BallFactory.class);
         tableFactory = Mockito.mock(TableFactory.class);
-        camera = Mockito.mock(Camera.class);
+        cameraFactory = Mockito.mock(CameraFactory.class);
         modelBatch = Mockito.mock(ModelBatch.class);
 
-        sceneFactory = new SceneFactory(tableFactory, ballFactory, camera, modelBatch);
+        sceneFactory = new SceneFactory(tableFactory, ballFactory, cameraFactory, modelBatch);
 
         Mockito.when(tableFactory.createTable())
                 .thenReturn(Mockito.mock(Table3D.class));
@@ -56,7 +55,7 @@ class SceneFactoryTest {
     public void testConstructor() {
         assertEquals(ballFactory, sceneFactory.getBallFactory());
         assertEquals(tableFactory, sceneFactory.getTableFactory());
-        assertEquals(camera, sceneFactory.getCamera());
+        assertEquals(cameraFactory, sceneFactory.getCameraFactory());
     }
 
     /**
@@ -88,11 +87,11 @@ class SceneFactoryTest {
      * the SceneFactory.
      */
     @Test
-    public void testSetCamera() {
-        Camera camera = Mockito.mock(Camera.class);
-        sceneFactory.setCamera(camera);
+    public void testSetCameraFactory() {
+        CameraFactory cameraFactory = Mockito.mock(CameraFactory.class);
+        sceneFactory.setCameraFactory(cameraFactory);
 
-        assertEquals(camera, sceneFactory.getCamera());
+        assertEquals(cameraFactory, sceneFactory.getCameraFactory());
     }
 
     /**

@@ -53,6 +53,14 @@ public class SceneFactory {
         this.ballFactory = ballFactory;
     }
 
+    public CameraFactory getCameraFactory() {
+        return cameraFactory;
+    }
+
+    public void setCameraFactory(CameraFactory ballFactory) {
+        this.cameraFactory = ballFactory;
+    }
+
     /**
      * Instantiates the 3D scene by setting up the environment, camera
      * and models. The method instantiates all the necessary models,
