@@ -64,10 +64,10 @@ public class Pool extends ApplicationAdapter {
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
 
-            Vector3 position = new Vector3(0f,5f,0f);
+            Vector3 position = new Vector3(0f,1f,0f);
             float width = Gdx.graphics.getWidth();
             float height = Gdx.graphics.getHeight();
-            CameraFactory cameraFactory = new CameraFactory(67, width, height, position);
+            CameraFactory cameraFactory = new CameraFactory(width, height, position);
 
 
             ArrayList<Texture> ballTexures = new ArrayList<Texture>();
