@@ -1,6 +1,7 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.Objects;
 
@@ -35,6 +36,17 @@ public class Ball3D {
         return model;
     }
 
+    public Vector3 getCoordinates() {
+        return this.model.transform.getTranslation(new Vector3());
+    }
+
+    public void move(Vector3 translation){ // might need deltaTime
+        this.model.transform.translate(translation);
+    }
+
+    public void applyForce(float force, Vector3 direction){
+        this.move(direction.scl(force));
+    }
     @Override
     public boolean equals(Object other) {
         if (other instanceof Ball3D) {
@@ -51,4 +63,6 @@ public class Ball3D {
     public int hashCode() {
         return Objects.hash(id, model);
     }
+
+
 }
