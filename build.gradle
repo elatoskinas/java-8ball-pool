@@ -27,6 +27,7 @@ allprojects {
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
     apply plugin: 'com.github.spotbugs'
+    apply plugin: 'jacoco'
 
     version = '1.0'
     ext {
@@ -75,22 +76,57 @@ allprojects {
 
         jacoco {
             enabled = true
-            includes = ['nl.tudelft.cse.sem.*']
+            includes = ['com.sem.pool.*']
             excludes = []
         }
+
+        finalizedBy jacocoTestReport
+        finalizedBy jacocoTestCoverageVerification
     }
 
     jacocoTestCoverageVerification {
         violationRules {
+            // Rule to impose code quality for classes
+            // with regards to line & method count
             rule {
                 enabled = true
                 element = 'CLASS'
-                includes = ['nl.tudelft.cse.sem.*']
+                includes = ['com.sem.pool.*']
 
+                // Class should have no more than 200 lines of code
                 limit {
                     counter = 'LINE'
                     value = 'TOTALCOUNT'
-                    maximum = 0.3
+                    maximum = 200
+                }
+
+                // Allow max. of 30 methods/class
+                limit {
+                    counter = 'METHOD'
+                    value = 'TOTALCOUNT'
+                    maximum = 30
+                }
+            }
+
+            // Rule to impose minimum branch coverage per package
+            rule {
+                element = 'PACKAGE'
+
+                limit {
+                    counter = 'BRANCH'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.8
+                }
+            }
+
+            // Rule to impose maximum CC per method
+            rule {
+                element = 'METHOD'
+
+                limit {
+                    counter = 'COMPLEXITY'
+                    value = 'TOTALCOUNT'
+                    maximum = 10
                 }
             }
         }
