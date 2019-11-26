@@ -8,11 +8,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.sem.pool.scene.AssetLoader;
-import com.sem.pool.scene.BallFactory;
-import com.sem.pool.scene.Scene3D;
-import com.sem.pool.scene.SceneFactory;
-import com.sem.pool.scene.TableFactory;
+import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.scene.*;
 
 import java.util.ArrayList;
 
@@ -99,6 +96,8 @@ public class Pool extends ApplicationAdapter {
         // Render the scene only if the game is loaded
         if (loaded) {
             scene.render();
+         Ball3D ball = getScene().getPoolBalls().get(0);
+         ball.move(new Vector3(0.005f,0,0));
         }
     }
 
@@ -120,6 +119,7 @@ public class Pool extends ApplicationAdapter {
 
         // Render the scene if initialized
         renderScene();
+        //float[] coordinates = getScene().getPoolBalls().get(0).getModel().transform.getValues();
     }
 
     @Override
