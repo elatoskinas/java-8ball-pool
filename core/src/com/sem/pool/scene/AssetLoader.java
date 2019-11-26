@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.sem.pool.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,11 +83,8 @@ public class AssetLoader {
             assetManager.load(type.getPath(), Model.class, objectLoaderParameters);
         }
 
-        // TODO: Replace this with shared constant (e.g. from SceneFactory?)
-        final int ballCount = 16;
-
-        for (int i = 0; i < ballCount; ++i) {
-            String texturePath = String.format(BALL_TEXTURE_PATH, i);
+        for (int i = 0; i < GameConstants.BALL_COUNT; ++i) {
+            String texturePath = getBallTexturePath(i);
             assetManager.load(texturePath, Texture.class);
         }
     }
@@ -101,18 +99,27 @@ public class AssetLoader {
      * @return List of pool ball textures containing 16 texture entries
      */
     public List<Texture> getBallTextures() {
-        // TODO: Replace this with shared constant (e.g. from SceneFactory?)
-        final int ballCount = 16;
-
         List<Texture> ballTextures = new ArrayList<>();
 
-        for (int i = 0; i < ballCount; ++i) {
-            String texturePath = String.format(BALL_TEXTURE_PATH, i);
+        for (int i = 0; i < GameConstants.BALL_COUNT; ++i) {
+            // Get the i-th ball texture from the asset manager
+            String texturePath = getBallTexturePath(i);
             Texture ballTexture = assetManager.get(texturePath, Texture.class);
+
             ballTextures.add(ballTexture);
         }
 
         return ballTextures;
+    }
+
+    /**
+     * Returns the texture path for the ball of the specified id.
+     * @param id  Id of the ball
+     * @return    Texture path (String) for the ball
+     */
+    private String getBallTexturePath(int id) {
+        // Get the texture path for the i-th texture (replace %d placeholder with i)
+        return String.format(BALL_TEXTURE_PATH, id);
     }
 
     /**

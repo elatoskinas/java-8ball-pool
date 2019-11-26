@@ -21,8 +21,6 @@ import org.mockito.Mockito;
  * Test class containing unit tests for the Scene3D class.
  */
 class Scene3DTest {
-    private static final int BALL_COUNT = 16;
-
     transient Scene3D scene;
 
     transient ModelBatch batch;
