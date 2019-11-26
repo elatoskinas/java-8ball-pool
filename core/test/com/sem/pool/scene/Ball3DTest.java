@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -153,6 +154,17 @@ class Ball3DTest {
         mockModelInstance.transform = new Matrix4();
         Ball3D ball = new Ball3D(0, mockModelInstance);
         Vector3 coordinates = new Vector3(new float[3]);
+        assertEquals(coordinates, ball.getCoordinates());
+    }
+
+    @Test
+    public void testMoveUp(){
+        ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
+        mockModelInstance.transform = new Matrix4();
+        Ball3D ball = new Ball3D(0, mockModelInstance);
+        ball.move(new Vector3(1f, 0f, 1f));
+        float[] coords = {1,0,1};
+        Vector3 coordinates = new Vector3(coords);
         assertEquals(coordinates, ball.getCoordinates());
     }
 }
