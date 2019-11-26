@@ -3,7 +3,10 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
@@ -142,5 +145,14 @@ class Ball3DTest {
         int hashCode2 = ball2.hashCode();
 
         assertNotEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    public void testGetCoordinates(){
+        ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
+        mockModelInstance.transform = new Matrix4();
+        Ball3D ball = new Ball3D(0, mockModelInstance);
+        Vector3 coordinates = new Vector3(new float[3]);
+        assertEquals(coordinates, ball.getCoordinates());
     }
 }
