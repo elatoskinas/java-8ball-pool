@@ -14,7 +14,7 @@ public class BallFactory extends Base3DFactory {
     // Fixed constant path to use for the ball model asset
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
 
-    // Name of the ball model material
+    // Name of the ball model material (defined in model itself)
     protected static final String BALL_MATERIAL_NAME = "ball";
 
     private List<Texture> textures;
