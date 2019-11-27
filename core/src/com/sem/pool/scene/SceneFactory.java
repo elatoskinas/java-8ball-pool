@@ -121,7 +121,7 @@ public class SceneFactory {
         // current ball in the row
         int row = 1;
         int count = 0;
-
+        
         // Calculate spacing between balls
         BoundingBox box = new BoundingBox();
         box = poolBalls.get(0).getModel().calculateBoundingBox(box);
@@ -135,6 +135,7 @@ public class SceneFactory {
             Ball3D ball = poolBalls.get(i);
 
             ball.move(getPyramidOffset(spacing, row, count));
+            ball.move(GameConstants.BALL_OFFSET);
 
             count++;
 
@@ -142,9 +143,6 @@ public class SceneFactory {
                 row++;
                 count = 0;
             }
-
-            Vector3 offset = GameConstants.BALL_OFFSET;
-            poolBalls.get(i).move(offset);
         }
     }
 
