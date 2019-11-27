@@ -13,6 +13,7 @@ import java.util.Objects;
 public class Ball3D {
     private int id;
     private transient ModelInstance model;
+    private transient BoundingBox boundingBox;
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -54,13 +55,16 @@ public class Ball3D {
      * @return  Radius of the 3D ball
      */
     public float getRadius() {
-        // Construct a bounding box around the model
-        BoundingBox box = new BoundingBox();
-        box = model.calculateBoundingBox(box);
+        // Construct a bounding box around the model (if
+        // the box has not yet been created)
+        if (boundingBox == null) {
+            boundingBox = new BoundingBox();
+            model.calculateBoundingBox(boundingBox);
+        }
 
         // Calculate the radius; One axis is enough to determine the radius,
         // as we assume we have a perfect sphere.
-        return box.max.x - box.getCenterX();
+        return boundingBox.max.x - boundingBox.getCenterX();
     }
 
     @Override
