@@ -112,6 +112,10 @@ allprojects {
             rule {
                 element = 'PACKAGE'
 
+                // Ignore root com.sem.pool for now, as it requires
+                // more complex LibGDX testing setups
+                excludes = ['com.sem.pool']
+
                 limit {
                     counter = 'BRANCH'
                     value = 'COVEREDRATIO'
