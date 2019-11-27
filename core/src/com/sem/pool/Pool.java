@@ -64,7 +64,7 @@ public class Pool extends ApplicationAdapter {
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
 
-            Vector3 position = new Vector3(0f,1f,0f);
+            Vector3 position = new Vector3(0f,100f,0f);
             float width = Gdx.graphics.getWidth();
             float height = Gdx.graphics.getHeight();
             CameraFactory cameraFactory = new CameraFactory(width, height, position);
