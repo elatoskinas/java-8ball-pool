@@ -83,21 +83,6 @@ public class SceneFactory {
         for (int i = 0; i < GameConstants.BALL_COUNT; ++i) {
             Ball3D ball = ballFactory.createBall(i);
             poolBalls.add(ball);
-
-            // TODO: Temporary code to randomly spread out the
-            // TODO: Initialized balls. To be replaced with
-            // TODO: proper positioning of the balls later on.
-            // TODO: Here, we also move the cue ball further away
-            // TODO: with the intention of easier integration testing if needed.
-            /*float xtranslate = i * (float) Math.random() * 0.2f;
-            float ztranslate = i * (float) Math.random() * 0.1f;
-
-            if (i == 0) {
-                xtranslate = -1f;
-                ztranslate = 0f;
-            }
-
-            ball.getModel().transform.translate(xtranslate, 0, ztranslate);*/
         }
 
         // Position pool balls in the right places on the board
@@ -113,6 +98,10 @@ public class SceneFactory {
     /**
      * Positions pool balls in the right setup for the break shot.
      */
+    // The method seems to produce quite a lot of false positives
+    // for DU anomalies (for row and count), possibly due to the
+    // introduced loop.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void positionPoolBalls(List<Ball3D> poolBalls) {
         // Position cue ball to it's right position
         poolBalls.get(0).move(GameConstants.CUE_BALL_OFFSET);
@@ -122,23 +111,35 @@ public class SceneFactory {
         int row = 1;
         int count = 0;
         
-        // Calculate spacing between balls
-        BoundingBox box = new BoundingBox();
-        box = poolBalls.get(0).getModel().calculateBoundingBox(box);
-        float radius = box.max.x - box.getCenterX(); // Taking x coordinate is enough for radius
-
-        // 2r is the actual spacing between balls; But we use < 2 to make them more coupled
+        // Calculate spacing between balls. The spacing should be 2r
+        // (distance from the center of one ball to the other), but
+        // we use a slightly smaller value (1.8) to make the balls
+        // closer together to each other.
+        // TODO: Set 1.8 as a final float in the class
+        float radius = poolBalls.get(0).getRadius();
         float spacing = radius * 1.8f;
 
         // Iterate through all non-cue balls
         for (int i = 1; i < poolBalls.size(); ++i) {
             Ball3D ball = poolBalls.get(i);
 
+            // Move the pool balls by the calculated pyramid
+            // offset which is based on the current row
+            // and element count in the row for all
+            // the pool balls. Furthermore, move the ball
+            // by the predetermined offset to position it
+            // at one side of the board.
             ball.move(getPyramidOffset(spacing, row, count));
             ball.move(GameConstants.BALL_OFFSET);
 
+            // Increase row elemet count
             count++;
 
+            // Count is equal to row; Reset count,
+            // increment row (move on to next row
+            // of the pyramid)
+            // TODO: We can replace this with an iterator/generator design pattern
+            // TODO: for more cleaner code (?)
             if (count == row) {
                 row++;
                 count = 0;
