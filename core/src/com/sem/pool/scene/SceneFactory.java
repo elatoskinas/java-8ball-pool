@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.sem.pool.GameConstants;
 
 import java.util.ArrayList;
@@ -98,10 +100,58 @@ public class SceneFactory {
             ball.getModel().transform.translate(xtranslate, 0, ztranslate);*/
         }
 
+        // Position pool balls in the right places on the board
+        positionPoolBalls(poolBalls);
+
         // Create table
         Table3D table = tableFactory.createTable();
 
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, modelBatch);
+    }
+
+    /**
+     * Positions pool balls in the right setup for the break shot.
+     */
+    private void positionPoolBalls(List<Ball3D> poolBalls) {
+        // Position cue ball to it's right position
+        poolBalls.get(0).move(GameConstants.CUE_BALL_OFFSET);
+
+        // Keep track of the current row of balls and the
+        // current ball in the row
+        int row = 1;
+        int count = 0;
+
+        // Calculate spacing between balls
+        BoundingBox box = new BoundingBox();
+        box = poolBalls.get(0).getModel().calculateBoundingBox(box);
+        float radius = box.max.x - box.getCenterX(); // Taking x coordinate is enough for radius
+
+        // 2r is the actual spacing between balls; But we use < 2 to make them more coupled
+        float spacing = radius * 1.8f;
+
+        // Iterate through all non-cue balls
+        for (int i = 1; i < poolBalls.size(); ++i) {
+            Ball3D ball = poolBalls.get(i);
+
+            ball.move(getPyramidOffset(spacing, row, count));
+
+            count++;
+
+            if (count == row) {
+                row++;
+                count = 0;
+            }
+
+            Vector3 offset = GameConstants.BALL_OFFSET;
+            poolBalls.get(i).move(offset);
+        }
+    }
+
+    private Vector3 getPyramidOffset(float spacing, int row, int entry) {
+        float xspacing = spacing * row;
+        float zspacing = spacing * (entry - 0.5f * row);
+
+        return new Vector3(xspacing, 0, zspacing);
     }
 }
