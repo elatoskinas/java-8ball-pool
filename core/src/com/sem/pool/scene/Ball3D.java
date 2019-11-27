@@ -69,7 +69,18 @@ public class Ball3D {
      * @return  Direction of the cue shot
      */
     public Vector3 getCueShotDirection(Vector3 mousePosition) {
-        return null;
+        Vector3 ballPosition = model.transform.getTranslation(Vector3.Zero);
+
+        // The direction is the center of the ball (ball position)
+        // from which the mouse position is subtracted.
+        // We normalize this vector to reduce ambiguity with direction,
+        // and work on unit length vectors.
+        Vector3 direction = new Vector3();
+        direction.add(ballPosition).sub(mousePosition);
+        direction.y = 0; // Set y direction 0 because we never move up
+        direction.nor();
+
+        return direction;
     }
 
     @Override
