@@ -59,6 +59,19 @@ public class Ball3D {
         return false;
     }
 
+    /**
+     * Given the mouse position, determines the direction of the cue
+     * shot for the current ball.
+     * TODO: This should be in the CueBall extended class, as it is not
+     * TODO: relevant for other pool balls.
+     *
+     * @param mousePosition  Position of the mouse as a 3D Vector
+     * @return  Direction of the cue shot
+     */
+    public Vector3 getCueShotDirection(Vector3 mousePosition) {
+        return null;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, model);
