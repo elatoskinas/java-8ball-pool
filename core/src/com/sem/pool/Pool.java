@@ -70,8 +70,8 @@ public class Pool extends ApplicationAdapter {
             CameraFactory cameraFactory = new CameraFactory(width, height, position);
 
 
-            ArrayList<Texture> ballTexures = new ArrayList<Texture>();
-            BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
+            ArrayList<Texture> ballTextures = new ArrayList<Texture>();
+            BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
 
             Texture tableTexture = null;
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
