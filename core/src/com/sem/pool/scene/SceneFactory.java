@@ -14,11 +14,12 @@ public class SceneFactory {
     // Cue ball + 8-ball + 7 striped + 7 solid balls
     private static final int BALL_COUNT = 16;
 
-    // Factories used to create Tables & Pool Balls
+    // Factories used to create Tables & Pool Balls & Camera & Cue
     private transient TableFactory tableFactory;
     private transient BallFactory ballFactory;
-
     private transient CameraFactory cameraFactory;
+    private transient CueFactory cueFactory;
+
     private transient ModelBatch modelBatch;
 
     /**
@@ -26,14 +27,16 @@ public class SceneFactory {
      * specified parameters to be used for scene instantiation.
      * @param tableFactory  Table Factory to use for Table instantiation
      * @param ballFactory   Ball Factory to use for Pool Ball instantiation
-     * @param cameraFactory        Camera to use for the scene
+     * @param cameraFactory  Camera Factory to use for Camera instantiation
+     * @param cueFactory  Cue Factory to use for Cue instantiation
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
-                        CameraFactory cameraFactory, ModelBatch modelBatch) {
+                        CameraFactory cameraFactory, CueFactory cueFactory, ModelBatch modelBatch) {
         this.tableFactory = tableFactory;
         this.ballFactory = ballFactory;
         this.cameraFactory = cameraFactory;
+        this.cueFactory = cueFactory;
         this.modelBatch = modelBatch;
     }
 
@@ -57,9 +60,18 @@ public class SceneFactory {
         return cameraFactory;
     }
 
-    public void setCameraFactory(CameraFactory ballFactory) {
-        this.cameraFactory = ballFactory;
+    public void setCameraFactory(CameraFactory cameraFactory) {
+        this.cameraFactory = cameraFactory;
     }
+
+    public CueFactory getCueFactory() {
+        return cueFactory;
+    }
+
+    public void setCueFactory(CueFactory cueFactory) {
+        this.cueFactory = cueFactory;
+    }
+
 
     /**
      * Instantiates the 3D scene by setting up the environment, camera
@@ -103,9 +115,14 @@ public class SceneFactory {
 
         // Create table
         Table3D table = tableFactory.createTable();
+
+        // Create cue
+        Cue3D cue = cueFactory.createCue();
+
+        // Create camera
         Camera camera = cameraFactory.createCamera();
 
         // Create scene with the constructed objects
-        return new Scene3D(environment, camera, poolBalls, table, modelBatch);
+        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);
     }
 }

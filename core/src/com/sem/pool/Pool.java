@@ -7,12 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.scene.AssetLoader;
-import com.sem.pool.scene.BallFactory;
-import com.sem.pool.scene.CameraFactory;
-import com.sem.pool.scene.Scene3D;
-import com.sem.pool.scene.SceneFactory;
-import com.sem.pool.scene.TableFactory;
+import com.sem.pool.scene.*;
 
 import java.util.ArrayList;
 
@@ -64,11 +59,13 @@ public class Pool extends ApplicationAdapter {
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
 
-            Vector3 position = new Vector3(0f,1f,0f);
+            Vector3 cameraPosition = new Vector3(0f,1f,0f);
             float width = Gdx.graphics.getWidth();
             float height = Gdx.graphics.getHeight();
-            CameraFactory cameraFactory = new CameraFactory(width, height, position);
+            CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);
 
+            Texture cueTexture = null;
+            CueFactory cueFactory = new CueFactory(cueTexture, assetLoader);
 
             ArrayList<Texture> ballTexures = new ArrayList<Texture>();
             BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
@@ -77,7 +74,7 @@ public class Pool extends ApplicationAdapter {
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
 
             SceneFactory sceneFactory = new SceneFactory(tableFactory,
-                    ballFactory, cameraFactory, modelBatch);
+                    ballFactory, cameraFactory, cueFactory, modelBatch);
 
             // Instantiate the scene
             scene = sceneFactory.createScene();
