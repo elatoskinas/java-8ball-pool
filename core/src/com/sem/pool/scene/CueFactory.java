@@ -29,8 +29,6 @@ public class CueFactory extends Base3DFactory {
 
         // TODO: Set texture accordingly
         Cue3D cue = new Cue3D(cueInstance);
-        cue.getModel().transform.scale(0.1f,0.1f,0.1f);
-        cue.getModel().transform.translate(0,1.4f,0);
         return cue;
     }
 }
