@@ -3,15 +3,11 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**
@@ -183,5 +179,60 @@ class Ball3DTest {
         Ball3D spyBall = Mockito.spy(ball);
         spyBall.applyForce(scalar, translation);
         Mockito.verify(spyBall, Mockito.times(1)).move(new Vector3(10f, 0, 0));
+    }
+
+    /**
+     * Test case to verify that the correct radius is returned
+     * upon calling getRadius for the Ball3D when a BoundingBox
+     * has not yet been initialized.
+     */
+    @Test
+    public void testGetRadiusBoundingBoxInitiallyNull() {
+        final int id1 = 0;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        final float expectedRadius = 1.f;
+
+        // Setup expected bounding box of size 2 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(2, 2, 2);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(box);
+
+        Ball3D ball = new Ball3D(id1, model);
+
+        float radius = ball.getRadius();
+
+        assertEquals(expectedRadius, radius);
+    }
+
+    /**
+     * Test case to verify that the correct radius is returned
+     * upon calling getRadius for the Ball3D when a BoundingBox
+     * has already been initialized.
+     */
+    @Test
+    public void testGetRadiusBoundingBoxInitialized() {
+        final int id1 = 0;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        final float expectedRadius = 2.f;
+
+        // Setup expected bounding box of size 4 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(4, 4, 4);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(box);
+
+        Ball3D ball = new Ball3D(id1, model);
+
+        ball.getRadius(); // Perform radius side effect to construct bounding box
+        float radius = ball.getRadius(); // Get radius again
+
+        assertEquals(expectedRadius, radius);
     }
 }

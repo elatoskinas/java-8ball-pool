@@ -59,7 +59,7 @@ public class Ball3D {
         // the box has not yet been created)
         if (boundingBox == null) {
             boundingBox = new BoundingBox();
-            model.calculateBoundingBox(boundingBox);
+            boundingBox = model.calculateBoundingBox(boundingBox);
         }
 
         // Calculate the radius; One axis is enough to determine the radius,
