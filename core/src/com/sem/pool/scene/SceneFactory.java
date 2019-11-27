@@ -99,9 +99,9 @@ public class SceneFactory {
             Ball3D ball = ballFactory.createBall(i);
             poolBalls.add(ball);
 
-            if (i == 0) {
-                ball.getModel().transform.translate(1, 0.1f, 1);
-            }
+//            if (i == 0) {
+//                ball.getModel().transform.translate(1, 0.1f, 1);
+//            }
 
             // TODO: Temporary code to randomly spread out the
             // TODO: Initialized balls. To be replaced with
@@ -121,7 +121,6 @@ public class SceneFactory {
 
         // Create cue
         Cue3D cue = cueFactory.createCue();
-        cue.toShotPosition(poolBalls.get(0));
 
         // Create camera
         Camera camera = cameraFactory.createCamera();

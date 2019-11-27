@@ -15,8 +15,8 @@ public class Cue3D {
         return model;
     }
 
-    public void toShotPosition(Ball3D cueBall){
+    public void toShotPosition(Ball3D cueBall) {
         Vector3 position = cueBall.getModel().transform.getTranslation(new Vector3());
-        model.transform.translate(position);
+        model.transform.translate(position.x - 0.3f, position.y, position.z);
     }
 }

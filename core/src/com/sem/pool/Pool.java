@@ -7,9 +7,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.scene.*;
+import com.sem.pool.scene.AssetLoader;
+import com.sem.pool.scene.BallFactory;
+import com.sem.pool.scene.CameraFactory;
+import com.sem.pool.scene.CueFactory;
+import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SceneFactory;
+import com.sem.pool.scene.TableFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

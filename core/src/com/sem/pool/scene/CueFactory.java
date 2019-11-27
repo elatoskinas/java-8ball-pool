@@ -23,7 +23,10 @@ public class CueFactory extends Base3DFactory {
         this.texture = texture;
     }
 
-
+    /**
+     * Creates a Cue3D object instance.
+     * @return  New Cue3D object instance
+     */
     public Cue3D createCue() {
         ModelInstance cueInstance = assetLoader.loadModel(MODEL_TYPE);
 

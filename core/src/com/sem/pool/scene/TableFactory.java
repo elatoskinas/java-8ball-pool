@@ -39,9 +39,8 @@ public class TableFactory extends Base3DFactory {
      */
     public Table3D createTable() {
         ModelInstance boardInstance = assetLoader.loadModel(MODEL_TYPE);
-        // TODO: Set texture accordingly
-        boardInstance.transform.translate(0, -1f, 0);
 
+        // TODO: Set texture accordingly
         return new Table3D(boardInstance);
     }
 }
