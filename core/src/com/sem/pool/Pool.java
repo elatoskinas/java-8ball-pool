@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main Pool Game application class that handles
@@ -46,7 +47,7 @@ public class Pool extends ApplicationAdapter {
         assetLoader = new AssetLoader(manager);
 
         // Initialize models by queueing them for loading
-        assetLoader.initializeModels();
+        assetLoader.initializeAssets();
     }
 
     /**
@@ -67,7 +68,7 @@ public class Pool extends ApplicationAdapter {
             Texture cueTexture = null;
             CueFactory cueFactory = new CueFactory(cueTexture, assetLoader);
 
-            ArrayList<Texture> ballTexures = new ArrayList<Texture>();
+            List<Texture> ballTexures = assetLoader.getBallTextures();
             BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
 
             Texture tableTexture = null;

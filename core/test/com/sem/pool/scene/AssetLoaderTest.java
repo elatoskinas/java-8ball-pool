@@ -2,10 +2,16 @@ package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sem.pool.GameConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -81,13 +87,13 @@ class AssetLoaderTest {
     }
 
     /**
-     * Test case to ensure that calling the initializeModels
+     * Test case to ensure that calling the initializeAssets
      * method on the AssetLoader initializes the Ball & Table models
      * properly by making the right AssetManager calls.
      */
     @Test
     public void testInitializeModels() {
-        loader.initializeModels();
+        loader.initializeAssets();
 
         Mockito.verify(manager, Mockito.times(1))
                 .load(AssetLoader.BALL_MODEL_PATH, Model.class, loader.getObjectLoaderParameters());
@@ -95,8 +101,42 @@ class AssetLoaderTest {
         Mockito.verify(manager, Mockito.times(1))
                 .load(AssetLoader.TABLE_MODEL_PATH, Model.class,
                         loader.getObjectLoaderParameters());
+    }
 
-        Mockito.verifyNoMoreInteractions(manager);
+    /**
+     * Test case to ensure that calling the initializeAssets
+     * method on the AssetLoader initializes the Ball textures
+     * properly by making the right AssetManager calls.
+     */
+    @Test
+    public void testInitializeTextures() {
+        loader.initializeAssets();
+
+        Mockito.verify(manager, Mockito.times(GameConstants.BALL_COUNT))
+                .load(Mockito.anyString(), eq(Texture.class));
+    }
+
+    /**
+     * Test case to ensure that getting the ball textures
+     * from the Asset Loader returns the full list of ball textures
+     * such that the size is equal to the expected ball count,
+     * and that every texture inside the returned List is initialized.
+     */
+    @Test
+    public void testGetBallTextures() {
+        Texture mockTexture = Mockito.mock(Texture.class);
+
+        List<Texture> expectedTextures = new ArrayList<>();
+        for (int i = 0; i < GameConstants.BALL_COUNT; ++i) {
+            expectedTextures.add(mockTexture);
+        }
+
+        Mockito.when(manager.get(Mockito.anyString(), eq(Texture.class)))
+                .thenReturn(mockTexture);
+
+        List<Texture> textures = loader.getBallTextures();
+
+        assertEquals(expectedTextures, textures);
     }
 
     /**

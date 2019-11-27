@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.sem.pool.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SceneFactory {
+
     // Fixed count of pool balls to create:
     // Cue ball + 8-ball + 7 striped + 7 solid balls
     private static final int BALL_COUNT = 16;
@@ -93,7 +95,7 @@ public class SceneFactory {
         // Create pool balls
         List<Ball3D> poolBalls = new ArrayList<>();
 
-        for (int i = 0; i < BALL_COUNT; ++i) {
+        for (int i = 0; i < GameConstants.BALL_COUNT; ++i) {
             Ball3D ball = ballFactory.createBall(i);
             poolBalls.add(ball);
 
