@@ -74,8 +74,8 @@ public class Pool extends ApplicationAdapter {
             camera.near = 1f;
             camera.far = 300f;
 
-            List<Texture> ballTexures = assetLoader.getBallTextures();
-            BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
+            List<Texture> ballTextures = assetLoader.getBallTextures();
+            BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
 
             Texture tableTexture = null;
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
