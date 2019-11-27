@@ -26,7 +26,7 @@ public class SceneFactory {
      * specified parameters to be used for scene instantiation.
      * @param tableFactory  Table Factory to use for Table instantiation
      * @param ballFactory   Ball Factory to use for Pool Ball instantiation
-     * @param cameraFactory        Camera to use for the scene
+     * @param cameraFactory    Camera Factory to use for Camera instantiation
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
@@ -57,8 +57,8 @@ public class SceneFactory {
         return cameraFactory;
     }
 
-    public void setCameraFactory(CameraFactory ballFactory) {
-        this.cameraFactory = ballFactory;
+    public void setCameraFactory(CameraFactory cameraFactory) {
+        this.cameraFactory = cameraFactory;
     }
 
     /**
