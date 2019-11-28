@@ -12,6 +12,14 @@ public class Game {
         this.input = input;
     }
 
+    public void moveBalls() {
+        // TODO: Implement logic that handles all ball movement every frame
+    }
+    
+    public void respondToInput() {
+        // TODO: Implement logic to respond to input every frame
+    }
+    
     public Scene3D getScene() {
         return scene;
     }
