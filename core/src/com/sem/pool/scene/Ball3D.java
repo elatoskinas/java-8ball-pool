@@ -1,6 +1,7 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.Objects;
 
@@ -35,6 +36,31 @@ public class Ball3D {
         return model;
     }
 
+    /**
+     * Returns the current coordinates of the ball.
+     * @return The coordinates of the ball.
+     */
+    public Vector3 getCoordinates() {
+        return this.model.transform.getTranslation(new Vector3());
+    }
+
+    /**
+     * Translates the ball according to the provided vector.
+     * @param translation The direction and distance wherein the ball should be moved.
+     */
+    public void move(Vector3 translation) {
+        this.model.transform.translate(translation);
+    }
+
+    /**
+     * Applies the provided directional force to the ball, resulting in movement.
+     * @param force Scalar by which the direction vector will be multiplied.
+     * @param direction The direction of the force that is to be applied to the ball.
+     */
+    public void applyForce(float force, Vector3 direction) {
+        this.move(direction.scl(force));
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Ball3D) {
@@ -51,4 +77,6 @@ public class Ball3D {
     public int hashCode() {
         return Objects.hash(id, model);
     }
+
+
 }
