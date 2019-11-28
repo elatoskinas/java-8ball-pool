@@ -54,6 +54,7 @@ allprojects {
 
     pmd {
         incrementalAnalysis = true
+        sourceSets = [project.sourceSets.main]
     }
 
     spotbugs {
