@@ -3,17 +3,12 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.EnumSource;
 
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**

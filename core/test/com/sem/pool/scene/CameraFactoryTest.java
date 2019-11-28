@@ -1,7 +1,7 @@
 package com.sem.pool.scene;
 
 /**
- * Test class for the CameraFactory class
+ * Test class for the CameraFactory class.
  */
 public class CameraFactoryTest {
 
