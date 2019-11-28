@@ -18,7 +18,7 @@ import javax.swing.text.AttributeSet;
  */
 public class Table3D {
     private transient ModelInstance model;
-    private transient ModelInstance[] rectangles = new ModelInstance[5];
+    private transient HitBox[] rectangles = new HitBox[5];
 
     /**
      * Constructs a new 3D Board instance with the specified model.
@@ -29,18 +29,11 @@ public class Table3D {
         // initialize rectangles
         // Initialize floor
         ModelBuilder modelBuilder = new  ModelBuilder();
-        ModelInstance rectangleE = new ModelInstance(modelBuilder.createBox(10f, 0.2f, 5f,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
-        this.rectangles[0] = rectangleE;
     }
     public ModelInstance getModel() {
         return model;
     }
 
-    public ModelInstance getRectangleE() {
-        return this.rectangles[0];
-    }
 
 
 

@@ -12,6 +12,8 @@ import java.util.Objects;
 public class Ball3D {
     private int id;
     private transient ModelInstance model;
+    private HitBox hitBox;
+
 
     /**
      * Constructs a new 3D Pool Ball instance with
