@@ -6,11 +6,11 @@ public class User {
     /**
      * If this is an existing user.
      */
-    private boolean existing;
+    private transient boolean existing;
     /**
      * ID.
      */
-    private int id;
+    private transient int id;
     /**
      * Username.
      */

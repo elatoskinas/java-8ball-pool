@@ -9,11 +9,11 @@ public abstract class Table {
     /**
      * Connection to use for queries.
      */
-    protected Connection conn;
+    protected transient Connection conn;
     /**
      * Name of the table.
      */
-    protected String tableName;
+    protected transient String tableName;
 
     /**
      * Create the table instance.
@@ -35,15 +35,24 @@ public abstract class Table {
     /**
      * Ensure that the table exists.
      * If not call createTable().
+     * Warning suppressed as it's a false positive.
      * @throws SQLException Throws on SQL error.
      */
+    @SuppressWarnings("PMD.CloseResource")
     private void ensureTable() throws SQLException {
         DatabaseMetaData dbm = this.conn.getMetaData();
         ResultSet tables = dbm.getTables(null, null, this.tableName, null);
 
-        if(!tables.next()) {
-            System.out.println("Creating table for " + this.tableName + "..");
-            this.createTable();
+        try {
+            boolean createTable = tables.isAfterLast();
+
+            if(createTable) {
+                System.out.println("Creating table for " + this.tableName + "..");
+                this.createTable();
+                tables.close();
+            }
+        } catch(SQLException e) {
+            tables.close();
         }
     }
 }

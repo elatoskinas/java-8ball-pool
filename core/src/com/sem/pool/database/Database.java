@@ -14,12 +14,16 @@ public class Database {
     /**
      * The tables of the database.
      */
-    private HashMap<String, Table> tables;
+    private transient HashMap<String, Table> tables;
 
     /**
      * Create the database.
      * Private to prevent multiple instances with a singleton.
+     *
+     * CloseResource suppressed as the connection should never be closed.
+     * DoNotCallSystemExit suppressed as this is a fatal error.
      */
+    @SuppressWarnings({"PMD.CloseResource", "PMD.DoNotCallSystemExit"})
     private Database() {
         this.tables = new HashMap<String, Table>();
 
@@ -33,7 +37,6 @@ public class Database {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-
     }
 
     /**
