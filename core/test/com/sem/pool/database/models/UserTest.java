@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class UserTest {
-    private User user;
+    private transient User user;
+    private transient final String defaultUsername = "test";
+    private transient final String defaultPassword = "testPassword";
 
     @BeforeEach
     void before() {
@@ -15,26 +17,26 @@ class UserTest {
 
     @Test
     void newUser() {
-        User user = new User("test", "testPassword");
+        User user = new User(this.defaultUsername, this.defaultPassword);
         assertFalse(user.isExisting());
-        assertEquals("test", user.getUsername());
-        assertNotEquals("testPassword", user.getPassword());
+        assertEquals(this.defaultUsername, user.getUsername());
+        assertNotEquals(this.defaultPassword, user.getPassword());
         System.out.println(user.getPassword());
-        assertTrue(this.user.checkPassword("testPassword"));
+        assertTrue(this.user.checkPassword(this.defaultPassword));
     }
 
     @Test
     void existingUser() {
         assertTrue(this.user.isExisting());
         assertEquals(42, this.user.getUserID());
-        assertEquals("test", this.user.getUsername());
+        assertEquals(this.defaultUsername, this.user.getUsername());
         assertEquals("$2a$10$zHvWR86cQ0BYVuV9NL0w1OpAANtJftHMhknR/XlWJ.OkclTHsmRqq", this.user.getPassword());
-        assertTrue(this.user.checkPassword("testPassword"));
+        assertTrue(this.user.checkPassword(this.defaultPassword));
     }
 
     @Test
     void passwordValidation() {
-        assertTrue(this.user.checkPassword("testPassword"));
+        assertTrue(this.user.checkPassword(this.defaultPassword));
         assertFalse(this.user.checkPassword("wrongPassword"));
     }
 
@@ -51,6 +53,6 @@ class UserTest {
 
     @Test
     void toStringTest() {
-        assertEquals("test", this.user.toString());
+        assertEquals(this.defaultUsername, this.user.toString());
     }
 }
