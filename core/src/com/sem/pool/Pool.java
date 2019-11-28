@@ -14,7 +14,6 @@ import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SceneFactory;
 import com.sem.pool.scene.TableFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
