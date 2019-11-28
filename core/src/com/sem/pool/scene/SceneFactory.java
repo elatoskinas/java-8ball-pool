@@ -18,7 +18,7 @@ public class SceneFactory {
     private transient TableFactory tableFactory;
     private transient BallFactory ballFactory;
 
-    private transient Camera camera;
+    private transient CameraFactory cameraFactory;
     private transient ModelBatch modelBatch;
 
     /**
@@ -26,14 +26,14 @@ public class SceneFactory {
      * specified parameters to be used for scene instantiation.
      * @param tableFactory  Table Factory to use for Table instantiation
      * @param ballFactory   Ball Factory to use for Pool Ball instantiation
-     * @param camera        Camera to use for the scene
+     * @param cameraFactory    Camera Factory to use for Camera instantiation
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
-                        Camera camera, ModelBatch modelBatch) {
+                        CameraFactory cameraFactory, ModelBatch modelBatch) {
         this.tableFactory = tableFactory;
         this.ballFactory = ballFactory;
-        this.camera = camera;
+        this.cameraFactory = cameraFactory;
         this.modelBatch = modelBatch;
     }
 
@@ -53,12 +53,12 @@ public class SceneFactory {
         this.ballFactory = ballFactory;
     }
 
-    public Camera getCamera() {
-        return camera;
+    public CameraFactory getCameraFactory() {
+        return cameraFactory;
     }
 
-    public void setCamera(Camera camera) {
-        this.camera = camera;
+    public void setCameraFactory(CameraFactory cameraFactory) {
+        this.cameraFactory = cameraFactory;
     }
 
     /**
@@ -103,6 +103,7 @@ public class SceneFactory {
 
         // Create table
         Table3D table = tableFactory.createTable();
+        Camera camera = cameraFactory.createCamera();
 
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, modelBatch);

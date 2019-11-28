@@ -21,7 +21,7 @@ class SceneFactoryTest {
 
     transient BallFactory ballFactory;
     transient TableFactory tableFactory;
-    transient Camera camera;
+    transient CameraFactory cameraFactory;
     transient ModelBatch modelBatch;
 
     /**
@@ -34,16 +34,19 @@ class SceneFactoryTest {
     public void setUp() {
         ballFactory = Mockito.mock(BallFactory.class);
         tableFactory = Mockito.mock(TableFactory.class);
-        camera = Mockito.mock(Camera.class);
+        cameraFactory = Mockito.mock(CameraFactory.class);
         modelBatch = Mockito.mock(ModelBatch.class);
 
-        sceneFactory = new SceneFactory(tableFactory, ballFactory, camera, modelBatch);
+        sceneFactory = new SceneFactory(tableFactory, ballFactory, cameraFactory, modelBatch);
 
         Mockito.when(tableFactory.createTable())
                 .thenReturn(Mockito.mock(Table3D.class));
 
         Mockito.when(ballFactory.createBall(Mockito.anyInt()))
                 .thenReturn(Mockito.mock(Ball3D.class));
+
+        Mockito.when(cameraFactory.createCamera())
+                .thenReturn(Mockito.mock(Camera.class));
     }
 
 
@@ -56,7 +59,7 @@ class SceneFactoryTest {
     public void testConstructor() {
         assertEquals(ballFactory, sceneFactory.getBallFactory());
         assertEquals(tableFactory, sceneFactory.getTableFactory());
-        assertEquals(camera, sceneFactory.getCamera());
+        assertEquals(cameraFactory, sceneFactory.getCameraFactory());
     }
 
     /**
@@ -88,11 +91,11 @@ class SceneFactoryTest {
      * the SceneFactory.
      */
     @Test
-    public void testSetCamera() {
-        Camera camera = Mockito.mock(Camera.class);
-        sceneFactory.setCamera(camera);
+    public void testSetCameraFactory() {
+        CameraFactory cameraFactory = Mockito.mock(CameraFactory.class);
+        sceneFactory.setCameraFactory(cameraFactory);
 
-        assertEquals(camera, sceneFactory.getCamera());
+        assertEquals(cameraFactory, sceneFactory.getCameraFactory());
     }
 
     /**
