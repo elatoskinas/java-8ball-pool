@@ -3,15 +3,11 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**
@@ -150,6 +146,9 @@ class Ball3DTest {
         assertNotEquals(hashCode1, hashCode2);
     }
 
+    /**
+     * Tests getCoordinates returns {0,0,0} after a new ball Object is created.
+     */
     @Test
     public void testGetCoordinates() {
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
@@ -160,9 +159,12 @@ class Ball3DTest {
     }
 
 
+    /**
+     * Tests if the matrix translation is called after the move method is called,
+     * and if the translation method has the same argument as the move method.
+     */
     @Test
     public void testMove() {
-        // DOES NOT CURRENTLY VERIFY THAT NEW POSITION IS CORRECT ACCORDING TO TRANSLATION
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
         mockModelInstance.transform = mockMatrix;
@@ -172,9 +174,12 @@ class Ball3DTest {
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
     }
 
+    /**
+     * Tests if the matrix translation is called after the move method is called,
+     * and if the translation method has as argument the translation vector times the scalar.
+     */
     @Test
     public void testApplyForce() {
-        // DOES NOT CURRENTLY VERIFY THAT NEW POSITION IS CORRECT ACCORDING TO TRANSLATION
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         mockModelInstance.transform = Mockito.mock(Matrix4.class);
         Ball3D ball = new Ball3D(0, mockModelInstance);
@@ -286,5 +291,60 @@ class Ball3DTest {
 
         // Assert expected direction equal to actual direction
         assertEquals(expectedDirection, direction);
+    }
+
+    /*
+     * Test case to verify that the correct radius is returned
+     * upon calling getRadius for the Ball3D when a BoundingBox
+     * has not yet been initialized.
+     */
+    @Test
+    public void testGetRadiusBoundingBoxInitiallyNull() {
+        final int id1 = 0;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        final float expectedRadius = 1.f;
+
+        // Setup expected bounding box of size 2 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(2, 2, 2);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(box);
+
+        Ball3D ball = new Ball3D(id1, model);
+
+        float radius = ball.getRadius();
+
+        assertEquals(expectedRadius, radius);
+    }
+
+    /**
+     * Test case to verify that the correct radius is returned
+     * upon calling getRadius for the Ball3D when a BoundingBox
+     * has already been initialized.
+     */
+    @Test
+    public void testGetRadiusBoundingBoxInitialized() {
+        final int id1 = 0;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        final float expectedRadius = 2.f;
+
+        // Setup expected bounding box of size 4 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(4, 4, 4);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(box);
+
+        Ball3D ball = new Ball3D(id1, model);
+
+        ball.getRadius(); // Perform radius side effect to construct bounding box
+        float radius = ball.getRadius(); // Get radius again
+
+        assertEquals(expectedRadius, radius);
     }
 }

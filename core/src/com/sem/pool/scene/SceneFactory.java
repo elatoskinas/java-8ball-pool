@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.sem.pool.GameConstants;
 
 import java.util.ArrayList;
@@ -17,22 +16,26 @@ public class SceneFactory {
     private transient TableFactory tableFactory;
     private transient BallFactory ballFactory;
 
-    private transient Camera camera;
+    private transient CameraFactory cameraFactory;
     private transient ModelBatch modelBatch;
+
+    // Initial offsets for the pool balls to set up for break shot
+    private static final Vector3 BALL_OFFSET = new Vector3(1f, 0.28f, 0f);
+    private static final Vector3 CUE_BALL_OFFSET = new Vector3(-1.75f, 0.28f, 0f);
 
     /**
      * Creates a new Scene Factory instance with the
      * specified parameters to be used for scene instantiation.
      * @param tableFactory  Table Factory to use for Table instantiation
      * @param ballFactory   Ball Factory to use for Pool Ball instantiation
-     * @param camera        Camera to use for the scene
+     * @param cameraFactory    Camera Factory to use for Camera instantiation
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
-                        Camera camera, ModelBatch modelBatch) {
+                        CameraFactory cameraFactory, ModelBatch modelBatch) {
         this.tableFactory = tableFactory;
         this.ballFactory = ballFactory;
-        this.camera = camera;
+        this.cameraFactory = cameraFactory;
         this.modelBatch = modelBatch;
     }
 
@@ -52,12 +55,12 @@ public class SceneFactory {
         this.ballFactory = ballFactory;
     }
 
-    public Camera getCamera() {
-        return camera;
+    public CameraFactory getCameraFactory() {
+        return cameraFactory;
     }
 
-    public void setCamera(Camera camera) {
-        this.camera = camera;
+    public void setCameraFactory(CameraFactory cameraFactory) {
+        this.cameraFactory = cameraFactory;
     }
 
     /**
@@ -90,6 +93,7 @@ public class SceneFactory {
 
         // Create table
         Table3D table = tableFactory.createTable();
+        Camera camera = cameraFactory.createCamera();
 
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, modelBatch);
@@ -104,7 +108,7 @@ public class SceneFactory {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void positionPoolBalls(List<Ball3D> poolBalls) {
         // Position cue ball to it's right position
-        poolBalls.get(0).move(GameConstants.CUE_BALL_OFFSET);
+        poolBalls.get(0).move(CUE_BALL_OFFSET);
 
         // Keep track of the current row of balls and the
         // current ball in the row
@@ -130,7 +134,7 @@ public class SceneFactory {
             // by the predetermined offset to position it
             // at one side of the board.
             ball.move(getPyramidOffset(spacing, row, count));
-            ball.move(GameConstants.BALL_OFFSET);
+            ball.move(BALL_OFFSET);
 
             // Increase row elemet count
             count++;
@@ -138,8 +142,8 @@ public class SceneFactory {
             // Count is equal to row; Reset count,
             // increment row (move on to next row
             // of the pyramid)
-            // TODO: We can replace this with an iterator/generator design pattern
-            // TODO: for more cleaner code (?)
+            // TODO: We can (maybe) replace this with an iterator/generator design
+            //       pattern for more cleaner code (?)
             if (count == row) {
                 row++;
                 count = 0;
