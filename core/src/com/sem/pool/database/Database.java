@@ -4,6 +4,7 @@ import com.sem.pool.database.tables.UserTable;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class Database {
@@ -33,9 +34,12 @@ public class Database {
 
             // Add all tables.
             this.tables.put("User", new UserTable(conn));
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+            System.exit(1);
+        } catch (ClassNotFoundException e) {
+            System.err.println("SQLite driver not found, do you have it installed?");
+            System.exit(1);
         }
     }
 
