@@ -40,13 +40,14 @@ public class Ball3D {
         return this.model.transform.getTranslation(new Vector3());
     }
 
-    public void move(Vector3 translation){ // might need deltaTime
+    public void move(Vector3 translation) {
         this.model.transform.translate(translation);
     }
 
-    public void applyForce(float force, Vector3 direction){
+    public void applyForce(float force, Vector3 direction) {
         this.move(direction.scl(force));
     }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Ball3D) {
