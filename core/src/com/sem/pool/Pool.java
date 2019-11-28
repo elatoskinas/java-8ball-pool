@@ -25,7 +25,7 @@ public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
-
+    static final Vector3 cameraPosition = new Vector3(0f,100f,0f);
     // State flag to keep track of whether asset loading
     // has finished.
     private transient boolean loaded;
@@ -64,14 +64,13 @@ public class Pool extends ApplicationAdapter {
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
 
-            Vector3 position = new Vector3(0f,100f,0f);
             float width = Gdx.graphics.getWidth();
             float height = Gdx.graphics.getHeight();
-            CameraFactory cameraFactory = new CameraFactory(width, height, position);
+            CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);
 
 
-            ArrayList<Texture> ballTexures = new ArrayList<Texture>();
-            BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
+            ArrayList<Texture> ballTextures = new ArrayList<Texture>();
+            BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
 
             Texture tableTexture = null;
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
