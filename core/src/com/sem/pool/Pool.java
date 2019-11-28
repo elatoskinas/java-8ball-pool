@@ -2,6 +2,7 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -27,6 +28,8 @@ public class Pool extends ApplicationAdapter {
     // has finished.
     private transient boolean loaded;
 
+
+    boolean collision = false;
     @Override
     public void create() {
         initializeAssetLoader();
@@ -72,15 +75,17 @@ public class Pool extends ApplicationAdapter {
             ArrayList<Texture> ballTexures = new ArrayList<Texture>();
             BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
 
+
             Texture tableTexture = null;
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
 
             SceneFactory sceneFactory = new SceneFactory(tableFactory,
                     ballFactory, camera, modelBatch);
-
             // Instantiate the scene
             scene = sceneFactory.createScene();
-
+            for (Ball3D ball: getScene().getPoolBalls()){
+                ball.move(new Vector3(0,1f, 0));
+            }
             // Update the camera of the scene to point to the right location
             scene.getCamera().update();
 
@@ -94,10 +99,55 @@ public class Pool extends ApplicationAdapter {
      */
     private void renderScene() {
         // Render the scene only if the game is loaded
+
         if (loaded) {
             scene.render();
-         Ball3D ball = getScene().getPoolBalls().get(0);
-         ball.move(new Vector3(0.005f,0,0));
+            Ball3D cueBall = getScene().getPoolBalls().get(0);
+            // Apply gravity on the ball
+            float dt = Gdx.graphics.getDeltaTime();
+            if (!isCollision()){
+                cueBall.applyForce(9.81f/100 * dt, new Vector3(0,-1f, 0));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+                cueBall.move(new Vector3(1f,0,0).scl(dt));
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+                cueBall.move(new Vector3(-1f,0,0).scl(dt));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)){
+                cueBall.move(new Vector3(0f,0,-1f).scl(dt));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+                cueBall.move(new Vector3(0,0,1f).scl(dt));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)){
+                getScene().getCamera().translate(new Vector3(1f,0f,0f).scl(dt));
+                getScene().getCamera().update();
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.A)){
+                getScene().getCamera().translate(new Vector3(-1f,0f,0f).scl(dt));
+                getScene().getCamera().update();            }
+            if (Gdx.input.isKeyPressed(Input.Keys.W)){
+                getScene().getCamera().translate(new Vector3(0f,0f,-1f).scl(dt));
+                getScene().getCamera().update();            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)){
+                getScene().getCamera().translate(new Vector3(0f,0f,1f).scl(dt));
+                getScene().getCamera().update();            }
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT_BRACKET)){
+                getScene().getCamera().rotate(Vector3.X, -60 * dt);
+                getScene().getCamera().update();            }
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT_BRACKET)){
+                getScene().getCamera().rotate(Vector3.X, 60* dt);
+                getScene().getCamera().update();            }
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)){
+                getScene().getCamera().translate(new Vector3(0f,-1f,0f).scl(dt));
+                getScene().getCamera().update();            }
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                getScene().getCamera().translate(new Vector3(0f,1f,0f).scl(dt));
+                getScene().getCamera().update();            }
+            //System.out.println(cueBall.getCoordinates());
         }
     }
 
@@ -126,5 +176,9 @@ public class Pool extends ApplicationAdapter {
     public void dispose() {
         scene.dispose();
         assetLoader.dispose();
+    }
+
+    public boolean isCollision(){
+        return false;
     }
 }

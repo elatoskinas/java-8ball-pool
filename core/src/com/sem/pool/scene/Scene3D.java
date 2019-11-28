@@ -46,7 +46,7 @@ public class Scene3D {
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
         models.add(table.getModel());
-
+        models.add(table.getRectangleE());
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
         }
