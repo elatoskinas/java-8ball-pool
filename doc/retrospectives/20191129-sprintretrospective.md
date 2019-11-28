@@ -11,36 +11,29 @@
 
 ## Main Problems Encountered
 ### Problem 1: MoSCoW prioritization
-Description:
-
+#### Description
 Estimation of MoSCoW tasks did not go well initially, resulting in Should Haves being tracked as Must Haves, and assigned to the Sprint.
-
 In the middle of the Sprint, we had to swap some tasks around due to further prioritization issues. We realized some functional requirements
 in our MoSCoW document had too high priorities (e.g. must have instead of should have), and thus we had to adjust.
 
-Reaction:
-
+#### Reaction
 We have resolved this by re-priotizing tasks and focusing mostly on the Must Haves in the project.
 
 ### Problem 2: Prioritizing Tasks
-Description:
-
+#### Description
 At the beginning of the project, we did not properly prioritize tasks over others, and simply assigned the time estimates for the tasks without establishing
 which tasks are the most important.
 
-Reaction:
-
+#### Reaction
 After assigning tasks, we have discussed the priorities of each individual task, and have established these using Labels and the "Weight" functionality
 in GitLab.
 
 ### Problem 3: No deadlines
-Descrption:
-
+#### Descrption
 One crucial mistake that we did is not properly establish deadlines in the Sprint. This lead to quite a bit of procrastination and
 overall a lack of focus through the Sprint.
 
-Reaction:
-
+#### Reaction
 Some team members rushed delivery of the features at the end of the Sprint, and we started communicating far more often upon
 realizing that tasks are due soon.
 
