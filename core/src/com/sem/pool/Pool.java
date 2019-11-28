@@ -8,7 +8,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.sem.pool.scene.*;
+import com.sem.pool.scene.AssetLoader;
+import com.sem.pool.scene.BallFactory;
+import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SceneFactory;
+import com.sem.pool.scene.TableFactory;
 
 import java.util.ArrayList;
 
@@ -68,8 +72,8 @@ public class Pool extends ApplicationAdapter {
             camera.near = 1f;
             camera.far = 300f;
 
-            ArrayList<Texture> ballTexures = new ArrayList<Texture>();
-            BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
+            ArrayList<Texture> ballTextures = new ArrayList<Texture>();
+            BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
 
             Texture tableTexture = null;
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
