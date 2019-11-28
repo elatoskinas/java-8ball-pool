@@ -7,6 +7,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+/**
+ * Handle the database.
+ */
 public class Database {
     /**
      * The database object singleton.
