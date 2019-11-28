@@ -57,26 +57,35 @@ public class UserTable extends Table {
 
     /**
      * Save a user object.
-     * Updates if user.id is set.
      * @param user The user to save.
      * @return The result.
      * @throws SQLException SQL errors.
      */
     public boolean save(User user) throws SQLException {
-        if(user.isExisting()) {
-            String SQL = "update " + this.tableName + " set (username = ?, password = ?) where id = ?";
-            PreparedStatement stmt = this.conn.prepareStatement(SQL);
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            stmt.setInt(3, user.getUserID());
-            return stmt.execute();
-        } else {
-            String SQL = "insert into " + this.tableName + " (username, password) values (?, ?)";
-            PreparedStatement stmt = this.conn.prepareStatement(SQL);
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            return stmt.execute();
-        }
+        if(user.isExisting()) return false;
+
+        String SQL = "insert into " + this.tableName + " (username, password) values (?, ?)";
+        PreparedStatement stmt = this.conn.prepareStatement(SQL);
+        stmt.setString(1, user.getUsername());
+        stmt.setString(2, user.getPassword());
+        return stmt.execute();
+    }
+
+    /**
+     * Update an exiting user object.
+     * @param user The user to update.
+     * @return The result.
+     * @throws SQLException SQL errors.
+     */
+    public boolean update(User user) throws SQLException {
+        if(user.isExisting()) return false;
+
+        String SQL = "update " + this.tableName + " set (username = ?, password = ?) where id = ?";
+        PreparedStatement stmt = this.conn.prepareStatement(SQL);
+        stmt.setString(1, user.getUsername());
+        stmt.setString(2, user.getPassword());
+        stmt.setInt(3, user.getUserID());
+        return stmt.execute();
     }
 
     /**
