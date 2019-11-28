@@ -17,7 +17,7 @@ public class GameTest {
     void testConstructor() {
         Scene3D scene = Mockito.mock(Scene3D.class);
         Input input = Mockito.mock(Input.class);
-        GameState state = Mockito.mock(GameState.class)
+        GameState state = Mockito.mock(GameState.class);
         
         Game game = new Game(scene, input, state);
         
