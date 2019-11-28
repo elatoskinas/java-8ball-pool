@@ -89,7 +89,7 @@ public class User {
      * Set the user ID.
      * @param userID The userID
      */
-    public void setUsername(int userID) {
+    public void setUserID(int userID) {
         this.id = userID;
     }
 
