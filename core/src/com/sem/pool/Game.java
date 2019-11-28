@@ -6,10 +6,12 @@ import com.sem.pool.scene.Scene3D;
 public class Game {
     Scene3D scene;
     Input input;
+    GameState state;
     
-    public Game(Scene3D scene, Input input) {
+    public Game(Scene3D scene, Input input, GameState state) {
         this.scene = scene;
         this.input = input;
+        this.state = state;
     }
 
     public void moveBalls() {
@@ -26,5 +28,9 @@ public class Game {
 
     public Input getInput() {
         return input;
+    }
+
+    public GameState getState() {
+        return state;
     }
 }
