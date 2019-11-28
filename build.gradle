@@ -142,6 +142,8 @@ allprojects {
         testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
         // https://mvnrepository.com/artifact/org.mockito/mockito-core
         testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+        compile group:'org.xerial', name:'sqlite-jdbc', version:'3.28.0'
+        compile group:'org.mindrot', name:'jbcrypt', version:'0.4'
     }
 }
 
