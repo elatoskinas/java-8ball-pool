@@ -120,7 +120,6 @@ public class Pool extends ApplicationAdapter {
 
         // Render the scene if initialized
         renderScene();
-        //float[] coordinates = getScene().getPoolBalls().get(0).getModel().transform.getValues();
     }
 
     @Override
