@@ -2,22 +2,13 @@ package com.sem.pool.database.models;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+/**
+ * User object, from the database.
+ */
 public class User {
-    /**
-     * If this is an existing user.
-     */
     private transient boolean existing;
-    /**
-     * ID.
-     */
     private transient int id;
-    /**
-     * Username.
-     */
     private String username;
-    /**
-     * password.
-     */
     private String password;
 
     /**

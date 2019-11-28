@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+/**
+ * Users table, for in the database.
+ */
 public class UserTable extends Table {
     /**
      * Create the new instance.

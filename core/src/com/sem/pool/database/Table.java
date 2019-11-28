@@ -5,6 +5,10 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Abstract class, to be implemented by database tables implementations.
+ * Look at `./models` for examples.
+ */
 public abstract class Table {
     /**
      * Connection to use for queries.
