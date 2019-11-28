@@ -15,6 +15,7 @@ import com.sem.pool.scene.SceneFactory;
 import com.sem.pool.scene.TableFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main Pool Game application class that handles
@@ -51,7 +52,7 @@ public class Pool extends ApplicationAdapter {
         assetLoader = new AssetLoader(manager);
 
         // Initialize models by queueing them for loading
-        assetLoader.initializeModels();
+        assetLoader.initializeAssets();
     }
 
     /**
@@ -69,7 +70,7 @@ public class Pool extends ApplicationAdapter {
             CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);
 
 
-            ArrayList<Texture> ballTextures = new ArrayList<Texture>();
+            List<Texture> ballTextures = assetLoader.getBallTextures();
             BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
 
             Texture tableTexture = null;
