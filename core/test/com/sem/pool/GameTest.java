@@ -23,5 +23,4 @@ public class GameTest {
         assertEquals(scene, game.getScene());
         assertEquals(input, game.getInput());
     }
-    
 }
