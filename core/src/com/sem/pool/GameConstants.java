@@ -1,7 +1,5 @@
 package com.sem.pool;
 
-import com.badlogic.gdx.math.Vector3;
-
 /**
  * Stateless class that holds global game constants
  * for Pool games.

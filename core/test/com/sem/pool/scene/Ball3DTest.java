@@ -146,6 +146,9 @@ class Ball3DTest {
         assertNotEquals(hashCode1, hashCode2);
     }
 
+    /**
+     * Tests getCoordinates returns {0,0,0} after a new ball Object is created.
+     */
     @Test
     public void testGetCoordinates() {
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
@@ -156,9 +159,12 @@ class Ball3DTest {
     }
 
 
+    /**
+     * Tests if the matrix translation is called after the move method is called,
+     * and if the translation method has the same argument as the move method.
+     */
     @Test
     public void testMove() {
-        // DOES NOT CURRENTLY VERIFY THAT NEW POSITION IS CORRECT ACCORDING TO TRANSLATION
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
         mockModelInstance.transform = mockMatrix;
@@ -168,9 +174,12 @@ class Ball3DTest {
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
     }
 
+    /**
+     * Tests if the matrix translation is called after the move method is called,
+     * and if the translation method has as argument the translation vector times the scalar.
+     */
     @Test
     public void testApplyForce() {
-        // DOES NOT CURRENTLY VERIFY THAT NEW POSITION IS CORRECT ACCORDING TO TRANSLATION
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         mockModelInstance.transform = Mockito.mock(Matrix4.class);
         Ball3D ball = new Ball3D(0, mockModelInstance);
