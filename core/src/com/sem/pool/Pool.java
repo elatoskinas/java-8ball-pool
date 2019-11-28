@@ -96,8 +96,6 @@ public class Pool extends ApplicationAdapter {
         // Render the scene only if the game is loaded
         if (loaded) {
             scene.render();
-         Ball3D ball = getScene().getPoolBalls().get(0);
-         ball.move(new Vector3(0.005f,0,0));
         }
     }
 
