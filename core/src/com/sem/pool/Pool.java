@@ -97,6 +97,13 @@ public class Pool extends ApplicationAdapter {
         // Render the scene only if the game is loaded
         if (loaded) {
             scene.render();
+
+            // TODO: Temporary code below that gets the cue shot direction
+            // TODO: relative to the mouse position.
+            /*Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            scene.getCamera().unproject(mousePosition);
+            Vector3 shotDirection = getScene().getPoolBalls().
+            get(0).getCueShotDirection(mousePosition);*/
         }
     }
 
