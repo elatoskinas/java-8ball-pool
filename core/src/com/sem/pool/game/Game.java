@@ -1,4 +1,4 @@
-package com.sem.pool;
+package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Scene3D;
