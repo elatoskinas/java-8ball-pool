@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.sem.pool.factories.CueFactory;
 import com.sem.pool.scene.Cue3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
