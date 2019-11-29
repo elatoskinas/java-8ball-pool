@@ -38,7 +38,7 @@ public class Cue3D {
     public void toShotPosition(Ball3D cueBall) {
         Vector3 position = cueBall.getModel().transform.getTranslation(new Vector3());
 
-        float x = position.x - cueOffset + cueBall.getRadius();
+        float x = position.x - cueOffset - cueBall.getRadius();
         model.transform.translate(x, position.y + yCoordinate, position.z);
     }
 }
