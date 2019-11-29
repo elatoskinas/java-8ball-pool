@@ -1,4 +1,4 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,10 +8,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
-import com.sem.pool.GameConstants;
+import com.sem.pool.game.GameConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sem.pool.factories.AssetLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -1,7 +1,8 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.sem.pool.scene.Table3D;
 
 /**
  * Factory class which allows the instantiation

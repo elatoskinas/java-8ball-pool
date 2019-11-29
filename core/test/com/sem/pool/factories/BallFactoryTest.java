@@ -1,4 +1,4 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sem.pool.factories.AssetLoader;
+import com.sem.pool.factories.BallFactory;
+import com.sem.pool.scene.Ball3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

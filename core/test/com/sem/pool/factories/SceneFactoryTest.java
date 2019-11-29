@@ -1,11 +1,18 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.sem.pool.GameConstants;
+import com.sem.pool.game.GameConstants;
+import com.sem.pool.factories.BallFactory;
+import com.sem.pool.factories.CameraFactory;
+import com.sem.pool.factories.SceneFactory;
+import com.sem.pool.factories.TableFactory;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.Table3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
