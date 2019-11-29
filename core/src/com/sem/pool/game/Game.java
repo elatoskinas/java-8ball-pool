@@ -3,6 +3,10 @@ package com.sem.pool.game;
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Scene3D;
 
+/**
+ * Class that handles everything related to the pool game.
+ * TODO: This is currently only a template, no functionality has been implemented as of yet.
+ */
 public class Game {
     private transient Scene3D scene;
     private transient Input input;
@@ -20,14 +24,6 @@ public class Game {
         this.state = state;
     }
 
-    public void moveBalls() {
-        // TODO: Implement logic that handles all ball movement every frame
-    }
-    
-    public void respondToInput() {
-        // TODO: Implement logic to respond to input every frame
-    }
-    
     public Scene3D getScene() {
         return scene;
     }
@@ -39,4 +35,21 @@ public class Game {
     public GameState getState() {
         return state;
     }
+
+    /**
+     * Moves the balls according to our physics implementation. This method will be called
+     * every frame in the render() method.
+     */
+    public void moveBalls() {
+        // TODO: Implement logic that handles all ball movement every frame
+    }
+
+    /**
+     * Method to handle any input by the player(s), should ignore input if invalid.
+     */
+    public void respondToInput() {
+        // TODO: Implement logic to respond to input every frame
+    }
+    
+
 }
