@@ -21,8 +21,6 @@
 | Database | Storage of user credentials | Dany | 2h | 3h | Yes | Took slightly longer than expected because I didn't take testing in calculation |
 | Database | Setup & integrate database | Dany | 3h | > 6h | No | Takes a long time, as the library for rendering the UI (LibGDX) doesn't have any documentation, and barely support for UI work. |
 
-| User Story 2 | Task 1 | Group Member     | Weight/Hours   | Weight/Hours | Yes/No | Comments |
-
 ## Main Problems Encountered
 ### Problem 1: MoSCoW prioritization
 #### Description
@@ -68,4 +66,5 @@ will only take up Could Haves in the case that there is truly no more important 
 * Establish clear weights and time estimates at the beginning of each Sprint. We now plan to discuss priorities more thoroughly, and verify
 them when building the Sprint backlog.
 * More thoroughly discuss on task assignment per person, and more carefully plan out the tasks so that we can ensure that most of them will be carried out. For the next Sprint,
-* we will try to make the workload smaller and see how it works out (i.e. whether we did not underplan this)
+we will try to make the workload smaller and see how it works out (i.e. whether we did not underplan this)
+* Communicate more with issues we are having with meeting deadlines or performing tasks.
