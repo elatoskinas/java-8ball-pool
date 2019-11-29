@@ -2,6 +2,7 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -102,6 +103,11 @@ public class Pool extends ApplicationAdapter {
         if (loaded) {
             scene.render();
 
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+                Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                scene.getCamera().unproject(mousePosition);
+                scene.getCue().toMousePosition(mousePosition, scene.getPoolBalls().get(0));
+            }
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.
             /*Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);

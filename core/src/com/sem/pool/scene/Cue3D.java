@@ -85,8 +85,10 @@ public class Cue3D {
 
         double newAngle = MathUtils.atan2(newCuePosition.z, newCuePosition.x);
         double oldAngle = MathUtils.atan2(oldCuePosition.z, oldCuePosition.x);
+        System.out.println((float)Math.toDegrees(oldAngle - newAngle));
 
-        model.transform.rotate(new Vector3(0,1, 0), (float)Math.toDegrees(oldAngle - newAngle));
+//        model.transform.setFromEulerAnglesRad((float) (newAngle-oldAngle), 0, 0);
+//        model.transform.rotate(Vector3.Y, (float)Math.toDegrees(oldAngle - newAngle));
     }
 
     void toPosition(Vector3 mousePosition, Ball3D cueBall){
