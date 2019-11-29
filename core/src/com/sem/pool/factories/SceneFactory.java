@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.Table3D;
 

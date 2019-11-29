@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.Table3D;
 import org.junit.jupiter.api.BeforeEach;

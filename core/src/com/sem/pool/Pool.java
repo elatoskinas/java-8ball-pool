@@ -11,7 +11,7 @@ import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.BallFactory;
 
 import com.sem.pool.factories.CameraFactory;
-import com.sem.pool.scene.CueFactory;
+import com.sem.pool.factories.CueFactory;
 import com.sem.pool.factories.SceneFactory;
 import com.sem.pool.factories.TableFactory;
 import com.sem.pool.scene.Scene3D;
