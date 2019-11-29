@@ -35,7 +35,6 @@ public class CueFactory extends Base3DFactory {
     public Cue3D createCue() {
         ModelInstance cueInstance = assetLoader.loadModel(MODEL_TYPE);
 
-        // TODO: Set texture accordingly
         Cue3D cue = new Cue3D(cueInstance);
         return cue;
     }

@@ -115,7 +115,7 @@ public class SceneFactory {
         Cue3D cue = cueFactory.createCue();
 
         // Set cue to cueBall position
-        cue.toShotPosition(poolBalls.get(0));
+        cue.toBeginPosition(poolBalls.get(0));
 
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);
