@@ -19,6 +19,7 @@ public class AssetLoader {
     // Paths to models for loading
     protected static final String BALL_MODEL_PATH = "models/ball.obj";
     protected static final String TABLE_MODEL_PATH = "models/table.obj";
+    protected static final String CUE_MODEL_PATH = "models/cue.obj";
     protected static final String BALL_TEXTURE_PATH = "models/Textures/ball%d.jpg";
 
     // Parameters for loading 3D models
@@ -34,7 +35,8 @@ public class AssetLoader {
      */
     public enum ModelType {
         BALL(BALL_MODEL_PATH),
-        TABLE(TABLE_MODEL_PATH);
+        TABLE(TABLE_MODEL_PATH),
+        CUE(CUE_MODEL_PATH);
 
         private String path;
 

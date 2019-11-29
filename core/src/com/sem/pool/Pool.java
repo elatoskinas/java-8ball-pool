@@ -11,6 +11,7 @@ import com.sem.pool.scene.AssetLoader;
 import com.sem.pool.scene.BallFactory;
 
 import com.sem.pool.scene.CameraFactory;
+import com.sem.pool.scene.CueFactory;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SceneFactory;
 import com.sem.pool.scene.TableFactory;
@@ -27,6 +28,7 @@ public class Pool extends ApplicationAdapter {
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
     static final Vector3 cameraPosition = new Vector3(0f,100f,0f);
+
     // State flag to keep track of whether asset loading
     // has finished.
     private transient boolean loaded;
@@ -69,6 +71,8 @@ public class Pool extends ApplicationAdapter {
             float height = Gdx.graphics.getHeight();
             CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);
 
+            Texture cueTexture = null;
+            CueFactory cueFactory = new CueFactory(cueTexture, assetLoader);
 
             List<Texture> ballTextures = assetLoader.getBallTextures();
             BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
@@ -77,7 +81,7 @@ public class Pool extends ApplicationAdapter {
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
 
             SceneFactory sceneFactory = new SceneFactory(tableFactory,
-                    ballFactory, cameraFactory, modelBatch);
+                    ballFactory, cameraFactory, cueFactory, modelBatch);
 
             // Instantiate the scene
             scene = sceneFactory.createScene();
