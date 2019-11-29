@@ -1,5 +1,5 @@
 # SEM Group 95 - Pool
-# Sprint Retrospective, Iteration #\_
+# Sprint Retrospective, Iteration #1
 | User Story # | Task # | Task Assigned To | Estimated Effort | Actual Effort | Done? | Notes |
 | ------------ | ------ | ---------------- | ---------------- | ------------- | ----- | ----- |
 | Scene Setup  | Scene Creation | Evaldas   | 4 hours   | 6 hours | Yes | Feature completed & verified successfully |
@@ -19,7 +19,7 @@
 | Ball Interactions | Ability to pot balls | Thomas | 4h | 1h | No | Again, bounded borders and ball and board collisions had priority, but once those are implemented this issue should be relatively straightforward.|
 | Database | Setup & integrate database | Dany | 4h | 6h | Yes | Took a little more time due to we were barred from using a proper SQL library. |
 | Database | Storage of user credentials | Dany | 2h | 3h | Yes | Took slightly longer than expected because I didn't take testing in calculation |
-| Database | Setup & integrate database | Dany | 3h | > 6h | No | Takes a long time, as the library for rendering the UI (LibGDX) doesn't have any documentation, and barely support for UI work. |
+| Database | User authentication | Dany | 3h | > 6h | No | Takes a long time, as the library for rendering the UI (LibGDX) doesn't have any documentation, and barely support for UI work. |
 
 ## Main Problems Encountered
 ### Problem 1: MoSCoW prioritization
