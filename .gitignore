@@ -13,3 +13,4 @@ build/**
 # LibGDX Out Files
 /core/out/
 /desktop/out/
+database.db

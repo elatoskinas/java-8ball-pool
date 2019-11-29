@@ -4,7 +4,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 
-
+/**
+ * Factory class which allows the instantiation
+ * of camera objects.
+ */
 public class CameraFactory {
 
     // Direction the camera is pointed at

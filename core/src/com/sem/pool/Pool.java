@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.AssetLoader;
 import com.sem.pool.scene.BallFactory;
+
 import com.sem.pool.scene.CameraFactory;
 import com.sem.pool.scene.CueFactory;
 import com.sem.pool.scene.Scene3D;
@@ -26,7 +27,7 @@ public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
-
+    static final Vector3 cameraPosition = new Vector3(0f,100f,0f);
     // State flag to keep track of whether asset loading
     // has finished.
     private transient boolean loaded;
@@ -65,7 +66,6 @@ public class Pool extends ApplicationAdapter {
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
 
-            Vector3 cameraPosition = new Vector3(0f,1f,0f);
             float width = Gdx.graphics.getWidth();
             float height = Gdx.graphics.getHeight();
             CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);
@@ -73,8 +73,8 @@ public class Pool extends ApplicationAdapter {
             Texture cueTexture = null;
             CueFactory cueFactory = new CueFactory(cueTexture, assetLoader);
 
-            List<Texture> ballTexures = assetLoader.getBallTextures();
-            BallFactory ballFactory = new BallFactory(ballTexures, assetLoader);
+            List<Texture> ballTextures = assetLoader.getBallTextures();
+            BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
 
             Texture tableTexture = null;
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
@@ -100,6 +100,13 @@ public class Pool extends ApplicationAdapter {
         // Render the scene only if the game is loaded
         if (loaded) {
             scene.render();
+
+            // TODO: Temporary code below that gets the cue shot direction
+            // TODO: relative to the mouse position.
+            /*Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            scene.getCamera().unproject(mousePosition);
+            Vector3 shotDirection = getScene().getPoolBalls().
+            get(0).getCueShotDirection(mousePosition);*/
         }
     }
 

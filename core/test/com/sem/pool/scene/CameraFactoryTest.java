@@ -1,5 +1,6 @@
 package com.sem.pool.scene;
 
+<<<<<<< HEAD
 import org.junit.jupiter.api.BeforeEach;
 
 import org.mockito.Mockito;
@@ -17,5 +18,14 @@ public class CameraFactoryTest {
     //  float height = Gdx.graphics.getHeight();
         cameraFactory = Mockito.mock(CameraFactory.class);
     }
+=======
+/**
+ * Test class for the CameraFactory class.
+ */
+public class CameraFactoryTest {
+
+    // TODO: Create test cases
+    // TODO: Create a scene to test the camera
+>>>>>>> 52bc281d02c239611989faf73bafabb1ffed30de
 
 }
