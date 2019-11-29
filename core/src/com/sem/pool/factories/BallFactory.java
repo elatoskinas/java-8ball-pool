@@ -1,8 +1,9 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.sem.pool.scene.Ball3D;
 
 import java.util.List;
 

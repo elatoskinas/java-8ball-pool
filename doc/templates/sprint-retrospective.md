@@ -10,14 +10,14 @@
 
 ## Main Problems Encountered
 ### Problem 1
-Description:
+#### Description
 
-Reaction:
+#### Reaction
 
 ### Problem 2
-Description:
+#### Description
 
-Reaction:
+#### Reaction
 
 ## Adjustments for next Sprint Plan
 Motivate adjustments that will be made for next Sprint plan.
