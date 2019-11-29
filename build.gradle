@@ -18,69 +18,166 @@ plugins {
     id "com.github.spotbugs" version "2.0.1"
 }
 
-group 'nl.tudelft.cse.sem.template'
+group 'nl.tudelft.cse.sem.pool'
 version '1.0-SNAPSHOT'
-
 sourceCompatibility = 12
 
-repositories {
-    mavenCentral()
-}
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
+    apply plugin: 'com.github.spotbugs'
+    apply plugin: 'jacoco'
 
-test {
-    useJUnitPlatform()
-
-    jacoco {
-        enabled = true
-        includes = ['nl.tudelft.cse.sem.*']
-        excludes = []
+    version = '1.0'
+    ext {
+        appName = "pool"
+        gdxVersion = '1.9.10'
+        roboVMVersion = '2.3.7'
+        box2DLightsVersion = '1.4'
+        ashleyVersion = '1.7.0'
+        aiVersion = '1.8.0'
     }
-}
 
-dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
-}
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
 
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
+    checkstyle {
+        toolVersion "8.25"
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    }
+
+    pmd {
+        incrementalAnalysis = true
+    }
+
+    spotbugs {
+        sourceSets = [sourceSets.main]
+        ignoreFailures = false
+        effort = "default"
+        reportLevel = "high"
+        visitors = ["FindSqlInjection", "SwitchFallthrough"]
+        excludeFilter = file("$rootProject.projectDir/config/spotbugs/excludeFilter.xml")
+    }
+
+    tasks.withType(SpotBugsTask) {
+        reports.xml.enabled = false
+        reports.html.enabled = true
+    }
+
+    test {
+        useJUnitPlatform()
+
+        jacoco {
             enabled = true
-            element = 'CLASS'
-            includes = ['nl.tudelft.cse.sem.*']
+            includes = ['com.sem.pool.*']
+            excludes = []
+        }
 
-            limit {
-                counter = 'LINE'
-                value = 'TOTALCOUNT'
-                maximum = 0.3
+        finalizedBy jacocoTestReport
+        finalizedBy jacocoTestCoverageVerification
+    }
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            // Rule to impose code quality for classes
+            // with regards to line & method count
+            rule {
+                enabled = true
+                element = 'CLASS'
+                includes = ['com.sem.pool.*']
+
+                // Class should have no more than 200 lines of code
+                limit {
+                    counter = 'LINE'
+                    value = 'TOTALCOUNT'
+                    maximum = 200
+                }
+
+                // Allow max. of 30 methods/class
+                limit {
+                    counter = 'METHOD'
+                    value = 'TOTALCOUNT'
+                    maximum = 30
+                }
+            }
+
+            // Rule to impose minimum branch coverage per package
+            rule {
+                element = 'PACKAGE'
+
+                // Ignore root com.sem.pool for now, as it requires
+                // more complex LibGDX testing setups.
+                // Also exclude the database core functionality classes for now
+                excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.database.tables']
+
+                limit {
+                    counter = 'BRANCH'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.8
+                }
+            }
+
+            // Rule to impose maximum CC per method
+            rule {
+                element = 'METHOD'
+
+                limit {
+                    counter = 'COMPLEXITY'
+                    value = 'TOTALCOUNT'
+                    maximum = 10
+                }
             }
         }
     }
-}
 
-checkstyle {
-    toolVersion "8.25"
-	configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-}
-
-pmd {
-    incrementalAnalysis = true
-}
-
-spotbugs {
-    sourceSets = [sourceSets.main]
-    ignoreFailures = false
-    effort = "default"
-    reportLevel = "high"
-    visitors = ["FindSqlInjection", "SwitchFallthrough"]
-    excludeFilter = file("$rootProject.projectDir/config/spotbugs/excludeFilter.xml")
-}
-
-tasks.withType(SpotBugsTask) {
-    reports.xml.enabled = false
-    reports.html.enabled = true
+    dependencies {
+        spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+        testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+        // https://mvnrepository.com/artifact/org.mockito/mockito-core
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+        compile group:'org.xerial', name:'sqlite-jdbc', version:'3.28.0'
+        compile group:'org.mindrot', name:'jbcrypt', version:'0.4'
+    }
 }
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
+}
+
+// LibGDX
+project(":desktop") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":core")
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    }
+}
+
+project(":core") {
+    apply plugin: "java-library"
+
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+    }
 }

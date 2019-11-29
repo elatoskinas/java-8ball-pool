@@ -1,2 +1,3 @@
-rootProject.name = 'template'
+include 'desktop', 'core'
+rootProject.name = 'pool'
 
