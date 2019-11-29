@@ -5,7 +5,10 @@
 | Scene Setup  | Scene Creation | Evaldas   | 4 hours   | 6 hours | Yes | Feature completed & verified successfully |
 | Scene Setup  | Ball Textures | Evaldas    | 2 hours   | 3 hours | Yes | Feature completed & verfied successfully |
 | Scene Setup  | Break Shot Setup | Evaldas     | 2 hours   | 1.5 hours | Yes | Feature completed & verified successfully |
-| Scene Setup  | Camera Setup | Pepijn     | Weight/Hours   | Weight/Hours | Yes/No | Comments |
+| Scene Setup  | Camera Setup | Pepijn     | 2 hours   | 3 hours | Yes | Feature completed & verified successfully |
+| Scene Setup  | Display of Cue | Pepijn     | 3 hours   | 4 hours | Yes | Feature completed & verified successfully |
+| Scene Setup  | Cue model | Pepijn     | 2 hours   | 1.5 hours | Yes | Feature completed & verified successfully |
+| Player Cue Interaction  | Ability to hit cue ball | Pepijn     | 3 hours   | 2 hours | No | Work in progress |
 | Player Cue Interaction | Cue Shot Direction | Evaldas | 3 hours | 2.5 hours | Yes | Feature completed but not yet integrated in the game (as it depends on other features to be used) |
 | User Story 2 | Task 1 | Group Member     | Weight/Hours   | Weight/Hours | Yes/No | Comments |
 
