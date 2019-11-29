@@ -26,6 +26,7 @@ class Scene3DTest {
 
     transient List<Ball3D> poolBalls;
     transient Table3D table;
+    transient Cue3D cue;
 
     /**
      * Handles setting up the test fixture by
@@ -40,8 +41,9 @@ class Scene3DTest {
 
         table = Mockito.mock(Table3D.class);
         poolBalls = new ArrayList<Ball3D>();
+        cue = Mockito.mock(Cue3D.class);
 
-        scene = new Scene3D(environment, camera, poolBalls, table, batch);
+        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch);
     }
 
     /**
@@ -63,7 +65,8 @@ class Scene3DTest {
      */
     @Test
     public void testConstructorModelsSize() {
-        int expectedSize = poolBalls.size() + 1;
+        // Poolballs + Table + Cue
+        int expectedSize = poolBalls.size() + 2;
         int actualSize = scene.getModels().size();
         assertEquals(expectedSize, actualSize);
     }
@@ -84,28 +87,13 @@ class Scene3DTest {
             poolBalls2.add(Mockito.mock(Ball3D.class));
         }
 
-        scene = new Scene3D(environment, camera, poolBalls2, table, batch);
+        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch);
 
-        int expectedSize = poolBalls2.size() + 1;
+        // Poolballs + Table + Cue
+        int expectedSize = poolBalls2.size() + 2;
         int actualSize = scene.getModels().size();
         assertEquals(expectedSize, actualSize);
     }
-
-    /*@Test
-    public void testSetEnvironment() {
-        Environment environment = new Environment();
-        scene.setEnvironment(environment);
-
-        assertEquals(environment, scene.getEnvironment());
-    }
-
-    @Test
-    public void testSetCamera() {
-        Camera camera = new PerspectiveCamera();
-        scene.setCamera(camera);
-
-        assertEquals(camera, scene.getCamera());
-    }*/
 
     /**
      * Test case to verify that the necessary render-related

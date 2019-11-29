@@ -20,10 +20,10 @@ import org.mockito.Mockito;
  */
 class SceneFactoryTest {
     transient SceneFactory sceneFactory;
-
     transient BallFactory ballFactory;
     transient TableFactory tableFactory;
     transient CameraFactory cameraFactory;
+    transient CueFactory cueFactory;
     transient ModelBatch modelBatch;
 
     /**
@@ -37,9 +37,11 @@ class SceneFactoryTest {
         ballFactory = Mockito.mock(BallFactory.class);
         tableFactory = Mockito.mock(TableFactory.class);
         cameraFactory = Mockito.mock(CameraFactory.class);
+        cueFactory = Mockito.mock(CueFactory.class);
         modelBatch = Mockito.mock(ModelBatch.class);
 
-        sceneFactory = new SceneFactory(tableFactory, ballFactory, cameraFactory, modelBatch);
+        sceneFactory =
+                new SceneFactory(tableFactory, ballFactory, cameraFactory, cueFactory, modelBatch);
 
         Mockito.when(tableFactory.createTable())
                 .thenReturn(Mockito.mock(Table3D.class));
@@ -49,6 +51,9 @@ class SceneFactoryTest {
 
         Mockito.when(cameraFactory.createCamera())
                 .thenReturn(Mockito.mock(Camera.class));
+
+        Mockito.when(cueFactory.createCue())
+                .thenReturn(Mockito.mock(Cue3D.class));
     }
 
 

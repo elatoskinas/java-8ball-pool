@@ -42,7 +42,6 @@ public class TableFactory extends Base3DFactory {
         ModelInstance boardInstance = assetLoader.loadModel(MODEL_TYPE);
 
         // TODO: Set texture accordingly
-
         return new Table3D(boardInstance);
     }
 }
