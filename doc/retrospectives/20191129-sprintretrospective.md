@@ -38,6 +38,15 @@ overall a lack of focus through the Sprint.
 Some team members rushed delivery of the features at the end of the Sprint, and we started communicating far more often upon
 realizing that tasks are due soon.
 
+### Problem 4: Too many tasks
+#### Description
+Initially, before we could get a sense of the team's work & effort distribution, we planned too many tasks to be done for the Sprint.
+Together with other issues (no deadlines, issues with prioritization), we could not carry out around 6 tasks in the Sprint.
+
+#### Reaction
+We have tried to as much as possible first to get the neccessities done, and for the lower priority tasks that we could not
+manage throughout the Sprint, we simply plan on putting off to the next one.
+
 
 ## Adjustments for next Sprint Plan
 * Establish deadlines each week. As of now, we plan to establish strict deadlines to improve our planning and on-time delivery.
@@ -45,3 +54,5 @@ realizing that tasks are due soon.
 will only take up Could Haves in the case that there is truly no more important work left, but the Sprint can still hold more stories & tasks.
 * Establish clear weights and time estimates at the beginning of each Sprint. We now plan to discuss priorities more thoroughly, and verify
 them when building the Sprint backlog.
+* More thoroughly discuss on task assignment per person, and more carefully plan out the tasks so that we can ensure that most of them will be carried out. For the next Sprint,
+* we will try to make the workload smaller and see how it works out (i.e. whether we did not underplan this)
