@@ -9,7 +9,12 @@ public class CueFactory extends Base3DFactory {
 
     private Texture texture;
 
-
+    /**
+     * Creates a new Cue Factory instance with the specified
+     * texture.
+     *
+     * @param texture  Texture to use for the cue
+     */
     public CueFactory(Texture texture, AssetLoader assetLoader) {
         super(assetLoader);
         this.texture = texture;

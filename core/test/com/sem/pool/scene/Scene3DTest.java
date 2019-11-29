@@ -65,6 +65,7 @@ class Scene3DTest {
      */
     @Test
     public void testConstructorModelsSize() {
+        // Poolballs + Table + Cue
         int expectedSize = poolBalls.size() + 2;
         int actualSize = scene.getModels().size();
         assertEquals(expectedSize, actualSize);
@@ -88,6 +89,7 @@ class Scene3DTest {
 
         scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch);
 
+        // Poolballs + Table + Cue
         int expectedSize = poolBalls2.size() + 2;
         int actualSize = scene.getModels().size();
         assertEquals(expectedSize, actualSize);

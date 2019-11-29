@@ -13,10 +13,15 @@ public class Cue3D {
     /**
      * The distance between the center of the cueBall and the tip of the cue.
      */
-    private static final float cueRadius = 0.2f;
+    private static final float cueOffset = 0.05f;
 
+    // The Y of the cue can't be 0 because it will end up in the bumpers.
+    private static final float yCoordinate = 0.1f;
     private transient ModelInstance model;
 
+    /**
+     * Constructs a new 3D Cue instance.
+     */
     public Cue3D(ModelInstance model) {
         this.model = model;
     }
@@ -27,11 +32,13 @@ public class Cue3D {
 
 
     /**
-     * Set the cue left from the cue ball.
+     * Set the cue near the cue ball.
      * @param cueBall Ball3D cue ball to determine position.
      */
     public void toShotPosition(Ball3D cueBall) {
         Vector3 position = cueBall.getModel().transform.getTranslation(new Vector3());
-        model.transform.translate(position.x - cueRadius, position.y + 0.1f, position.z);
+
+        float x = position.x - cueOffset + cueBall.getRadius();
+        model.transform.translate(x, position.y + yCoordinate, position.z);
     }
 }
