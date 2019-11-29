@@ -15,6 +15,8 @@
 | Ball Interactions | Ball and board collisions | Luuk & Thomas | 4 hours | 4 hours | Not yet | Same notes as bounded borders, once bounded borders is done this should be near completion as well.|
 | Ball Interactions | Ball rolling friction |  Luuk & Thomas | 4 hours | 1 hour | No | Feature can be implemented using existing methods but it's currently unclear whether this is the best way.|
 | Ball Types | Ball Types | Luuk | 3 hours | 1 hour | Yes/No | Ball type can be decided through id but subclasses could also be added for clarity.|
+| Ball Interactions | Ball vs Ball collisions | Thomas | 4 hours | 1 hour | No | Bounded borders and ball and board collisions had priority.|
+| Ball Interactions | Ability to pot balls | Thomas | 4h | 1h | No | Again, bounded borders and ball and board collisions had priority, but once those are implemented this issue should be relatively straightforward.|
 
 | User Story 2 | Task 1 | Group Member     | Weight/Hours   | Weight/Hours | Yes/No | Comments |
 
