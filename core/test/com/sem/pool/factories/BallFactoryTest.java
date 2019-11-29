@@ -7,12 +7,10 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.sem.pool.scene.Ball3D;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sem.pool.factories.AssetLoader;
-import com.sem.pool.factories.BallFactory;
-import com.sem.pool.scene.Ball3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

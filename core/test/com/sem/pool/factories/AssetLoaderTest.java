@@ -12,7 +12,6 @@ import com.sem.pool.game.GameConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sem.pool.factories.AssetLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
