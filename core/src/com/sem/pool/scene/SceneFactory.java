@@ -13,10 +13,6 @@ import java.util.List;
 
 public class SceneFactory {
 
-    // Fixed count of pool balls to create:
-    // Cue ball + 8-ball + 7 striped + 7 solid balls
-    private static final int BALL_COUNT = 16;
-
     // Factories used to create Tables & Pool Balls & Camera & Cue
     private transient TableFactory tableFactory;
     private transient BallFactory ballFactory;
@@ -34,12 +30,8 @@ public class SceneFactory {
      * specified parameters to be used for scene instantiation.
      * @param tableFactory  Table Factory to use for Table instantiation
      * @param ballFactory   Ball Factory to use for Pool Ball instantiation
-<<<<<<< HEAD
      * @param cameraFactory  Camera Factory to use for Camera instantiation
      * @param cueFactory  Cue Factory to use for Cue instantiation
-=======
-     * @param cameraFactory    Camera Factory to use for Camera instantiation
->>>>>>> 52bc281d02c239611989faf73bafabb1ffed30de
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
@@ -101,6 +93,9 @@ public class SceneFactory {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
 
+        // Create camera
+        Camera camera = cameraFactory.createCamera();
+
         // Create pool balls
         List<Ball3D> poolBalls = new ArrayList<>();
 
@@ -118,8 +113,8 @@ public class SceneFactory {
         // Create cue
         Cue3D cue = cueFactory.createCue();
 
-        // Create camera
-        Camera camera = cameraFactory.createCamera();
+        // Set cue to cueBall position
+        cue.toShotPosition(poolBalls.get(0));
 
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);

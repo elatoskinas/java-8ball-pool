@@ -28,6 +28,7 @@ public class Pool extends ApplicationAdapter {
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
     static final Vector3 cameraPosition = new Vector3(0f,100f,0f);
+
     // State flag to keep track of whether asset loading
     // has finished.
     private transient boolean loaded;
