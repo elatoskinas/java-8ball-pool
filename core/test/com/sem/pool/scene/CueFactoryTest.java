@@ -1,12 +1,12 @@
 package com.sem.pool.scene;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test class containing unit tests for the CueFactory class and
