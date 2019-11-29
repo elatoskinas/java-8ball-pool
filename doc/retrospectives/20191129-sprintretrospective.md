@@ -17,11 +17,11 @@
 | Ball Types | Ball Types | Luuk | 3 hours | 1 hour | Yes/No | Ball type can be decided through id but subclasses could also be added for clarity.|
 | Ball Interactions | Ball vs Ball collisions | Thomas | 4 hours | 1 hour | No | Bounded borders and ball and board collisions had priority.|
 | Ball Interactions | Ability to pot balls | Thomas | 4h | 1h | No | Again, bounded borders and ball and board collisions had priority, but once those are implemented this issue should be relatively straightforward.|
+| Database | Setup & integrate database | Dany | 4h | 6h | Yes | Took a little more time due to we were barred from using a proper SQL library. |
+| Database | Storage of user credentials | Dany | 2h | 3h | Yes | Took slightly longer than expected because I didn't take testing in calculation |
+| Database | Setup & integrate database | Dany | 3h | > 6h | No | Takes a long time, as the library for rendering the UI (LibGDX) doesn't have any documentation, and barely support for UI work. |
 
 | User Story 2 | Task 1 | Group Member     | Weight/Hours   | Weight/Hours | Yes/No | Comments |
-
-
-
 
 ## Main Problems Encountered
 ### Problem 1: MoSCoW prioritization
