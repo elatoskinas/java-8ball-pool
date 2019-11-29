@@ -1,11 +1,11 @@
 package com.sem.pool;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Scene3D;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameTest {
 
