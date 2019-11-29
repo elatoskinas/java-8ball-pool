@@ -1,4 +1,4 @@
-package com.sem.pool;
+package com.sem.pool.game;
 
 /**
  * Stateless class that holds global game constants

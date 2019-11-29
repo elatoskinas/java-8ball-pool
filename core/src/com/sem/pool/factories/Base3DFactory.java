@@ -1,4 +1,4 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 /**
  * Factory class intended for instantiation of
