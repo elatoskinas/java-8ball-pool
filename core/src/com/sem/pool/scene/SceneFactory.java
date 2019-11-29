@@ -93,8 +93,6 @@ public class SceneFactory {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
 
-        // Create camera
-        Camera camera = cameraFactory.createCamera();
 
         // Create pool balls
         List<Ball3D> poolBalls = new ArrayList<>();
@@ -106,6 +104,9 @@ public class SceneFactory {
 
         // Position pool balls in the right places on the board
         positionPoolBalls(poolBalls);
+
+        // Create camera
+        Camera camera = cameraFactory.createCamera();
 
         // Create table
         Table3D table = tableFactory.createTable();
