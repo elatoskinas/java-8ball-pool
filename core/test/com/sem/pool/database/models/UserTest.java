@@ -1,18 +1,24 @@
 package com.sem.pool.database.models;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 class UserTest {
+    private final transient String defaultPassword = "testPassword";
+    private final transient String defaultUsername = "test";
+
     private transient User user;
-    private transient final String defaultUsername = "test";
-    private transient final String defaultPassword = "testPassword";
 
     @BeforeEach
     void before() {
-        this.user = new User(42, "test", "$2a$10$zHvWR86cQ0BYVuV9NL0w1OpAANtJftHMhknR/XlWJ.OkclTHsmRqq");
+        this.user = new User(42, "test",
+                "$2a$10$zHvWR86cQ0BYVuV9NL0w1OpAANtJftHMhknR/XlWJ.OkclTHsmRqq");
     }
 
     @Test
@@ -30,7 +36,8 @@ class UserTest {
         assertTrue(this.user.isExisting());
         assertEquals(42, this.user.getUserID());
         assertEquals(this.defaultUsername, this.user.getUsername());
-        assertEquals("$2a$10$zHvWR86cQ0BYVuV9NL0w1OpAANtJftHMhknR/XlWJ.OkclTHsmRqq", this.user.getPassword());
+        assertEquals("$2a$10$zHvWR86cQ0BYVuV9NL0w1OpAANtJftHMhknR/XlWJ.OkclTHsmRqq",
+                this.user.getPassword());
         assertTrue(this.user.checkPassword(this.defaultPassword));
     }
 
@@ -47,7 +54,8 @@ class UserTest {
         this.user.setPassword("$2a$10$RVyY7i9s3C6KodXIeNXyUusuXeJnNM52QK0niLWTW399lFKvf7Zc2");
         assertEquals(666, this.user.getUserID());
         assertEquals("yeet42", this.user.getUsername());
-        assertEquals("$2a$10$RVyY7i9s3C6KodXIeNXyUusuXeJnNM52QK0niLWTW399lFKvf7Zc2", this.user.getPassword());
+        assertEquals("$2a$10$RVyY7i9s3C6KodXIeNXyUusuXeJnNM52QK0niLWTW399lFKvf7Zc2",
+                this.user.getPassword());
         assertTrue(this.user.checkPassword("newPassword"));
     }
 

@@ -23,7 +23,6 @@ public class Database {
     /**
      * Create the database.
      * Private to prevent multiple instances with a singleton.
-     *
      * CloseResource suppressed as the connection should never be closed.
      * DoNotCallSystemExit suppressed as this is a fatal error.
      */
@@ -48,16 +47,20 @@ public class Database {
 
     /**
      * Get the database.
+     *
      * @return The database instance.
      */
-    public static Database getInstance( ) {
-        if(Database.db == null) Database.db = new Database();
+    public static Database getInstance() {
+        if (Database.db == null) {
+            Database.db = new Database();
+        }
 
         return db;
     }
 
     /**
-     * Get a table
+     * Get a table.
+     *
      * @param table The table to get.
      * @return The table requested.
      */

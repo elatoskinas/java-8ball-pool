@@ -21,6 +21,7 @@ public abstract class Table {
 
     /**
      * Create the table instance.
+     *
      * @param conn The connection to use.
      */
     public Table(Connection conn, String tableName) throws SQLException {
@@ -40,6 +41,7 @@ public abstract class Table {
      * Ensure that the table exists.
      * If not call createTable().
      * Warning suppressed as it's a false positive.
+     *
      * @throws SQLException Throws on SQL error.
      */
     @SuppressWarnings("PMD.CloseResource")
@@ -50,12 +52,12 @@ public abstract class Table {
         try {
             boolean createTable = tables.isAfterLast();
 
-            if(createTable) {
+            if (createTable) {
                 System.out.println("Creating table for " + this.tableName + "..");
                 this.createTable();
                 tables.close();
             }
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             tables.close();
         }
     }
