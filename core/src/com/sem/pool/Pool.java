@@ -44,7 +44,7 @@ public class Pool extends ApplicationAdapter {
         // Initialize viewport to the relevant width & height
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         
-        // Initialize the Bullet library used for collisions
+        // Initialize the Bullet wrapper used for collisions
         Bullet.init();
     }
 
