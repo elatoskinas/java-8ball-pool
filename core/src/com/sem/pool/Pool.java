@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.BallFactory;
 
@@ -42,6 +43,9 @@ public class Pool extends ApplicationAdapter {
 
         // Initialize viewport to the relevant width & height
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        // Initialize the Bullet library used for collisions
+        Bullet.init();
     }
 
     /**
