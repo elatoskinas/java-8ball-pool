@@ -3,7 +3,11 @@ package com.sem.pool.factories;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
+import com.sem.pool.scene.RegularBall3D;
 
 import java.util.List;
 
@@ -49,8 +53,9 @@ public class BallFactory extends Base3DFactory {
      * @return  New Ball3D object instance corresponding to the specified id
      */
     public Ball3D createBall(int id) {
+        // we assert ID is a valid ID.
+        assert (id >= GameConstants.CUEBALL_ID && id <= 15);
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
-
         // If textures List empty, do not change textures at all
         if (!textures.isEmpty()) {
             // Wrap the index around the textures length to avoid
@@ -68,7 +73,13 @@ public class BallFactory extends Base3DFactory {
             // the newly created texture attribute.
             ballInstance.getMaterial(BALL_MATERIAL_NAME).set(attribute);
         }
+        if (id == GameConstants.CUEBALL_ID) {
+            return new CueBall3D(id, ballInstance);
+        } else if (id == GameConstants.EIGHTBALL_ID) {
+            return new EightBall3D(id, ballInstance);
+        } else {
+            return new RegularBall3D(id, ballInstance);
+        }
 
-        return new Ball3D(id, ballInstance);
     }
 }
