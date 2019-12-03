@@ -43,7 +43,7 @@ class BallFactoryTest {
      */
     @Test
     public void testBallTypes() {
-        for (int i = 0; i <= 15; i++) {
+        for (int i = 0; i < GameConstants.BALLCOUNT; i++) {
             Ball3D ball = factory.createBall(i);
             if (i == GameConstants.CUEBALL_ID) {
                 assertTrue(ball instanceof CueBall3D);
