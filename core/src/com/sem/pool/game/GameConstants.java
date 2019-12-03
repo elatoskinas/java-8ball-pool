@@ -10,4 +10,5 @@ public final class GameConstants {
     public static final int BALL_COUNT = 16;
     public static final int CUEBALL_ID = 0;
     public static final int EIGHTBALL_ID = 8;
+    public static final int BALLCOUNT = 16;
 }

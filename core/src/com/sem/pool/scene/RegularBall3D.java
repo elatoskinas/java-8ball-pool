@@ -3,9 +3,16 @@ package com.sem.pool.scene;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.sem.pool.game.GameConstants;
 
+/**
+ * Ball3D with id between 1 - 7 and 9 - 15 which represents either a full or striped ball.
+ */
 public class RegularBall3D extends Ball3D {
-    transient boolean isFull;
+    public enum Type {
+        STRIPED,
+        FULL
+    }
 
+    private transient Type type;
     /**
      * Constructs a new 3D Pool Full Ball instance with
      * the specified id and model.
@@ -15,14 +22,19 @@ public class RegularBall3D extends Ball3D {
      */
     public RegularBall3D(int id, ModelInstance model) {
         super(id, model);
-        isFull = id < GameConstants.EIGHTBALL_ID;
+        if (id < GameConstants.EIGHTBALL_ID){
+            this.type = Type.FULL;
+        }
+        else{
+            this.type = Type.STRIPED;
+        }
     }
 
     /**
-     * Returns whether the ball is a Full Ball or a Striped Ball.
-     * @return isFull   Boolean that holds if the ball is full or striped.
+     * Returns the type of the ball.
+     * @return Type, the type of the ball.
      */
-    public boolean getIsFull() {
-        return isFull;
+    public Type getType() {
+        return this.type;
     }
 }

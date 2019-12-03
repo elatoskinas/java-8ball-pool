@@ -54,7 +54,7 @@ public class BallFactory extends Base3DFactory {
      */
     public Ball3D createBall(int id) {
         // we assert ID is a valid ID.
-        assert (id >= GameConstants.CUEBALL_ID && id <= 15);
+        assert (id >= GameConstants.CUEBALL_ID && id < GameConstants.BALL_COUNT);
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
         // If textures List empty, do not change textures at all
         if (!textures.isEmpty()) {
@@ -73,6 +73,16 @@ public class BallFactory extends Base3DFactory {
             // the newly created texture attribute.
             ballInstance.getMaterial(BALL_MATERIAL_NAME).set(attribute);
         }
+        return returnBall(id, ballInstance);
+    }
+
+    /**
+     * Returns the proper type of ball given an id.
+     * @param id id of the ball.
+     * @param ballInstance model instance of the ball.
+     * @return An instance of Ball3D.
+     */
+    private Ball3D returnBall(int id, ModelInstance ballInstance) {
         if (id == GameConstants.CUEBALL_ID) {
             return new CueBall3D(id, ballInstance);
         } else if (id == GameConstants.EIGHTBALL_ID) {
@@ -80,6 +90,5 @@ public class BallFactory extends Base3DFactory {
         } else {
             return new RegularBall3D(id, ballInstance);
         }
-
     }
 }

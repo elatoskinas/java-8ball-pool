@@ -1,8 +1,6 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import org.junit.jupiter.api.Test;
@@ -23,7 +21,7 @@ public class RegularBall3DTest extends Ball3DTest {
         RegularBall3D ball = new RegularBall3D(id, model);
         assertEquals(id, ball.getId());
         assertEquals(model, ball.getModel());
-        assertTrue(ball.getIsFull());
+        assertEquals(RegularBall3D.Type.FULL, ball.getType());
     }
 
     /**
@@ -40,7 +38,7 @@ public class RegularBall3DTest extends Ball3DTest {
 
         assertEquals(id, ball.getId());
         assertEquals(model, ball.getModel());
-        assertFalse(ball.getIsFull());
+        assertEquals(RegularBall3D.Type.STRIPED, ball.getType());
     }
 
     /**

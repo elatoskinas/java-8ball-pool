@@ -51,7 +51,7 @@ class BallFactoryTest {
                 assertTrue(ball instanceof EightBall3D);
             } else {
                 assertTrue(ball instanceof RegularBall3D);
-                assertEquals(i < 8, ((RegularBall3D) ball).getIsFull());
+                assertEquals(i < GameConstants.EIGHTBALL_ID, (RegularBall3D.Type.FULL == ((RegularBall3D) ball).getType()));
             }
         }
     }
