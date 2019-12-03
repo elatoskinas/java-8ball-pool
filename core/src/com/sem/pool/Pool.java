@@ -106,7 +106,7 @@ public class Pool extends ApplicationAdapter {
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
                 Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 scene.getCamera().unproject(mousePosition);
-                scene.getCue().toMousePosition(mousePosition, scene.getPoolBalls().get(0));
+                scene.getCue().toPosition(mousePosition, scene.getPoolBalls().get(0));
             }
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.

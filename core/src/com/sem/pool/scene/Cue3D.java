@@ -75,24 +75,8 @@ public class Cue3D {
     }
 
 
-    public void toMousePosition(Vector3 mousePosition, Ball3D cueBall) {
+    public void toPosition(Vector3 mousePosition, Ball3D cueBall) {
 
-        Vector3 ballPosition = cueBall.getCoordinates();
-
-        Vector3 oldCuePosition = getCoordinates().sub(ballPosition).nor();
-        toPosition(mousePosition, cueBall);
-        Vector3 newCuePosition = getCoordinates().sub(ballPosition).nor();
-
-        double newAngle = MathUtils.atan2(newCuePosition.z, newCuePosition.x);
-        double oldAngle = MathUtils.atan2(oldCuePosition.z, oldCuePosition.x);
-        System.out.println((float)Math.toDegrees(oldAngle - newAngle));
-
-//        model.transform.setFromEulerAnglesRad((float) (newAngle-oldAngle), 0, 0);
-//        model.transform.rotate(Vector3.Y, (float)Math.toDegrees(oldAngle - newAngle));
-    }
-
-    void toPosition(Vector3 mousePosition, Ball3D cueBall){
-        Vector3 cuePosition = getCoordinates();
         Vector3 ballPosition = cueBall.getCoordinates();
 
         Vector3 direction = new Vector3();
@@ -100,10 +84,16 @@ public class Cue3D {
         direction.y = 0; // Set y direction 0 because we never move up
         direction.nor();
 
+        // Positioning
         float dist = cueBall.getRadius() + cueOffset;
-        Vector3 onRadius = new Vector3(direction.x * dist, 0 , direction.z * dist);
-        Vector3 diff = cuePosition.sub(ballPosition);
-        Vector3 res = onRadius.sub(diff);
-        model.transform.translate(res.x, 0, res.z);
+        Vector3 onRadius = new Vector3(direction.scl(dist));
+        Vector3 res = onRadius.add(ballPosition);
+        model.transform.setToTranslation(res.x, 1, res.z);
+
+        // Rotation
+        Vector3 newCuePosition = getCoordinates().sub(ballPosition).nor();
+        double newAngle = MathUtils.atan2(newCuePosition.z, newCuePosition.x*-1);
+        model.transform.rotateRad(Vector3.Y,(float) (newAngle));
     }
+
 }
