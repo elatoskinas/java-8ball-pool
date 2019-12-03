@@ -48,6 +48,10 @@ public class Ball3D {
         return model;
     }
 
+    public HitBox getHitBox() {
+        return hitBox;
+    }
+
     /**
      * Returns the current coordinates of the ball.
      * @return The coordinates of the ball.
