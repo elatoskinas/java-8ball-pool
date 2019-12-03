@@ -3,6 +3,8 @@ package com.sem.pool.scene;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 
 import java.util.Objects;
 
@@ -14,6 +16,7 @@ public class Ball3D {
     private int id;
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
+    private transient HitBox hitBox;
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -24,6 +27,13 @@ public class Ball3D {
     public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;
+        boundingBox = new BoundingBox();
+        boundingBox = model.calculateBoundingBox(boundingBox);
+        btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
+        btCollisionObject ballObject = new btCollisionObject();
+        ballObject.setCollisionShape(ballShape);
+        ballObject.setWorldTransform(this.model.transform);
+        hitBox = new HitBox(ballShape, ballObject);
     }
 
     public int getId() {
@@ -36,6 +46,10 @@ public class Ball3D {
 
     public ModelInstance getModel() {
         return model;
+    }
+
+    public HitBox getHitBox() {
+        return hitBox;
     }
 
     /**
@@ -52,6 +66,7 @@ public class Ball3D {
      */
     public void move(Vector3 translation) {
         this.model.transform.translate(translation);
+        this.hitBox.getObject().setWorldTransform(this.model.transform);
     }
 
     /**
@@ -68,13 +83,6 @@ public class Ball3D {
      * @return  Radius of the 3D ball
      */
     public float getRadius() {
-        // Construct a bounding box around the model (if
-        // the box has not yet been created)
-        if (boundingBox == null) {
-            boundingBox = new BoundingBox();
-            boundingBox = model.calculateBoundingBox(boundingBox);
-        }
-
         // Calculate the radius; One axis is enough to determine the radius,
         // as we assume we have a perfect sphere.
         return boundingBox.max.x - boundingBox.getCenterX();
