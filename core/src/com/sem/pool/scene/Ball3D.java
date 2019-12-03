@@ -66,6 +66,7 @@ public class Ball3D {
      */
     public void move(Vector3 translation) {
         this.model.transform.translate(translation);
+        this.hitBox.getObject().setWorldTransform(this.model.transform);
     }
 
     /**
