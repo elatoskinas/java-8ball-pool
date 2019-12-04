@@ -134,14 +134,14 @@ public class Cue3D {
         Ball3D cueBall = scene.getPoolBalls().get(0);
 
         // Enter dragging
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !dragging) {
-            dragging = true;
-            shootDirection = getCueShotDirection(mousePosition, cueBall);
-            dragOriginCue = getCoordinates();
-            dragOriginMouse = mousePosition;
-        }
-        // Update drag position
-        else if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && dragging) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            // Enter dragging
+            if (!dragging) {
+                dragging = true;
+                shootDirection = getCueShotDirection(mousePosition, cueBall);
+                dragOriginCue = getCoordinates();
+                dragOriginMouse = mousePosition;
+            }
             toDragPosition(mousePosition, cueBall);
         }
         // Left click released -> shoot
@@ -149,7 +149,7 @@ public class Cue3D {
             dragging = false;
             shoot(mousePosition, cueBall);
         }
-        // Not draging -> update position
+        // Not dragging -> update position
         else {
             toPosition(mousePosition, cueBall);
         }
@@ -169,6 +169,8 @@ public class Cue3D {
         direction.y = 0;
         direction.nor();
 
+        // TODO: Different calculation for the distance/force of the cue
+        // TODO: Now it just takes the distance to the first left-clicked point
         // The distance from the current mouse position and the first left-click mouse position.
         float distance = mousePosition.dst(dragOriginMouse);
 
