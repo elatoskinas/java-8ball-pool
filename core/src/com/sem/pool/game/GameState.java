@@ -40,7 +40,7 @@ public class GameState {
      * turn and starting the subsequent Player's turn.
      */
     public void advanceTurn() {
-
+        // TODO: Turn should be advanced
     }
 
     /**
@@ -49,7 +49,7 @@ public class GameState {
      * @param winnerId  ID of the winning player (0-baseed)
      */
     public void winGame(int winnerId) {
-
+        // TODO: Winner should be dispatched back to Game.java
     }
 
     /**
@@ -59,6 +59,7 @@ public class GameState {
      * @param ball  Ball to pot
      */
     public void onBallPotted(Ball3D ball) {
-        
+        // TODO: Ball should be potted and tracked for the Player
+        // TODO: Should handle dispatching events back to Game
     }
 }
