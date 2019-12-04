@@ -81,8 +81,10 @@ class GameStateTest {
         // We do not expect the cue ball to be in remaining balls list
         final int expectedBalls = solidBalls + stripedBalls + 1;
 
-        assertEquals(players, gameState.getPlayers());
-        assertEquals(expectedBalls, gameState.getRemainingBalls().size());
+        GameState gameState2 = new GameState(players, balls);
+
+        assertEquals(players, gameState2.getPlayers());
+        assertEquals(expectedBalls, gameState2.getRemainingBalls().size());
     }
 
     /**

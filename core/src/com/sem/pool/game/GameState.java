@@ -1,7 +1,9 @@
 package com.sem.pool.game;
 
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,11 +25,29 @@ public class GameState {
      * @param poolBalls   List of pool balls to use for the game
      */
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
+        this.players = players;
+        this.remainingBalls = new HashSet<>();
 
+        // Add all pool balls except cue ball to remaining balls set
+        for (Ball3D ball : poolBalls) {
+            if (!(ball instanceof CueBall3D)) {
+                remainingBalls.add(ball);
+            }
+        }
+
+        System.out.println(remainingBalls);
     }
 
     public boolean isStarted() {
         return started;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Set<Ball3D> getRemainingBalls() {
+        return remainingBalls;
     }
 
     /**
