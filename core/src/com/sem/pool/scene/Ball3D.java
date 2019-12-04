@@ -17,6 +17,8 @@ public class Ball3D {
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
+    private transient Vector3 direction;
+    private transient float speed;
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -34,6 +36,8 @@ public class Ball3D {
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
+        this.direction = new Vector3(0, 0, 0);
+        this.speed = 0;
     }
 
     public int getId() {
@@ -50,6 +54,14 @@ public class Ball3D {
 
     public HitBox getHitBox() {
         return hitBox;
+    }
+
+    public Vector3 getDirection() {
+        return direction;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     /**
