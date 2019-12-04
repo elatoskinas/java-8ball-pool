@@ -48,6 +48,36 @@ class Ball3DTest {
     }
 
     /**
+     * Test case to ensure that the direction setter for the Ball3D
+     * class sets the direction accordingly.
+     */
+    @Test
+    void testDirectionSetter() {
+        Vector3 direction = new Vector3(2.1f, 3.5f, 0f);
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Ball3D ball = new Ball3D(0, mockModel);
+        
+        ball.setDirection(direction);
+        
+        assertEquals(direction, ball.getDirection());
+    }
+
+    /**
+     * Test case to ensure that the speed setter for the Ball3D
+     * class sets the speed accordingly.
+     */
+    @Test
+    void testSpeedSetter() {
+        float speed = 5.1f;
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Ball3D ball = new Ball3D(0, mockModel);
+
+        ball.setSpeed(speed);
+
+        assertEquals(speed, ball.getSpeed());
+    }
+    
+    /**
      * Test case to ensure that the equals method on two
      * different objects with the same values returns true
      * upon calling equals.
