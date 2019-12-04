@@ -70,10 +70,10 @@ public class TableFactory extends Base3DFactory {
     public void setBoundingBoxes(Table3D table) {
 
         // set up bounding borders
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)), table, new btCollisionObject());
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)), table, new btCollisionObject());
-        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)), table, new btCollisionObject());
-        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)), table, new btCollisionObject());
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)), table, new btCollisionObject(), new Vector3(0,0,1));
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)), table, new btCollisionObject(), new Vector3(0,0, -1));
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)), table, new btCollisionObject(), new Vector3(1, 0, 0));
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)), table, new btCollisionObject(), new Vector3(-1,0,0));
     }
 
 
@@ -82,12 +82,13 @@ public class TableFactory extends Base3DFactory {
      * @param shape btCollisionShape for the box.
      * @param position position of the box.
      */
-    public void setUpBox(Vector3 shape, Matrix4 position, Table3D table, btCollisionObject btCollisionObject) {
+    public void setUpBox(Vector3 shape, Matrix4 position, Table3D table, btCollisionObject btCollisionObject, Vector3 normal) {
         System.out.println("Setting up bounding box at position: \n " + position);
         btCollisionShape btCollisionShape = new btBoxShape(shape);
         btCollisionObject.setCollisionShape( btCollisionShape);
         btCollisionObject.setWorldTransform(position);
         HitBox hitBox = new HitBox(btCollisionShape, btCollisionObject);
+        hitBox.setNormal(normal);
         table.getHitBoxes().add(hitBox);
     }
 }

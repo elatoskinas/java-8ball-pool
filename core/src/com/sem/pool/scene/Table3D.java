@@ -71,6 +71,8 @@ public class Table3D {
     public boolean checkCollision(Ball3D ball) {
         for (HitBox hitBox: hitBoxes) {
             if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {
+                Vector3 normal = new Vector3(hitBox.getNormal().nor());
+                ball.setDirection(ball.getDirection().add(normal.scl(-2 * ball.getDirection().dot(normal))));
                 return true;
             }
         }

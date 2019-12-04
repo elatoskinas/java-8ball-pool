@@ -34,7 +34,9 @@ public class Ball3D {
         this.direction = new Vector3(0,0,0);
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
-        this.speed = 0;
+        // for testing
+        setDirection(new Vector3(1,0,1));
+        this.speed = 0.05f;
     }
 
     public boolean isSetUp() {
@@ -95,16 +97,23 @@ public class Ball3D {
     }
 
     /**
-     * Translates the ball according to the provided vector.
-     * @param translation The direction and distance wherein the ball should be moved.
+     * Moves the ball in a direction with speed.
      */
-    public void move(Vector3 translation) {
+    public void move() {
+        Vector3 translation = new Vector3(getDirection()).scl(speed);
+        translate(translation);
+    }
+
+    /**
+     * Method called to move the ball in a direction.
+     * @param translation direction of movement.
+     */
+    public void translate(Vector3 translation) {
         this.model.transform.translate(translation);
         if (setUp) {
             this.hitBox.getObject().setWorldTransform(this.model.transform);
         }
     }
-
     /**
      * Translates the ball according to the stored speed and direction.
      */

@@ -1,5 +1,6 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 
@@ -11,6 +12,15 @@ public class HitBox {
     
     private transient btCollisionShape shape;
     private transient btCollisionObject object;
+    private transient Vector3 normal;
+
+    public Vector3 getNormal() {
+        return normal;
+    }
+
+    public void setNormal(Vector3 normal) {
+        this.normal = normal;
+    }
 
     /**
      * Constructs a new HitBox object with the specified Shape and Collision Object.
