@@ -70,7 +70,7 @@ public class Table3D {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // Might be unsuppressed later.
     public boolean checkCollision(Ball3D ball) {
         for (HitBox hitBox: hitBoxes) {
-            if (collisionHandler.checkHitBoxCollision(hitBox, ball.getHitBox())) {
+            if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {
                 return true;
             }
         }
