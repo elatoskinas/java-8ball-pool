@@ -1,6 +1,7 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
+
 import com.sem.pool.scene.Scene3D;
 
 /**
@@ -48,7 +49,7 @@ public class Game {
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
     public void respondToInput() {
-        // TODO: Implement logic to respond to input every frame
+
     }
     
 

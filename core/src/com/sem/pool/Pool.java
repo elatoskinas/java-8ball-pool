@@ -2,7 +2,6 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +14,7 @@ import com.sem.pool.factories.CameraFactory;
 import com.sem.pool.factories.CueFactory;
 import com.sem.pool.factories.SceneFactory;
 import com.sem.pool.factories.TableFactory;
+import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.List;
@@ -103,17 +103,10 @@ public class Pool extends ApplicationAdapter {
         if (loaded) {
             scene.render();
 
-            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-                Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-                scene.getCamera().unproject(mousePosition);
-                scene.getCue().toPosition(mousePosition, scene.getPoolBalls().get(0));
-            }
-            // TODO: Temporary code below that gets the cue shot direction
-            // TODO: relative to the mouse position.
-            /*Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            scene.getCamera().unproject(mousePosition);
-            Vector3 shotDirection = getScene().getPoolBalls().
-            get(0).getCueShotDirection(mousePosition);*/
+
+            Cue3D cue = scene.getCue();
+            cue.processInput(scene);
+
         }
     }
 
