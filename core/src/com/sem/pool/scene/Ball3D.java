@@ -47,11 +47,28 @@ public abstract class Ball3D {
     }
 
     /**
+     * Returns true if the ball is in motion, and false otherwise.
+     * TODO: This is to be integrated in collisions
+     * @return  True if the ball is in motion.
+     */
+    public boolean isInMotion() {
+        return false;
+    }
+
+    /**
      * Translates the ball according to the provided vector.
      * @param translation The direction and distance wherein the ball should be moved.
      */
     public void move(Vector3 translation) {
         this.model.transform.translate(translation);
+    }
+
+    /**
+     * Moves the ball based on it's current speed & direction.
+     * TODO: This is to be integrated in collisions;
+     */
+    public void move() {
+        // TODO: ...
     }
 
     /**
