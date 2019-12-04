@@ -14,11 +14,11 @@ import com.badlogic.gdx.math.Vector3;
 public class Cue3D {
 
     // The distance between the cueBall and the tip of the cue.
-    private static final float cueOffset = 0.05f;
+    protected static final float CUE_OFFSET = 0.05f;
 
     // The Y of the cue can't be 0 because it will end up in the bumpers.
-    private static final float yCoordinate = 1f;
-    private static final float forceCap = 1f;
+    protected static final float Y_COORDINATE = 1f;
+    private static final float FORCE_CAP = 1f;
 
     // Used for the dragging animation and force calculation
     private transient boolean dragging;
@@ -83,8 +83,8 @@ public class Cue3D {
         Vector3 position = cueBall.getModel().transform.getTranslation(new Vector3());
 
         // Sets the cue left from the cue ball
-        float x = position.x - cueOffset - cueBall.getRadius();
-        model.transform.translate(x,  yCoordinate, position.z);
+        float x = position.x - CUE_OFFSET - cueBall.getRadius();
+        model.transform.translate(x,  Y_COORDINATE, position.z);
     }
 
 
@@ -112,12 +112,12 @@ public class Cue3D {
 
         // Positioning
         // Distance from the center of the cue ball
-        float dist = cueBall.getRadius() + cueOffset;
+        float dist = cueBall.getRadius() + CUE_OFFSET;
 
         // Scale the direction with the radius of the circle where the cue needs to be
         Vector3 onRadius = new Vector3(direction.scl(dist));
         Vector3 res = onRadius.add(ballPosition);
-        model.transform.setToTranslation(res.x, yCoordinate, res.z);
+        model.transform.setToTranslation(res.x, Y_COORDINATE, res.z);
 
         // Rotation
         Vector3 newCuePosition = getCoordinates().sub(ballPosition);
@@ -174,11 +174,11 @@ public class Cue3D {
         direction.nor();
 
         // The distance from the current mouse position and the first left-click mouse position.
-        float distance = calculateDistanceToOrigin(new Vector3(mousePosition).sub(dragOriginMouse));
+        float distance = mousePosition.dst(dragOriginMouse);
 
         // Cap the max distance that the cue can move away
-        if (distance > forceCap) {
-            distance = forceCap;
+        if (distance > FORCE_CAP) {
+            distance = FORCE_CAP;
         }
 
         // Scale the direction with the distance
@@ -188,22 +188,12 @@ public class Cue3D {
         direction.add(dragOriginCue);
 
         // Do the translation
-        model.transform.setToTranslation(direction.x, yCoordinate, direction.z);
+        model.transform.setToTranslation(direction.x, Y_COORDINATE, direction.z);
 
         // Calculate and set the rotation of the cue (setToTranslation resets the rotation matrix)
-        Vector3 cuePosition = getCoordinates().sub(cueBall.getCoordinates()).nor();
+        Vector3 cuePosition = getCoordinates().sub(cueBall.getCoordinates());
         double angle = MathUtils.atan2(cuePosition.z, cuePosition.x * -1);
         model.transform.rotateRad(Vector3.Y, (float) angle);
-    }
-
-    /**
-     * Calculates the distance to the origin.
-     * @param vector The vector
-     * @return float distance to origin
-     */
-    public float calculateDistanceToOrigin(Vector3 vector) {
-        Vector3 v = new Vector3(vector);
-        return (float) Math.sqrt(Math.pow(v.x,2) + Math.pow(v.z,2));
     }
 
     /**
@@ -213,11 +203,11 @@ public class Cue3D {
      */
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
         // Calculates the force based on the distance
-        float force = calculateDistanceToOrigin(new Vector3(mousePosition).sub(dragOriginMouse));
+        float force = mousePosition.dst(dragOriginMouse);
 
         // Caps the force
-        if (force > forceCap) {
-            force = forceCap;
+        if (force > FORCE_CAP) {
+            force = FORCE_CAP;
         }
 
         // Apply the force in the shoot direction
