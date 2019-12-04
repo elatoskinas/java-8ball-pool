@@ -32,6 +32,7 @@ public class GameState {
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
         this.players = players;
         this.remainingBalls = new HashSet<>();
+        this.observers = new HashSet<>();
 
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
@@ -58,11 +59,11 @@ public class GameState {
     }
 
     public void addObserver(GameStateObserver observer) {
-
+        observers.add(observer);
     }
 
     public void removeObserver(GameStateObserver observer) {
-
+        observers.remove(observer);
     }
 
     /**
