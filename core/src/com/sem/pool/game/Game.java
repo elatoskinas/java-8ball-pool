@@ -97,7 +97,11 @@ public class Game {
         }
 
         // TODO: Handle calling pot balls methods
+
         // TODO: Handle collisions here?
+
+        // TODO: Need to stop balls after some point so that inMotion becomes false
+        //       Otherwise we will end up in an infinite movement loop.
     }
 
     /**
@@ -108,6 +112,16 @@ public class Game {
         // TODO: Implement logic to respond to input every frame
         // TODO: Call performCueShot on input
         throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    /**
+     * Determines if there is at least one ball that is currently
+     * in motion. To be used as a helper for the game loop in
+     * ending a movement loop iteration.
+     * @return  True if at least one ball is in motion, and false otherwise.
+     */
+    protected boolean determineIsInMotion() {
+        return false;
     }
 
     /**

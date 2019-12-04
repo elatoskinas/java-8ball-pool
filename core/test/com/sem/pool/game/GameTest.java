@@ -95,6 +95,81 @@ public class GameTest {
     }
 
     /**
+     * Test case to verify that when all the balls are in motion,
+     * the Game determines that it is in motion for the current iteration.
+     */
+    @Test
+    void testBallsInMotionAll() {
+        final int ballCount = 3;
+        List<Ball3D> poolBalls = new ArrayList<>();
+
+        // Set up mock balls to pass into the mock scene
+        for (int i = 0; i < ballCount; ++i) {
+            Ball3D ball = Mockito.mock(Ball3D.class);
+            Mockito.when(ball.isInMotion()).thenReturn(true);
+            poolBalls.add(ball);
+        }
+
+        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+
+        game.startGame();
+
+        assertTrue(game.determineIsInMotion());
+    }
+
+    /**
+     * Test case to verify that when a single ball is in motion,
+     * the Game determines that it is also in motion.
+     */
+    @Test
+    void testBallsInMotionSingle() {
+        final int ballCount = 3;
+        List<Ball3D> poolBalls = new ArrayList<>();
+
+        // Set up mock balls to pass into the mock scene
+        for (int i = 0; i < ballCount; ++i) {
+            Ball3D ball = Mockito.mock(Ball3D.class);
+
+            if (i == ballCount - 1) {
+                Mockito.when(ball.isInMotion()).thenReturn(true);
+            } else {
+                Mockito.when(ball.isInMotion()).thenReturn(false);
+            }
+
+            poolBalls.add(ball);
+        }
+
+        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+
+        game.startGame();
+
+        assertTrue(game.determineIsInMotion());
+    }
+
+    /**
+     * Test case to verify that when no balls are in motion,
+     * the Game determines that it is also not in motion.
+     */
+    @Test
+    void testBallsInMotionNone() {
+        final int ballCount = 3;
+        List<Ball3D> poolBalls = new ArrayList<>();
+
+        // Set up mock balls to pass into the mock scene
+        for (int i = 0; i < ballCount; ++i) {
+            Ball3D ball = Mockito.mock(Ball3D.class);
+            Mockito.when(ball.isInMotion()).thenReturn(false);
+            poolBalls.add(ball);
+        }
+
+        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+
+        game.startGame();
+
+        assertFalse(game.determineIsInMotion());
+    }
+
+    /**
      * TODO: Test case for advancing game loop; Currently added due to UnsupportedOperationException
      * TODO: thrown methods from classes still being considered by Jacoco branch coverage,
      * TODO: and hence failing the build pipeline.
