@@ -14,8 +14,13 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
 
 
 /**
@@ -34,14 +39,50 @@ class Table3DTest {
         assertEquals(model, board.getModel());
     }
 
+    /**
+     * Tests the getters and setters of the fields
+     */
     @Test
-    public void testSetupBoundingBoxes() {
-        Bullet.init();
+    public void testFields() {
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        Table3D board = new Table3D(model);
+
+        btDefaultCollisionConfiguration mockConfig =
+                Mockito.mock(btDefaultCollisionConfiguration.class);
+//        board.setCollisionConfig(mockConfig);
+//        assertEquals(mockConfig, board.getCollisionConfig());
+//
+//        btCollisionDispatcher mockDispatcher =
+//                Mockito.mock(btCollisionDispatcher.class);
+//        board.setDispatcher(mockDispatcher);
+//        assertEquals(mockDispatcher, board.getDispatcher());
+
+        ArrayList<HitBox> hitBoxes = new ArrayList<>();
+        assertEquals(board.getHitBoxes(), hitBoxes);
+
+        HitBox mockHitBox = Mockito.mock(HitBox.class);
+        hitBoxes.add(mockHitBox);
+        board.addHitBox(mockHitBox);
+        assertEquals(board.getHitBoxes(), hitBoxes);
+
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        board.setCollisionHandler(mockedHandler);
+        assertEquals(mockedHandler, board.getCollisionHandler());
+    }
+
+    @Test
+    public void testCollisions() {
+        Ball3D mockedBall = Mockito.mock(Ball3D.class);
 
         ModelInstance model = Mockito.mock(ModelInstance.class);
         Table3D board = new Table3D(model);
-        model.transform = Mockito.mock(Matrix4.class);
-        board.setUpBoundingBorders();
-        Mockito.verify(model.transform.translate(Mockito.any()));
+        HitBox mockedHitBox = Mockito.mock(HitBox.class);
+        board.addHitBox(mockedHitBox);
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        board.setCollisionHandler(mockedHandler);
+        Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        // Simplified collision handler to test if the table returns what it shouldHitBox mockedBallHitBox = Mockito.mock(HitBox.class);
+        board.checkCollision(mockedBall);
+        Mockito.verify(mockedHandler, Mockito.times(1)).checkHitBoxCollision(Mockito.any(HitBox.class), Mockito.any(HitBox.class));
     }
 }

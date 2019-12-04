@@ -49,7 +49,6 @@ public class Scene3D {
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
         models.add(table.getModel());
-        table.setUpBoundingBorders();
         models.add(cue.getModel());
 
         for (Ball3D ball : poolBalls) {
