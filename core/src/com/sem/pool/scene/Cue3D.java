@@ -120,11 +120,7 @@ public class Cue3D {
         model.transform.setToTranslation(res.x, Y_COORDINATE, res.z);
 
         // Rotation
-        Vector3 newCuePosition = getCoordinates().sub(ballPosition);
-        newCuePosition.y = 0;
-        newCuePosition.nor();
-        double newAngle = MathUtils.atan2(newCuePosition.z, newCuePosition.x * -1);
-        model.transform.rotateRad(Vector3.Y, (float) newAngle);
+        rotateCue(cueBall);
     }
 
     /**
@@ -167,7 +163,7 @@ public class Cue3D {
     public void toDragPosition(Vector3 mousePosition, Ball3D cueBall) {
         
         // Get the direction of the cue drag
-        Vector3 direction = new Vector3(dragOriginMouse).sub(dragOriginCue);
+        Vector3 direction = new Vector3(dragOriginMouse).sub(cueBall.getCoordinates());
 
         // Normalize vector because it is the direction
         direction.y = 0;
@@ -176,7 +172,7 @@ public class Cue3D {
         // The distance from the current mouse position and the first left-click mouse position.
         float distance = mousePosition.dst(dragOriginMouse);
 
-        // Cap the max distance that the cue can move away
+        // Maximum distance that the cue can be dragged
         if (distance > FORCE_CAP) {
             distance = FORCE_CAP;
         }
@@ -191,6 +187,14 @@ public class Cue3D {
         model.transform.setToTranslation(direction.x, Y_COORDINATE, direction.z);
 
         // Calculate and set the rotation of the cue (setToTranslation resets the rotation matrix)
+        rotateCue(cueBall);
+    }
+
+    /**
+     * Rotates the cue to point towards the center of the cueball
+     * @param cueBall cue ball
+     */
+    public void rotateCue(Ball3D cueBall) {
         Vector3 cuePosition = getCoordinates().sub(cueBall.getCoordinates());
         double angle = MathUtils.atan2(cuePosition.z, cuePosition.x * -1);
         model.transform.rotateRad(Vector3.Y, (float) angle);
