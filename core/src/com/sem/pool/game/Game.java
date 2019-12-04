@@ -13,6 +13,10 @@ public class Game {
     private transient Input input;
     private transient GameState state;
 
+    // Boolean to keep track whether balls are in motion;
+    // If that is the case, we will ignore user input.
+    private transient boolean inMotion;
+
     /**
      * Constructs a new Game object with the given scene, input, and state.
      * @param scene The scene of the game.
