@@ -29,6 +29,8 @@ public class Table3D {
 
     private transient ArrayList<HitBox> hitBoxes;
     private transient ArrayList<ModelInstance> modelInstances;
+    private btDefaultCollisionConfiguration collisionConfig;
+    private btCollisionDispatcher dispatcher;
 
     /**
      * Constructs a new 3D Board instance with the specified model.
@@ -44,6 +46,9 @@ public class Table3D {
      * Sets up the bounding borders for the table.
      */
     public void setUpBoundingBorders() {
+        // set up collision dispatcher
+        collisionConfig = new btDefaultCollisionConfiguration();
+        dispatcher = new btCollisionDispatcher(collisionConfig);
         // set up bounding borders
         ModelBuilder mb = new ModelBuilder();
 
@@ -122,9 +127,6 @@ public class Table3D {
      * @return whether the ball collided with the table.
      */
     public boolean checkHitBoxCollision(HitBox hitBox, Ball3D ball) {
-        btDefaultCollisionConfiguration collisionConfig = new btDefaultCollisionConfiguration();
-        btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfig);
-
         // Copy pasted right now, should work
         btCollisionObject hitBoxObject = hitBox.getObject();
         btCollisionObject ballObject = ball.getHitBox().getObject();
