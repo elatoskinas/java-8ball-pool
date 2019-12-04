@@ -22,6 +22,14 @@ public class GameState {
     }
 
     /**
+     * Starts the pool game by picking a random Player
+     * for the break shot.
+     */
+    public void startGame() {
+        // TODO: Implement random player picking
+    }
+
+    /**
      * Advances the turn of the game, ending the current Player's
      * turn and starting the subsequent Player's turn.
      */
