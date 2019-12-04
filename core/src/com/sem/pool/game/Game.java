@@ -17,6 +17,8 @@ public class Game {
     // If that is the case, we will ignore user input.
     private transient boolean inMotion;
 
+    private transient boolean started;
+
     /**
      * Constructs a new Game object with the given scene, input, and state.
      * @param scene The scene of the game.
@@ -41,6 +43,10 @@ public class Game {
         return state;
     }
 
+    public boolean isStarted() {
+        return started;
+    }
+
     /**
      * Starts the game and takes care of starting the
      * Game State as well.
@@ -57,6 +63,8 @@ public class Game {
      */
     public void advanceGameLoop() {
         // TODO: Implement game loop logic
+        // TODO: Mark inMotion true/false
+        // TODO: Advance turns
     }
 
     /**
