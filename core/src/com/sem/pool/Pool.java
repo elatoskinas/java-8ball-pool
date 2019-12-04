@@ -154,27 +154,27 @@ public class Pool extends ApplicationAdapter {
     /**
      * Method to move the ball using the keyboard.
      */
-//    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // might be unsuppressed later.
-//    public void moveBall() {
-//        Ball3D cueBall = scene.getPoolBalls().get(0);
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            cueBall.move(new Vector3(1f, 0, 0).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            cueBall.move(new Vector3(-1f, 0, 0).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//            cueBall.move(new Vector3(0f, 0, -1f).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//            cueBall.move(new Vector3(0, 0, 1f).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//    }
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // might be unsuppressed later.
+    public void moveBall() {
+        Ball3D cueBall = scene.getPoolBalls().get(0);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            cueBall.move(new Vector3(1f, 0, 0).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            cueBall.move(new Vector3(-1f, 0, 0).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            cueBall.move(new Vector3(0f, 0, -1f).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            cueBall.move(new Vector3(0, 0, 1f).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
+    }
 
     /**
      * Renders the scene only if the scene has finished loading.
@@ -184,17 +184,14 @@ public class Pool extends ApplicationAdapter {
         if (loaded) {
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
-            if (true){
-                //cueBall.setDirection(cueBall.getDirection().scl(99f));
-                System.out.println(cueBall.getDirection());
-                getScene().getTable().checkCollision(cueBall);
-                cueBall.move();
+            if (!getScene().getTable().checkCollision(cueBall)) {
+                moveBall();
             }
             // so it doesn't collide with table.
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.
             Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            //System.out.println(scene.getCamera().unproject(mousePosition));
+            System.out.println(scene.getCamera().unproject(mousePosition));
             //Vector3 shotDirection = getScene().getPoolBalls().
             //get(0).getCueShotDirection(mousePosition);*/
 
