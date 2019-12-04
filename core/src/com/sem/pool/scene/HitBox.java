@@ -22,6 +22,16 @@ public class HitBox {
         this.object = object;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof HitBox) {
+            HitBox hb = (HitBox) obj;
+            return  hb.getObject().equals(this.getObject())
+                    && hb.getShape().equals(this.getShape());
+        }
+        return false;
+    }
+
     public btCollisionShape getShape() {
         return shape;
     }

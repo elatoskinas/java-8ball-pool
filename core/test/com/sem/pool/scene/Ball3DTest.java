@@ -1,14 +1,16 @@
 package com.sem.pool.scene;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class containing unit tests for the Ball3D class.
@@ -57,10 +59,10 @@ class Ball3DTest {
         Vector3 direction = new Vector3(3f, 4f, 0f);
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
         Ball3D ball = new Ball3D(0, mockModel);
-        
+
         ball.setDirection(direction);
-        
-        assertEquals(new Vector3(3f/5f, 4f/5f, 0f), ball.getDirection());
+
+        assertEquals(new Vector3(3f / 5f, 4f / 5f, 0f), ball.getDirection());
     }
 
     /**
@@ -77,7 +79,7 @@ class Ball3DTest {
 
         assertEquals(speed, ball.getSpeed());
     }
-    
+
     /**
      * Test case to ensure that the equals method on two
      * different objects with the same values returns true
@@ -202,7 +204,7 @@ class Ball3DTest {
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
         mockModelInstance.transform = mockMatrix;
         Ball3D ball = new Ball3D(0, mockModelInstance);
-        Vector3 translation = new Vector3(1f,0,0);
+        Vector3 translation = new Vector3(1f, 0, 0);
         ball.move(translation);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
     }
@@ -216,7 +218,7 @@ class Ball3DTest {
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         mockModelInstance.transform = Mockito.mock(Matrix4.class);
         Ball3D ball = new Ball3D(0, mockModelInstance);
-        Vector3 translation = new Vector3(1f,0,0);
+        Vector3 translation = new Vector3(1f, 0, 0);
         float scalar = 10;
         Ball3D spyBall = Mockito.spy(ball);
         spyBall.applyForce(scalar, translation);
@@ -299,9 +301,10 @@ class Ball3DTest {
      * specified setup for the ball and the mouse position,
      * and the expected direction. The method handles assertions
      * for the specified setup.
-     * @param ballPosition       Position of the ball
-     * @param mousePosition      Passed in position of the mouse
-     * @param expectedDirection  Expected direction of the cue shot
+     *
+     * @param ballPosition      Position of the ball
+     * @param mousePosition     Passed in position of the mouse
+     * @param expectedDirection Expected direction of the cue shot
      */
     private void testCueShotDirectionHelper(Vector3 ballPosition,
                                             Vector3 mousePosition, Vector3 expectedDirection) {
@@ -378,5 +381,30 @@ class Ball3DTest {
         float radius = ball.getRadius(); // Get radius again
 
         assertEquals(expectedRadius, radius);
+    }
+
+    @Test
+    public void testSetupBoxes() {
+        Bullet.init();
+        final int id1 = 0;
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
+        final float expectedRadius = 2.f;
+
+        // Setup expected bounding box of size 4 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(4, 4, 4);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(box);
+
+        Ball3D ball = new Ball3D(id1, model);
+
+        ball.getRadius(); // Perform radius side effect to construct bounding box
+        ball.setUpBoxes();
+        assertEquals(ball.getModel(), model);
+        assertTrue(ball.isSetUp());
     }
 }
