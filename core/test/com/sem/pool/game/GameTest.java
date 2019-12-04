@@ -133,6 +133,12 @@ public class GameTest {
         assertFalse(game.determineIsInMotion());
     }
 
+    /**
+     * Test case to verify the state transition from a game that has
+     * not yet been started, to a started game that is not in motion,
+     * and then to a game that is in motion because at least one
+     * ball is in motion.
+     */
     @Test
     void testLoopToMotion() {
         setupScenePoolBallsHelper(false, true);
@@ -147,6 +153,20 @@ public class GameTest {
         assertTrue(game.isInMotion());
     }
 
+    /**
+     * Test case to verify that a stopped game does not trigger
+     * any functionality. This is done by making sure that there
+     * are no interactions with the scene or the input objects
+     * of the Game.
+     */
+    @Test
+    void testLoopNotStarted() {
+        game.advanceGameLoop();
+
+        Mockito.verifyNoInteractions(scene);
+        Mockito.verifyNoInteractions(input);
+    }
+
     void setupScenePoolBallsHelper(boolean... motion) {
         List<Ball3D> balls = new ArrayList<>();
 
@@ -157,22 +177,5 @@ public class GameTest {
         }
 
         Mockito.when(scene.getPoolBalls()).thenReturn(balls);
-    }
-
-    /**
-     * TODO: Test case for advancing game loop; Currently added due to UnsupportedOperationException
-     * TODO: thrown methods from classes still being considered by Jacoco branch coverage,
-     * TODO: and hence failing the build pipeline.
-     */
-    @Test
-    void advanceGameLoop() {
-        game.advanceGameLoop();
-        game.startGame();
-
-        try {
-            game.advanceGameLoop();
-        } catch (UnsupportedOperationException e) {
-            e.printStackTrace();
-        }
     }
 }
