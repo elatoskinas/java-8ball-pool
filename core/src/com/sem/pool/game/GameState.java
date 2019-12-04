@@ -9,16 +9,21 @@ import java.util.Set;
  * Class to keep track of the current state of the game with regards to the rules.
  */
 public class GameState {
-    //TODO: Implement game logic
     private List<Player> players;
     private Set<Ball3D> remainingBalls;
     private int playerTurn;
     private int turnCount;
 
+    private transient boolean started;
+
     /**
      * Creates a new GameState object.
      */
     public GameState() {
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     /**
@@ -27,6 +32,7 @@ public class GameState {
      */
     public void startGame() {
         // TODO: Implement random player picking
+        this.started = true;
     }
 
     /**
