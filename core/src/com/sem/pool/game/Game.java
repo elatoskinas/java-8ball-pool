@@ -82,9 +82,7 @@ public class Game {
             // we are at the phase where we can respond to input.
             // Otherwise, we need to move the balls.
             if (!inMotion) {
-                //respondToInput();
-                // TODO: Advance turns:
-                //       Implement state transition that goes from in motion to not in-motion
+                respondToInput();
             } else {
                 moveBalls();
             }
@@ -95,7 +93,9 @@ public class Game {
      * Moves the balls according to our physics implementation. This method will be called
      * every frame in the render() method.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    // Seems like there is a false positive with regards to UR anomalies that
+    // is caused by the loop.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     protected void moveBalls() {
         // Move all the balls in the scene, regardless of whether
         // they are in motion or not. Here, we assume that the ball
@@ -128,6 +128,9 @@ public class Game {
      * ending a movement loop iteration.
      * @return  True if at least one ball is in motion, and false otherwise.
      */
+    // Seems like there is a false positive with regards to UR anomalies that
+    // is caused by the loop.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     protected boolean determineIsInMotion() {
         // Check all the balls currently in the scene
         for (Ball3D ball : scene.getPoolBalls()) {

@@ -7,12 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameTest {
     transient Scene3D scene;
@@ -167,6 +166,8 @@ public class GameTest {
         Mockito.verifyNoInteractions(input);
     }
 
+    // Seems like an FP indicating a DU caused by the loop
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     void setupScenePoolBallsHelper(boolean... motion) {
         List<Ball3D> balls = new ArrayList<>();
 
