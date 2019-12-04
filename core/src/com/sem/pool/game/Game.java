@@ -64,9 +64,18 @@ public class Game {
      * the current turn.
      */
     public void advanceGameLoop() {
-        // TODO: Implement game loop logic
-        // TODO: Mark inMotion true/false
-        // TODO: Advance turns
+        if (started) {
+            // If no balls are in motion, that means
+            // we are at the phase where we can respond to input.
+            // Otherwise, we need to move the balls.
+            if (!inMotion) {
+                respondToInput();
+                // TODO: Advance turns:
+                //       Implement state transition that goes from in motion to not in-motion
+            } else {
+                moveBalls();
+            }
+        } // Do nothing if game is not started
     }
 
     /**
@@ -75,6 +84,8 @@ public class Game {
      */
     protected void moveBalls() {
         // TODO: Implement logic that handles all ball movement every frame
+        // TODO: Mark inMotion true/false
+        // TODO: Handle calling pot balls methods
     }
 
     /**
