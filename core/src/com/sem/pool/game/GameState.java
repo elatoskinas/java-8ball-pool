@@ -92,9 +92,15 @@ public class GameState {
      * @param winnerId  ID of the winning player (0-baseed)
      */
     public void winGame(int winnerId) {
-        // TODO: Winner should be dispatched back to Game.java
+        Player winningPlayer = players.get(winnerId);
 
-        // TODO: Notify observers
+        // Notify the observers of the victory
+        for (GameStateObserver observer : observers) {
+            observer.endGame(winningPlayer);
+        }
+
+        // Stop the game
+        started = false;
     }
 
     /**
