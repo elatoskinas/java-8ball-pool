@@ -191,7 +191,7 @@ public class Cue3D {
     }
 
     /**
-     * Rotates the cue to point towards the center of the cueball
+     * Rotates the cue so that it points towards the center of the cue ball.
      * @param cueBall cue ball
      */
     public void rotateCue(Ball3D cueBall) {

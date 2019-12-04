@@ -2,16 +2,15 @@ package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
+ * TODO: Add more tests cases
  * Test class containing unit tests for the Cue3D class.
  */
 public class Cue3DTest {
@@ -143,14 +142,4 @@ public class Cue3DTest {
         // Assert expected direction equal to actual direction
         assertEquals(expectedDirection, direction);
     }
-
-    /**
-     * Test case to verify the distance to the origin.
-     */
-    @Test
-    public void testCalculateDistanceToOrigin() {
-        float distance = cue.
-        assertEquals(cue.getCoordinates(), result);
-    }
-
 }
