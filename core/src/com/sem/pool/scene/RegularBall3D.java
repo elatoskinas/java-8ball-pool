@@ -26,7 +26,7 @@ public class RegularBall3D extends Ball3D {
         if (id < GameConstants.EIGHTBALL_ID) {
             this.type = Type.FULL;
         }
-        else{
+        else {
             this.type = Type.STRIPED;
         }
     }
