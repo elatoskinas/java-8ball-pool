@@ -1,6 +1,7 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -22,5 +23,20 @@ public class HitBoxTest {
         HitBox hitBox = new HitBox(mockShape, mockObject);
         assertEquals(hitBox.getShape(), mockShape);
         assertEquals(hitBox.getObject(), mockObject);
+    }
+
+    @Test
+    void testEquals() {
+        btCollisionShape mockShape = Mockito.mock(btCollisionShape.class);
+        btCollisionObject mockObject = Mockito.mock(btCollisionObject.class);
+        HitBox hitBox = new HitBox(mockShape, mockObject);
+        HitBox hitBox1 = new HitBox(mockShape, mockObject);
+        HitBox hitBox2 = new HitBox(mockShape, Mockito.mock(btCollisionObject.class));
+
+        assertEquals(hitBox.getShape(), mockShape);
+        assertEquals(hitBox.getObject(), mockObject);
+        assertEquals(hitBox, hitBox1);
+        assertFalse(hitBox.equals(hitBox2));
+        assertFalse(hitBox.equals("test"));
     }
 }
