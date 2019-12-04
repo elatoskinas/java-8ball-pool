@@ -115,7 +115,7 @@ public class SceneFactory {
 
         // Create table
         Table3D table = tableFactory.createTable();
-        tableFactory.setBoundingBoxes(table, new btCollisionObject());
+        tableFactory.setBoundingBoxes(table);
 
         // Create cue
         Cue3D cue = cueFactory.createCue();
