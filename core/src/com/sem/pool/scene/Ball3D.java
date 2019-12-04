@@ -33,6 +33,8 @@ public class Ball3D {
         this.model = model;
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
+        this.direction = new Vector3(0, 0, 0);
+        this.speed = 0;
     }
 
     /**
@@ -46,8 +48,6 @@ public class Ball3D {
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
         this.setUp = true;
-        this.direction = new Vector3(0, 0, 0);
-        this.speed = 0;
     }
 
     public int getId() {
