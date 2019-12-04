@@ -69,7 +69,7 @@ public class TableFactory extends Base3DFactory {
      */
     public void setBoundingBoxes(Table3D table) {
 
-        // set up bounding borders
+        // set up bounding boxes
         setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)), table, new btCollisionObject());
         setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)), table, new btCollisionObject());
         setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)), table, new btCollisionObject());
@@ -83,7 +83,6 @@ public class TableFactory extends Base3DFactory {
      * @param position position of the box.
      */
     public void setUpBox(Vector3 shape, Matrix4 position, Table3D table, btCollisionObject btCollisionObject) {
-        System.out.println("Setting up bounding box at position: \n " + position);
         btCollisionShape btCollisionShape = new btBoxShape(shape);
         btCollisionObject.setCollisionShape( btCollisionShape);
         btCollisionObject.setWorldTransform(position);

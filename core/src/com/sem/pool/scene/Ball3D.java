@@ -31,10 +31,10 @@ public class Ball3D {
     public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;
-        this.direction = new Vector3(0,0,0);
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
-        this.speed = 0;
+        this.speed = 0.01f;
+        this.setDirection(new Vector3(1,0,0));
     }
 
     public boolean isSetUp() {
@@ -75,7 +75,7 @@ public class Ball3D {
     }
 
     public void setDirection(Vector3 direction) {
-        this.direction = direction.nor();
+         this.direction = direction;
     }
 
     public float getSpeed() {
@@ -96,22 +96,24 @@ public class Ball3D {
 
     /**
      * Translates the ball according to the provided vector.
-     * @param translation The direction and distance wherein the ball should be moved.
      */
-    public void move(Vector3 translation) {
-        this.model.transform.translate(translation);
+    public void move() {
+        Vector3 distance = new Vector3(direction).scl(speed);
+        this.model.transform.translate(distance);
         if (setUp) {
             this.hitBox.getObject().setWorldTransform(this.model.transform);
         }
     }
 
     /**
-     * Applies the provided directional force to the ball, resulting in movement.
-     * @param force Scalar by which the direction vector will be multiplied.
-     * @param direction The direction of the force that is to be applied to the ball.
+     * Method meant to move the object in a specific direction once.
+     * @param translation
      */
-    public void applyForce(float force, Vector3 direction) {
-        this.move(direction.scl(force));
+    public void translate(Vector3 translation) {
+        this.model.transform.translate(translation);
+        if (setUp) {
+            this.hitBox.getObject().setWorldTransform(this.model.transform);
+        }
     }
 
     /**

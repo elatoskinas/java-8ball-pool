@@ -71,6 +71,8 @@ public class Table3D {
     public boolean checkCollision(Ball3D ball) {
         for (HitBox hitBox: hitBoxes) {
             if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {
+                System.out.println("Colliding");
+                // reflect of hitbox
                 return true;
             }
         }
