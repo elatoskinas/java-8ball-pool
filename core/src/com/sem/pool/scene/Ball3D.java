@@ -17,6 +17,7 @@ public class Ball3D {
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
+    private transient boolean setUp = false;
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -30,11 +31,19 @@ public class Ball3D {
         this.model = model;
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
+    }
+
+    /**
+     * Sets up the bounding box and hitboxes after the game is loaded.
+     * This should be called when a ball is loaded into the scene.
+     */
+    public void setUpBoxes() {
         btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
+        this.setUp = true;
     }
 
     public int getId() {
@@ -67,7 +76,9 @@ public class Ball3D {
      */
     public void move(Vector3 translation) {
         this.model.transform.translate(translation);
-        this.hitBox.getObject().setWorldTransform(this.model.transform);
+        if (setUp) {
+            this.hitBox.getObject().setWorldTransform(this.model.transform);
+        }
     }
 
     /**

@@ -38,6 +38,12 @@ public class Table3D {
         this.model = model;
         this.hitBoxes = new ArrayList<>();
         this.modelInstances = new ArrayList<>();
+    }
+
+    /**
+     * Sets up the bounding borders for the table.
+     */
+    public void setUpBoundingBorders() {
         // set up bounding borders
         ModelBuilder mb = new ModelBuilder();
 
@@ -99,7 +105,7 @@ public class Table3D {
      * @param ball Ball that we check collisions with.
      * @return whether the ball collided with the table.
      */
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // Warning suppressed, might be unsuppressed later.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // Might be unsuppressed later.
     public boolean checkCollision(Ball3D ball) {
         for (HitBox hitBox: hitBoxes) {
             if (checkHitBoxCollision(hitBox, ball)) {
@@ -135,15 +141,13 @@ public class Table3D {
 
         algorithm.processCollision(co0.wrapper, co1.wrapper, info, result);
 
-        boolean r = result.getPersistentManifold().getNumContacts() > 0;
-
+        final boolean r = result.getPersistentManifold().getNumContacts() > 0;
         result.dispose();
         info.dispose();
         algorithm.dispose();
         ci.dispose();
         co1.dispose();
         co0.dispose();
-
         return r;
     }
 }

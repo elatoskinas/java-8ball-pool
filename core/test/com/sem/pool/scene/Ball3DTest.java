@@ -38,7 +38,8 @@ class Ball3DTest {
     public void testIdSetter() {
         final int initId = 0;
         final int id = 2;
-        Ball3D ball = new Ball3D(initId, null);
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        Ball3D ball = new Ball3D(initId, model);
 
         ball.setId(id);
 
@@ -114,7 +115,7 @@ class Ball3DTest {
     @Test
     public void testHashCodeEqual() {
         final int id = 0;
-        final ModelInstance model = null;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Ball3D ball1 = new Ball3D(id, model);
         Ball3D ball2 = new Ball3D(id, model);
@@ -135,7 +136,7 @@ class Ball3DTest {
     public void testHashCodeNotEqual() {
         final int id1 = 0;
         final int id2 = 5;
-        final ModelInstance model = null;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Ball3D ball1 = new Ball3D(id1, model);
         Ball3D ball2 = new Ball3D(id2, model);
@@ -314,7 +315,6 @@ class Ball3DTest {
                 .thenReturn(box);
 
         Ball3D ball = new Ball3D(id1, model);
-
         float radius = ball.getRadius();
 
         assertEquals(expectedRadius, radius);
