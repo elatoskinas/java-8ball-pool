@@ -43,11 +43,6 @@ public class CollisionHandlerTest {
         btDispatcherInfo dispatcherInfo = new btDispatcherInfo();
         CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher, constructionInfo, dispatcherInfo);
 
-        HitBox mockedHitBox = Mockito.mock(HitBox.class);
-        HitBox mockedHitBox1 = Mockito.mock(HitBox.class);
-
-        btCollisionObject mockedCollisionObject = Mockito.mock(btCollisionObject.class);
-        btCollisionObject mockedCollisionObject1 = Mockito.mock(btCollisionObject.class);
         CollisionObjectWrapper mockedCO0 = Mockito.mock(CollisionObjectWrapper.class);
         CollisionObjectWrapper mockedCO1 = Mockito.mock(CollisionObjectWrapper.class);
         btCollisionAlgorithm mockedAlgorithm = Mockito.mock(btCollisionAlgorithm.class);
@@ -55,19 +50,10 @@ public class CollisionHandlerTest {
         btPersistentManifold mockedPersistentManifold = Mockito.mock(btPersistentManifold.class);
         mockedResult.setPersistentManifold(mockedPersistentManifold);
 
-//        btCollisionObject collisionObject = obj1.getObject();
-//        btCollisionObject collisionObject1 = obj2.getObject();
-//        CollisionObjectWrapper co0 = new CollisionObjectWrapper(collisionObject);
-//        CollisionObjectWrapper co1 = new CollisionObjectWrapper(collisionObject1);
-//
-//        // you need algorithm
-//        btCollisionAlgorithm algorithm = new btSphereBoxCollisionAlgorithm(null, this.constructionInfo,
-//                co0.wrapper, co1.wrapper, false);
-//
-//        btManifoldResult result = new btManifoldResult(co0.wrapper, co1.wrapper);
         Mockito.doNothing().when(mockedAlgorithm).processCollision(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+        Mockito.when(mockedResult.getPersistentManifold()).thenReturn(mockedPersistentManifold);
         Mockito.when(mockedPersistentManifold.getNumContacts()).thenReturn(1);
-        assertTrue(collisionHandler.checkCollisionAlgorithm(mockedAlgorithm, mockedCO0, mockedCO1, mockedResult, mockedPersistentManifold));
+        assertTrue(collisionHandler.checkCollisionAlgorithm(mockedAlgorithm, mockedCO0, mockedCO1, mockedResult));
 
 
     }

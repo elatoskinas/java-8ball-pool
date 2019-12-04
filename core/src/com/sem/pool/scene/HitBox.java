@@ -32,6 +32,11 @@ public class HitBox {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     public btCollisionShape getShape() {
         return shape;
     }

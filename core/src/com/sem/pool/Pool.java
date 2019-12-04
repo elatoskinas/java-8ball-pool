@@ -184,17 +184,14 @@ public class Pool extends ApplicationAdapter {
         if (loaded) {
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
-            // so it doesn't collide with table.
-            if (scene.getTable().checkCollision(cueBall)) {
-                speed = 0;
-            } else {
-                speed = 1;
+            if (!getScene().getTable().checkCollision(cueBall)) {
+                moveBall();
             }
-            moveBall();
+            // so it doesn't collide with table.
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.
             Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            System.out.println(scene.getCamera().unproject(mousePosition));
+            //System.out.println(scene.getCamera().unproject(mousePosition));
             //Vector3 shotDirection = getScene().getPoolBalls().
             //get(0).getCueShotDirection(mousePosition);*/
 

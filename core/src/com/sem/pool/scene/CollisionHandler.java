@@ -67,12 +67,12 @@ public class CollisionHandler {
         CollisionObjectWrapper co1 = new CollisionObjectWrapper(collisionObject1);
 
         // you need algorithm
-        btCollisionAlgorithm algorithm = new btSphereBoxCollisionAlgorithm(null, this.constructionInfo,
+        btSphereBoxCollisionAlgorithm algorithm = new btSphereBoxCollisionAlgorithm(null, this.constructionInfo,
                 co0.wrapper, co1.wrapper, false);
 
         btManifoldResult result = new btManifoldResult(co0.wrapper, co1.wrapper);
 
-        return checkCollisionAlgorithm(algorithm, co0, co1, result, result.getPersistentManifold());
+        return checkCollisionAlgorithm(algorithm, co0, co1, result);
 
 //        algorithm.processCollision(co0.wrapper, co1.wrapper, this.dispatcherInfo, result);
 //
@@ -84,11 +84,10 @@ public class CollisionHandler {
 ////        return r;
     }
     public boolean checkCollisionAlgorithm(btCollisionAlgorithm algorithm, CollisionObjectWrapper co0,
-                                           CollisionObjectWrapper co1, btManifoldResult result,
-                                            btPersistentManifold persistentManifold) {
+                                           CollisionObjectWrapper co1, btManifoldResult result) {
         algorithm.processCollision(co0.wrapper, co1.wrapper, this.dispatcherInfo, result);
 
-        final boolean r = persistentManifold.getNumContacts() > 0;
+        final boolean r = result.getPersistentManifold().getNumContacts() > 0;
         result.dispose();
         algorithm.dispose();
         co1.dispose();

@@ -4,9 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.sem.pool.scene.Table3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**
@@ -58,6 +63,7 @@ class TableFactoryTest {
      */
     @Test
     public void testCreateBoard() {
+        Bullet.init();
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Mockito.when(assetLoader.loadModel(TableFactory.MODEL_TYPE)).thenReturn(model);
@@ -66,5 +72,18 @@ class TableFactoryTest {
 
         Table3D expectedBoard = new Table3D(model);
         assertEquals(expectedBoard.getModel(), board.getModel());
+    }
+
+    /**
+     * Test the setUpBoxes method.
+     */
+    @Test
+    public void testSetUPBoxes(){
+        btCollisionObject mockedCollisionObject = Mockito.mock(btCollisionObject.class);
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+        Matrix4 matrixSpy = Mockito.spy(mockedMatrix);
+        Mockito.when(matrixSpy.translate(Mockito.any())).thenReturn(null);
+        factory.setUpBox(Mockito.mock(Vector3.class), mockedMatrix, factory.createTable(), mockedCollisionObject);
+        Mockito.verify(mockedCollisionObject).setWorldTransform(Mockito.any());
     }
 }

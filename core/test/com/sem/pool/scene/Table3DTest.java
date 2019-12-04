@@ -47,16 +47,6 @@ class Table3DTest {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         Table3D board = new Table3D(model);
 
-        btDefaultCollisionConfiguration mockConfig =
-                Mockito.mock(btDefaultCollisionConfiguration.class);
-//        board.setCollisionConfig(mockConfig);
-//        assertEquals(mockConfig, board.getCollisionConfig());
-//
-//        btCollisionDispatcher mockDispatcher =
-//                Mockito.mock(btCollisionDispatcher.class);
-//        board.setDispatcher(mockDispatcher);
-//        assertEquals(mockDispatcher, board.getDispatcher());
-
         ArrayList<HitBox> hitBoxes = new ArrayList<>();
         assertEquals(board.getHitBoxes(), hitBoxes);
 

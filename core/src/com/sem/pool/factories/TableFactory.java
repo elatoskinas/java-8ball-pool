@@ -61,19 +61,19 @@ public class TableFactory extends Base3DFactory {
         btDispatcherInfo dispatcherInfo = new btDispatcherInfo();
         CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher, constructionInfo, dispatcherInfo);
         table.setCollisionHandler(collisionHandler);
-        setBoundingBoxes(table);
         return table;
     }
 
     /**
      * Sets up the bounding borders for the table.
      */
-    public void setBoundingBoxes(Table3D table) {
+    public void setBoundingBoxes(Table3D table, btCollisionObject collisionObject) {
+
         // set up bounding borders
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Vector3(0,0,1.45f), table);
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Vector3(0,0,-1.45f), table);
-        setUpBox(new Vector3(.1f, 10f, 10f), new Vector3(3.05f,0,0), table);
-        setUpBox(new Vector3(.1f, 10f, 10f), new Vector3(-3.05f,0,0), table);
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)), table, collisionObject);
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)), table, collisionObject);
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)), table, collisionObject);
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)), table, collisionObject);
     }
 
 
@@ -82,11 +82,11 @@ public class TableFactory extends Base3DFactory {
      * @param shape btCollisionShape for the box.
      * @param position position of the box.
      */
-    public void setUpBox(Vector3 shape, Vector3 position, Table3D table) {
-        btCollisionObject btCollisionObject = new btCollisionObject();
+    public void setUpBox(Vector3 shape, Matrix4 position, Table3D table, btCollisionObject btCollisionObject) {
+        System.out.println("Setting up bounding box at position: " + position);
         btCollisionShape btCollisionShape = new btBoxShape(shape);
         btCollisionObject.setCollisionShape( btCollisionShape);
-        btCollisionObject.setWorldTransform(new Matrix4().translate(position));
+        btCollisionObject.setWorldTransform(position);
         HitBox hitBox = new HitBox(btCollisionShape, btCollisionObject);
         table.getHitBoxes().add(hitBox);
     }

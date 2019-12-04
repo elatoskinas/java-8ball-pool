@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
@@ -112,6 +113,7 @@ class SceneFactoryTest {
      */
     @Test
     public void testInstantiateSuccessful() {
+        Bullet.init();
         Scene3D scene = sceneFactory.createScene();
 
         assertNotNull(scene.getEnvironment());
@@ -127,6 +129,7 @@ class SceneFactoryTest {
      */
     @Test
     public void testInstantiateModels() {
+        Bullet.init();
         Scene3D scene = sceneFactory.createScene();
 
         // Verify the required amount of pool balls for scene

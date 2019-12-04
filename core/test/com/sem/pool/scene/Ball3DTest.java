@@ -389,7 +389,6 @@ class Ball3DTest {
         final int id1 = 0;
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
-        final float expectedRadius = 2.f;
 
         // Setup expected bounding box of size 4 in each axis
         BoundingBox box = new BoundingBox();
