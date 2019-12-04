@@ -95,9 +95,20 @@ public class Ball3D {
     }
 
     /**
+     * Translates the ball according to the provided vector.
+     * @param translation The direction and distance wherein the ball should be moved.
+     */
+    public void move(Vector3 translation) {
+        this.model.transform.translate(translation);
+        if (setUp) {
+            this.hitBox.getObject().setWorldTransform(this.model.transform);
+        }
+    }
+
+    /**
      * Translates the ball according to the stored speed and direction.
      */
-    public void move() {
+    public void update() {
         this.model.transform.translate(direction.scl(speed));
         if (setUp) {
             this.hitBox.getObject().setWorldTransform(this.model.transform);
