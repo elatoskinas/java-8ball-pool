@@ -29,6 +29,7 @@ public class Game {
         this.scene = scene;
         this.input = input;
         this.state = state;
+        this.started = false;
     }
 
     public Scene3D getScene() {
@@ -52,7 +53,8 @@ public class Game {
      * Game State as well.
      */
     public void startGame() {
-        // TODO: Implement game start logic
+        state.startGame();
+        this.started = true;
     }
 
     /**
