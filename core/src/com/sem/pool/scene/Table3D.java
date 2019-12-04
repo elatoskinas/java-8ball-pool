@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.CollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
@@ -31,15 +30,6 @@ public class Table3D {
     private transient ArrayList<HitBox> hitBoxes;
     private transient ArrayList<ModelInstance> modelInstances;
     private transient btDefaultCollisionConfiguration collisionConfig;
-
-    public btDefaultCollisionConfiguration getCollisionConfig() {
-        return collisionConfig;
-    }
-
-    public btCollisionDispatcher getDispatcher() {
-        return dispatcher;
-    }
-
     private transient btCollisionDispatcher dispatcher;
 
     /**
@@ -62,11 +52,15 @@ public class Table3D {
         // set up bounding borders
         ModelBuilder mb = new ModelBuilder();
 
+        ModelInstance southInstance = new ModelInstance(mb.createBox(10f, 10f, 0.5f,
+                new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+        modelInstances.add(southInstance);
         btCollisionObject southObject = new btCollisionObject();
         btCollisionShape southCollisionShape = new btBoxShape(new Vector3(10f, 10f, 0.1f));
         southObject.setCollisionShape(southCollisionShape);
-        southObject.setWorldTransform(this.model.transform.translate(0, 0, 1.45f));
-
+        southInstance.transform.translate(new Vector3(0, 0, 1.45f));
+        southObject.setWorldTransform(southInstance.transform);
         HitBox southHitBox = new HitBox(southCollisionShape, southObject);
         hitBoxes.add(southHitBox);
 
