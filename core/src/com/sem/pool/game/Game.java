@@ -42,6 +42,14 @@ public class Game {
     }
 
     /**
+     * Starts the game and takes care of starting the
+     * Game State as well.
+     */
+    public void startGame() {
+        // TODO: Implement game start logic
+    }
+
+    /**
      * Publicly accessible method call that handles all of the
      * logic for the current game loop iteration, such as
      * moving the balls, responding to input, and ending
