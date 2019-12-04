@@ -13,6 +13,7 @@ public class RegularBall3D extends Ball3D {
     }
 
     private transient Type type;
+
     /**
      * Constructs a new 3D Pool Full Ball instance with
      * the specified id and model.
@@ -22,7 +23,7 @@ public class RegularBall3D extends Ball3D {
      */
     public RegularBall3D(int id, ModelInstance model) {
         super(id, model);
-        if (id < GameConstants.EIGHTBALL_ID){
+        if (id < GameConstants.EIGHTBALL_ID) {
             this.type = Type.FULL;
         }
         else{

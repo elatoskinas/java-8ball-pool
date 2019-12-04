@@ -144,18 +144,15 @@ public class Cue3D {
             dragOriginCue = getCoordinates();
             dragOriginMouse = mousePosition;
         }
-
         // Update drag position
-        else if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && dragging){
+        else if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && dragging) {
             toDragPosition(mousePosition, cueBall);
         }
-
         // Left click released -> shoot
-        else if (dragging){
+        else if (dragging) {
             dragging = false;
             shoot(mousePosition, cueBall);
         }
-
         // Not draging -> update position
         else {
             toPosition(mousePosition, cueBall);
@@ -167,7 +164,7 @@ public class Cue3D {
      * @param mousePosition mouse coordinates
      * @param cueBall cue ball
      */
-    public void toDragPosition(Vector3 mousePosition, Ball3D cueBall){
+    public void toDragPosition(Vector3 mousePosition, Ball3D cueBall) {
         
         // Get the direction of the cue drag
         Vector3 direction = new Vector3(dragOriginMouse).sub(dragOriginCue);
@@ -180,7 +177,7 @@ public class Cue3D {
         float distance = calculateDistanceToOrigin(new Vector3(mousePosition).sub(dragOriginMouse));
 
         // Cap the max distance that the cue can move away
-        if (distance > forceCap){
+        if (distance > forceCap) {
             distance = forceCap;
         }
 
@@ -195,7 +192,7 @@ public class Cue3D {
 
         // Calculate and set the rotation of the cue (setToTranslation resets the rotation matrix)
         Vector3 cuePosition = getCoordinates().sub(cueBall.getCoordinates()).nor();
-        double angle = MathUtils.atan2(cuePosition.z, cuePosition.x*-1);
+        double angle = MathUtils.atan2(cuePosition.z, cuePosition.x * -1);
         model.transform.rotateRad(Vector3.Y, (float) angle);
     }
 
@@ -204,7 +201,7 @@ public class Cue3D {
      * @param vector The vector
      * @return float distance to origin
      */
-    public float calculateDistanceToOrigin(Vector3 vector){
+    public float calculateDistanceToOrigin(Vector3 vector) {
         Vector3 v = new Vector3(vector);
         return (float) Math.sqrt(Math.pow(v.x,2) + Math.pow(v.z,2));
     }
@@ -219,7 +216,7 @@ public class Cue3D {
         float force = calculateDistanceToOrigin(new Vector3(mousePosition).sub(dragOriginMouse));
 
         // Caps the force
-        if (force > forceCap){
+        if (force > forceCap) {
             force = forceCap;
         }
 
