@@ -91,6 +91,9 @@ public class GameState {
      * Notifies the observers of the won game.
      * @param winnerId  ID of the winning player (0-baseed)
      */
+    // False positive on Dataflow Anomaly for the observer
+    // loop in the method. Also false positive for the winningPlayer.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void winGame(int winnerId) {
         Player winningPlayer = players.get(winnerId);
 

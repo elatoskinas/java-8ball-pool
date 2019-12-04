@@ -106,12 +106,9 @@ public class Pool extends ApplicationAdapter {
      */
     private void initializeGame() {
         // Create players with IDs 0 and 1
-        List<Player> players = new ArrayList<Player>() {
-            {
-                add(new Player(0));
-                add(new Player(1));
-            }
-        };
+        List<Player> players = new ArrayList<Player>();
+        players.add(new Player(0));
+        players.add(new Player(1));
 
         // Create game state with the scene's pool balls and created players
         GameState gameState = new GameState(players, scene.getPoolBalls());
