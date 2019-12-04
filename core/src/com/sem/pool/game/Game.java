@@ -119,7 +119,7 @@ public class Game {
     protected void respondToInput() {
         // TODO: Implement logic to respond to input every frame
         // TODO: Call performCueShot on input
-        throw new UnsupportedOperationException("Not yet implemented!");
+        //throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     /**
