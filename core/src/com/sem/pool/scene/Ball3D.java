@@ -61,7 +61,7 @@ public class Ball3D {
     }
 
     public void setDirection(Vector3 direction) {
-        this.direction = direction;
+        this.direction = direction.nor();
     }
 
     public float getSpeed() {

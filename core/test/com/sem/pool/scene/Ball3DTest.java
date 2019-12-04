@@ -53,13 +53,13 @@ class Ball3DTest {
      */
     @Test
     void testDirectionSetter() {
-        Vector3 direction = new Vector3(2.1f, 3.5f, 0f);
+        Vector3 direction = new Vector3(3f, 4f, 0f);
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
         Ball3D ball = new Ball3D(0, mockModel);
         
         ball.setDirection(direction);
         
-        assertEquals(direction, ball.getDirection());
+        assertEquals(new Vector3(3f/5f, 4f/5f, 0f), ball.getDirection());
     }
 
     /**
