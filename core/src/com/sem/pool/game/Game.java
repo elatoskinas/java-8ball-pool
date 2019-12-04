@@ -70,11 +70,19 @@ public class Game {
      */
     public void advanceGameLoop() {
         if (started) {
+            // Determine if game is currently in motion
+            boolean newInMotion = determineIsInMotion();
+
+            // TODO: inMotion -> !newInMotion: advance turn
+
+            // Update current game motion flag
+            inMotion = newInMotion;
+
             // If no balls are in motion, that means
             // we are at the phase where we can respond to input.
             // Otherwise, we need to move the balls.
             if (!inMotion) {
-                respondToInput();
+                //respondToInput();
                 // TODO: Advance turns:
                 //       Implement state transition that goes from in motion to not in-motion
             } else {

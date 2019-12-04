@@ -100,17 +100,7 @@ public class GameTest {
      */
     @Test
     void testBallsInMotionAll() {
-        final int ballCount = 3;
-        List<Ball3D> poolBalls = new ArrayList<>();
-
-        // Set up mock balls to pass into the mock scene
-        for (int i = 0; i < ballCount; ++i) {
-            Ball3D ball = Mockito.mock(Ball3D.class);
-            Mockito.when(ball.isInMotion()).thenReturn(true);
-            poolBalls.add(ball);
-        }
-
-        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+        setupScenePoolBallsHelper(true, true, true);
 
         game.startGame();
 
@@ -123,23 +113,7 @@ public class GameTest {
      */
     @Test
     void testBallsInMotionSingle() {
-        final int ballCount = 3;
-        List<Ball3D> poolBalls = new ArrayList<>();
-
-        // Set up mock balls to pass into the mock scene
-        for (int i = 0; i < ballCount; ++i) {
-            Ball3D ball = Mockito.mock(Ball3D.class);
-
-            if (i == ballCount - 1) {
-                Mockito.when(ball.isInMotion()).thenReturn(true);
-            } else {
-                Mockito.when(ball.isInMotion()).thenReturn(false);
-            }
-
-            poolBalls.add(ball);
-        }
-
-        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+        setupScenePoolBallsHelper(false, false, true);
 
         game.startGame();
 
@@ -152,21 +126,37 @@ public class GameTest {
      */
     @Test
     void testBallsInMotionNone() {
-        final int ballCount = 3;
-        List<Ball3D> poolBalls = new ArrayList<>();
-
-        // Set up mock balls to pass into the mock scene
-        for (int i = 0; i < ballCount; ++i) {
-            Ball3D ball = Mockito.mock(Ball3D.class);
-            Mockito.when(ball.isInMotion()).thenReturn(false);
-            poolBalls.add(ball);
-        }
-
-        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+        setupScenePoolBallsHelper(false, false, false);
 
         game.startGame();
 
         assertFalse(game.determineIsInMotion());
+    }
+
+    @Test
+    void testLoopToMotion() {
+        setupScenePoolBallsHelper(false, true);
+
+        game.startGame();
+        assertTrue(game.isStarted());
+
+        assertFalse(game.isInMotion());
+
+        game.advanceGameLoop();
+
+        assertTrue(game.isInMotion());
+    }
+
+    void setupScenePoolBallsHelper(boolean... motion) {
+        List<Ball3D> balls = new ArrayList<>();
+
+        for (boolean b : motion) {
+            Ball3D ball = Mockito.mock(Ball3D.class);
+            Mockito.when(ball.isInMotion()).thenReturn(b);
+            balls.add(ball);
+        }
+
+        Mockito.when(scene.getPoolBalls()).thenReturn(balls);
     }
 
     /**
