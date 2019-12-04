@@ -54,4 +54,14 @@ public class GameTest {
         Mockito.verify(gameState).startGame();
         assertTrue(game.isStarted());
     }
+
+    /**
+     * Test that verifies that upon immediately starting the game,
+     * the pool balls are not initially in motion.
+     */
+    @Test
+    void testStartGameInMotion() {
+        game.startGame();
+        assertFalse(game.isInMotion());
+    }
 }

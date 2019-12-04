@@ -48,6 +48,10 @@ public class Game {
         return started;
     }
 
+    public boolean isInMotion() {
+        return inMotion;
+    }
+
     /**
      * Starts the game and takes care of starting the
      * Game State as well.
