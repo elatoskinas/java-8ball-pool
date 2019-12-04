@@ -21,10 +21,10 @@ public class Cue3D {
     private static final float forceCap = 1f;
 
     // Used for the dragging animation and force calculation
-    private boolean dragging;
-    private Vector3 shootDirection;
-    private Vector3 dragOriginCue;
-    private Vector3 dragOriginMouse;
+    private transient boolean dragging;
+    private transient Vector3 shootDirection;
+    private transient Vector3 dragOriginCue;
+    private transient Vector3 dragOriginMouse;
 
     private transient ModelInstance model;
 
