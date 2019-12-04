@@ -134,7 +134,7 @@ public class Cue3DTest {
         // Set the mock matrix to the model
         model.transform = matrix;
 
-        Ball3D ball = new CueBall3D(0, model);
+        Ball3D ball = new CueBall3D(id, model);
 
         // Get the direction given the mouse position
         Vector3 direction = cue.getCueShotDirection(mousePosition, ball);
