@@ -9,7 +9,7 @@ import com.sem.pool.scene.Scene3D;
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-public class Game {
+public class Game implements GameStateObserver {
     private transient Scene3D scene;
     private transient Input input;
     private transient GameState state;
@@ -31,6 +31,9 @@ public class Game {
         this.input = input;
         this.state = state;
         this.started = false;
+
+        // Add game as an observer to the GameState
+        state.addObserver(this);
     }
 
     public Scene3D getScene() {
@@ -167,5 +170,10 @@ public class Game {
     private void performCueShot() {
         // TODO: Perform cue shot
         throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    public void endGame(Player winner) {
+        // TODO: Implement logic for ending game here.
     }
 }

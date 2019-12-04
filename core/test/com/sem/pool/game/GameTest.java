@@ -38,6 +38,9 @@ public class GameTest {
         assertEquals(scene, game2.getScene());
         assertEquals(input, game2.getInput());
         assertEquals(gameState, game2.getState());
+
+        // Verify that game is added as an observer
+        Mockito.verify(gameState).addObserver(game2);
     }
 
     /**
