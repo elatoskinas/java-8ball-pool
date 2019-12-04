@@ -121,6 +121,16 @@ public class Game {
      * @return  True if at least one ball is in motion, and false otherwise.
      */
     protected boolean determineIsInMotion() {
+        // Check all the balls currently in the scene
+        for (Ball3D ball : scene.getPoolBalls()) {
+            // Found one that is in motion;
+            // Game should also be in motion.
+            if (ball.isInMotion()) {
+                return true;
+            }
+        }
+
+        // No ball in motion; Game should not be in motion either.
         return false;
     }
 
