@@ -17,9 +17,13 @@ public class GameState {
     private transient boolean started;
 
     /**
-     * Creates a new GameState object.
+     * Creates a new game state with the specified Players and
+     * the specified Pool balls.
+     * @param players     List of Players for the game
+     * @param poolBalls   List of pool balls to use for the game
      */
-    public GameState() {
+    public GameState(List<Player> players, List<Ball3D> poolBalls) {
+
     }
 
     public boolean isStarted() {
