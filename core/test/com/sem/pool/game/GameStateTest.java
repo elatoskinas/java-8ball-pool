@@ -167,4 +167,55 @@ class GameStateTest {
 
         assertEquals(observers, gameState.getObservers().size());
     }
+
+    /**
+     * Test case to verify that when the Player wins,
+     * the Game is stopped and the single attached
+     * observer is notified of the victory.
+     */
+    @Test
+    void testPlayerWinOneObserver() {
+        final int winnerId = 1;
+        final Player winner = gameState.getPlayers().get(winnerId);
+
+        // Add observer to the GameState
+        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
+        gameState.addObserver(observer);
+
+        // Make the winnerId-th player win the game
+        gameState.winGame(winnerId);
+
+        // Verify that the observer is notified of the winner
+        Mockito.verify(observer).endGame(winner);
+
+        // Assert that game is stopped
+        assertFalse(gameState.isStarted());
+    }
+
+    /**
+     * Test case to verify that when the Player wins,
+     * the Game is stopped and the two attached
+     * observers are notified of the victory.
+     */
+    @Test
+    void testPlayerWinTwoObservers() {
+        final int winnerId = 0;
+        final Player winner = gameState.getPlayers().get(winnerId);
+
+        // Add observers to the GameState
+        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
+        GameStateObserver observer2 = Mockito.mock(GameStateObserver.class);
+        gameState.addObserver(observer);
+        gameState.addObserver(observer2);
+
+        // Make the winnerId-th player win the game
+        gameState.winGame(winnerId);
+
+        // Verify that the observers are notified of the winner
+        Mockito.verify(observer).endGame(winner);
+        Mockito.verify(observer2).endGame(winner);
+
+        // Assert that game is stopped
+        assertFalse(gameState.isStarted());
+    }
 }
