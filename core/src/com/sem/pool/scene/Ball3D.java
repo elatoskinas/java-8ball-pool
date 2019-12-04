@@ -104,14 +104,14 @@ public class Ball3D {
         }
     }
 
-    /**
-     * Applies the provided directional force to the ball, resulting in movement.
-     * @param force Scalar by which the direction vector will be multiplied.
-     * @param direction The direction of the force that is to be applied to the ball.
-     */
-    public void applyForce(float force, Vector3 direction) {
-        this.move(direction.scl(force));
-    }
+//    /**
+//     * Applies the provided directional force to the ball, resulting in movement.
+//     * @param force Scalar by which the direction vector will be multiplied.
+//     * @param direction The direction of the force that is to be applied to the ball.
+//     */
+//    public void applyForce(float force, Vector3 direction) {
+//        this.move(direction.scl(force));
+//    }
 
     /**
      * Returns the radius of the 3D Ball as a scalar.
