@@ -9,6 +9,7 @@ import java.util.Set;
 
 /**
  * Class to keep track of the current state of the game with regards to the rules.
+ * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
 public class GameState {
     private transient List<Player> players;
@@ -61,8 +62,10 @@ public class GameState {
      * Advances the turn of the game, ending the current Player's
      * turn and starting the subsequent Player's turn.
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void advanceTurn() {
         // TODO: Turn should be advanced
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     /**
@@ -80,8 +83,10 @@ public class GameState {
      * result in the victory or loss of the game.
      * @param ball  Ball to pot
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void onBallPotted(Ball3D ball) {
         // TODO: Ball should be potted and tracked for the Player
         // TODO: Should handle dispatching events back to Game
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 }

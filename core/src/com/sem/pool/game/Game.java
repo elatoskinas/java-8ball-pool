@@ -7,6 +7,7 @@ import com.sem.pool.scene.Scene3D;
 /**
  * Class that handles everything related to the pool game.
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
+ * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
 public class Game {
     private transient Scene3D scene;
@@ -86,18 +87,22 @@ public class Game {
      * Moves the balls according to our physics implementation. This method will be called
      * every frame in the render() method.
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void moveBalls() {
         // TODO: Implement logic that handles all ball movement every frame
         // TODO: Mark inMotion true/false
         // TODO: Handle calling pot balls methods
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     /**
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void respondToInput() {
         // TODO: Implement logic to respond to input every frame
         // TODO: Call performCueShot on input
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     /**
@@ -107,16 +112,20 @@ public class Game {
      * active Player.
      * @param ball  Ball to be potted
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void potBall(Ball3D ball) {
         // TODO: Implement ball potting logic (3D)
         // TODO: Implement ball potting logic (Game State)
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     /**
      * Performs the cue shot by firing the cue ball with the
      * cue's current power and rotation.
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private void performCueShot() {
         // TODO: Perform cue shot
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 }
