@@ -29,8 +29,8 @@ public class Table3D {
 
     private transient ArrayList<HitBox> hitBoxes;
     private transient ArrayList<ModelInstance> modelInstances;
-    private btDefaultCollisionConfiguration collisionConfig;
-    private btCollisionDispatcher dispatcher;
+    private transient btDefaultCollisionConfiguration collisionConfig;
+    private transient btCollisionDispatcher dispatcher;
 
     /**
      * Constructs a new 3D Board instance with the specified model.
