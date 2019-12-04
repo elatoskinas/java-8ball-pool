@@ -34,7 +34,8 @@ public class Pool extends ApplicationAdapter {
 
     // State flag to keep track of whether asset loading
     // has finished.
-    private transient boolean loaded;
+    public static transient boolean loaded;
+    public transient int speed = 1;
 
     @Override
     public void create() {
@@ -100,57 +101,79 @@ public class Pool extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Method to move the camera using the keyboard.
+     */
     public void moveCamera() {
         // CAMERA MOVEMENT
-        float dt = Gdx.graphics.getDeltaTime();
-        Ball3D cueBall = scene.getPoolBalls().get(0);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            cueBall.move(new Vector3(1f, 0, 0).scl(dt));
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            cueBall.move(new Vector3(-1f, 0, 0).scl(dt));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            cueBall.move(new Vector3(0f, 0, -1f).scl(dt));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            cueBall.move(new Vector3(0, 0, 1f).scl(dt));
-        }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            getScene().getCamera().translate(new Vector3(1f, 0f, 0f).scl(dt));
+            getScene().getCamera().translate(new Vector3(1f, 0f, 0f)
+                    .scl(Gdx.graphics.getDeltaTime()));
             getScene().getCamera().update();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            getScene().getCamera().translate(new Vector3(-1f, 0f, 0f).scl(dt));
+            getScene().getCamera().translate(new Vector3(-1f, 0f, 0f)
+                    .scl(Gdx.graphics.getDeltaTime()));
             getScene().getCamera().update();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            getScene().getCamera().translate(new Vector3(0f, 0f, -1f).scl(dt));
+            getScene().getCamera().translate(new Vector3(0f, 0f, -1f)
+                    .scl(Gdx.graphics.getDeltaTime()));
             getScene().getCamera().update();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            getScene().getCamera().translate(new Vector3(0f, 0f, 1f).scl(dt));
+            getScene().getCamera().translate(new Vector3(0f, 0f, 1f)
+                    .scl(Gdx.graphics.getDeltaTime()));
             getScene().getCamera().update();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT_BRACKET)) {
-            getScene().getCamera().rotate(Vector3.X, -60 * dt);
+            getScene().getCamera().rotate(Vector3.X, -60
+                    * Gdx.graphics.getDeltaTime());
             getScene().getCamera().update();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT_BRACKET)) {
-            getScene().getCamera().rotate(Vector3.X, 60 * dt);
+            getScene().getCamera().rotate(Vector3.X, 60
+                    * Gdx.graphics.getDeltaTime());
             getScene().getCamera().update();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            getScene().getCamera().translate(new Vector3(0f, -1f, 0f).scl(dt));
+            getScene().getCamera().translate(new Vector3(0f, -1f, 0f)
+                    .scl(Gdx.graphics.getDeltaTime()));
             getScene().getCamera().update();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            getScene().getCamera().translate(new Vector3(0f, 1f, 0f).scl(dt));
+            getScene().getCamera().translate(new Vector3(0f, 1f, 0f)
+                    .scl(Gdx.graphics.getDeltaTime()));
             getScene().getCamera().update();
         }
         // END CAMERA MOVEMENT
+    }
+
+
+    /**
+     * Method to move the ball using the keyboard.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // might be unsuppressed later.
+    public void moveBall() {
+        Ball3D cueBall = scene.getPoolBalls().get(0);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            cueBall.move(new Vector3(1f, 0, 0).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            cueBall.move(new Vector3(-1f, 0, 0).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            cueBall.move(new Vector3(0f, 0, -1f).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            cueBall.move(new Vector3(0, 0, 1f).scl(speed
+                    * Gdx.graphics.getDeltaTime()));
+        }
     }
 
     /**
@@ -162,22 +185,19 @@ public class Pool extends ApplicationAdapter {
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
             // so it doesn't collide with table.
-            cueBall.move(new Vector3(0,0.1f,0));
-            if (!scene.getTable().checkCollision(cueBall)){
-                cueBall.applyForce(9.81f * Gdx.graphics.getDeltaTime(), new Vector3(0, 0f, 0.1f));
+            if (scene.getTable().checkCollision(cueBall)) {
+                speed = 0;
+            } else {
+                speed = 1;
             }
-            else{
-//                Vector3 mousePos = scene.getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-//                System.out.println(mousePos);
-            }
+            moveBall();
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.
-            /*Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            scene.getCamera().unproject(mousePosition);
-            Vector3 shotDirection = getScene().getPoolBalls().
-            get(0).getCueShotDirection(mousePosition);*/
+            Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            System.out.println(scene.getCamera().unproject(mousePosition));
+            //Vector3 shotDirection = getScene().getPoolBalls().
+            //get(0).getCueShotDirection(mousePosition);*/
 
-            moveCamera();
         }
     }
 
@@ -205,5 +225,6 @@ public class Pool extends ApplicationAdapter {
     public void dispose() {
         scene.dispose();
         assetLoader.dispose();
+
     }
 }

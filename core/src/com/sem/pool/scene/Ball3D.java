@@ -24,6 +24,7 @@ public class Ball3D {
      * @param id  ID of the ball
      * @param model  Model object of the ball
      */
+    @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
     public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;

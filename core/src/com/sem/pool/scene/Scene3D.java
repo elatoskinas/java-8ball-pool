@@ -1,16 +1,10 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
-import javax.jws.WebParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,11 +51,6 @@ public class Scene3D {
         models.add(table.getModel());
         models.add(cue.getModel());
 
-        ModelBuilder mb = new ModelBuilder();
-        ModelInstance e = new ModelInstance(mb.createBox(10f, 1f, 0.5f,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
-        e.transform.translate(0,0, 1.45f);
-        models.add(e);
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
         }

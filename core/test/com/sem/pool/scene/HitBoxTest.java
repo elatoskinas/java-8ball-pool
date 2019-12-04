@@ -16,7 +16,7 @@ public class HitBoxTest {
      * Test method to verify that the HitBox instance is constructed properly.
      */
     @Test
-    void testConstructor(){
+    void testConstructor() {
         btCollisionShape mockShape = Mockito.mock(btCollisionShape.class);
         btCollisionObject mockObject = Mockito.mock(btCollisionObject.class);
         HitBox hitBox = new HitBox(mockShape, mockObject);
