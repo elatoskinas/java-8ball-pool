@@ -11,10 +11,10 @@ import java.util.Set;
  * Class to keep track of the current state of the game with regards to the rules.
  */
 public class GameState {
-    private List<Player> players;
-    private Set<Ball3D> remainingBalls;
-    private int playerTurn;
-    private int turnCount;
+    private transient List<Player> players;
+    private transient Set<Ball3D> remainingBalls;
+    private transient int playerTurn;
+    private transient int turnCount;
 
     private transient boolean started;
 

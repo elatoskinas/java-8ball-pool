@@ -1,22 +1,23 @@
 package com.sem.pool.game;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class GameStateTest {
-    GameState gameState;
-    List<Player> players;
-    List<Ball3D> balls;
+    transient GameState gameState;
+    transient List<Player> players;
+    transient List<Ball3D> balls;
 
     @BeforeEach
     public void setUp() {
@@ -39,7 +40,8 @@ class GameStateTest {
      * @param striped     Number of striped balls to add to list
      * @return            Resulting list of balls
      */
-    private List<Ball3D> constructBallsList(boolean cueBall, boolean eightBall, int solid, int striped) {
+    private List<Ball3D> constructBallsList(boolean cueBall, boolean eightBall,
+                                            int solid, int striped) {
         List<Ball3D> result = new ArrayList<>();
 
         if (cueBall) {

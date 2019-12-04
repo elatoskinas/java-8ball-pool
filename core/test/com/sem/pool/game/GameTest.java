@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class GameTest {
-    Scene3D scene;
-    Input input;
-    GameState gameState;
-    Game game;
+    transient Scene3D scene;
+    transient Input input;
+    transient GameState gameState;
+    transient Game game;
 
     @BeforeEach
     void setUp() {
