@@ -2,6 +2,7 @@ package com.sem.pool.game;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.scene.Ball3D;
@@ -87,6 +88,8 @@ class GameStateTest {
 
         assertEquals(players, gameState2.getPlayers());
         assertEquals(expectedBalls, gameState2.getRemainingBalls().size());
+        assertNotNull(gameState2.getObservers());
+        assertTrue(gameState2.getObservers().isEmpty());
     }
 
     /**
@@ -101,5 +104,67 @@ class GameStateTest {
         gameState.startGame();
 
         assertTrue(gameState.isStarted());
+    }
+
+    /**
+     * Test case to verify that adding an observer to the observers of the
+     * GameState adds the observer successfully.
+     */
+    @Test
+    void testAddObserver() {
+        assertTrue(gameState.getObservers().isEmpty());
+
+        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
+        gameState.addObserver(observer);
+
+        assertTrue(gameState.getObservers().contains(observer));
+    }
+
+    /**
+     * Test case to verify that removing an observer from the observers
+     * of the GameState successfully removes it from the observers.
+     */
+    @Test
+    void testRemoveObserver() {
+        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
+
+        gameState.addObserver(observer);
+        assertFalse(gameState.getObservers().isEmpty());
+
+        gameState.removeObserver(observer);
+        assertTrue(gameState.getObservers().isEmpty());
+    }
+
+    /**
+     * Test case to verify that removing an observer from the GameState
+     * that does not exist does not affect the observers collection
+     * of the Game State.
+     */
+    @Test
+    void testRemoveObserverNonExistent() {
+        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
+        GameStateObserver observer2 = Mockito.mock(GameStateObserver.class);
+
+        gameState.addObserver(observer);
+        assertFalse(gameState.getObservers().isEmpty());
+
+        gameState.removeObserver(observer2);
+        assertFalse(gameState.getObservers().isEmpty());
+    }
+
+    /**
+     * Test case to verify that adding multiple observers to the
+     * GameState successfully adds them all.
+     */
+    @Test
+    void testAddMultipleObservers() {
+        final int observers = 5;
+
+        for (int i = 0; i < observers; ++i) {
+            GameStateObserver observer = Mockito.mock(GameStateObserver.class);
+            gameState.addObserver(observer);
+        }
+
+        assertEquals(observers, gameState.getObservers().size());
     }
 }

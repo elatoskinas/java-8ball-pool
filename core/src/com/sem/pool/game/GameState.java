@@ -9,6 +9,8 @@ import java.util.Set;
 
 /**
  * Class to keep track of the current state of the game with regards to the rules.
+ * GameState can be observed by implementing the GameStateObserver interface.
+ * The methods that update observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
 public class GameState {
@@ -18,6 +20,8 @@ public class GameState {
     private transient int turnCount;
 
     private transient boolean started;
+
+    private transient Set<GameStateObserver> observers;
 
     /**
      * Creates a new game state with the specified Players and
@@ -49,6 +53,18 @@ public class GameState {
         return remainingBalls;
     }
 
+    public Set<GameStateObserver> getObservers() {
+        return observers;
+    }
+
+    public void addObserver(GameStateObserver observer) {
+
+    }
+
+    public void removeObserver(GameStateObserver observer) {
+
+    }
+
     /**
      * Starts the pool game by picking a random Player
      * for the break shot.
@@ -71,10 +87,13 @@ public class GameState {
     /**
      * Ends the game with the specified Player ID to be marked
      * as the winner.
+     * Notifies the observers of the won game.
      * @param winnerId  ID of the winning player (0-baseed)
      */
     public void winGame(int winnerId) {
         // TODO: Winner should be dispatched back to Game.java
+
+        // TODO: Notify observers
     }
 
     /**
