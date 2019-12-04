@@ -28,6 +28,8 @@ class Ball3DTest {
 
         assertEquals(id, ball.getId());
         assertEquals(model, ball.getModel());
+        assertEquals(new Vector3(0, 0, 0), ball.getDirection());
+        assertEquals(0f, ball.getSpeed());
     }
 
     /**
