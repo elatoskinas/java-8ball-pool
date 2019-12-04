@@ -5,10 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.Input;
+import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameTest {
     transient Scene3D scene;
@@ -63,6 +67,31 @@ public class GameTest {
     void testStartGameInMotion() {
         game.startGame();
         assertFalse(game.isInMotion());
+    }
+
+    /**
+     * Test case to verify that the move balls method moves all
+     * the balls present in the scene upon calling the move balls
+     * method.
+     */
+    @Test
+    void testMoveBallsMethod() {
+        // Set up mock balls to pass into the mock scene
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+
+        List<Ball3D> poolBalls = new ArrayList<>();
+        poolBalls.add(ball);
+        poolBalls.add(ball2);
+
+        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+
+        // Start the game and attempt to move the balls
+        game.startGame();
+        game.moveBalls();
+
+        Mockito.verify(ball).move();
+        Mockito.verify(ball2).move();
     }
 
     /**
