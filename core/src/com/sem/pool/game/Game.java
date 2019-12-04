@@ -89,10 +89,15 @@ public class Game {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void moveBalls() {
-        // TODO: Implement logic that handles all ball movement every frame
-        // TODO: Mark inMotion true/false
+        // Move all the balls in the scene, regardless of whether
+        // they are in motion or not. Here, we assume that the ball
+        // is simply not moved if it is not in motion (via internal logic of ball)
+        for (Ball3D ball : scene.getPoolBalls()) {
+            ball.move();
+        }
+
         // TODO: Handle calling pot balls methods
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // TODO: Handle collisions here?
     }
 
     /**
