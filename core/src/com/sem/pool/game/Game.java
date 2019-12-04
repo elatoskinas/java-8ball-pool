@@ -1,6 +1,7 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
+import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
 /**
@@ -49,7 +50,26 @@ public class Game {
      */
     public void respondToInput() {
         // TODO: Implement logic to respond to input every frame
+        // TODO: Call performCueShot on input
     }
-    
 
+    /**
+     * Pots the specified ball in the Pool Game.
+     * This makes the specified ball disappear from the table,
+     * and updates the Game State to score the potting for the
+     * active Player.
+     * @param ball  Ball to be potted
+     */
+    public void potBall(Ball3D ball) {
+        // TODO: Implement ball potting logic (3D)
+        // TODO: Implement ball potting logic (Game State)
+    }
+
+    /**
+     * Performs the cue shot by firing the cue ball with the
+     * cue's current power and rotation.
+     */
+    private void performCueShot() {
+        // TODO: Perform cue shot
+    }
 }
