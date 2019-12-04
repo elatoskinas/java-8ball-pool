@@ -10,7 +10,7 @@ import java.util.Objects;
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
  */
-public class Ball3D {
+public abstract class Ball3D {
     private int id;
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
