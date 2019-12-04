@@ -34,8 +34,6 @@ public class GameState {
                 remainingBalls.add(ball);
             }
         }
-
-        System.out.println(remainingBalls);
     }
 
     public boolean isStarted() {
