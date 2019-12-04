@@ -38,17 +38,27 @@ public class Game {
     }
 
     /**
+     * Publicly accessible method call that handles all of the
+     * logic for the current game loop iteration, such as
+     * moving the balls, responding to input, and ending
+     * the current turn.
+     */
+    public void advanceGameLoop() {
+        // TODO: Implement game loop logic
+    }
+
+    /**
      * Moves the balls according to our physics implementation. This method will be called
      * every frame in the render() method.
      */
-    public void moveBalls() {
+    protected void moveBalls() {
         // TODO: Implement logic that handles all ball movement every frame
     }
 
     /**
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
-    public void respondToInput() {
+    protected void respondToInput() {
         // TODO: Implement logic to respond to input every frame
         // TODO: Call performCueShot on input
     }
