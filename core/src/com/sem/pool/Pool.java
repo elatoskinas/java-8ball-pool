@@ -14,7 +14,6 @@ import com.sem.pool.factories.CameraFactory;
 import com.sem.pool.factories.CueFactory;
 import com.sem.pool.factories.SceneFactory;
 import com.sem.pool.factories.TableFactory;
-import com.sem.pool.scene.Cue3D;
 import com.sem.pool.game.Game;
 import com.sem.pool.game.GameState;
 import com.sem.pool.game.Player;
@@ -132,11 +131,6 @@ public class Pool extends ApplicationAdapter {
             game.advanceGameLoop();
 
             scene.render();
-
-
-            Cue3D cue = scene.getCue();
-            cue.processInput(scene);
-
         }
     }
 

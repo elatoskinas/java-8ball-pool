@@ -1,6 +1,8 @@
 package com.sem.pool.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
@@ -121,9 +123,15 @@ public class Game implements GameStateObserver {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void respondToInput() {
-        // TODO: Implement logic to respond to input every frame
-        // TODO: Call performCueShot on input
-        //throw new UnsupportedOperationException("Not yet implemented!");
+
+        // input relevant for cue and shot
+        Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        scene.getCamera().unproject(mousePosition);
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            Ball3D cueBall = scene.getPoolBalls().get(0);
+            scene.getCue().shoot(mousePosition, cueBall);
+        }
     }
 
     /**

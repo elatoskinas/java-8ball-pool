@@ -66,24 +66,6 @@ public class Cue3D {
         model.transform.translate(x,  Y_COORDINATE, position.z);
     }
 
-
-
-    /**
-     * TODO: Move this to a input processor.
-     * Process the input mouse input for the cue
-     * @param scene the scene object, to get the camera and cueballs.
-     */
-    public void processInput(Scene3D scene) {
-        Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        scene.getCamera().unproject(mousePosition);
-
-        // Enter dragging
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            Ball3D cueBall = scene.getPoolBalls().get(0);
-            shoot(mousePosition, cueBall);
-        }
-    }
-
     /**
      * Shoots the cueball based on the mouse-postion and the mouse-position when the drag started.
      * @param mousePosition the mouse coordinates
