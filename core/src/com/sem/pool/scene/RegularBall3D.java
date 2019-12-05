@@ -25,14 +25,14 @@ public class RegularBall3D extends Ball3D {
         super(id, model);
         if (id < GameConstants.EIGHTBALL_ID) {
             this.type = Type.FULL;
-        }
-        else {
+        } else {
             this.type = Type.STRIPED;
         }
     }
 
     /**
      * Returns the type of the ball.
+     *
      * @return Type, the type of the ball.
      */
     public Type getType() {
