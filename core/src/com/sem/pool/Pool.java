@@ -2,6 +2,7 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,11 +30,11 @@ public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
-    static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
+    private static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
 
     // State flag to keep track of whether asset loading
     // has finished.
-    private static transient boolean loaded;
+    private transient boolean loaded;
 
     @Override
     public void create() {

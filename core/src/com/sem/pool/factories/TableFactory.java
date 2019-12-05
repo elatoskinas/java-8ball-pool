@@ -83,6 +83,7 @@ public class TableFactory extends Base3DFactory {
     /**
      * Sets up the bounding borders for the table by creating four HitBoxes objects to
      * create walls that keep the ball on the table.
+     * @param table The table object for which the bounding boxes are created.
      */
     public void setBoundingBoxes(Table3D table) {
         // set up bounding borders
@@ -98,14 +99,16 @@ public class TableFactory extends Base3DFactory {
         setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)),
                 table, new btCollisionObject(), new Vector3(-1,0,0));
     }
-
-
+    
     /**
      * Sets up a single bounding box for the table.
      * @param shape btCollisionShape for the box, should in this case always be a cube.
      * @param position position where the box will be placed.
+     * @param table the table object for which the bounding box should be created.
+     * @param btCollisionObject the collision object required to create a HitBox instance.
+     * @param normal the normal vector of the bounding box that is to be created.
      */
-    public void setUpBox(Vector3 shape, Matrix4 position, Table3D table,
+    protected void setUpBox(Vector3 shape, Matrix4 position, Table3D table,
                          btCollisionObject btCollisionObject, Vector3 normal) {
         btCollisionShape btCollisionShape = new btBoxShape(shape);
         btCollisionObject.setCollisionShape(btCollisionShape);

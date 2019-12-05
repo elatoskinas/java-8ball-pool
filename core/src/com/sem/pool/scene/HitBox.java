@@ -1,5 +1,6 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -58,5 +59,13 @@ public class HitBox {
 
     public btCollisionObject getObject() {
         return object;
+    }
+
+    /**
+     * Updates the location of the HitBox object according to the provided translation matrix.
+     * @param translation matrix used to set translation.
+     */
+    public void updateLocation(Matrix4 translation) {
+        this.object.setWorldTransform(translation);
     }
 }
