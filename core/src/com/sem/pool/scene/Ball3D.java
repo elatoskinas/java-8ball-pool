@@ -12,7 +12,7 @@ import java.util.Objects;
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
  */
-public class Ball3D {
+public abstract class Ball3D {
     private int id;
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
@@ -88,6 +88,14 @@ public class Ball3D {
         return this.model.transform.getTranslation(new Vector3());
     }
 
+    /**
+     * Returns true if the ball is in motion, and false otherwise.
+     * @return  True if the ball is in motion.
+     */
+    public boolean isInMotion() {
+        return speed == 0;
+    }
+    
     /**
      * Moves the ball with current direction and speed.
      */

@@ -16,25 +16,22 @@ import org.mockito.Mockito;
 /**
  * Test class containing unit tests for the Ball3D class.
  */
-class Ball3DTest {
+abstract class Ball3DTest {
 
     /**
-     * Test method to verify that the Ball3D object instance
-     * is constructed properly (the right values for the id and
-     * model are set).
+     * Returns an instance of Ball3D.
+     * @param id id of the ball.
+     * @param model model of the ball.
+     * @return Instance of Ball3D.
+     */
+    protected abstract Ball3D getBall(int id, ModelInstance model);
+
+    /**
+     * Force every ball test to test its constructor.
      */
     @Test
-    public void testConstructor() {
-        final int id = 3;
-        final ModelInstance model = Mockito.mock(ModelInstance.class);
+    public abstract void testConstructor();
 
-        Ball3D ball = new Ball3D(id, model);
-
-        assertEquals(id, ball.getId());
-        assertEquals(model, ball.getModel());
-        assertEquals(new Vector3(0, 0, 0), ball.getDirection());
-        assertEquals(0f, ball.getSpeed());
-    }
 
     /**
      * Test case to ensure that the ID setter for the Ball3D
@@ -44,8 +41,7 @@ class Ball3DTest {
     public void testIdSetter() {
         final int initId = 0;
         final int id = 2;
-        final ModelInstance model = Mockito.mock(ModelInstance.class);
-        Ball3D ball = new Ball3D(initId, model);
+        Ball3D ball = getBall(initId, null);
 
         ball.setId(id);
 
@@ -92,8 +88,8 @@ class Ball3DTest {
         final int id = 1;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
-        Ball3D ball1 = new Ball3D(id, model);
-        Ball3D ball2 = new Ball3D(id, model);
+        Ball3D ball1 = getBall(id, model);
+        Ball3D ball2 = getBall(id, model);
 
         assertEquals(ball1, ball2);
         assertFalse(ball1.equals("test"));
@@ -109,8 +105,8 @@ class Ball3DTest {
         final int id2 = 2;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
-        Ball3D ball1 = new Ball3D(id1, model);
-        Ball3D ball2 = new Ball3D(id2, model);
+        Ball3D ball1 = getBall(id1, model);
+        Ball3D ball2 = getBall(id2, model);
 
         assertNotEquals(ball1, ball2);
     }
@@ -125,8 +121,8 @@ class Ball3DTest {
         final ModelInstance model1 = Mockito.mock(ModelInstance.class);
         final ModelInstance model2 = Mockito.mock(ModelInstance.class);
 
-        Ball3D ball1 = new Ball3D(id, model1);
-        Ball3D ball2 = new Ball3D(id, model2);
+        Ball3D ball1 = getBall(id, model1);
+        Ball3D ball2 = getBall(id, model2);
 
         assertNotEquals(ball1, ball2);
     }
@@ -140,7 +136,7 @@ class Ball3DTest {
         final int id = 3;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
-        Ball3D ball = new Ball3D(id, model);
+        Ball3D ball = getBall(id, model);
         Integer x = 3;
         assertNotEquals(x, ball);
     }
@@ -154,8 +150,8 @@ class Ball3DTest {
         final int id = 0;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
-        Ball3D ball1 = new Ball3D(id, model);
-        Ball3D ball2 = new Ball3D(id, model);
+        Ball3D ball1 = getBall(id, model);
+        Ball3D ball2 = getBall(id, model);
 
         int hashCode1 = ball1.hashCode();
         int hashCode2 = ball2.hashCode();
@@ -175,8 +171,8 @@ class Ball3DTest {
         final int id2 = 5;
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
-        Ball3D ball1 = new Ball3D(id1, model);
-        Ball3D ball2 = new Ball3D(id2, model);
+        Ball3D ball1 = getBall(id1, model);
+        Ball3D ball2 = getBall(id2, model);
 
         int hashCode1 = ball1.hashCode();
         int hashCode2 = ball2.hashCode();
@@ -191,7 +187,7 @@ class Ball3DTest {
     public void testGetCoordinates() {
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         mockModelInstance.transform = new Matrix4();
-        Ball3D ball = new Ball3D(0, mockModelInstance);
+        Ball3D ball = getBall(0, mockModelInstance);
         Vector3 coordinates = new Vector3(new float[3]);
         assertEquals(coordinates, ball.getCoordinates());
     }
@@ -307,7 +303,7 @@ class Ball3DTest {
         // Set the mock matrix to the model
         model.transform = matrix;
 
-        Ball3D ball = new Ball3D(id, model);
+        Ball3D ball = getBall(id, model);
 
         // Get the direction given the mouse position
         Vector3 direction = ball.getCueShotDirection(mousePosition);
@@ -336,7 +332,8 @@ class Ball3DTest {
         Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
                 .thenReturn(box);
 
-        Ball3D ball = new Ball3D(id1, model);
+        Ball3D ball = getBall(id1, model);
+
         float radius = ball.getRadius();
 
         assertEquals(expectedRadius, radius);
@@ -362,7 +359,7 @@ class Ball3DTest {
         Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
                 .thenReturn(box);
 
-        Ball3D ball = new Ball3D(id1, model);
+        Ball3D ball = getBall(id1, model);
 
         ball.getRadius(); // Perform radius side effect to construct bounding box
         float radius = ball.getRadius(); // Get radius again
