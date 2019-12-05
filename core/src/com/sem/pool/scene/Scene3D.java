@@ -109,6 +109,9 @@ public class Scene3D {
      * TODO: Refactor this to it's own class, preferably
      *       This method should probably not even belong in the Scene class.
      */
+    // Suppress false positive for Dataflow Anomalies caused by the
+    // defined loop in the method.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void triggerCollisions() {
         // Check collisions between the board and
         // every ball in the scene.
