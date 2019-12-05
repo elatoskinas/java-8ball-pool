@@ -16,7 +16,7 @@ public class Cue3D {
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
 
-    private final transient ModelInstance model;
+    private transient ModelInstance model;
 
     /**
      * Constructs a new 3D Cue instance.
@@ -79,6 +79,7 @@ public class Cue3D {
      */
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
         // Calculates the force based on the distance
+        // TODO: Add force control
         float force = 0.3f;
         Vector3 direction = getCueShotDirection(mousePosition, cueBall);
 

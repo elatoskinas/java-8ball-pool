@@ -6,7 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
  * User object, from the database.
  */
 public class User {
-    private final transient boolean existing;
+    private transient boolean existing;
     private transient int id;
     private String username;
     private String password;
@@ -23,7 +23,7 @@ public class User {
     }
 
     /**
-     * Create a existing user.
+     * Create an existing user.
      * @param id The userID.
      * @param username The username to use.
      * @param password The password to use.

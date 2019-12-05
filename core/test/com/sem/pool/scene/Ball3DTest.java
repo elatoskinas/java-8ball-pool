@@ -94,7 +94,7 @@ abstract class Ball3DTest {
         Ball3D ball2 = getBall(id, model);
 
         assertEquals(ball1, ball2);
-        assertFalse(ball1.equals("test"));
+        assertNotEquals("test", ball1);
     }
 
     /**
@@ -260,8 +260,7 @@ abstract class Ball3DTest {
 
         Ball3D ball = getBall(id1, model);
 
-        ball.getRadius(); // Perform radius side effect to construct bounding box
-        float radius = ball.getRadius(); // Get radius again
+        float radius = ball.getRadius(); // Get radius
 
         assertEquals(expectedRadius, radius);
     }
@@ -273,6 +272,7 @@ abstract class Ball3DTest {
     public void testMove() {
         Bullet.init();
         ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
 
         // Setup expected bounding box of size 4 in each axis
         BoundingBox box = new BoundingBox();

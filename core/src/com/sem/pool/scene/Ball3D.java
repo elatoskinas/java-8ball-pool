@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public abstract class Ball3D {
     private int id;
-    private final transient ModelInstance model;
+    private transient ModelInstance model;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
     private transient Vector3 direction;
@@ -52,10 +52,6 @@ public abstract class Ball3D {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setBoundingBox(BoundingBox boundingBox) {
-        this.boundingBox = boundingBox;
     }
 
     public ModelInstance getModel() {

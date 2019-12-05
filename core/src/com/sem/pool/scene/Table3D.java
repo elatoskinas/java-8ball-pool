@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Class representing a 3D Board of a single game.
  */
 public class Table3D {
-    private final transient ModelInstance model;
+    private transient ModelInstance model;
 
     private transient ArrayList<HitBox> hitBoxes;
     private transient ArrayList<ModelInstance> modelInstances;

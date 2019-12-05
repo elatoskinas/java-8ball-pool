@@ -15,8 +15,8 @@ public class CameraFactory {
 
     private static final float ZOOM = 80f;
 
-    private final transient float viewportWidth;
-    private final transient float viewportHeight;
+    private transient float viewportWidth;
+    private transient float viewportHeight;
     private final transient Vector3 position;
 
     /**

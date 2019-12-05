@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import com.sem.pool.game.GameConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,6 +19,7 @@ import org.mockito.Mockito;
 public class Cue3DTest {
 
     transient Cue3D cue;
+
 
     /**
      * Handles setting up the test fixture by
@@ -53,12 +55,17 @@ public class Cue3DTest {
 
         ModelInstance ballModel = Mockito.mock(ModelInstance.class);
         ballModel.transform = new Matrix4();
-        Ball3D ball = new CueBall3D(0, ballModel);
 
         // Setup expected bounding box of size 4 in each axis
         BoundingBox box = new BoundingBox();
         box.ext(4, 4, 4);
-        ball.setBoundingBox(box);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(ballModel.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(box);
+
+        Ball3D ball = new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
 
         ModelInstance cueModel = Mockito.mock(ModelInstance.class);
         Matrix4 ballMockMatrix = Mockito.mock(Matrix4.class);
