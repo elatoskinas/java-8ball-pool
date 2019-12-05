@@ -15,5 +15,5 @@ build/**
 /desktop/out/
 database.db
 
-# logs
+# Error logs
 *.log

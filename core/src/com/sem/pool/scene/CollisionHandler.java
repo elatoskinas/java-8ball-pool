@@ -10,6 +10,10 @@ import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldResult;
 import com.badlogic.gdx.physics.bullet.collision.btSphereBoxCollisionAlgorithm;
 
+/**
+ * Class that handles the collisions which can be passed to a class
+ * such as Table3D to detect collisions on which the class can decide which action to take.
+ */
 public class CollisionHandler {
 
     private transient btDefaultCollisionConfiguration collisionConfig;
@@ -64,11 +68,12 @@ public class CollisionHandler {
         CollisionObjectWrapper co0 = new CollisionObjectWrapper(collisionObject);
         CollisionObjectWrapper co1 = new CollisionObjectWrapper(collisionObject1);
 
-        // you need algorithm
+        // construct algorithm
         btSphereBoxCollisionAlgorithm algorithm =
                 new btSphereBoxCollisionAlgorithm(null, this.constructionInfo,
                 co0.wrapper, co1.wrapper, false);
 
+        // create result using object wrappers
         btManifoldResult result = new btManifoldResult(co0.wrapper, co1.wrapper);
 
         return checkCollisionAlgorithm(algorithm, co0, co1, result);

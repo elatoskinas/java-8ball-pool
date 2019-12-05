@@ -34,10 +34,7 @@ public class Pool extends ApplicationAdapter {
 
     // State flag to keep track of whether asset loading
     // has finished.
-    public static transient boolean loaded;
-    public transient int speed = 1;
-
-    private transient boolean start = false;
+    private static transient boolean loaded;
 
     @Override
     public void create() {
@@ -158,18 +155,13 @@ public class Pool extends ApplicationAdapter {
     private void renderScene() {
         // Render the scene only if the game is loaded
         if (loaded) {
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                start = true;
-            }
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
-            getScene().getTable().checkCollision(cueBall);
-            getScene().getTable().checkIfPot(cueBall);
+
             moveBall(cueBall);
-            cueBall.move();
-            if (cueBall.getSpeed() > 0 && start) {
+            if (cueBall.getSpeed() >0 ) {
                 getScene().getTable().checkCollision(cueBall);
-                moveBall(cueBall);
+                getScene().getTable().checkIfPot(cueBall);
                 cueBall.move();
             }
             // so it doesn't collide with table.
