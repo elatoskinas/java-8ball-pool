@@ -17,6 +17,7 @@ public class Ball3D {
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
+    private transient boolean setUp = false;
     private transient Vector3 direction;
     private transient float speed;
 
@@ -29,15 +30,22 @@ public class Ball3D {
     public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;
+        this.direction = new Vector3(0,0,0);
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
+    }
+
+    /**
+     * Sets up the bounding box and hit boxes after the game is loaded.
+     * This should be called when a ball is loaded into the scene.
+     */
+    public void setUpBoxes() {
         btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
-        this.direction = new Vector3(0, 0, 0);
-        this.speed = 0;
+        this.setUp = true;
     }
 
     public int getId() {
@@ -81,21 +89,25 @@ public class Ball3D {
     }
 
     /**
-     * Translates the ball according to the provided vector.
-     * @param translation The direction and distance wherein the ball should be moved.
+     * Moves the ball with current direction and speed.
      */
-    public void move(Vector3 translation) {
-        this.model.transform.translate(translation);
-        this.hitBox.getObject().setWorldTransform(this.model.transform);
+    public void move() {
+        Vector3 translation = new Vector3(getDirection()).scl(speed);
+        translate(translation);
     }
 
     /**
-     * Applies the provided directional force to the ball, resulting in movement.
-     * @param force Scalar by which the direction vector will be multiplied.
-     * @param direction The direction of the force that is to be applied to the ball.
+     * Method called to move the ball in a direction.
+     * @param translation direction of movement.
      */
-    public void applyForce(float force, Vector3 direction) {
-        this.move(direction.scl(force));
+    public void translate(Vector3 translation) {
+        // move the visual model of the ball
+        this.model.transform.translate(translation);
+        if (setUp) {
+            // hit box needs to be moved too to make sure hit box
+            // and visual model are at the same position
+            this.hitBox.updateLocation(this.model.transform);
+        }
     }
 
     /**
@@ -108,6 +120,11 @@ public class Ball3D {
         return boundingBox.max.x - boundingBox.getCenterX();
     }
 
+    /**
+     * Returns whether another Object is equal to this ball.
+     * @param other other Object.
+     * @return whether they are equal.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Ball3D) {

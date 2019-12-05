@@ -114,6 +114,7 @@ public class SceneFactory {
 
         // Create table
         Table3D table = tableFactory.createTable();
+        tableFactory.setBoundingBoxes(table);
 
         // Create cue
         Cue3D cue = cueFactory.createCue();
@@ -134,7 +135,7 @@ public class SceneFactory {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void positionPoolBalls(List<Ball3D> poolBalls) {
         // Position cue ball to it's right position
-        poolBalls.get(0).move(CUE_BALL_OFFSET);
+        poolBalls.get(0).translate(CUE_BALL_OFFSET);
 
         // Keep track of the current row of balls and the
         // current ball in the row
@@ -159,8 +160,8 @@ public class SceneFactory {
             // the pool balls. Furthermore, move the ball
             // by the predetermined offset to position it
             // at one side of the board.
-            ball.move(getPyramidOffset(spacing, row, count));
-            ball.move(BALL_OFFSET);
+            ball.translate(getPyramidOffset(spacing, row, count));
+            ball.translate(BALL_OFFSET);
 
             // Increase row elemet count
             count++;
