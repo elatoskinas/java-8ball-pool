@@ -24,6 +24,7 @@ import java.util.ArrayList;
  */
 public class TableFactory extends Base3DFactory {
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.TABLE;
+    protected static final Vector3 POTBOX_DIMENSION = new Vector3(0.175f,10f,0.175f);
 
     public static ArrayList<Vector3> potLocations;
 
@@ -152,14 +153,16 @@ public class TableFactory extends Base3DFactory {
     }
 
     /**
-     * Sets up a single bounding box for the table.
+     * Sets up a single pot box for the table.
+     * All pot boxes have the same collisionShape but different locations.
+     * There should be 6 pot boxes, 4 corners and 2 in the up and lower middle.
      * @param position position where the box will be placed.
-     * @param table the table object for which the bounding box should be created.
+     * @param table the table object for which the pot box should be created.
      * @param btCollisionObject the collision object required to create a HitBox instance.
      */
     protected void setUpPotBox(Matrix4 position, Table3D table,
                                btCollisionObject btCollisionObject) {
-        btCollisionShape collisionShape = new btCylinderShape(new Vector3(0.175f,10f,0.175f));
+        btCollisionShape collisionShape = new btCylinderShape(POTBOX_DIMENSION);
         btCollisionObject.setCollisionShape(collisionShape);
         btCollisionObject.setWorldTransform(position);
         HitBox hitBox = new HitBox(collisionShape, btCollisionObject);
