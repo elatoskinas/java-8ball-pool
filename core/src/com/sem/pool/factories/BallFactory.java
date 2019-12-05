@@ -13,7 +13,6 @@ import com.sem.pool.scene.CollisionHandler;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
-import com.sem.pool.scene.Table3D;
 
 import java.util.List;
 

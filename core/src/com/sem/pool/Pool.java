@@ -110,7 +110,7 @@ public class Pool extends ApplicationAdapter {
      */
     private void initializeGame() {
         // Create players with IDs 0 and 1
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players = new ArrayList<>();
         players.add(new Player(0));
         players.add(new Player(1));
 

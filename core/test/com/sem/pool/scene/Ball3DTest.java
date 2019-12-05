@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -424,5 +423,46 @@ abstract class Ball3DTest {
 
         assertFalse(ball.isInMotion());
     }
-}
 
+    /**
+     * Test if the handler is called by the ball on collision check.
+     */
+    @Test
+    public void testCollisions() {
+        final int initId = 0;
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        final Ball3D mockedBall = Mockito.mock(Ball3D.class);
+        Ball3D ball = getBall(initId, mockModel);
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        ball.setCollisionHandler(mockedHandler);
+        Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        ball.checkCollision(mockedBall);
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(), Mockito.any(HitBox.class));
+    }
+
+    /**
+     * Test if the handler is called by the ball on collision check.
+     */
+    @Test
+    public void testIfCollision() {
+        final int initId = 0;
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Vector3 position = new Vector3(0,0,0);
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+        final Ball3D mockedBall = Mockito.mock(Ball3D.class);
+        Ball3D other = getBall(1, mockModel);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        other.getModel().transform = mockedMatrix;
+        Ball3D ball = getBall(initId, mockModel);
+        ball.getModel().transform = mockedMatrix;
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(true);
+        ball.setCollisionHandler(mockedHandler);
+        Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        assertTrue(ball.checkCollision(other));
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(), Mockito.any());
+    }
+}

@@ -11,5 +11,5 @@ public interface GameStateObserver {
      * Ends the game with the specified Player as the winner.
      * @param winner  The player that won
      */
-    public void endGame(Player winner);
+    void endGame(Player winner);
 }

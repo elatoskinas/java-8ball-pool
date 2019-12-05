@@ -121,7 +121,6 @@ public abstract class Ball3D {
     public void translate(Vector3 translation) {
         // move the visual model of the ball
         this.model.transform.translate(translation);
-        //this.model.transform.translate(new Vector3(0.000000001f,0,0));
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
         // TODO: refactor code to fix this issue with tests
@@ -186,26 +185,36 @@ public abstract class Ball3D {
         return Objects.hash(id, model);
     }
 
+    /**
+     * Method that checks if this and another ball collide.
+     * If they do, both ball change directions and speed.
+     * If a ball with no speed or direction is hit, they get
+     * a new one. This is to respond to the cue ball hitting a ball that was just placed.
+     * @param other Other ball.
+     * @return whether the the ball collided with the other ball.
+     */
     public boolean checkCollision(Ball3D other) {
         if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
             System.out.println("Collision with ball: " + getId() + " and " + other.getId());
 
-            Vector3 directionToOther = new Vector3(other.getCoordinates()).sub(new Vector3(getCoordinates()));
-            Vector3 directionToMe = new Vector3(getCoordinates()).sub(new Vector3(other.getCoordinates()));
+            Vector3 directionToOther = new Vector3(other.getCoordinates())
+                    .sub(new Vector3(getCoordinates()));
+            Vector3 directionToMe = new Vector3(getCoordinates())
+                    .sub(new Vector3(other.getCoordinates()));
 
             setDirection(directionToOther.scl(-1));
             other.setDirection(directionToMe.scl(-1));
 
             // halve our speed (implementation will be improved later
-            setSpeed(getSpeed()/2);
+            setSpeed(getSpeed() / 2);
 
             if (other.getSpeed() <= 0) {
                 other.setSpeed(getSpeed());
+            } else {
+                other.setSpeed(other.getSpeed() - getDirection()
+                        .dot(other.getDirection()) / 100);
             }
-            else{
-                other.setSpeed(other.getSpeed() - getDirection().dot(other.getDirection())/100);
-            }
-            if (other.getDirection().equals(new Vector3())){
+            if (other.getDirection().equals(new Vector3())) {
                 other.setDirection(new Vector3(getDirection()));
             }
             return true;
@@ -213,4 +222,17 @@ public abstract class Ball3D {
         return false;
     }
 
+    /**
+     * Pot method for a ball.
+     * Could be overwritten by subclasses in order to specify behaviour.
+     * Default behaviour is to move the ball far below the center of the table.
+     */
+    public void pot() {
+        // move ball back to origin
+        translate(getCoordinates().scl(-1));
+        // set ball below the table.
+        translate(new Vector3(0, -100, 0));
+        setSpeed(0);
+        setDirection(new Vector3());
+    }
 }
