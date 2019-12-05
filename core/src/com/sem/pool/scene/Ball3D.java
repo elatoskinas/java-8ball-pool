@@ -108,9 +108,9 @@ public abstract class Ball3D {
      */
     public void move() {
         Vector3 translation = new Vector3(getDirection()).scl(speed);
-//        if (speed > 0) {
-//            System.out.println(translation);
-//        }
+        if (speed > 0) {
+            this.speed -= 0.0005f;
+        }
         translate(translation);
     }
 
@@ -190,25 +190,20 @@ public abstract class Ball3D {
         if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
             System.out.println("Collision with ball: " + getId() + " and " + other.getId());
 
-            Vector3 ourDirection = new Vector3(getDirection()).nor();
-            Vector3 directionToOther = new Vector3(getCoordinates()).sub(other.getCoordinates()).nor();
-//
-            Vector3 otherDirection = new Vector3(getDirection()).nor();
-            Vector3 directionToMe = new Vector3(other.getCoordinates().sub(other.getCoordinates())).nor();
-//
-            Vector3 newDirection = collisionHandler.reflectVector(directionToOther, ourDirection);
-            Vector3 otherNewDirection = collisionHandler.reflectVector(directionToMe, otherDirection);
+            Vector3 directionToOther = new Vector3(other.getCoordinates()).sub(new Vector3(getCoordinates()));
+            Vector3 directionToMe = new Vector3(getCoordinates()).sub(new Vector3(other.getCoordinates()));
 
-//            setDirection(collisionHandler.reflectVector(directionToOther, ourDirection));
-//            other.setDirection(collisionHandler.reflectVector(directionToMe, otherDirection));
-            setDirection(ourDirection.scl(-1));
-            other.setDirection(otherDirection.scl(-1));
+            setDirection(directionToOther.scl(-1));
+            other.setDirection(directionToMe.scl(-1));
 
-//            translate(new Vector3(newDirection).scl(0.1f));
-//            other.translate(new Vector3(otherNewDirection).scl(0.1f));
+            // halve our speed (implementation will be improved later
+            setSpeed(getSpeed()/2);
 
             if (other.getSpeed() <= 0) {
-                other.setSpeed(getSpeed() * 0.5f);
+                other.setSpeed(getSpeed());
+            }
+            else{
+                other.setSpeed(other.getSpeed() - getDirection().dot(other.getDirection())/100);
             }
             if (other.getDirection().equals(new Vector3())){
                 other.setDirection(new Vector3(getDirection()));

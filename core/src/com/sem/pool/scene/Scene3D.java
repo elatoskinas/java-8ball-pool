@@ -57,7 +57,7 @@ public class Scene3D {
             ball.setUpBoxes();
             if (ball instanceof CueBall3D) {
                     ball.setDirection(new Vector3(1,0,0));
-                    ball.setSpeed(0.05f);
+                    ball.setSpeed(0.2f);
             }
         }
     }
