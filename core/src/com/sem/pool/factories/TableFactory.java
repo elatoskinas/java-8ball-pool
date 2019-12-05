@@ -2,6 +2,17 @@ package com.sem.pool.factories;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
+import com.sem.pool.scene.CollisionHandler;
+import com.sem.pool.scene.HitBox;
 import com.sem.pool.scene.Table3D;
 
 /**
@@ -42,6 +53,68 @@ public class TableFactory extends Base3DFactory {
         ModelInstance boardInstance = assetLoader.loadModel(MODEL_TYPE);
 
         // TODO: Set texture accordingly
-        return new Table3D(boardInstance);
+        Table3D table = new Table3D(boardInstance);
+
+        setUpCollisionHandler(table);
+        return table;
+    }
+
+    /**
+     * Method called to set up the collision handler for a table.
+     * @param table table that needs collision handler.
+     */
+    private void setUpCollisionHandler(Table3D table) {
+        // configuration for the collisions
+        btDefaultCollisionConfiguration configuration = new  btDefaultCollisionConfiguration();
+        // dispatcher for the collisions
+        btCollisionDispatcher dispatcher = new btCollisionDispatcher(configuration);
+        // info regarding construction of collision algorithm
+        btCollisionAlgorithmConstructionInfo constructionInfo =
+                new btCollisionAlgorithmConstructionInfo();
+        // info regarding dispatcher
+        btDispatcherInfo dispatcherInfo = new btDispatcherInfo();
+
+        // creation of collision handler
+        CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher,
+                constructionInfo, dispatcherInfo);
+        table.setCollisionHandler(collisionHandler);
+    }
+
+    /**
+     * Sets up the bounding borders for the table by creating four HitBoxes objects to
+     * create walls that keep the ball on the table.
+     * @param table The table object for which the bounding boxes are created.
+     */
+    public void setBoundingBoxes(Table3D table) {
+        // set up bounding borders
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)),
+                table, new btCollisionObject(), new Vector3(0,0,1));
+
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)),
+                table, new btCollisionObject(), new Vector3(0,0, -1));
+
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)),
+                table, new btCollisionObject(), new Vector3(1, 0, 0));
+
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)),
+                table, new btCollisionObject(), new Vector3(-1,0,0));
+    }
+    
+    /**
+     * Sets up a single bounding box for the table.
+     * @param shape btCollisionShape for the box, should in this case always be a cube.
+     * @param position position where the box will be placed.
+     * @param table the table object for which the bounding box should be created.
+     * @param btCollisionObject the collision object required to create a HitBox instance.
+     * @param normal the normal vector of the bounding box that is to be created.
+     */
+    protected void setUpBox(Vector3 shape, Matrix4 position, Table3D table,
+                         btCollisionObject btCollisionObject, Vector3 normal) {
+        btCollisionShape btCollisionShape = new btBoxShape(shape);
+        btCollisionObject.setCollisionShape(btCollisionShape);
+        btCollisionObject.setWorldTransform(position);
+        HitBox hitBox = new HitBox(btCollisionShape, btCollisionObject);
+        hitBox.setNormal(normal);
+        table.getHitBoxes().add(hitBox);
     }
 }

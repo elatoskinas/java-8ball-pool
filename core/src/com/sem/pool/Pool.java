@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.BallFactory;
 
@@ -17,6 +18,7 @@ import com.sem.pool.factories.TableFactory;
 import com.sem.pool.game.Game;
 import com.sem.pool.game.GameState;
 import com.sem.pool.game.Player;
+import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
@@ -31,8 +33,8 @@ public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
+    private static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
     private transient Game game;
-    static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -47,6 +49,9 @@ public class Pool extends ApplicationAdapter {
 
         // Initialize viewport to the relevant width & height
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Initialize the Bullet wrapper used for collisions
+        Bullet.init();
     }
 
     /**
@@ -131,13 +136,19 @@ public class Pool extends ApplicationAdapter {
             game.advanceGameLoop();
 
             scene.render();
-
+            Ball3D cueBall = scene.getPoolBalls().get(0);
+            if (cueBall.getSpeed() > 0) {
+                getScene().getTable().checkCollision(cueBall);
+                cueBall.move();
+            }
+            // so it doesn't collide with table.
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.
-            /*Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            scene.getCamera().unproject(mousePosition);
-            Vector3 shotDirection = getScene().getPoolBalls().
-            get(0).getCueShotDirection(mousePosition);*/
+            //Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            //System.out.println(scene.getCamera().unproject(mousePosition));
+            //Vector3 shotDirection = getScene().getPoolBalls().
+            //get(0).getCueShotDirection(mousePosition);*/
+
         }
     }
 
@@ -151,7 +162,7 @@ public class Pool extends ApplicationAdapter {
 
     @Override
     public void render() {
-        // Initialize scene if uninitialized
+        // Initialize scene if uninitialized]
         initializeScene();
 
         // Clear depth buffer & color buffer masks
@@ -165,5 +176,6 @@ public class Pool extends ApplicationAdapter {
     public void dispose() {
         scene.dispose();
         assetLoader.dispose();
+
     }
 }

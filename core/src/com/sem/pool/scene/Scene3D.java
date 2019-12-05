@@ -53,6 +53,7 @@ public class Scene3D {
 
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
+            ball.setUpBoxes();
         }
     }
 
