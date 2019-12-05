@@ -109,9 +109,6 @@ public class SceneFactory {
         // Position pool balls in the right places on the board
         positionPoolBalls(poolBalls);
 
-        // Create camera
-        Camera camera = cameraFactory.createCamera();
-
         // Create table
         Table3D table = tableFactory.createTable();
         tableFactory.setBoundingBoxes(table);
@@ -123,6 +120,8 @@ public class SceneFactory {
         // Set cue to cueBall position
         cue.toShotPosition(poolBalls.get(0));
 
+        // Create camera
+        Camera camera = cameraFactory.createCamera();
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);
     }

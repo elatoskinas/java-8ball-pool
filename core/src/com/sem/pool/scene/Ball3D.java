@@ -166,7 +166,6 @@ public class Ball3D {
         return Objects.hash(id, model);
     }
 
-
     /**
      * Pot method for a ball.
      * Could be overwritten by subclasses in order to specify behaviour.

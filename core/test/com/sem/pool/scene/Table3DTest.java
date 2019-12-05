@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.math.Vector3;
 import org.junit.jupiter.api.Test;
 
 import org.mockito.Mockito;
@@ -46,7 +46,7 @@ class Table3DTest {
         board.addHitBox(mockHitBox);
         assertEquals(board.getHitBoxes(), hitBoxes);
 
-        ArrayList potHitBoxes = new ArrayList();
+        ArrayList<HitBox> potHitBoxes = new ArrayList<>();
         assertEquals(board.getPotHitBoxes(), potHitBoxes);
         HitBox mockedPot = Mockito.mock(HitBox.class);
         potHitBoxes.add(mockedPot);
@@ -70,7 +70,8 @@ class Table3DTest {
         HitBox mockedHitBox = Mockito.mock(HitBox.class);
         board.addHitBox(mockedHitBox);
         CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
-        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(), Mockito.any())).thenReturn(true);
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(true);
         Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
         Vector3 normal = new Vector3(0,1,0);
         Vector3 direction = new Vector3(1,0,0);
@@ -86,6 +87,7 @@ class Table3DTest {
 
     /**
      * Test if the handler is called by the table on collision check.
+     * If the handler returns true the ball is potted.
      */
     @Test
     public void testPotCollisions() {
@@ -96,10 +98,37 @@ class Table3DTest {
         HitBox mockedPot = Mockito.mock(HitBox.class);
         board.addPotHitBox(mockedPot);
         CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
-        board.setCollisionHandler(mockedHandler);
         Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(true);
+        board.setCollisionHandler(mockedHandler);
         board.checkIfPot(mockedBall);
         Mockito.verify(mockedHandler, Mockito.times(1))
                 .checkHitBoxCollision(Mockito.any(HitBox.class), Mockito.any(HitBox.class));
+        Mockito.verify(mockedBall, Mockito.times(1)).pot();
     }
+
+    /**
+     * Test if the handler is called by the table on collision check.
+     * If the handler returns false no ball is potted.
+     */
+    @Test
+    public void testNoPotCollisions() {
+        Ball3D mockedBall = Mockito.mock(Ball3D.class);
+
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        Table3D board = new Table3D(model);
+        HitBox mockedPot = Mockito.mock(HitBox.class);
+        board.addPotHitBox(mockedPot);
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(false);
+        board.setCollisionHandler(mockedHandler);
+        board.checkIfPot(mockedBall);
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(HitBox.class), Mockito.any(HitBox.class));
+        Mockito.verify(mockedBall, Mockito.times(0)).pot();
+    }
+
 }

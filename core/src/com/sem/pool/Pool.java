@@ -160,7 +160,7 @@ public class Pool extends ApplicationAdapter {
 
             // move ball if we want to.
             // moveBall(cueBall);
-            if (cueBall.getSpeed() >0 ) {
+            if (cueBall.getSpeed() > 0) {
                 // these two methods need to be called for every ball
                 getScene().getTable().checkCollision(cueBall);
                 getScene().getTable().checkIfPot(cueBall);
@@ -183,22 +183,23 @@ public class Pool extends ApplicationAdapter {
      */
     public void moveBall(Ball3D ball) {
         ball.setSpeed(0.015f);
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             ball.setDirection(new Vector3(-1, 0,0));
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             ball.setDirection(new Vector3(1, 0,0));
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)){
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             ball.setDirection(new Vector3(0, 0,-1));
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             ball.setDirection(new Vector3(0, 0,1));
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             ball.setDirection(new Vector3());
         }
     }
+
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }

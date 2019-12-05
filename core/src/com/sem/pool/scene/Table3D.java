@@ -39,7 +39,9 @@ public class Table3D {
         hitBoxes.add(hitBox);
     }
 
-    public void addPotHitBox(HitBox pot) { potHitBoxes.add(pot); }
+    public void addPotHitBox(HitBox pot) {
+        potHitBoxes.add(pot);
+    }
 
     public CollisionHandler getCollisionHandler() {
         return collisionHandler;
@@ -80,9 +82,12 @@ public class Table3D {
      * @param ball Ball that we check collisions with.
      * @return whether or not a ball was potted.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // Suppressed as PMD flags pot
+    // as a UR anomaly / being undefined
+    // Checking for UR anomalies has been removed in updated versions of PMD: https://pmd.github.io/2019/10/31/PMD-6.19.0/
     public boolean checkIfPot(Ball3D ball) {
         for (HitBox pot: potHitBoxes) {
-            if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), pot)){
+            if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), pot)) {
                 System.out.println("POTTED");
                 ball.pot();
                 return true;

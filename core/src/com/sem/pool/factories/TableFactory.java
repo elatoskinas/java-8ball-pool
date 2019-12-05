@@ -3,7 +3,6 @@ package com.sem.pool.factories;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
-import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.sem.pool.scene.CollisionHandler;
 import com.sem.pool.scene.HitBox;
 import com.sem.pool.scene.Table3D;
@@ -88,7 +86,7 @@ public class TableFactory extends Base3DFactory {
      * create walls that keep the ball on the table.
      * @param table The table object for which the bounding boxes are created.
      */
-    public void setBoundingBoxes(Table3D table) {
+    protected void setBoundingBoxes(Table3D table) {
         // set up bounding borders
         setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)),
                 table, new btCollisionObject(), new Vector3(0,0,1));
@@ -121,18 +119,33 @@ public class TableFactory extends Base3DFactory {
         table.getHitBoxes().add(hitBox);
     }
 
-    public void setUpPotHitBoxes(Table3D table){
-        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0 , 1.45f)), table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0 , 1.45f)), table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0 , -1.45f)), table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0 , -1.45f)), table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0 , 1.525f)), table, new btCollisionObject());
-
-        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0, -1.525f)), table, new btCollisionObject());
-
+    /**
+     * Sets up the hit boxes for the potting areas of the table.
+     * @param table The table object for which the pot hit boxes.
+     */
+    protected void setUpPotHitBoxes(Table3D table) {
+        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0, 1.45f)),
+                table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0, 1.45f)),
+                table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0, -1.45f)),
+                table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0, -1.45f)),
+                table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0, 1.525f)),
+                table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0, -1.525f)),
+                table, new btCollisionObject());
     }
 
-    private void setUpPotBox(Matrix4 position, Table3D table, btCollisionObject btCollisionObject) {
+    /**
+     * Sets up a single bounding box for the table.
+     * @param position position where the box will be placed.
+     * @param table the table object for which the bounding box should be created.
+     * @param btCollisionObject the collision object required to create a HitBox instance.
+     */
+    protected void setUpPotBox(Matrix4 position, Table3D table,
+                               btCollisionObject btCollisionObject) {
         btCollisionShape collisionShape = new btCylinderShape(new Vector3(0.175f,10f,0.175f));
         btCollisionObject.setCollisionShape(collisionShape);
         btCollisionObject.setWorldTransform(position);
