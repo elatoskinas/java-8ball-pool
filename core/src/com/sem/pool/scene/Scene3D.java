@@ -110,6 +110,10 @@ public class Scene3D {
      *       This method should probably not even belong in the Scene class.
      */
     public void triggerCollisions() {
-
+        // Check collisions between the board and
+        // every ball in the scene.
+        for (Ball3D ball : poolBalls) {
+            table.checkCollision(ball);
+        }
     }
 }
