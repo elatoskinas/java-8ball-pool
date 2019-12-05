@@ -115,7 +115,6 @@ allprojects {
                 // Ignore root com.sem.pool for now, as it requires
                 // more complex LibGDX testing setups.
                 // Also exclude the database core functionality classes for now
-                // Exclude scene for now because it contains mouse input in Cue3D which is hard to test
                 excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.database.tables']
 
                 limit {
