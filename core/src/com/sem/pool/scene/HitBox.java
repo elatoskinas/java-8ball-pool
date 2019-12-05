@@ -32,6 +32,11 @@ public class HitBox {
         this.object = object;
     }
 
+    /**
+     * Returns whether another Object is equal to this HitBox.
+     * @param obj other object.
+     * @return whether they are equal.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof HitBox) {

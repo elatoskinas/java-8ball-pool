@@ -42,6 +42,9 @@ public class HitBoxTest {
     }
 
 
+    /**
+     * Tests the hashcode method.
+     */
     @Test
     void testHashCode() {
         btCollisionShape mockShape = Mockito.mock(btCollisionShape.class);

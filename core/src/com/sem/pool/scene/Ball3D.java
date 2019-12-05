@@ -123,6 +123,11 @@ public class Ball3D {
         return boundingBox.max.x - boundingBox.getCenterX();
     }
 
+    /**
+     * Returns whether another Object is equal to this ball.
+     * @param other other Object.
+     * @return whether they are equal.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Ball3D) {

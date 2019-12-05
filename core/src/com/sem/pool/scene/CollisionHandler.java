@@ -36,18 +36,10 @@ public class CollisionHandler {
 
     }
 
-    /**
-     * Returns the collision configuration.
-     * @return collisionConfig.
-     */
     public btDefaultCollisionConfiguration getCollisionConfig() {
         return collisionConfig;
     }
 
-    /**
-     * Returns the collision dispatcher.
-     * @return dispatcher.
-     */
     public btCollisionDispatcher getDispatcher() {
         return dispatcher;
     }
