@@ -93,7 +93,7 @@ public abstract class Ball3D {
      * @return  True if the ball is in motion.
      */
     public boolean isInMotion() {
-        return speed == 0;
+        return speed != 0;
     }
     
     /**

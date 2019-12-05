@@ -15,10 +15,10 @@ import com.sem.pool.factories.CameraFactory;
 import com.sem.pool.factories.CueFactory;
 import com.sem.pool.factories.SceneFactory;
 import com.sem.pool.factories.TableFactory;
-import com.sem.pool.scene.Ball3D;
 import com.sem.pool.game.Game;
 import com.sem.pool.game.GameState;
 import com.sem.pool.game.Player;
+import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;

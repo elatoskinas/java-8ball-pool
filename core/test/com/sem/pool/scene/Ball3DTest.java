@@ -1,9 +1,5 @@
 package com.sem.pool.scene;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -12,6 +8,8 @@ import com.badlogic.gdx.physics.bullet.Bullet;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class containing unit tests for the Ball3D class.
@@ -394,6 +392,34 @@ abstract class Ball3DTest {
         ball.setSpeed(1f);
         ball.move();
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+    }
+
+    /**
+     * Test case to test if the inMotion() method returns
+     * the right value when the Ball is moving.
+     */
+    @Test
+    void testInMotion() {
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Ball3D ball = getBall(1, mockModel);
+        
+        ball.setSpeed(1);
+        
+        assertTrue(ball.isInMotion());
+    }
+
+    /**
+     * Test case to test if the inMotion method returns
+     * the right vlue when the ball is stationary.
+     */
+    @Test
+    void testNotInMotion() {
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Ball3D ball = getBall(1, mockModel);
+
+        ball.setSpeed(0);
+
+        assertFalse(ball.isInMotion());
     }
 }
 
