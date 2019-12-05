@@ -25,6 +25,18 @@ import java.util.ArrayList;
 public class TableFactory extends Base3DFactory {
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.TABLE;
 
+    public static ArrayList<Vector3> potLocations;
+
+    static {
+        potLocations = new ArrayList<>();
+        potLocations.add(new Vector3(3.05f, 0, 1.45f));
+        potLocations.add(new Vector3(-3.05f, 0, 1.45f));
+        potLocations.add(new Vector3(3.05f, 0, -1.45f));
+        potLocations.add(new Vector3(-3.05f, 0, 1.45f));
+        potLocations.add(new Vector3(-0.0125f, 0, 1.525f));
+        potLocations.add(new Vector3(-0.0125f, 0, -1.525f));
+    }
+
     private Texture texture;
 
     /**
@@ -130,19 +142,13 @@ public class TableFactory extends Base3DFactory {
      * Sets up the hit boxes for the potting areas of the table.
      * @param table The table object for which the pot hit boxes.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // Suppressed as PMD flags pot
+    // as a UR anomaly / being undefined
+    // Checking for UR anomalies has been removed in updated versions of PMD: https://pmd.github.io/2019/10/31/PMD-6.19.0/
     protected void setUpPotHitBoxes(Table3D table) {
-        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0, 1.45f)),
-                table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0, 1.45f)),
-                table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0, -1.45f)),
-                table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0, -1.45f)),
-                table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0, 1.525f)),
-                table, new btCollisionObject());
-        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0, -1.525f)),
-                table, new btCollisionObject());
+        for (Vector3 position: TableFactory.potLocations) {
+            setUpPotBox(new Matrix4().translate(position), table, new btCollisionObject());
+        }
     }
 
     /**
