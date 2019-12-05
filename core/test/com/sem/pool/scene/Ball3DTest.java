@@ -56,7 +56,7 @@ abstract class Ball3DTest {
     void testDirectionSetter() {
         Vector3 direction = new Vector3(3f, 4f, 0f);
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
-        Ball3D ball = new Ball3D(0, mockModel);
+        Ball3D ball = getBall(0, mockModel);
 
         ball.setDirection(direction);
 
@@ -71,7 +71,7 @@ abstract class Ball3DTest {
     void testSpeedSetter() {
         float speed = 5.1f;
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
-        Ball3D ball = new Ball3D(0, mockModel);
+        Ball3D ball = getBall(0, mockModel);
 
         ball.setSpeed(speed);
 
@@ -202,7 +202,7 @@ abstract class Ball3DTest {
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
         mockModelInstance.transform = mockMatrix;
-        Ball3D ball = new Ball3D(0, mockModelInstance);
+        Ball3D ball = getBall(0, mockModelInstance);
         Vector3 translation = new Vector3(1f, 0, 0);
         ball.translate(translation);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
@@ -387,7 +387,7 @@ abstract class Ball3DTest {
 
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
         model.transform = mockMatrix;
-        Ball3D ball = new Ball3D(0, model);
+        Ball3D ball = getBall(0, model);
         final Vector3 translation = new Vector3(1f, 0, 0);
         ball.setDirection(new Vector3(1,0,0));
         ball.setSpeed(1f);
