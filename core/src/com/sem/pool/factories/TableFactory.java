@@ -24,18 +24,18 @@ import java.util.ArrayList;
  */
 public class TableFactory extends Base3DFactory {
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.TABLE;
-    protected static final Vector3 POTBOX_DIMENSION = new Vector3(0.175f,10f,0.175f);
+    protected static final Vector3 POT_BOX_DIMENSION = new Vector3(0.175f,10f,0.175f);
 
-    public static ArrayList<Vector3> potLocations;
+    public static final ArrayList<Vector3> POT_LOCATIONS;
 
     static {
-        potLocations = new ArrayList<>();
-        potLocations.add(new Vector3(3.05f, 0, 1.45f));
-        potLocations.add(new Vector3(-3.05f, 0, 1.45f));
-        potLocations.add(new Vector3(3.05f, 0, -1.45f));
-        potLocations.add(new Vector3(-3.05f, 0, 1.45f));
-        potLocations.add(new Vector3(-0.0125f, 0, 1.525f));
-        potLocations.add(new Vector3(-0.0125f, 0, -1.525f));
+        POT_LOCATIONS = new ArrayList<>();
+        POT_LOCATIONS.add(new Vector3(3.05f, 0, 1.45f));
+        POT_LOCATIONS.add(new Vector3(-3.05f, 0, 1.45f));
+        POT_LOCATIONS.add(new Vector3(3.05f, 0, -1.45f));
+        POT_LOCATIONS.add(new Vector3(-3.05f, 0, 1.45f));
+        POT_LOCATIONS.add(new Vector3(-0.0125f, 0, 1.525f));
+        POT_LOCATIONS.add(new Vector3(-0.0125f, 0, -1.525f));
     }
 
     private Texture texture;
@@ -147,7 +147,7 @@ public class TableFactory extends Base3DFactory {
     // as a UR anomaly / being undefined
     // Checking for UR anomalies has been removed in updated versions of PMD: https://pmd.github.io/2019/10/31/PMD-6.19.0/
     protected void setUpPotHitBoxes(Table3D table) {
-        for (Vector3 position: TableFactory.potLocations) {
+        for (Vector3 position: TableFactory.POT_LOCATIONS) {
             setUpPotBox(new Matrix4().translate(position), table, new btCollisionObject());
         }
     }
@@ -162,7 +162,7 @@ public class TableFactory extends Base3DFactory {
      */
     protected void setUpPotBox(Matrix4 position, Table3D table,
                                btCollisionObject btCollisionObject) {
-        btCollisionShape collisionShape = new btCylinderShape(POTBOX_DIMENSION);
+        btCollisionShape collisionShape = new btCylinderShape(POT_BOX_DIMENSION);
         btCollisionObject.setCollisionShape(collisionShape);
         btCollisionObject.setWorldTransform(position);
         HitBox hitBox = new HitBox(collisionShape, btCollisionObject);
