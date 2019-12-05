@@ -111,7 +111,10 @@ public abstract class Ball3D {
         this.model.transform.translate(translation);
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
-        this.hitBox.updateLocation(this.model.transform);
+        // TODO: refactor code to fix this issue with tests
+        if (hitBox != null) {
+            this.hitBox.updateLocation(this.model.transform);
+        }
     }
 
     /**
