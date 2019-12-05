@@ -108,7 +108,7 @@ public class Game implements GameStateObserver {
         }
 
         // Check collisions for current game loop iteration
-        scene.triggerwCollisions();
+        scene.triggerCollisions();
 
         // TODO: Handle calling pot balls methods
 

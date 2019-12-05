@@ -127,4 +127,27 @@ class Scene3DTest {
         Mockito.verify(batch).dispose();
         assertEquals(0, scene.getModels().size());
     }
+
+    /**
+     * Test case to verify that the collisions are checked between
+     * all the balls and the table of the game upon triggering
+     * collisions for the scene.
+     */
+    @Test
+    public void testTriggerCollisionsTableBalls() {
+        // Create 2 mock pool balls, and add them to the scene
+        Ball3D ball1 = Mockito.mock(Ball3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+
+        scene.getPoolBalls().add(ball1);
+        scene.getPoolBalls().add(ball2);
+
+        // Trigger collisions for the scene
+        scene.triggerCollisions();
+
+        // Verify that the collisions are checked between
+        // the balls and the table.
+        Mockito.verify(table).checkCollision(ball1);
+        Mockito.verify(table).checkCollision(ball2);
+    }
 }

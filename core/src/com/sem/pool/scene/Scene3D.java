@@ -109,7 +109,7 @@ public class Scene3D {
      * TODO: Refactor this to it's own class, preferably
      *       This method should probably not even belong in the Scene class.
      */
-    public void triggerwCollisions() {
+    public void triggerCollisions() {
 
     }
 }
