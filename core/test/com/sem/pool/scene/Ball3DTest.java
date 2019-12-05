@@ -3,7 +3,6 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -369,33 +368,6 @@ class Ball3DTest {
         float radius = ball.getRadius(); // Get radius again
 
         assertEquals(expectedRadius, radius);
-    }
-
-    /**
-     * Tests the setup boxes method.
-     */
-    @Test
-    public void testSetupBoxes() {
-        Bullet.init();
-        final int id1 = 0;
-        ModelInstance model = Mockito.mock(ModelInstance.class);
-        model.transform = new Matrix4();
-
-        // Setup expected bounding box of size 4 in each axis
-        BoundingBox box = new BoundingBox();
-        box.ext(4, 4, 4);
-
-        // Make the mock model's calculate bounding box method return
-        // the constructed box
-        Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
-                .thenReturn(box);
-
-        Ball3D ball = new Ball3D(id1, model);
-
-        ball.getRadius(); // Perform radius side effect to construct bounding box
-        ball.setUpBoxes();
-        assertEquals(ball.getModel(), model);
-        assertTrue(ball.isSetUp());
     }
 
     /**

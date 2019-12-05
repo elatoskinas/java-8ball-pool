@@ -36,14 +36,6 @@ public class Ball3D {
     }
 
     /**
-     * Returns whether the bounding box for the ball has been setup.
-     * @return whether the bounding box is set up.
-     */
-    public boolean isSetUp() {
-        return setUp;
-    }
-
-    /**
      * Sets up the bounding box and hit boxes after the game is loaded.
      * This should be called when a ball is loaded into the scene.
      */
@@ -114,7 +106,7 @@ public class Ball3D {
         if (setUp) {
             // hit box needs to be moved too to make sure hit box
             // and visual model are at the same position
-            this.hitBox.getObject().setWorldTransform(this.model.transform);
+            this.hitBox.updateLocation(this.model.transform);
         }
     }
 

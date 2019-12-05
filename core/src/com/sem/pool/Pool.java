@@ -30,11 +30,11 @@ public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
-    static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
+    private static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
 
     // State flag to keep track of whether asset loading
     // has finished.
-    private static transient boolean loaded;
+    private transient boolean loaded;
 
     @Override
     public void create() {
@@ -158,8 +158,10 @@ public class Pool extends ApplicationAdapter {
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
 
-            moveBall(cueBall);
+            // move ball if we want to.
+            // moveBall(cueBall);
             if (cueBall.getSpeed() >0 ) {
+                // these two methods need to be called for every ball
                 getScene().getTable().checkCollision(cueBall);
                 getScene().getTable().checkIfPot(cueBall);
                 cueBall.move();
@@ -175,6 +177,10 @@ public class Pool extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Method that can be called to control the ball movement to test.
+     * @param ball ball you want to move.
+     */
     public void moveBall(Ball3D ball) {
         ball.setSpeed(0.015f);
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
