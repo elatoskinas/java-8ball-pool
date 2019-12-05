@@ -78,6 +78,8 @@ public class BallFactory extends Base3DFactory {
             // the newly created texture attribute.
             ballInstance.getMaterial(BALL_MATERIAL_NAME).set(attribute);
         }
+        Ball3D ball = returnBall(id, ballInstance);
+        setUpCollisionHandler(ball);
         return returnBall(id, ballInstance);
     }
 
@@ -89,17 +91,11 @@ public class BallFactory extends Base3DFactory {
      */
     private Ball3D returnBall(int id, ModelInstance ballInstance) {
         if (id == GameConstants.CUEBALL_ID) {
-            Ball3D cueBall = new CueBall3D(id, ballInstance);
-            setUpCollisionHandler(cueBall);
-            return cueBall;
+            return new CueBall3D(id, ballInstance);
         } else if (id == GameConstants.EIGHTBALL_ID) {
-            Ball3D eightBall = new EightBall3D(id, ballInstance);
-            setUpCollisionHandler(eightBall);
-            return eightBall;
+            return new EightBall3D(id, ballInstance);
         } else {
-            Ball3D regularBall = new RegularBall3D(id, ballInstance);
-            setUpCollisionHandler(regularBall);
-            return regularBall;
+            return new RegularBall3D(id, ballInstance);
         }
     }
 

@@ -108,9 +108,6 @@ public abstract class Ball3D {
      */
     public void move() {
         Vector3 translation = new Vector3(getDirection()).scl(speed);
-        if (speed > 0) {
-            this.speed -= 0.0005f;
-        }
         translate(translation);
     }
 
@@ -195,19 +192,21 @@ public abstract class Ball3D {
      */
     public boolean checkCollision(Ball3D other) {
         if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
-            System.out.println("Collision with ball: " + getId() + " and " + other.getId());
-
+            // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
                     .sub(new Vector3(getCoordinates()));
+            // Create vector from other to ball.
             Vector3 directionToMe = new Vector3(getCoordinates())
                     .sub(new Vector3(other.getCoordinates()));
 
+            // set directions of balls to opposite of their direction to the other.
             setDirection(directionToOther.scl(-1));
             other.setDirection(directionToMe.scl(-1));
 
-            // halve our speed (implementation will be improved later
+            // halve our speed on collision (implementation will be improved later)
             setSpeed(getSpeed() / 2);
 
+            // if we hit a ball that is not moving or has no direction, give it speed/direction.
             if (other.getSpeed() <= 0) {
                 other.setSpeed(getSpeed());
             } else {
