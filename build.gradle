@@ -116,7 +116,7 @@ allprojects {
                 // more complex LibGDX testing setups.
                 // Also exclude the database core functionality classes for now
                 // Exclude scene for now because it contains mouse input in Cue3D which is hard to test
-                excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.database.tables', 'com.sem.pool.scene']
+                excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.database.tables']
 
                 limit {
                     counter = 'BRANCH'

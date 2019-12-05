@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public abstract class Ball3D {
     private int id;
-    private transient ModelInstance model;
+    private final transient ModelInstance model;
     private transient BoundingBox boundingBox;
 
     /**

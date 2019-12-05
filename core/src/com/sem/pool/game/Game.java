@@ -9,9 +9,9 @@ import com.sem.pool.scene.Scene3D;
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  */
 public class Game {
-    private transient Scene3D scene;
-    private transient Input input;
-    private transient GameState state;
+    private final transient Scene3D scene;
+    private final transient Input input;
+    private final transient GameState state;
 
     /**
      * Constructs a new Game object with the given scene, input, and state.

@@ -13,17 +13,17 @@ import java.util.List;
  */
 public class Scene3D {
     // ModelBatch LibGDX dependency that allows rendering
-    private transient ModelBatch modelBatch;
+    private final transient ModelBatch modelBatch;
 
     // Scene elements
-    private transient Environment environment;
-    private transient Camera camera;
-    private transient List<ModelInstance> models;
+    private final transient Environment environment;
+    private final transient Camera camera;
+    private final transient List<ModelInstance> models;
 
     // Game elements
-    private transient List<Ball3D> poolBalls;
-    private transient Table3D table;
-    private transient Cue3D cue;
+    private final transient List<Ball3D> poolBalls;
+    private final transient Table3D table;
+    private final transient Cue3D cue;
 
     /**
      * Creates an instance of a 3D Pool Game scene from the specified

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
  * Class representing a 3D Board of a single game.
  */
 public class Table3D {
-    private transient ModelInstance model;
+    private final transient ModelInstance model;
 
     /**
      * Constructs a new 3D Board instance with the specified model.

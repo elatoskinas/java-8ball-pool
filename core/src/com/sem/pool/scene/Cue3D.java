@@ -3,7 +3,6 @@ package com.sem.pool.scene;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -18,39 +17,19 @@ public class Cue3D {
 
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
-    private static final float FORCE_CAP = 1f;
 
-    // Used for the dragging animation and force calculation
-    private transient boolean dragging;
-    private transient Vector3 shootDirection;
-    private transient Vector3 dragOriginCue;
-    private transient Vector3 dragOriginMouse;
-
-    private transient ModelInstance model;
+    private final transient ModelInstance model;
 
     /**
      * Constructs a new 3D Cue instance.
      */
     public Cue3D(ModelInstance model) {
         this.model = model;
-        this.dragging = false;
-        this.shootDirection = new Vector3();
-        this.dragOriginCue = new Vector3();
-        this.dragOriginMouse = new Vector3();
     }
 
     public ModelInstance getModel() {
         return model;
     }
-
-    /**
-     * Returns the current coordinates of the cue.
-     * @return The coordinates of the cue.
-     */
-    public Vector3 getCoordinates() {
-        return this.model.transform.getTranslation(new Vector3());
-    }
-
 
     /**
      * Given the mouse position, determines the direction of the cue
@@ -88,40 +67,6 @@ public class Cue3D {
     }
 
 
-    /**
-     * Set the cue to its position and rotation.
-     * @param mousePosition mouse coordinates
-     * @param cueBall cue ball
-     */
-    public void toPosition(Vector3 mousePosition, Ball3D cueBall) {
-
-        Vector3 ballPosition = cueBall.getCoordinates();
-
-        // If the mouseposition and cue ball position are the same -> set the cue to the left.
-        if (mousePosition.x == ballPosition.x && mousePosition.z == ballPosition.z) {
-            mousePosition.x -= cueBall.getRadius();
-        }
-
-        // Get the mouse direction with respect to the ball
-        Vector3 direction = new Vector3();
-        direction.add(mousePosition).sub(ballPosition);
-
-        // Set y direction 0 because we never move up
-        direction.y = 0;
-        direction.nor();
-
-        // Positioning
-        // Distance from the center of the cue ball
-        float dist = cueBall.getRadius() + CUE_OFFSET;
-
-        // Scale the direction with the radius of the circle where the cue needs to be
-        Vector3 onRadius = new Vector3(direction.scl(dist));
-        Vector3 res = onRadius.add(ballPosition);
-        model.transform.setToTranslation(res.x, Y_COORDINATE, res.z);
-
-        // Rotation
-        rotateCue(cueBall);
-    }
 
     /**
      * TODO: Move this to a input processor.
@@ -131,93 +76,26 @@ public class Cue3D {
     public void processInput(Scene3D scene) {
         Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         scene.getCamera().unproject(mousePosition);
-        Ball3D cueBall = scene.getPoolBalls().get(0);
 
         // Enter dragging
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            // Enter dragging
-            if (!dragging) {
-                dragging = true;
-                shootDirection = getCueShotDirection(mousePosition, cueBall);
-                dragOriginCue = getCoordinates();
-                dragOriginMouse = mousePosition;
-            }
-            toDragPosition(mousePosition, cueBall);
-        }
-        // Left click released -> shoot
-        else if (dragging) {
-            dragging = false;
+            Ball3D cueBall = scene.getPoolBalls().get(0);
             shoot(mousePosition, cueBall);
         }
-        // Not dragging -> update position
-        else {
-            toPosition(mousePosition, cueBall);
-        }
-    }
-
-    /**
-     * Sets the cue to the position in the drag phase.
-     * @param mousePosition mouse coordinates
-     * @param cueBall cue ball
-     */
-    public void toDragPosition(Vector3 mousePosition, Ball3D cueBall) {
-        
-        // Get the direction of the cue drag
-        Vector3 direction = new Vector3(dragOriginMouse).sub(cueBall.getCoordinates());
-
-        // Normalize vector because it is the direction
-        direction.y = 0;
-        direction.nor();
-
-        // TODO: Different calculation for the distance/force of the cue
-        // TODO: Now it just takes the distance to the first left-clicked point
-        // The distance from the current mouse position and the first left-click mouse position.
-        float distance = mousePosition.dst(dragOriginMouse);
-
-        // Maximum distance that the cue can be dragged
-        if (distance > FORCE_CAP) {
-            distance = FORCE_CAP;
-        }
-
-        // Scale the direction with the distance
-        direction.scl(distance);
-
-        // Add the direction to the cue position of the first left-click
-        direction.add(dragOriginCue);
-
-        // Do the translation
-        model.transform.setToTranslation(direction.x, Y_COORDINATE, direction.z);
-
-        // Calculate and set the rotation of the cue (setToTranslation resets the rotation matrix)
-        rotateCue(cueBall);
-    }
-
-    /**
-     * Rotates the cue so that it points towards the center of the cue ball.
-     * @param cueBall cue ball
-     */
-    public void rotateCue(Ball3D cueBall) {
-        Vector3 cuePosition = getCoordinates().sub(cueBall.getCoordinates());
-        double angle = MathUtils.atan2(cuePosition.z, cuePosition.x * -1);
-        model.transform.rotateRad(Vector3.Y, (float) angle);
     }
 
     /**
      * Shoots the cueball based on the mouse-postion and the mouse-position when the drag started.
-     * @param mousePosition the current mouse position
+     * @param mousePosition the mouse coordinates
      * @param cueBall the cueball
      */
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
         // Calculates the force based on the distance
-        float force = mousePosition.dst(dragOriginMouse);
-
-        // Caps the force
-        if (force > FORCE_CAP) {
-            force = FORCE_CAP;
-        }
+        float force = 0.5f;
+        Vector3 direction = getCueShotDirection(mousePosition, cueBall);
 
         // Apply the force in the shoot direction
-        cueBall.applyForce(force, shootDirection);
+        cueBall.applyForce(force, direction);
     }
 
 }

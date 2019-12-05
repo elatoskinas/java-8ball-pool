@@ -95,7 +95,7 @@ abstract class Ball3DTest {
 
     /**
      * Test case to ensure that comparing equality between a Ball3D
-     * object with an object of a differnt type returns false.
+     * object with an object of a different type returns false.
      */
     @Test
     public void testNotEqualsDifferentObjectType() {

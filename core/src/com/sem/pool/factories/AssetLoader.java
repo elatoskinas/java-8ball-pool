@@ -23,11 +23,11 @@ public class AssetLoader {
     protected static final String BALL_TEXTURE_PATH = "models/Textures/ball%d.jpg";
 
     // Parameters for loading 3D models
-    private transient ObjLoader.ObjLoaderParameters objectLoaderParameters;
+    private final transient ObjLoader.ObjLoaderParameters objectLoaderParameters;
 
     // Underlying AssetManager (LibGDX dependency) to use
     // for loading assets
-    private transient AssetManager assetManager;
+    private final transient AssetManager assetManager;
 
     /**
      * Enum to represent loadable model types.
@@ -38,9 +38,9 @@ public class AssetLoader {
         TABLE(TABLE_MODEL_PATH),
         CUE(CUE_MODEL_PATH);
 
-        private String path;
+        private final String path;
 
-        private ModelType(String path) {
+        ModelType(String path) {
             this.path = path;
         }
 
