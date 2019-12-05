@@ -80,7 +80,7 @@ public class Cue3D {
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
         // Calculates the force based on the distance
         // TODO: Add force control
-        float force = 0.3f;
+        float force = 0.1f;
         Vector3 direction = getCueShotDirection(mousePosition, cueBall);
 
         // Apply the force in the shoot direction
