@@ -66,6 +66,8 @@ public class Cue3DTest {
         BoundingBox box = new BoundingBox();
         box.ext(4, 4, 4);
 
+        ball.setBoundingBox(box);
+
         cue.toBeginPosition(ball);
         Mockito.verify(ballMockMatrix, Mockito.times(1))
                 .translate(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
