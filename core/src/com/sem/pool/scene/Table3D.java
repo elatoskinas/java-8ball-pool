@@ -56,10 +56,9 @@ public class Table3D {
     public boolean checkCollision(Ball3D ball) {
         for (HitBox hitBox: hitBoxes) {
             if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {
-                Vector3 normal = new Vector3(hitBox.getNormal().nor());
-                Vector3 reflectedVector = ball.getDirection().add(normal
-                        .scl(-2 * ball.getDirection().dot(normal)));
-                ball.setDirection(reflectedVector);
+                Vector3 newDirection = collisionHandler.reflectVector(new Vector3(ball.getDirection()), new Vector3(hitBox.getNormal()));
+                ball.setDirection(newDirection);
+                ball.translate(new Vector3(newDirection).scl(0.01f));
                 return true;
             }
         }

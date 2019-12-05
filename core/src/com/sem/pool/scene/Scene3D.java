@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,10 @@ public class Scene3D {
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
             ball.setUpBoxes();
+            if (ball instanceof CueBall3D) {
+                    ball.setDirection(new Vector3(1,0,0));
+                    ball.setSpeed(0.05f);
+            }
         }
     }
 
@@ -117,6 +122,15 @@ public class Scene3D {
         // every ball in the scene.
         for (Ball3D ball : poolBalls) {
             table.checkCollision(ball);
+        }
+
+        for (int i = 0; i < poolBalls.size(); i++) {
+            Ball3D ball = poolBalls.get(i);
+            for (int j = i + 1; j < poolBalls.size(); j++){
+                System.out.println("Checking collision for: " + i);
+                Ball3D other = poolBalls.get(j);
+                ball.checkCollision(other);
+            }
         }
     }
 }

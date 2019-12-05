@@ -19,6 +19,15 @@ public abstract class Ball3D {
     private transient HitBox hitBox;
     private transient Vector3 direction;
     private transient float speed;
+    private transient CollisionHandler collisionHandler;
+
+    public CollisionHandler getCollisionHandler() {
+        return collisionHandler;
+    }
+
+    public void setCollisionHandler(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
+    }
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -99,6 +108,9 @@ public abstract class Ball3D {
      */
     public void move() {
         Vector3 translation = new Vector3(getDirection()).scl(speed);
+//        if (speed > 0) {
+//            System.out.println(translation);
+//        }
         translate(translation);
     }
 
@@ -109,6 +121,7 @@ public abstract class Ball3D {
     public void translate(Vector3 translation) {
         // move the visual model of the ball
         this.model.transform.translate(translation);
+        //this.model.transform.translate(new Vector3(0.000000001f,0,0));
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
         // TODO: refactor code to fix this issue with tests
@@ -171,6 +184,38 @@ public abstract class Ball3D {
     @Override
     public int hashCode() {
         return Objects.hash(id, model);
+    }
+
+    public boolean checkCollision(Ball3D other) {
+        if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
+            System.out.println("Collision with ball: " + getId() + " and " + other.getId());
+
+            Vector3 ourDirection = new Vector3(getDirection()).nor();
+            Vector3 directionToOther = new Vector3(getCoordinates()).sub(other.getCoordinates()).nor();
+//
+            Vector3 otherDirection = new Vector3(getDirection()).nor();
+            Vector3 directionToMe = new Vector3(other.getCoordinates().sub(other.getCoordinates())).nor();
+//
+            Vector3 newDirection = collisionHandler.reflectVector(directionToOther, ourDirection);
+            Vector3 otherNewDirection = collisionHandler.reflectVector(directionToMe, otherDirection);
+
+//            setDirection(collisionHandler.reflectVector(directionToOther, ourDirection));
+//            other.setDirection(collisionHandler.reflectVector(directionToMe, otherDirection));
+            setDirection(ourDirection.scl(-1));
+            other.setDirection(otherDirection.scl(-1));
+
+//            translate(new Vector3(newDirection).scl(0.1f));
+//            other.translate(new Vector3(otherNewDirection).scl(0.1f));
+
+            if (other.getSpeed() <= 0) {
+                other.setSpeed(getSpeed() * 0.5f);
+            }
+            if (other.getDirection().equals(new Vector3())){
+                other.setDirection(new Vector3(getDirection()));
+            }
+            return true;
+        }
+        return false;
     }
 
 }

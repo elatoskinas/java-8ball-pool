@@ -3,11 +3,17 @@ package com.sem.pool.factories;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
 import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CollisionHandler;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
+import com.sem.pool.scene.Table3D;
 
 import java.util.List;
 
@@ -84,11 +90,38 @@ public class BallFactory extends Base3DFactory {
      */
     private Ball3D returnBall(int id, ModelInstance ballInstance) {
         if (id == GameConstants.CUEBALL_ID) {
-            return new CueBall3D(id, ballInstance);
+            Ball3D cueBall = new CueBall3D(id, ballInstance);
+            setUpCollisionHandler(cueBall);
+            return cueBall;
         } else if (id == GameConstants.EIGHTBALL_ID) {
-            return new EightBall3D(id, ballInstance);
+            Ball3D eightBall = new EightBall3D(id, ballInstance);
+            setUpCollisionHandler(eightBall);
+            return eightBall;
         } else {
-            return new RegularBall3D(id, ballInstance);
+            Ball3D regularBall = new RegularBall3D(id, ballInstance);
+            setUpCollisionHandler(regularBall);
+            return regularBall;
         }
+    }
+
+    /**
+     * Method called to set up the collision handler for a ball.
+     * @param ball ball that needs collision handler.
+     */
+    private void setUpCollisionHandler(Ball3D ball) {
+        // configuration for the collisions
+        btDefaultCollisionConfiguration configuration = new  btDefaultCollisionConfiguration();
+        // dispatcher for the collisions
+        btCollisionDispatcher dispatcher = new btCollisionDispatcher(configuration);
+        // info regarding construction of collision algorithm
+        btCollisionAlgorithmConstructionInfo constructionInfo =
+                new btCollisionAlgorithmConstructionInfo();
+        // info regarding dispatcher
+        btDispatcherInfo dispatcherInfo = new btDispatcherInfo();
+
+        // creation of collision handler
+        CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher,
+                constructionInfo, dispatcherInfo);
+        ball.setCollisionHandler(collisionHandler);
     }
 }
