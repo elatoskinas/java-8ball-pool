@@ -54,11 +54,11 @@ public class Scene3D {
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
             ball.setUpBoxes();
-            // can be used to quickly simulate a ball moving and colliding
-            // if (ball instanceof CueBall3D) {
-            // ball.setDirection(new Vector3(1,0,0));
-            // ball.setSpeed(0.2f);
-            // }
+//             //can be used to quickly simulate a ball moving and colliding
+//             if (ball instanceof CueBall3D) {
+//             ball.setDirection(new Vector3(1,0,0));
+//             ball.setSpeed(0.2f);
+//             }
         }
     }
 

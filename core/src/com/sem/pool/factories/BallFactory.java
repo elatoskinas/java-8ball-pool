@@ -80,7 +80,7 @@ public class BallFactory extends Base3DFactory {
         }
         Ball3D ball = returnBall(id, ballInstance);
         setUpCollisionHandler(ball);
-        return returnBall(id, ballInstance);
+        return ball;
     }
 
     /**

@@ -188,7 +188,7 @@ public abstract class Ball3D {
      * If a ball with no speed or direction is hit, they get
      * a new one. This is to respond to the cue ball hitting a ball that was just placed.
      * @param other Other ball.
-     * @return whether the the ball collided with the other ball.
+     * @return whether the ball collided with the other ball.
      */
     public boolean checkCollision(Ball3D other) {
         if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
@@ -209,7 +209,7 @@ public abstract class Ball3D {
             // if we hit a ball that is not moving or has no direction, give it speed/direction.
             if (other.getSpeed() <= 0) {
                 other.setSpeed(getSpeed());
-            } else {
+            } else { // else, give it more speed if the similar direction, slow down if not.
                 other.setSpeed(other.getSpeed() - getDirection()
                         .dot(other.getDirection()) / 100);
             }
