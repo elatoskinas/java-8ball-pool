@@ -108,7 +108,7 @@ public class Game implements GameStateObserver {
         }
 
         // Check collisions for current game loop iteration
-        checkCollisions();
+        scene.triggerwCollisions();
 
         // TODO: Handle calling pot balls methods
 
@@ -147,16 +147,6 @@ public class Game implements GameStateObserver {
 
         // No ball in motion; Game should not be in motion either.
         return false;
-    }
-
-    /**
-     * Checks collisions between the balls and the board,
-     * and handles the reactions of the collisions.
-     * TODO: Integrate ball vs ball collision
-     * TODO: Refactor this to it's own class, preferably
-     */
-    protected void checkCollisions() {
-        
     }
 
     /**

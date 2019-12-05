@@ -101,4 +101,15 @@ public class Scene3D {
         modelBatch.dispose();
         models.clear();
     }
+
+    /**
+     * Checks collisions between the balls and the board,
+     * and handles the reactions of the collisions.
+     * TODO: Integrate ball vs ball collision
+     * TODO: Refactor this to it's own class, preferably
+     *       This method should probably not even belong in the Scene class.
+     */
+    public void triggerwCollisions() {
+
+    }
 }
