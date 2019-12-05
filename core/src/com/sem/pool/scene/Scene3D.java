@@ -1,9 +1,17 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +59,12 @@ public class Scene3D {
         models.add(table.getModel());
         models.add(cue.getModel());
 
+//        ModelBuilder modelBuilder = new ModelBuilder();
+//        modelBuilder.createBox(1, 1, 1, new Material(ColorAttribute.createDiffuse(Color.WHITE)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+//        Model model = modelBuilder.createCylinder(0.35f, 1, 0.35f, 100, new Material(ColorAttribute.createDiffuse(Color.WHITE)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal );
+//        ModelInstance cylinder = new ModelInstance(model);
+//        cylinder.transform.translate(new Vector3(-3.05f, 0 , 1.45f));
+        //models.add(cylinder);
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
             ball.setUpBoxes();

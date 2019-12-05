@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import org.junit.jupiter.api.Test;
@@ -56,5 +57,17 @@ public class HitBoxTest {
         assertEquals(hitBox.hashCode(), hitBox.hashCode());
         assertNotEquals(hitBox.hashCode(), hitBox1.hashCode());
         assertNotEquals(hitBox.hashCode(), hitBox2.hashCode());
+    }
+
+    /**
+     * Tests the getter and setter of the normal.
+     */
+    @Test
+    void testNormal() {
+        btCollisionShape mockShape = Mockito.mock(btCollisionShape.class);
+        btCollisionObject mockObject = Mockito.mock(btCollisionObject.class);
+        final HitBox hitBox = new HitBox(mockShape, mockObject);
+        hitBox.setNormal(new Vector3(0,1,0));
+        assertEquals(hitBox.getNormal(), new Vector3(0,1,0));
     }
 }

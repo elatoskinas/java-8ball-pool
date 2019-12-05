@@ -14,6 +14,7 @@ public class Table3D {
     private transient ArrayList<HitBox> hitBoxes;
     private transient ArrayList<ModelInstance> modelInstances;
     private transient CollisionHandler collisionHandler;
+    private transient ArrayList<HitBox> potHitBoxes;
 
     /**
      * Constructs a new 3D Board instance with the specified model.
@@ -22,6 +23,7 @@ public class Table3D {
     public Table3D(ModelInstance model) {
         this.model = model;
         this.hitBoxes = new ArrayList<>();
+        this.potHitBoxes = new ArrayList<>();
         this.modelInstances = new ArrayList<>();
     }
 
@@ -37,12 +39,18 @@ public class Table3D {
         hitBoxes.add(hitBox);
     }
 
+    public void addPotHitBox(HitBox pot) { potHitBoxes.add(pot); }
+
     public CollisionHandler getCollisionHandler() {
         return collisionHandler;
     }
 
     public void setCollisionHandler(CollisionHandler collisionHandler) {
         this.collisionHandler = collisionHandler;
+    }
+
+    public ArrayList<HitBox> getPotHitBoxes() {
+        return potHitBoxes;
     }
 
     /**
@@ -58,6 +66,23 @@ public class Table3D {
                 ball.setDirection(ball.getDirection().add(
                         // reflected vector
                         normal.scl(-2 * ball.getDirection().dot(normal))));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a ball is currently colliding with one of the pots.
+     * If this is the case the ball will be potted.
+     * @param ball Ball that we check collisions with.
+     * @return whether or not a ball was potted.
+     */
+    public boolean checkIfPot(Ball3D ball) {
+        for (HitBox pot: potHitBoxes) {
+            if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), pot)){
+                System.out.println("POTTED");
+                ball.pot();
                 return true;
             }
         }

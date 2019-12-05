@@ -3,14 +3,17 @@ package com.sem.pool.factories;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.sem.pool.scene.CollisionHandler;
 import com.sem.pool.scene.HitBox;
 import com.sem.pool.scene.Table3D;
@@ -92,7 +95,6 @@ public class TableFactory extends Base3DFactory {
      */
     public void setUpBox(Vector3 shape, Matrix4 position, Table3D table,
                          btCollisionObject btCollisionObject, Vector3 normal) {
-        System.out.println("Setting up bounding box at position: \n " + position);
         btCollisionShape btCollisionShape = new btBoxShape(shape);
         btCollisionObject.setCollisionShape(btCollisionShape);
         btCollisionObject.setWorldTransform(position);
@@ -100,4 +102,27 @@ public class TableFactory extends Base3DFactory {
         hitBox.setNormal(normal);
         table.getHitBoxes().add(hitBox);
     }
+
+    public void setUpPotHitBoxes(Table3D table){
+        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0 , 1.45f)), table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0 , 1.45f)), table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(3.05f, 0 , -1.45f)), table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(-3.05f, 0 , -1.45f)), table, new btCollisionObject());
+        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0 , 1.525f)), table, new btCollisionObject());
+
+        setUpPotBox(new Matrix4().translate(new Vector3(-0.0125f, 0, -1.525f)), table, new btCollisionObject());
+
+    }
+
+    private void setUpPotBox(Matrix4 position, Table3D table, btCollisionObject btCollisionObject) {
+        btCollisionShape collisionShape = new btCylinderShape(new Vector3(0.1f,10f,0.1f));
+        btCollisionObject.setCollisionShape(collisionShape);
+        btCollisionObject.setWorldTransform(position);
+        HitBox hitBox = new HitBox(collisionShape, btCollisionObject);
+        table.getPotHitBoxes().add(hitBox);
+    }
+
+
 }
+
+

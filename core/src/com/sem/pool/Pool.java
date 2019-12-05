@@ -163,22 +163,44 @@ public class Pool extends ApplicationAdapter {
             }
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
+            getScene().getTable().checkCollision(cueBall);
+            getScene().getTable().checkIfPot(cueBall);
+            moveBall(cueBall);
+            cueBall.move();
             if (cueBall.getSpeed() > 0 && start) {
                 getScene().getTable().checkCollision(cueBall);
-                System.out.println(cueBall.getDirection());
+                moveBall(cueBall);
                 cueBall.move();
             }
             // so it doesn't collide with table.
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.
-            //Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            //System.out.println(scene.getCamera().unproject(mousePosition));
+            Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            System.out.println(scene.getCamera().unproject(mousePosition));
             //Vector3 shotDirection = getScene().getPoolBalls().
             //get(0).getCueShotDirection(mousePosition);*/
 
         }
     }
 
+    public void moveBall(Ball3D ball) {
+        ball.setSpeed(0.015f);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+            ball.setDirection(new Vector3(-1, 0,0));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            ball.setDirection(new Vector3(1, 0,0));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)){
+            ball.setDirection(new Vector3(0, 0,-1));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+            ball.setDirection(new Vector3(0, 0,1));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            ball.setDirection(new Vector3());
+        }
+    }
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }

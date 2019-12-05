@@ -71,7 +71,6 @@ public class CollisionHandler {
 
         btManifoldResult result = new btManifoldResult(co0.wrapper, co1.wrapper);
 
-        System.out.println("a");
         return checkCollisionAlgorithm(algorithm, co0, co1, result);
     }
 

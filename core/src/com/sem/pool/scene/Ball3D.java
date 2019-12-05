@@ -48,7 +48,6 @@ public class Ball3D {
         btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
-        System.out.println("a");
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
         this.setUp = true;
@@ -169,4 +168,12 @@ public class Ball3D {
         return Objects.hash(id, model);
     }
 
+
+    /**
+     * Pot method for a ball. Should probably be overwritten for every ball.
+     */
+    public void pot() {
+        translate(getCoordinates().scl(-1));
+        translate(new Vector3(0, -100, 0));
+    }
 }
