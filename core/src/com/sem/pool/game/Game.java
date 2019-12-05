@@ -110,9 +110,10 @@ public class Game implements GameStateObserver {
             ball.move();
         }
 
-        // TODO: Handle calling pot balls methods
+        // Check collisions for current game loop iteration
+        scene.triggerCollisions();
 
-        // TODO: Handle collisions here?
+        // TODO: Handle calling pot balls methods
 
         // TODO: Need to stop balls after some point so that inMotion becomes false
         //       Otherwise we will end up in an infinite movement loop.

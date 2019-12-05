@@ -6,6 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.game.GameConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,14 +50,25 @@ public class Cue3DTest {
      */
     @Test
     public void testCueToBeginPosition() {
+        ModelInstance cueModel = Mockito.mock(ModelInstance.class);
+        Matrix4 ballMockMatrix = Mockito.mock(Matrix4.class);
+        cueModel.transform = ballMockMatrix;
+        Cue3D cue = new Cue3D(cueModel);
 
-        Cue3D cue = new Cue3D(Mockito.mock(ModelInstance.class));
+        ModelInstance ballModel = Mockito.mock(ModelInstance.class);
+        ballModel.transform = new Matrix4();
+        Ball3D ball = new CueBall3D(0, ballModel);
 
-        Ball3D ball = Mockito.mock(Ball3D.class);
 
-        Mockito.when(ball.getCoordinates()).thenReturn(new Vector3(0, 0, 0));
+        final float expectedRadius = 2.f;
+
+        // Setup expected bounding box of size 4 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(4, 4, 4);
+
         cue.toBeginPosition(ball);
-        System.out.println(cue);
+        Mockito.verify(ballMockMatrix, Mockito.times(1))
+                .translate(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
     }
 
     /**

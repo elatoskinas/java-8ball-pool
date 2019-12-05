@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.BallFactory;
 
@@ -31,8 +32,8 @@ public class Pool extends ApplicationAdapter {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
+    private static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
     private transient Game game;
-    static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -47,6 +48,9 @@ public class Pool extends ApplicationAdapter {
 
         // Initialize viewport to the relevant width & height
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Initialize the Bullet wrapper used for collisions
+        Bullet.init();
     }
 
     /**
@@ -127,9 +131,8 @@ public class Pool extends ApplicationAdapter {
     private void update() {
         // Render the scene only if the game is loaded
         if (loaded) {
-            // Advance the game loop of the game
+            // Advance the game loop of the game & render scene
             game.advanceGameLoop();
-
             scene.render();
         }
     }
@@ -144,7 +147,7 @@ public class Pool extends ApplicationAdapter {
 
     @Override
     public void render() {
-        // Initialize scene if uninitialized
+        // Initialize scene if uninitialized]
         initializeScene();
 
         // Clear depth buffer & color buffer masks
@@ -158,5 +161,6 @@ public class Pool extends ApplicationAdapter {
     public void dispose() {
         scene.dispose();
         assetLoader.dispose();
+
     }
 }

@@ -53,6 +53,7 @@ public class Scene3D {
 
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
+            ball.setUpBoxes();
         }
     }
 
@@ -99,5 +100,23 @@ public class Scene3D {
     public void dispose() {
         modelBatch.dispose();
         models.clear();
+    }
+
+    /**
+     * Checks collisions between the balls and the board,
+     * and handles the reactions of the collisions.
+     * TODO: Integrate ball vs ball collision
+     * TODO: Refactor this to it's own class, preferably
+     *       This method should probably not even belong in the Scene class.
+     */
+    // Suppress false positive for Dataflow Anomalies caused by the
+    // defined loop in the method.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public void triggerCollisions() {
+        // Check collisions between the board and
+        // every ball in the scene.
+        for (Ball3D ball : poolBalls) {
+            table.checkCollision(ball);
+        }
     }
 }

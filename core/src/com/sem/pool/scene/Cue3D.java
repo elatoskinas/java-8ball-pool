@@ -32,6 +32,14 @@ public class Cue3D {
     }
 
     /**
+     * Returns the current coordinates of the cue.
+     * @return The coordinates of the cue.
+     */
+    public Vector3 getCoordinates() {
+        return this.model.transform.getTranslation(new Vector3());
+    }
+
+    /**
      * Given the mouse position, determines the direction of the cue
      * shot for the cueball.
      *
@@ -62,6 +70,7 @@ public class Cue3D {
         Vector3 position = cueBall.getCoordinates();
         // Sets the cue left from the cue ball
         float x = position.x - CUE_OFFSET - cueBall.getRadius();
+
         model.transform.translate(x,  Y_COORDINATE, position.z);
     }
 
@@ -72,11 +81,12 @@ public class Cue3D {
      */
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
         // Calculates the force based on the distance
-        float force = 0.5f;
+        float force = 0.3f;
         Vector3 direction = getCueShotDirection(mousePosition, cueBall);
 
         // Apply the force in the shoot direction
-        cueBall.applyForce(force, direction);
+        cueBall.setDirection(direction);
+        cueBall.setSpeed(force);
     }
 
 }

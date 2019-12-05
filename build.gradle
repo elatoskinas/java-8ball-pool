@@ -146,6 +146,9 @@ allprojects {
         testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
         compile group:'org.xerial', name:'sqlite-jdbc', version:'3.28.0'
         compile group:'org.mindrot', name:'jbcrypt', version:'0.4'
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+
     }
 }
 
@@ -164,6 +167,7 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
     }
 }
 

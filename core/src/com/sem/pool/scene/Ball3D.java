@@ -3,6 +3,8 @@ package com.sem.pool.scene;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 
 import java.util.Objects;
 
@@ -14,6 +16,9 @@ public abstract class Ball3D {
     private int id;
     private final transient ModelInstance model;
     private transient BoundingBox boundingBox;
+    private transient HitBox hitBox;
+    private transient Vector3 direction;
+    private transient float speed;
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -24,6 +29,21 @@ public abstract class Ball3D {
     public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;
+        this.direction = new Vector3(0,0,0);
+        boundingBox = new BoundingBox();
+        boundingBox = model.calculateBoundingBox(boundingBox);
+    }
+
+    /**
+     * Sets up the bounding box and hit boxes after the game is loaded.
+     * This should be called when a ball is loaded into the scene.
+     */
+    public void setUpBoxes() {
+        btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
+        btCollisionObject ballObject = new btCollisionObject();
+        ballObject.setCollisionShape(ballShape);
+        ballObject.setWorldTransform(this.model.transform);
+        hitBox = new HitBox(ballShape, ballObject);
     }
 
     public int getId() {
@@ -34,8 +54,32 @@ public abstract class Ball3D {
         this.id = id;
     }
 
+    public void setBoundingBox(BoundingBox boundingBox) {
+        this.boundingBox = boundingBox;
+    }
+
     public ModelInstance getModel() {
         return model;
+    }
+
+    public HitBox getHitBox() {
+        return hitBox;
+    }
+
+    public Vector3 getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector3 direction) {
+        this.direction = direction.nor();
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     /**
@@ -48,36 +92,33 @@ public abstract class Ball3D {
 
     /**
      * Returns true if the ball is in motion, and false otherwise.
-     * TODO: This is to be integrated in collisions
      * @return  True if the ball is in motion.
      */
     public boolean isInMotion() {
-        return false;
+        return speed != 0;
     }
-
+    
     /**
-     * Translates the ball according to the provided vector.
-     * @param translation The direction and distance wherein the ball should be moved.
-     */
-    public void move(Vector3 translation) {
-        this.model.transform.translate(translation);
-    }
-
-    /**
-     * Moves the ball based on it's current speed & direction.
-     * TODO: This is to be integrated in collisions;
+     * Moves the ball with current direction and speed.
      */
     public void move() {
-        // TODO: ...
+        Vector3 translation = new Vector3(getDirection()).scl(speed);
+        translate(translation);
     }
 
     /**
-     * Applies the provided directional force to the ball, resulting in movement.
-     * @param force Scalar by which the direction vector will be multiplied.
-     * @param direction The direction of the force that is to be applied to the ball.
+     * Method called to move the ball in a direction.
+     * @param translation direction of movement.
      */
-    public void applyForce(float force, Vector3 direction) {
-        this.move(direction.scl(force));
+    public void translate(Vector3 translation) {
+        // move the visual model of the ball
+        this.model.transform.translate(translation);
+        // hit box needs to be moved too to make sure hit box
+        // and visual model are at the same position
+        // TODO: refactor code to fix this issue with tests
+        if (hitBox != null) {
+            this.hitBox.updateLocation(this.model.transform);
+        }
     }
 
     /**
@@ -85,18 +126,16 @@ public abstract class Ball3D {
      * @return  Radius of the 3D ball
      */
     public float getRadius() {
-        // Construct a bounding box around the model (if
-        // the box has not yet been created)
-        if (boundingBox == null) {
-            boundingBox = new BoundingBox();
-            boundingBox = model.calculateBoundingBox(boundingBox);
-        }
-
         // Calculate the radius; One axis is enough to determine the radius,
         // as we assume we have a perfect sphere.
         return boundingBox.max.x - boundingBox.getCenterX();
     }
 
+    /**
+     * Returns whether another Object is equal to this ball.
+     * @param other other Object.
+     * @return whether they are equal.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Ball3D) {
