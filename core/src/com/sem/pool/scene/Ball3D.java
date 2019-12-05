@@ -173,4 +173,17 @@ public abstract class Ball3D {
         return Objects.hash(id, model);
     }
 
+    /**
+     * Pot method for a ball.
+     * Could be overwritten by subclasses in order to specify behaviour.
+     * Default behaviour is to move the ball far below the center of the table.
+     */
+    public void pot() {
+        // move ball back to origin
+        translate(getCoordinates().scl(-1));
+        // set ball below the table.
+        translate(new Vector3(0, -100, 0));
+        setSpeed(0);
+        setDirection(new Vector3());
+    }
 }

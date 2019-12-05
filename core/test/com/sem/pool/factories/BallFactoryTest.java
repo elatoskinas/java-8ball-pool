@@ -1,6 +1,7 @@
 package com.sem.pool.factories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +21,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 
 /**
  * Test class containing unit tests for the BallFactory class and
@@ -208,5 +210,20 @@ class BallFactoryTest {
 
         // Verify attribute matches expected
         assertEquals(attribute, resultingAttribute);
+    }
+
+    @Test
+    public void testAssertions() {
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+
+        // We must also verify that the appropriate call is made in the asset loader.
+        Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
+
+        assertThrows(AssertionError.class, () ->  {
+            factory.createBall(-1);
+        });
+        assertThrows(AssertionError.class, () ->  {
+            factory.createBall(16);
+        });
     }
 }

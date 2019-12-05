@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -60,6 +62,18 @@ public class HitBoxTest {
     }
 
     /**
+     * Tests the getter and setter of the normal.
+     */
+    @Test
+    void testNormal() {
+        btCollisionShape mockShape = Mockito.mock(btCollisionShape.class);
+        btCollisionObject mockObject = Mockito.mock(btCollisionObject.class);
+        final HitBox hitBox = new HitBox(mockShape, mockObject);
+        hitBox.setNormal(new Vector3(0,1,0));
+        assertEquals(hitBox.getNormal(), new Vector3(0,1,0));
+    }
+
+    /**
      * Test case to test the updateLocation method.
      */
     @Test
@@ -69,9 +83,9 @@ public class HitBoxTest {
         HitBox hitBox = new HitBox(mockShape, mockObject);
 
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
-        
+
         hitBox.updateLocation(mockMatrix);
-        
+
         Mockito.verify(mockObject).setWorldTransform(mockMatrix);
     }
 }

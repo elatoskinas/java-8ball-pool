@@ -40,7 +40,7 @@ class Scene3DTest {
         environment = Mockito.mock(Environment.class);
 
         table = Mockito.mock(Table3D.class);
-        poolBalls = new ArrayList<Ball3D>();
+        poolBalls = new ArrayList<>();
         cue = Mockito.mock(Cue3D.class);
 
         scene = new Scene3D(environment, camera, poolBalls, table, cue, batch);
@@ -81,7 +81,7 @@ class Scene3DTest {
     public void testConstructorModelsSizeBallsPresent() {
         final int ballCount = 6;
 
-        List<Ball3D> poolBalls2 = new ArrayList<Ball3D>();
+        List<Ball3D> poolBalls2 = new ArrayList<>();
 
         for (int i = 0; i < ballCount; ++i) {
             poolBalls2.add(Mockito.mock(Ball3D.class));
