@@ -2,7 +2,6 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,9 +15,12 @@ import com.sem.pool.factories.CameraFactory;
 import com.sem.pool.factories.CueFactory;
 import com.sem.pool.factories.SceneFactory;
 import com.sem.pool.factories.TableFactory;
-import com.sem.pool.scene.Ball3D;
+import com.sem.pool.game.Game;
+import com.sem.pool.game.GameState;
+import com.sem.pool.game.Player;
 import com.sem.pool.scene.Scene3D;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +33,7 @@ public class Pool extends ApplicationAdapter {
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
     private static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);
+    private transient Game game;
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -95,108 +98,42 @@ public class Pool extends ApplicationAdapter {
             // Update the camera of the scene to point to the right location
             scene.getCamera().update();
 
+            initializeGame();
+
             // The assets of the game are now fully loaded
             loaded = true;
         }
     }
 
     /**
-     * Method to move the camera using the keyboard.
+     * Initializes the Game instance for the current Pool Game.
      */
-    public void moveCamera() {
-        // CAMERA MOVEMENT
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            getScene().getCamera().translate(new Vector3(1f, 0f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
+    private void initializeGame() {
+        // Create players with IDs 0 and 1
+        List<Player> players = new ArrayList<>();
+        players.add(new Player(0));
+        players.add(new Player(1));
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            getScene().getCamera().translate(new Vector3(-1f, 0f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            getScene().getCamera().translate(new Vector3(0f, 0f, -1f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            getScene().getCamera().translate(new Vector3(0f, 0f, 1f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT_BRACKET)) {
-            getScene().getCamera().rotate(Vector3.X, -60
-                    * Gdx.graphics.getDeltaTime());
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT_BRACKET)) {
-            getScene().getCamera().rotate(Vector3.X, 60
-                    * Gdx.graphics.getDeltaTime());
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            getScene().getCamera().translate(new Vector3(0f, -1f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            getScene().getCamera().translate(new Vector3(0f, 1f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        // END CAMERA MOVEMENT
+        // Create game state with the scene's pool balls and created players
+        GameState gameState = new GameState(players, scene.getPoolBalls());
+
+        // Create game instance with GDX input, the scene and the created game state
+        game = new Game(scene, Gdx.input, gameState);
+
+        // Start the game
+        game.startGame();
     }
 
     /**
-     * Renders the scene only if the scene has finished loading.
+     * Updates the scene & game for the current render iteration.
+     * Handles rendering the scene and advancing the game loop.
      */
-    private void renderScene() {
+    private void update() {
         // Render the scene only if the game is loaded
         if (loaded) {
+            // Advance the game loop of the game & render scene
+            game.advanceGameLoop();
             scene.render();
-            Ball3D cueBall = scene.getPoolBalls().get(0);
-
-            // move ball if we want to.
-            // moveBall(cueBall);
-            if (cueBall.getSpeed() > 0) {
-                // these two methods need to be called for every ball
-                getScene().getTable().checkCollision(cueBall);
-                getScene().getTable().checkIfPot(cueBall);
-                cueBall.move();
-            }
-            // so it doesn't collide with table.
-            // TODO: Temporary code below that gets the cue shot direction
-            // TODO: relative to the mouse position.
-            Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            System.out.println(scene.getCamera().unproject(mousePosition));
-            //Vector3 shotDirection = getScene().getPoolBalls().
-            //get(0).getCueShotDirection(mousePosition);*/
-
-        }
-    }
-
-    /**
-     * Method that can be called to control the ball movement to test.
-     * @param ball ball you want to move.
-     */
-    public void moveBall(Ball3D ball) {
-        ball.setSpeed(0.015f);
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            ball.setDirection(new Vector3(-1, 0,0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            ball.setDirection(new Vector3(1, 0,0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            ball.setDirection(new Vector3(0, 0,-1));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            ball.setDirection(new Vector3(0, 0,1));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            ball.setDirection(new Vector3());
         }
     }
 
@@ -216,8 +153,8 @@ public class Pool extends ApplicationAdapter {
         // Clear depth buffer & color buffer masks
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        // Render the scene if initialized
-        renderScene();
+        // Update the scene & game for the current iteration
+        update();
     }
 
     @Override

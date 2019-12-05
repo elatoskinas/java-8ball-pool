@@ -12,12 +12,11 @@ import java.util.Objects;
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
  */
-public class Ball3D {
+public abstract class Ball3D {
     private int id;
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
-    private transient boolean setUp = false;
     private transient Vector3 direction;
     private transient float speed;
 
@@ -45,7 +44,6 @@ public class Ball3D {
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
-        this.setUp = true;
     }
 
     public int getId() {
@@ -89,6 +87,14 @@ public class Ball3D {
     }
 
     /**
+     * Returns true if the ball is in motion, and false otherwise.
+     * @return  True if the ball is in motion.
+     */
+    public boolean isInMotion() {
+        return speed != 0;
+    }
+    
+    /**
      * Moves the ball with current direction and speed.
      */
     public void move() {
@@ -103,9 +109,10 @@ public class Ball3D {
     public void translate(Vector3 translation) {
         // move the visual model of the ball
         this.model.transform.translate(translation);
-        if (setUp) {
-            // hit box needs to be moved too to make sure hit box
-            // and visual model are at the same position
+        // hit box needs to be moved too to make sure hit box
+        // and visual model are at the same position
+        // TODO: refactor code to fix this issue with tests
+        if (hitBox != null) {
             this.hitBox.updateLocation(this.model.transform);
         }
     }
