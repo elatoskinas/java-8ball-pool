@@ -1,11 +1,13 @@
 package com.sem.pool.scene;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class containing unit tests for the HitBox class.
@@ -28,9 +30,9 @@ public class HitBoxTest {
     void testEquals() {
         btCollisionShape mockShape = Mockito.mock(btCollisionShape.class);
         btCollisionObject mockObject = Mockito.mock(btCollisionObject.class);
-        HitBox hitBox = new HitBox(mockShape, mockObject);
-        HitBox hitBox1 = new HitBox(mockShape, mockObject);
-        HitBox hitBox2 = new HitBox(mockShape, Mockito.mock(btCollisionObject.class));
+        final HitBox hitBox = new HitBox(mockShape, mockObject);
+        final HitBox hitBox1 = new HitBox(mockShape, mockObject);
+        final HitBox hitBox2 = new HitBox(mockShape, Mockito.mock(btCollisionObject.class));
 
         assertEquals(hitBox.getShape(), mockShape);
         assertEquals(hitBox.getObject(), mockObject);

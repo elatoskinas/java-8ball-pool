@@ -1,24 +1,7 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.CollisionObjectWrapper;
-import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithm;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
-import com.badlogic.gdx.physics.bullet.collision.btManifoldResult;
-import com.badlogic.gdx.physics.bullet.collision.btSphereBoxCollisionAlgorithm;
 
 import java.util.ArrayList;
 
@@ -72,7 +55,9 @@ public class Table3D {
         for (HitBox hitBox: hitBoxes) {
             if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {
                 Vector3 normal = new Vector3(hitBox.getNormal().nor());
-                ball.setDirection(ball.getDirection().add(normal.scl(-2 * ball.getDirection().dot(normal))));
+                ball.setDirection(ball.getDirection().add(
+                        // reflected vector
+                        normal.scl(-2 * ball.getDirection().dot(normal))));
                 return true;
             }
         }

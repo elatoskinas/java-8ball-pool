@@ -1,21 +1,24 @@
 package com.sem.pool.scene;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class containing unit tests for the Ball3D class.
  */
 class Ball3DTest {
+
     /**
      * Test method to verify that the Ball3D object instance
      * is constructed properly (the right values for the id and
@@ -94,6 +97,7 @@ class Ball3DTest {
         Ball3D ball2 = new Ball3D(id, model);
 
         assertEquals(ball1, ball2);
+        assertFalse(ball1.equals("test"));
     }
 
     /**
@@ -195,34 +199,18 @@ class Ball3DTest {
 
 
     /**
-     * Tests if the matrix translation is called after the move method is called,
+     * Tests if the matrix translation is called after the translate method is called,
      * and if the translation method has the same argument as the move method.
      */
     @Test
-    public void testMove() {
+    public void testTranslate() {
         ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
         mockModelInstance.transform = mockMatrix;
         Ball3D ball = new Ball3D(0, mockModelInstance);
         Vector3 translation = new Vector3(1f, 0, 0);
-        ball.move(translation);
+        ball.translate(translation);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
-    }
-
-    /**
-     * Tests if the matrix translation is called after the move method is called,
-     * and if the translation method has as argument the translation vector times the scalar.
-     */
-    @Test
-    public void testApplyForce() {
-        ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
-        mockModelInstance.transform = Mockito.mock(Matrix4.class);
-        Ball3D ball = new Ball3D(0, mockModelInstance);
-        Vector3 translation = new Vector3(1f, 0, 0);
-        float scalar = 10;
-        Ball3D spyBall = Mockito.spy(ball);
-        spyBall.applyForce(scalar, translation);
-        Mockito.verify(spyBall, Mockito.times(1)).move(new Vector3(10f, 0, 0));
     }
 
     /**
@@ -329,7 +317,7 @@ class Ball3DTest {
         assertEquals(expectedDirection, direction);
     }
 
-    /*
+    /**
      * Test case to verify that the correct radius is returned
      * upon calling getRadius for the Ball3D when a BoundingBox
      * has not yet been initialized.
@@ -383,6 +371,9 @@ class Ball3DTest {
         assertEquals(expectedRadius, radius);
     }
 
+    /**
+     * Tests the setup boxes method.
+     */
     @Test
     public void testSetupBoxes() {
         Bullet.init();
@@ -406,4 +397,33 @@ class Ball3DTest {
         assertEquals(ball.getModel(), model);
         assertTrue(ball.isSetUp());
     }
+
+    /**
+     * Tests that the move method calls the translate method for the matrix.
+     */
+    @Test
+    public void testMove() {
+        Bullet.init();
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
+
+        // Setup expected bounding box of size 4 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(4, 4, 4);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(box);
+
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        model.transform = mockMatrix;
+        Ball3D ball = new Ball3D(0, model);
+        final Vector3 translation = new Vector3(1f, 0, 0);
+        ball.setDirection(new Vector3(1,0,0));
+        ball.setSpeed(1f);
+        ball.move();
+        Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+    }
 }
+

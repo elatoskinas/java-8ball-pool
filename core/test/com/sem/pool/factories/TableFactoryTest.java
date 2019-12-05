@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.sem.pool.scene.Table3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**
@@ -78,12 +77,13 @@ class TableFactoryTest {
      * Test the setUpBoxes method.
      */
     @Test
-    public void testSetUPBoxes(){
+    public void testSetUpBoxes() {
         btCollisionObject mockedCollisionObject = Mockito.mock(btCollisionObject.class);
         Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
         Matrix4 matrixSpy = Mockito.spy(mockedMatrix);
         Mockito.when(matrixSpy.translate(Mockito.any())).thenReturn(null);
-        factory.setUpBox(Mockito.mock(Vector3.class), mockedMatrix, factory.createTable(), mockedCollisionObject);
+        factory.setUpBox(Mockito.mock(Vector3.class), mockedMatrix,
+                factory.createTable(), mockedCollisionObject, new Vector3(0,0,1));
         Mockito.verify(mockedCollisionObject).setWorldTransform(Mockito.any());
     }
 }

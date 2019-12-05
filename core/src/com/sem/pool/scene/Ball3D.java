@@ -34,9 +34,6 @@ public class Ball3D {
         this.direction = new Vector3(0,0,0);
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
-        // for testing
-        setDirection(new Vector3(1,0,1));
-        this.speed = 0.05f;
     }
 
     public boolean isSetUp() {
@@ -51,6 +48,7 @@ public class Ball3D {
         btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
+        System.out.println("a");
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
         this.setUp = true;
@@ -114,24 +112,6 @@ public class Ball3D {
             this.hitBox.getObject().setWorldTransform(this.model.transform);
         }
     }
-    /**
-     * Translates the ball according to the stored speed and direction.
-     */
-    public void update() {
-        this.model.transform.translate(direction.scl(speed));
-        if (setUp) {
-            this.hitBox.getObject().setWorldTransform(this.model.transform);
-        }
-    }
-
-//    /**
-//     * Applies the provided directional force to the ball, resulting in movement.
-//     * @param force Scalar by which the direction vector will be multiplied.
-//     * @param direction The direction of the force that is to be applied to the ball.
-//     */
-//    public void applyForce(float force, Vector3 direction) {
-//        this.move(direction.scl(force));
-//    }
 
     /**
      * Returns the radius of the 3D Ball as a scalar.

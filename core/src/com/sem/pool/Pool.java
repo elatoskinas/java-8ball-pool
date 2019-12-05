@@ -37,7 +37,7 @@ public class Pool extends ApplicationAdapter {
     public static transient boolean loaded;
     public transient int speed = 1;
 
-    boolean start = false;
+    private transient boolean start = false;
 
     @Override
     public void create() {
@@ -152,53 +152,26 @@ public class Pool extends ApplicationAdapter {
         // END CAMERA MOVEMENT
     }
 
-
-    /**
-     * Method to move the ball using the keyboard.
-     */
-    // change move to translate
-//    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // might be unsuppressed later.
-//    public void moveBall() {
-//        Ball3D cueBall = scene.getPoolBalls().get(0);
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            cueBall.move(new Vector3(1f, 0, 0).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            cueBall.move(new Vector3(-1f, 0, 0).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//            cueBall.move(new Vector3(0f, 0, -1f).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//            cueBall.move(new Vector3(0, 0, 1f).scl(speed
-//                    * Gdx.graphics.getDeltaTime()));
-//        }
-//    }
-
     /**
      * Renders the scene only if the scene has finished loading.
      */
     private void renderScene() {
         // Render the scene only if the game is loaded
         if (loaded) {
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 start = true;
             }
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
-                if (cueBall.getSpeed() > 0 && start) {
-                    getScene().getTable().checkCollision(cueBall);
-                    System.out.println(cueBall.getDirection());
-                    cueBall.move();
-                }
+            if (cueBall.getSpeed() > 0 && start) {
+                getScene().getTable().checkCollision(cueBall);
+                System.out.println(cueBall.getDirection());
+                cueBall.move();
+            }
             // so it doesn't collide with table.
             // TODO: Temporary code below that gets the cue shot direction
             // TODO: relative to the mouse position.
-            Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            //Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             //System.out.println(scene.getCamera().unproject(mousePosition));
             //Vector3 shotDirection = getScene().getPoolBalls().
             //get(0).getCueShotDirection(mousePosition);*/

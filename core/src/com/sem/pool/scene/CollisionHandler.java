@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldResult;
-import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.physics.bullet.collision.btSphereBoxCollisionAlgorithm;
 
 public class CollisionHandler {
@@ -18,10 +17,17 @@ public class CollisionHandler {
     private transient btCollisionAlgorithmConstructionInfo constructionInfo;
     private transient btDispatcherInfo dispatcherInfo;
 
+    /**
+     * Constructor for a collision handler.
+     * @param configuration collision configuration.
+     * @param dispatcher dispatcher for collisions.
+     * @param constructionInfo algorithm construction info for collision algorithm.
+     * @param dispatcherInfo dispatcher information.
+     */
     public CollisionHandler(btDefaultCollisionConfiguration configuration,
                             btCollisionDispatcher dispatcher,
                             btCollisionAlgorithmConstructionInfo constructionInfo,
-                            btDispatcherInfo dispatcherInfo){
+                            btDispatcherInfo dispatcherInfo) {
         this.collisionConfig = configuration;
         this.dispatcher = dispatcher;
         this.constructionInfo = constructionInfo;
@@ -67,24 +73,29 @@ public class CollisionHandler {
         CollisionObjectWrapper co1 = new CollisionObjectWrapper(collisionObject1);
 
         // you need algorithm
-        btSphereBoxCollisionAlgorithm algorithm = new btSphereBoxCollisionAlgorithm(null, this.constructionInfo,
+        btSphereBoxCollisionAlgorithm algorithm =
+                new btSphereBoxCollisionAlgorithm(null, this.constructionInfo,
                 co0.wrapper, co1.wrapper, false);
 
         btManifoldResult result = new btManifoldResult(co0.wrapper, co1.wrapper);
 
+        System.out.println("a");
         return checkCollisionAlgorithm(algorithm, co0, co1, result);
-
-//        algorithm.processCollision(co0.wrapper, co1.wrapper, this.dispatcherInfo, result);
-//
-////        final boolean r = result.getPersistentManifold().getNumContacts() > 0;
-////        result.dispose();
-////        algorithm.dispose();
-////        co1.dispose();
-////        co0.dispose();
-////        return r;
     }
-    public boolean checkCollisionAlgorithm(btCollisionAlgorithm algorithm, CollisionObjectWrapper co0,
-                                           CollisionObjectWrapper co1, btManifoldResult result) {
+
+    /**
+     * Returns whether two objects passed as CollisionObjectWrappers
+     * collide.
+     * @param algorithm collision algorithm.
+     * @param co0 first object.
+     * @param co1 second object.
+     * @param result bt manifest result, used to determine collision.
+     * @return whether there was a collision between the two objects according to the algorithm.
+     */
+    public boolean checkCollisionAlgorithm(btCollisionAlgorithm algorithm,
+                                           CollisionObjectWrapper co0,
+                                           CollisionObjectWrapper co1,
+                                           btManifoldResult result) {
         algorithm.processCollision(co0.wrapper, co1.wrapper, this.dispatcherInfo, result);
 
         final boolean r = result.getPersistentManifold().getNumContacts() > 0;
@@ -94,6 +105,4 @@ public class CollisionHandler {
         co0.dispose();
         return r;
     }
-
-
 }

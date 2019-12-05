@@ -57,9 +57,11 @@ public class TableFactory extends Base3DFactory {
 
         btDefaultCollisionConfiguration configuration = new btDefaultCollisionConfiguration();
         btCollisionDispatcher dispatcher = new btCollisionDispatcher(configuration);
-        btCollisionAlgorithmConstructionInfo constructionInfo = new btCollisionAlgorithmConstructionInfo();
+        btCollisionAlgorithmConstructionInfo constructionInfo =
+                new btCollisionAlgorithmConstructionInfo();
         btDispatcherInfo dispatcherInfo = new btDispatcherInfo();
-        CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher, constructionInfo, dispatcherInfo);
+        CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher,
+                constructionInfo, dispatcherInfo);
         table.setCollisionHandler(collisionHandler);
         return table;
     }
@@ -68,12 +70,18 @@ public class TableFactory extends Base3DFactory {
      * Sets up the bounding borders for the table.
      */
     public void setBoundingBoxes(Table3D table) {
-
         // set up bounding borders
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)), table, new btCollisionObject(), new Vector3(0,0,1));
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)), table, new btCollisionObject(), new Vector3(0,0, -1));
-        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)), table, new btCollisionObject(), new Vector3(1, 0, 0));
-        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)), table, new btCollisionObject(), new Vector3(-1,0,0));
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)),
+                table, new btCollisionObject(), new Vector3(0,0,1));
+
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)),
+                table, new btCollisionObject(), new Vector3(0,0, -1));
+
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)),
+                table, new btCollisionObject(), new Vector3(1, 0, 0));
+
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)),
+                table, new btCollisionObject(), new Vector3(-1,0,0));
     }
 
 
@@ -82,10 +90,11 @@ public class TableFactory extends Base3DFactory {
      * @param shape btCollisionShape for the box.
      * @param position position of the box.
      */
-    public void setUpBox(Vector3 shape, Matrix4 position, Table3D table, btCollisionObject btCollisionObject, Vector3 normal) {
+    public void setUpBox(Vector3 shape, Matrix4 position, Table3D table,
+                         btCollisionObject btCollisionObject, Vector3 normal) {
         System.out.println("Setting up bounding box at position: \n " + position);
         btCollisionShape btCollisionShape = new btBoxShape(shape);
-        btCollisionObject.setCollisionShape( btCollisionShape);
+        btCollisionObject.setCollisionShape(btCollisionShape);
         btCollisionObject.setWorldTransform(position);
         HitBox hitBox = new HitBox(btCollisionShape, btCollisionObject);
         hitBox.setNormal(normal);

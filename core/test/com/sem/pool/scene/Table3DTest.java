@@ -1,26 +1,15 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
+
+import org.mockito.Mockito;
+
 
 
 /**
@@ -40,7 +29,7 @@ class Table3DTest {
     }
 
     /**
-     * Tests the getters and setters of the fields
+     * Tests the getters and setters of the fields.
      */
     @Test
     public void testFields() {
@@ -60,6 +49,9 @@ class Table3DTest {
         assertEquals(mockedHandler, board.getCollisionHandler());
     }
 
+    /**
+     * Test if the handler is called by the table on collision check.
+     */
     @Test
     public void testCollisions() {
         Ball3D mockedBall = Mockito.mock(Ball3D.class);
@@ -71,8 +63,8 @@ class Table3DTest {
         CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
         board.setCollisionHandler(mockedHandler);
         Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
-        // Simplified collision handler to test if the table returns what it shouldHitBox mockedBallHitBox = Mockito.mock(HitBox.class);
         board.checkCollision(mockedBall);
-        Mockito.verify(mockedHandler, Mockito.times(1)).checkHitBoxCollision(Mockito.any(HitBox.class), Mockito.any(HitBox.class));
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(HitBox.class), Mockito.any(HitBox.class));
     }
 }
