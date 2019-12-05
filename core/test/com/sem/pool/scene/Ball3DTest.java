@@ -41,7 +41,8 @@ abstract class Ball3DTest {
     public void testIdSetter() {
         final int initId = 0;
         final int id = 2;
-        Ball3D ball = getBall(initId, null);
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Ball3D ball = getBall(initId, mockModel);
 
         ball.setId(id);
 
