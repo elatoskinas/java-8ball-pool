@@ -2,11 +2,14 @@ package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.game.GameConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**
@@ -38,6 +41,21 @@ public class Cue3DTest {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         Cue3D cue = new Cue3D(model);
         assertEquals(model, cue.getModel());
+    }
+
+    /**
+     * Test case to verify that the cue is positioned near the cue ball
+     */
+    @Test
+    public void testCueToBeginPosition() {
+
+        Cue3D cue = new Cue3D(Mockito.mock(ModelInstance.class));
+
+        Ball3D ball = Mockito.mock(Ball3D.class);
+
+        Mockito.when(ball.getCoordinates()).thenReturn(new Vector3(0, 0, 0));
+        cue.toBeginPosition(ball);
+        System.out.println(cue);
     }
 
     /**

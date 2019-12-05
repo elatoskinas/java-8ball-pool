@@ -123,12 +123,11 @@ public class Game implements GameStateObserver {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void respondToInput() {
-
         // input relevant for cue and shot
-        Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        Vector3 mousePosition = new Vector3(input.getX(), input.getY(), 0);
         scene.getCamera().unproject(mousePosition);
 
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (input.isButtonPressed(Input.Buttons.LEFT)) {
             Ball3D cueBall = scene.getPoolBalls().get(0);
             scene.getCue().shoot(mousePosition, cueBall);
         }

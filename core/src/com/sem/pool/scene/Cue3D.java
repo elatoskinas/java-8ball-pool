@@ -53,14 +53,13 @@ public class Cue3D {
         return direction;
     }
 
-
     /**
      * Set the cue to the begin position when there is no mouse input yet.
      * @param cueBall cue ball to determine cue position.
      */
     public void toBeginPosition(Ball3D cueBall) {
-        Vector3 position = cueBall.getModel().transform.getTranslation(new Vector3());
 
+        Vector3 position = cueBall.getCoordinates();
         // Sets the cue left from the cue ball
         float x = position.x - CUE_OFFSET - cueBall.getRadius();
         model.transform.translate(x,  Y_COORDINATE, position.z);
