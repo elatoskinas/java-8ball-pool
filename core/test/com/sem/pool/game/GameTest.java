@@ -6,11 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
-import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,7 +187,7 @@ public class GameTest {
     }
 
     /**
-     * Test case to verify that shoot is called when the left mouse button is clicked
+     * Test case to verify that shoot is called when the left mouse button is clicked.
      */
     @Test
     void testLeftClickShot() {

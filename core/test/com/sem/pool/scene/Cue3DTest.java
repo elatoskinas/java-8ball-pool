@@ -2,16 +2,13 @@ package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.Bullet;
-import com.sem.pool.game.GameConstants;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**
@@ -46,29 +43,30 @@ public class Cue3DTest {
     }
 
     /**
-     * Test case to verify that the cue is positioned near the cue ball
+     * Test case to verify that cue is set to the right begin position
+     * when there is no mouse input yet.
      */
     @Test
     public void testCueToBeginPosition() {
-        ModelInstance cueModel = Mockito.mock(ModelInstance.class);
-        Matrix4 ballMockMatrix = Mockito.mock(Matrix4.class);
-        cueModel.transform = ballMockMatrix;
-        Cue3D cue = new Cue3D(cueModel);
+
+        final float expectedRadius = 2.f;
 
         ModelInstance ballModel = Mockito.mock(ModelInstance.class);
         ballModel.transform = new Matrix4();
         Ball3D ball = new CueBall3D(0, ballModel);
 
-
-        final float expectedRadius = 2.f;
-
         // Setup expected bounding box of size 4 in each axis
         BoundingBox box = new BoundingBox();
         box.ext(4, 4, 4);
-
         ball.setBoundingBox(box);
 
+        ModelInstance cueModel = Mockito.mock(ModelInstance.class);
+        Matrix4 ballMockMatrix = Mockito.mock(Matrix4.class);
+        cueModel.transform = ballMockMatrix;
+        Cue3D cue = new Cue3D(cueModel);
+
         cue.toBeginPosition(ball);
+
         Mockito.verify(ballMockMatrix, Mockito.times(1))
                 .translate(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
     }
