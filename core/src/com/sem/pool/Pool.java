@@ -18,7 +18,6 @@ import com.sem.pool.factories.TableFactory;
 import com.sem.pool.game.Game;
 import com.sem.pool.game.GameState;
 import com.sem.pool.game.Player;
-import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
@@ -132,23 +131,9 @@ public class Pool extends ApplicationAdapter {
     private void update() {
         // Render the scene only if the game is loaded
         if (loaded) {
-            // Advance the game loop of the game
+            // Advance the game loop of the game & render scene
             game.advanceGameLoop();
-
             scene.render();
-            Ball3D cueBall = scene.getPoolBalls().get(0);
-            if (cueBall.getSpeed() > 0) {
-                getScene().getTable().checkCollision(cueBall);
-                cueBall.move();
-            }
-            // so it doesn't collide with table.
-            // TODO: Temporary code below that gets the cue shot direction
-            // TODO: relative to the mouse position.
-            //Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            //System.out.println(scene.getCamera().unproject(mousePosition));
-            //Vector3 shotDirection = getScene().getPoolBalls().
-            //get(0).getCueShotDirection(mousePosition);*/
-
         }
     }
 
