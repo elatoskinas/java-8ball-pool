@@ -16,6 +16,8 @@ import com.sem.pool.scene.CollisionHandler;
 import com.sem.pool.scene.HitBox;
 import com.sem.pool.scene.Table3D;
 
+import java.util.ArrayList;
+
 /**
  * Factory class which allows the instantiation
  * of Table3D objects from the specified texture.
@@ -57,6 +59,7 @@ public class TableFactory extends Base3DFactory {
         Table3D table = new Table3D(boardInstance);
 
         setUpCollisionHandler(table);
+        Table3D.potHitBoxes = new ArrayList<>();
         return table;
     }
 
@@ -84,6 +87,10 @@ public class TableFactory extends Base3DFactory {
     /**
      * Sets up the bounding borders for the table by creating four HitBoxes objects to
      * create walls that keep the ball on the table.
+     * These four hitBoxes are created by calling setUpBox which takes as arguments:
+     * The dimension of the box, position of the box, collisionObject for the box,
+     * and normal for the hit box since for the table we need a vector to
+     * reflect off for collisions.
      * @param table The table object for which the bounding boxes are created.
      */
     protected void setBoundingBoxes(Table3D table) {

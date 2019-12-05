@@ -117,6 +117,7 @@ public class Scene3D {
         // every ball in the scene.
         for (Ball3D ball : poolBalls) {
             table.checkCollision(ball);
+            table.checkIfPot(ball);
         }
     }
 }

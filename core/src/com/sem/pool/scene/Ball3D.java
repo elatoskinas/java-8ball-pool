@@ -183,5 +183,7 @@ public abstract class Ball3D {
         translate(getCoordinates().scl(-1));
         // set ball below the table.
         translate(new Vector3(0, -100, 0));
+        setSpeed(0);
+        setDirection(new Vector3());
     }
 }
