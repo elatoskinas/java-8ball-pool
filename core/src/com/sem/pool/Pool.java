@@ -2,7 +2,6 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,10 +33,7 @@ public class Pool extends ApplicationAdapter {
 
     // State flag to keep track of whether asset loading
     // has finished.
-    public static transient boolean loaded;
-    public transient int speed = 1;
-
-    private transient boolean start = false;
+    private static transient boolean loaded;
 
     @Override
     public void create() {
@@ -104,68 +100,15 @@ public class Pool extends ApplicationAdapter {
     }
 
     /**
-     * Method to move the camera using the keyboard.
-     */
-    public void moveCamera() {
-        // CAMERA MOVEMENT
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            getScene().getCamera().translate(new Vector3(1f, 0f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            getScene().getCamera().translate(new Vector3(-1f, 0f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            getScene().getCamera().translate(new Vector3(0f, 0f, -1f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            getScene().getCamera().translate(new Vector3(0f, 0f, 1f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT_BRACKET)) {
-            getScene().getCamera().rotate(Vector3.X, -60
-                    * Gdx.graphics.getDeltaTime());
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT_BRACKET)) {
-            getScene().getCamera().rotate(Vector3.X, 60
-                    * Gdx.graphics.getDeltaTime());
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            getScene().getCamera().translate(new Vector3(0f, -1f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            getScene().getCamera().translate(new Vector3(0f, 1f, 0f)
-                    .scl(Gdx.graphics.getDeltaTime()));
-            getScene().getCamera().update();
-        }
-        // END CAMERA MOVEMENT
-    }
-
-    /**
      * Renders the scene only if the scene has finished loading.
      */
     private void renderScene() {
         // Render the scene only if the game is loaded
         if (loaded) {
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                start = true;
-            }
             scene.render();
             Ball3D cueBall = scene.getPoolBalls().get(0);
-            if (cueBall.getSpeed() > 0 && start) {
+            if (cueBall.getSpeed() > 0) {
                 getScene().getTable().checkCollision(cueBall);
-                System.out.println(cueBall.getDirection());
                 cueBall.move();
             }
             // so it doesn't collide with table.

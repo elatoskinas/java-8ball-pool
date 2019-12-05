@@ -27,7 +27,6 @@ public class Ball3D {
      * @param id  ID of the ball
      * @param model  Model object of the ball
      */
-    @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
     public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;
@@ -36,19 +35,22 @@ public class Ball3D {
         boundingBox = model.calculateBoundingBox(boundingBox);
     }
 
+    /**
+     * Returns whether the bounding box for the ball has been setup.
+     * @return whether the bounding box is set up.
+     */
     public boolean isSetUp() {
         return setUp;
     }
 
     /**
-     * Sets up the bounding box and hitboxes after the game is loaded.
+     * Sets up the bounding box and hit boxes after the game is loaded.
      * This should be called when a ball is loaded into the scene.
      */
     public void setUpBoxes() {
         btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
-        System.out.println("a");
         ballObject.setWorldTransform(this.model.transform);
         hitBox = new HitBox(ballShape, ballObject);
         this.setUp = true;
@@ -95,7 +97,7 @@ public class Ball3D {
     }
 
     /**
-     * Moves the ball in a direction with speed.
+     * Moves the ball with current direction and speed.
      */
     public void move() {
         Vector3 translation = new Vector3(getDirection()).scl(speed);
@@ -107,8 +109,11 @@ public class Ball3D {
      * @param translation direction of movement.
      */
     public void translate(Vector3 translation) {
+        // move the visual model of the ball
         this.model.transform.translate(translation);
         if (setUp) {
+            // hit box needs to be moved too to make sure hit box
+            // and visual model are at the same position
             this.hitBox.getObject().setWorldTransform(this.model.transform);
         }
     }

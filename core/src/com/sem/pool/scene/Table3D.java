@@ -50,14 +50,16 @@ public class Table3D {
      * @param ball Ball that we check collisions with.
      * @return whether the ball collided with the table.
      */
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // Might be unsuppressed later.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // Suppressed as PMD flags hit box
+    // as a UR anomaly / being undefined
+    // Checking for UR anomalies has been removed in updated versions of PMD: https://pmd.github.io/2019/10/31/PMD-6.19.0/
     public boolean checkCollision(Ball3D ball) {
         for (HitBox hitBox: hitBoxes) {
             if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {
                 Vector3 normal = new Vector3(hitBox.getNormal().nor());
-                ball.setDirection(ball.getDirection().add(
-                        // reflected vector
-                        normal.scl(-2 * ball.getDirection().dot(normal))));
+                Vector3 reflectedVector = ball.getDirection().add(normal
+                        .scl(-2 * ball.getDirection().dot(normal)));
+                ball.setDirection(reflectedVector);
                 return true;
             }
         }
