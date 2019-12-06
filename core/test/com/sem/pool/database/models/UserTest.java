@@ -27,7 +27,6 @@ class UserTest {
         assertFalse(user.isExisting());
         assertEquals(this.defaultUsername, user.getUsername());
         assertNotEquals(this.defaultPassword, user.getPassword());
-        System.out.println(user.getPassword());
         assertTrue(this.user.checkPassword(this.defaultPassword));
     }
 
@@ -62,5 +61,20 @@ class UserTest {
     @Test
     void toStringTest() {
         assertEquals(this.defaultUsername, this.user.toString());
+    }
+
+    @Test
+    void isEquals() {
+        User user = new User("foobar", "password");
+        assertEquals(user, user);
+        assertEquals(user, new User("foobar", "password"));
+    }
+
+    @Test
+    void notEquals() {
+        User user = new User(42, "foobar", "pass");
+        assertNotEquals(user, new User(42, "barfoo", "pass"));
+        assertNotEquals(user, new User(14, "barfoo", "pass"));
+        assertNotEquals(user, "hello");
     }
 }
