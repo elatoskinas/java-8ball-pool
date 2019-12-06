@@ -23,7 +23,7 @@ public class SceneFactory {
     private transient CameraFactory cameraFactory;
     private transient CueFactory cueFactory;
 
-    private transient ModelBatch modelBatch;
+    private final transient ModelBatch modelBatch;
 
     // Initial offsets for the pool balls to set up for break shot
     private static final Vector3 BALL_OFFSET = new Vector3(1f, 0.28f, 0f);
@@ -118,7 +118,7 @@ public class SceneFactory {
         Cue3D cue = cueFactory.createCue();
 
         // Set cue to cueBall position
-        cue.toShotPosition(poolBalls.get(0));
+        cue.toBeginPosition(poolBalls.get(0));
 
         // Create camera
         Camera camera = cameraFactory.createCamera();

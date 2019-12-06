@@ -38,9 +38,9 @@ public class AssetLoader {
         TABLE(TABLE_MODEL_PATH),
         CUE(CUE_MODEL_PATH);
 
-        private String path;
+        private final String path;
 
-        private ModelType(String path) {
+        ModelType(String path) {
             this.path = path;
         }
 

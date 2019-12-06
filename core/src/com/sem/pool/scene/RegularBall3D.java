@@ -12,7 +12,7 @@ public class RegularBall3D extends Ball3D {
         FULL
     }
 
-    private transient Type type;
+    private final transient Type type;
 
     /**
      * Constructs a new 3D Pool Full Ball instance with

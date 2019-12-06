@@ -7,7 +7,7 @@ package com.sem.pool.factories;
 public abstract class Base3DFactory {
     protected static final AssetLoader.ModelType MODEL_TYPE = null;
 
-    protected transient AssetLoader assetLoader;
+    protected final transient AssetLoader assetLoader;
 
     /**
      * Creates a Factory object instance used to instantiate models.

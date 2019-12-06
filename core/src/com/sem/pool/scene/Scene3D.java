@@ -13,17 +13,17 @@ import java.util.List;
  */
 public class Scene3D {
     // ModelBatch LibGDX dependency that allows rendering
-    private transient ModelBatch modelBatch;
+    private final transient ModelBatch modelBatch;
 
     // Scene elements
-    private transient Environment environment;
-    private transient Camera camera;
-    private transient List<ModelInstance> models;
+    private final transient Environment environment;
+    private final transient Camera camera;
+    private final transient List<ModelInstance> models;
 
     // Game elements
-    private transient List<Ball3D> poolBalls;
-    private transient Table3D table;
-    private transient Cue3D cue;
+    private final transient List<Ball3D> poolBalls;
+    private final transient Table3D table;
+    private final transient Cue3D cue;
 
     /**
      * Creates an instance of a 3D Pool Game scene from the specified
@@ -54,6 +54,11 @@ public class Scene3D {
         for (Ball3D ball : poolBalls) {
             models.add(ball.getModel());
             ball.setUpBoxes();
+//            // can be used to quickly simulate a ball moving and colliding
+//            // if (ball instanceof CueBall3D) {
+//            // ball.setDirection(new Vector3(1,0,0));
+//            // ball.setSpeed(0.2f);
+//            // }
         }
     }
 
@@ -118,6 +123,14 @@ public class Scene3D {
         for (Ball3D ball : poolBalls) {
             table.checkCollision(ball);
             table.checkIfPot(ball);
+        }
+
+        for (int i = 0; i < poolBalls.size(); i++) {
+            Ball3D ball = poolBalls.get(i);
+            for (int j = i + 1; j < poolBalls.size(); j++) {
+                Ball3D other = poolBalls.get(j);
+                ball.checkCollision(other);
+            }
         }
     }
 }

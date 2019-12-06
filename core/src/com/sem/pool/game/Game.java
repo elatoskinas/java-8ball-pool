@@ -1,6 +1,7 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
@@ -9,6 +10,7 @@ import com.sem.pool.scene.Scene3D;
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
+
 public class Game implements GameStateObserver {
     private transient Scene3D scene;
     private transient Input input;
@@ -119,11 +121,15 @@ public class Game implements GameStateObserver {
     /**
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void respondToInput() {
-        // TODO: Implement logic to respond to input every frame
-        // TODO: Call performCueShot on input
-        //throw new UnsupportedOperationException("Not yet implemented!");
+        // input relevant for cue and shot
+        Vector3 mousePosition = new Vector3(input.getX(), input.getY(), 0);
+        scene.getCamera().unproject(mousePosition);
+
+        if (input.isButtonPressed(Input.Buttons.LEFT)) {
+            Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
+            scene.getCue().shoot(mousePosition, cueBall);
+        }
     }
 
     /**
