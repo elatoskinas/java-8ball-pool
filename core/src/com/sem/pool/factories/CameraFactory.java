@@ -17,7 +17,7 @@ public class CameraFactory {
 
     private transient float viewportWidth;
     private transient float viewportHeight;
-    private transient Vector3 position;
+    private final transient Vector3 position;
 
     /**
      * Creates a new Camera Factory instance.

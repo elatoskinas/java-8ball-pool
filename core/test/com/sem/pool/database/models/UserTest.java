@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 class UserTest {
     private final transient String defaultPassword = "testPassword";
     private final transient String defaultUsername = "test";
@@ -27,8 +26,10 @@ class UserTest {
         assertFalse(user.isExisting());
         assertEquals(this.defaultUsername, user.getUsername());
         assertNotEquals(this.defaultPassword, user.getPassword());
-        System.out.println(user.getPassword());
         assertTrue(this.user.checkPassword(this.defaultPassword));
+
+        user.setExisting(true);
+        assertTrue(user.isExisting());
     }
 
     @Test
@@ -62,5 +63,20 @@ class UserTest {
     @Test
     void toStringTest() {
         assertEquals(this.defaultUsername, this.user.toString());
+    }
+
+    @Test
+    void isEquals() {
+        User user = new User("foobar", "password");
+        assertEquals(user, user);
+        assertEquals(user, new User("foobar", "password"));
+    }
+
+    @Test
+    void notEquals() {
+        User user = new User(42, "foobar", "pass");
+        assertNotEquals(user, new User(42, "barfoo", "pass"));
+        assertNotEquals(user, new User(14, "barfoo", "pass"));
+        assertNotEquals(user, "hello");
     }
 }

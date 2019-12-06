@@ -5,6 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 /**
  * User object, from the database.
  */
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class User {
     private transient boolean existing;
     private transient int id;
@@ -13,6 +14,7 @@ public class User {
 
     /**
      * Create a new user, without ID.
+     *
      * @param username The username to use.
      * @param password The password to use, this is hashed when initializing.
      */
@@ -23,8 +25,9 @@ public class User {
     }
 
     /**
-     * Create a existing user.
-     * @param id The userID.
+     * Create an existing user.
+     *
+     * @param id       The userID.
      * @param username The username to use.
      * @param password The password to use.
      */
@@ -37,6 +40,7 @@ public class User {
 
     /**
      * Check if the password is correct.
+     *
      * @param password The password to check.
      * @return If the password is correct.
      */
@@ -46,6 +50,7 @@ public class User {
 
     /**
      * If this is an existing user.
+     *
      * @return True if it's existing already.
      */
     public boolean isExisting() {
@@ -54,6 +59,7 @@ public class User {
 
     /**
      * Get the user id.
+     *
      * @return user id
      */
     public int getUserID() {
@@ -62,6 +68,7 @@ public class User {
 
     /**
      * Get the username.
+     *
      * @return username
      */
     public String getUsername() {
@@ -70,6 +77,7 @@ public class User {
 
     /**
      * Get the password.
+     *
      * @return password
      */
     public String getPassword() {
@@ -78,6 +86,7 @@ public class User {
 
     /**
      * Set the user ID.
+     *
      * @param userID The userID
      */
     public void setUserID(int userID) {
@@ -86,6 +95,7 @@ public class User {
 
     /**
      * Set the username.
+     *
      * @param username The username
      */
     public void setUsername(String username) {
@@ -94,6 +104,7 @@ public class User {
 
     /**
      * Set the password.
+     *
      * @param password The password
      */
     public void setPassword(String password) {
@@ -101,11 +112,45 @@ public class User {
     }
 
     /**
+     * Set the existing flag.
+     *
+     * @param existing The flag to set.
+     */
+    public void setExisting(boolean existing) {
+        this.existing = existing;
+    }
+
+    /**
      * Convert this class to a string.
+     *
      * @return String representation of the class.
      */
     @Override
     public String toString() {
         return this.username;
+    }
+
+    /**
+     * Override the equals method.
+     *
+     * @param other Object to test against.
+     * @return True iff they are equal
+     */
+    public boolean equals(Object other) {
+        if (!(other instanceof User)) {
+            return false;
+        }
+
+        User otherUser = (User) other;
+
+        if (this.existing && otherUser.existing && this.id != otherUser.id) {
+            return false;
+        }
+
+        if (!this.username.equals(otherUser.username)) {
+            return false;
+        }
+
+        return true;
     }
 }

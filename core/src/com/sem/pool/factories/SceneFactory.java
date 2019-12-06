@@ -23,7 +23,7 @@ public class SceneFactory {
     private transient CameraFactory cameraFactory;
     private transient CueFactory cueFactory;
 
-    private transient ModelBatch modelBatch;
+    private final transient ModelBatch modelBatch;
 
     // Initial offsets for the pool balls to set up for break shot
     private static final Vector3 BALL_OFFSET = new Vector3(1f, 0.28f, 0f);
@@ -109,18 +109,19 @@ public class SceneFactory {
         // Position pool balls in the right places on the board
         positionPoolBalls(poolBalls);
 
-        // Create camera
-        Camera camera = cameraFactory.createCamera();
-
         // Create table
         Table3D table = tableFactory.createTable();
+        tableFactory.setBoundingBoxes(table);
+        tableFactory.setUpPotHitBoxes(table);
 
         // Create cue
         Cue3D cue = cueFactory.createCue();
 
         // Set cue to cueBall position
-        cue.toShotPosition(poolBalls.get(0));
+        cue.toBeginPosition(poolBalls.get(0));
 
+        // Create camera
+        Camera camera = cameraFactory.createCamera();
         // Create scene with the constructed objects
         return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);
     }
@@ -134,7 +135,7 @@ public class SceneFactory {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void positionPoolBalls(List<Ball3D> poolBalls) {
         // Position cue ball to it's right position
-        poolBalls.get(0).move(CUE_BALL_OFFSET);
+        poolBalls.get(0).translate(CUE_BALL_OFFSET);
 
         // Keep track of the current row of balls and the
         // current ball in the row
@@ -159,8 +160,8 @@ public class SceneFactory {
             // the pool balls. Furthermore, move the ball
             // by the predetermined offset to position it
             // at one side of the board.
-            ball.move(getPyramidOffset(spacing, row, count));
-            ball.move(BALL_OFFSET);
+            ball.translate(getPyramidOffset(spacing, row, count));
+            ball.translate(BALL_OFFSET);
 
             // Increase row elemet count
             count++;

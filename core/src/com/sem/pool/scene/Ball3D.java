@@ -3,6 +3,8 @@ package com.sem.pool.scene;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 
 import java.util.Objects;
 
@@ -10,10 +12,22 @@ import java.util.Objects;
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
  */
-public class Ball3D {
+public abstract class Ball3D {
     private int id;
     private transient ModelInstance model;
     private transient BoundingBox boundingBox;
+    private transient HitBox hitBox;
+    private transient Vector3 direction;
+    private transient float speed;
+    private transient CollisionHandler collisionHandler;
+
+    public CollisionHandler getCollisionHandler() {
+        return collisionHandler;
+    }
+
+    public void setCollisionHandler(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
+    }
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -24,6 +38,21 @@ public class Ball3D {
     public Ball3D(int id, ModelInstance model) {
         this.id = id;
         this.model = model;
+        this.direction = new Vector3(0,0,0);
+        boundingBox = new BoundingBox();
+        boundingBox = model.calculateBoundingBox(boundingBox);
+    }
+
+    /**
+     * Sets up the bounding box and hit boxes after the game is loaded.
+     * This should be called when a ball is loaded into the scene.
+     */
+    public void setUpBoxes() {
+        btSphereShape ballShape = new btSphereShape(this.getRadius());
+        btCollisionObject ballObject = new btCollisionObject();
+        ballObject.setCollisionShape(ballShape);
+        ballObject.setWorldTransform(this.model.transform);
+        hitBox = new HitBox(ballShape, ballObject);
     }
 
     public int getId() {
@@ -38,6 +67,26 @@ public class Ball3D {
         return model;
     }
 
+    public HitBox getHitBox() {
+        return hitBox;
+    }
+
+    public Vector3 getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector3 direction) {
+        this.direction = direction.nor();
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
     /**
      * Returns the current coordinates of the ball.
      * @return The coordinates of the ball.
@@ -47,20 +96,34 @@ public class Ball3D {
     }
 
     /**
-     * Translates the ball according to the provided vector.
-     * @param translation The direction and distance wherein the ball should be moved.
+     * Returns true if the ball is in motion, and false otherwise.
+     * @return  True if the ball is in motion.
      */
-    public void move(Vector3 translation) {
-        this.model.transform.translate(translation);
+    public boolean isInMotion() {
+        return speed != 0;
+    }
+    
+    /**
+     * Moves the ball with current direction and speed.
+     */
+    public void move() {
+        Vector3 translation = new Vector3(getDirection()).scl(speed);
+        translate(translation);
     }
 
     /**
-     * Applies the provided directional force to the ball, resulting in movement.
-     * @param force Scalar by which the direction vector will be multiplied.
-     * @param direction The direction of the force that is to be applied to the ball.
+     * Method called to move the ball in a direction.
+     * @param translation direction of movement.
      */
-    public void applyForce(float force, Vector3 direction) {
-        this.move(direction.scl(force));
+    public void translate(Vector3 translation) {
+        // move the visual model of the ball
+        this.model.transform.translate(translation);
+        // hit box needs to be moved too to make sure hit box
+        // and visual model are at the same position
+        // TODO: refactor code to fix this issue with tests
+        if (hitBox != null) {
+            this.hitBox.updateLocation(this.model.transform);
+        }
     }
 
     /**
@@ -68,18 +131,16 @@ public class Ball3D {
      * @return  Radius of the 3D ball
      */
     public float getRadius() {
-        // Construct a bounding box around the model (if
-        // the box has not yet been created)
-        if (boundingBox == null) {
-            boundingBox = new BoundingBox();
-            boundingBox = model.calculateBoundingBox(boundingBox);
-        }
-
         // Calculate the radius; One axis is enough to determine the radius,
         // as we assume we have a perfect sphere.
         return boundingBox.max.x - boundingBox.getCenterX();
     }
 
+    /**
+     * Returns whether another Object is equal to this ball.
+     * @param other other Object.
+     * @return whether they are equal.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Ball3D) {
@@ -92,33 +153,61 @@ public class Ball3D {
         return false;
     }
 
-    /**
-     * Given the mouse position, determines the direction of the cue
-     * shot for the current ball.
-     * TODO: This should be in the CueBall extended class, as it is not
-     * TODO: relevant for other pool balls.
-     *
-     * @param mousePosition  Position of the mouse as a 3D Vector
-     * @return  Direction of the cue shot
-     */
-    public Vector3 getCueShotDirection(Vector3 mousePosition) {
-        Vector3 ballPosition = getCoordinates();
-
-        // The direction is the center of the ball (ball position)
-        // from which the mouse position is subtracted.
-        // We normalize this vector to reduce ambiguity with direction,
-        // and work on unit length vectors.
-        Vector3 direction = new Vector3();
-        direction.add(ballPosition).sub(mousePosition);
-        direction.y = 0; // Set y direction 0 because we never move up
-        direction.nor();
-
-        return direction;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, model);
     }
 
+    /**
+     * Method that checks if this and another ball collide.
+     * If they do, both ball change directions and speed.
+     * If a ball with no speed or direction is hit, they get
+     * a new one. This is to respond to the cue ball hitting a ball that was just placed.
+     * @param other Other ball.
+     * @return whether the ball collided with the other ball.
+     */
+    public boolean checkCollision(Ball3D other) {
+        if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
+            // Create vector from ball to other
+            Vector3 directionToOther = new Vector3(other.getCoordinates())
+                    .sub(new Vector3(getCoordinates()));
+            // Create vector from other to ball.
+            Vector3 directionToMe = new Vector3(getCoordinates())
+                    .sub(new Vector3(other.getCoordinates()));
+
+            // set directions of balls to opposite of their direction to the other.
+            setDirection(directionToOther.scl(-1));
+            other.setDirection(directionToMe.scl(-1));
+
+            // halve our speed on collision (implementation will be improved later)
+            setSpeed(getSpeed() / 2);
+
+            // if we hit a ball that is not moving or has no direction, give it speed/direction.
+            if (other.getSpeed() <= 0) {
+                other.setSpeed(getSpeed());
+            } else { // else, give it more speed if the similar direction, slow down if not.
+                other.setSpeed(other.getSpeed() - getDirection()
+                        .dot(other.getDirection()) / 100);
+            }
+            if (other.getDirection().equals(new Vector3())) {
+                other.setDirection(new Vector3(getDirection()));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Pot method for a ball.
+     * Could be overwritten by subclasses in order to specify behaviour.
+     * Default behaviour is to move the ball far below the center of the table.
+     */
+    public void pot() {
+        // move ball back to origin
+        translate(getCoordinates().scl(-1));
+        // set ball below the table.
+        translate(new Vector3(0, -100, 0));
+        setSpeed(0);
+        setDirection(new Vector3());
+    }
 }

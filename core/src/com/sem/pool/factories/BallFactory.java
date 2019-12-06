@@ -3,7 +3,16 @@ package com.sem.pool.factories;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
+import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CollisionHandler;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
+import com.sem.pool.scene.RegularBall3D;
 
 import java.util.List;
 
@@ -49,8 +58,9 @@ public class BallFactory extends Base3DFactory {
      * @return  New Ball3D object instance corresponding to the specified id
      */
     public Ball3D createBall(int id) {
+        // we assert ID is a valid ID.
+        assert (id >= GameConstants.CUEBALL_ID && id < GameConstants.BALL_COUNT);
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
-
         // If textures List empty, do not change textures at all
         if (!textures.isEmpty()) {
             // Wrap the index around the textures length to avoid
@@ -68,7 +78,45 @@ public class BallFactory extends Base3DFactory {
             // the newly created texture attribute.
             ballInstance.getMaterial(BALL_MATERIAL_NAME).set(attribute);
         }
+        Ball3D ball = returnBall(id, ballInstance);
+        setUpCollisionHandler(ball);
+        return ball;
+    }
 
-        return new Ball3D(id, ballInstance);
+    /**
+     * Returns the proper type of ball given an id.
+     * @param id id of the ball.
+     * @param ballInstance model instance of the ball.
+     * @return An instance of Ball3D.
+     */
+    private Ball3D returnBall(int id, ModelInstance ballInstance) {
+        if (id == GameConstants.CUEBALL_ID) {
+            return new CueBall3D(id, ballInstance);
+        } else if (id == GameConstants.EIGHTBALL_ID) {
+            return new EightBall3D(id, ballInstance);
+        } else {
+            return new RegularBall3D(id, ballInstance);
+        }
+    }
+
+    /**
+     * Method called to set up the collision handler for a ball.
+     * @param ball ball that needs collision handler.
+     */
+    private void setUpCollisionHandler(Ball3D ball) {
+        // configuration for the collisions
+        btDefaultCollisionConfiguration configuration = new  btDefaultCollisionConfiguration();
+        // dispatcher for the collisions
+        btCollisionDispatcher dispatcher = new btCollisionDispatcher(configuration);
+        // info regarding construction of collision algorithm
+        btCollisionAlgorithmConstructionInfo constructionInfo =
+                new btCollisionAlgorithmConstructionInfo();
+        // info regarding dispatcher
+        btDispatcherInfo dispatcherInfo = new btDispatcherInfo();
+
+        // creation of collision handler
+        CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher,
+                constructionInfo, dispatcherInfo);
+        ball.setCollisionHandler(collisionHandler);
     }
 }
