@@ -16,12 +16,17 @@ import com.sem.pool.database.models.User;
  * This class implements the Login screen.
  */
 public class Login implements Screen {
+    private MainGame game;
     private Stage stage;
     private Skin skin;
     private TextureAtlas atlas;
     private TextField userfield;
     private TextField passfield;
     private Label outLabel;
+
+    public Login(MainGame game) {
+        this.game = game;
+    }
 
     /**
      * Show the screen.
@@ -190,6 +195,8 @@ public class Login implements Screen {
         if(user == null) {
             this.outLabel.setText("Invalid username/password!");
         }
+
+        this.game.startPool();
     }
 
     private void handleRegister() {
@@ -206,5 +213,7 @@ public class Login implements Screen {
         if(user == null) {
             this.outLabel.setText("User already exists!");
         }
+
+        this.game.startPool();
     }
 }

@@ -2,6 +2,7 @@ package com.sem.pool;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,7 +23,7 @@ import java.util.List;
  * the 3D pool scene and all the interactions.
  * TODO: Split this off into smaller components?
  */
-public class Pool extends ApplicationAdapter {
+public class Pool implements Screen {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
@@ -31,8 +32,7 @@ public class Pool extends ApplicationAdapter {
     // has finished.
     private transient boolean loaded;
 
-    @Override
-    public void create() {
+    public Pool() {
         initializeAssetLoader();
 
         // Initialize model batch for rendering
@@ -116,7 +116,7 @@ public class Pool extends ApplicationAdapter {
     }
 
     @Override
-    public void render() {
+    public void render(float f) {
         // Initialize scene if uninitialized
         initializeScene();
 
@@ -131,5 +131,25 @@ public class Pool extends ApplicationAdapter {
     public void dispose() {
         scene.dispose();
         assetLoader.dispose();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
     }
 }

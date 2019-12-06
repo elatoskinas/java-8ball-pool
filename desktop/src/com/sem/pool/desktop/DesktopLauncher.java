@@ -2,7 +2,7 @@ package com.sem.pool.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.sem.pool.LoginGame;
+import com.sem.pool.MainGame;
 
 /**
  * Launcher to launch the Game application on a Desktop platform.
@@ -14,8 +14,7 @@ public class DesktopLauncher {
      */
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-//        new LwjglApplication(new Pool(), config);
-        new LwjglApplication(new LoginGame(), config);
+        new LwjglApplication(new MainGame(), config);
 
         // Anti-aliasing samples
         config.samples = 3;
