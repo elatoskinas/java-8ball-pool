@@ -114,8 +114,8 @@ allprojects {
 
                 // Ignore root com.sem.pool for now, as it requires
                 // more complex LibGDX testing setups.
-                // Also exclude the database core functionality classes for now
-                excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.database.tables']
+                // Also exclude the database main class, as this is not really testable
+                excludes = ['com.sem.pool', 'com.sem.pool.database']
 
                 limit {
                     counter = 'BRANCH'

@@ -32,7 +32,7 @@ public class UserTable extends Table {
      */
     @SuppressWarnings("PMD.CloseResource")
     public User getUser(String username) throws SQLException {
-        String sql = "select id, username, password from " + this.tableName + " where username = ?";
+        String sql = "select id, username, password from User where username = ?";
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, username);
         ResultSet res = stmt.executeQuery();
@@ -48,15 +48,11 @@ public class UserTable extends Table {
             int id = res.getInt("id");
             String dataUser = res.getString("username");
             String pass = res.getString("password");
-            User user = new User(id, dataUser, pass);
 
+            return new User(id, dataUser, pass);
+        } finally {
             stmt.close();
             res.close();
-            return user;
-        } catch (Exception e) {
-            stmt.close();
-            res.close();
-            return null;
         }
     }
 
@@ -68,15 +64,16 @@ public class UserTable extends Table {
      * @throws SQLException SQL errors.
      */
     public boolean save(User user) throws SQLException {
-        if (user.isExisting()) {
-            return false;
-        }
-
-        String sql = "insert into " + this.tableName + " (username, password) values (?, ?)";
+        String sql = "insert into User (username, password) values (?, ?)";
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, user.getUsername());
         stmt.setString(2, user.getPassword());
-        return stmt.execute();
+
+        try {
+            return stmt.executeUpdate() > 0;
+        } catch(Exception ignored) {}
+
+        return false;
     }
 
     /**
@@ -87,16 +84,21 @@ public class UserTable extends Table {
      * @throws SQLException SQL errors.
      */
     public boolean update(User user) throws SQLException {
-        if (user.isExisting()) {
+        if (!user.isExisting()) {
             return false;
         }
 
-        String sql = "update " + this.tableName + " set (username = ?, password = ?) where id = ?";
+        String sql = "update User set username = ?, password = ? where id = ?";
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, user.getUsername());
         stmt.setString(2, user.getPassword());
         stmt.setInt(3, user.getUserID());
-        return stmt.execute();
+
+        try {
+            return stmt.executeUpdate() > 0;
+        } catch(Exception ignored) {}
+
+        return false;
     }
 
     /**

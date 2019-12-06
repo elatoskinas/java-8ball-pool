@@ -5,6 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 /**
  * User object, from the database.
  */
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class User {
     private transient boolean existing;
     private transient int id;
@@ -101,11 +102,37 @@ public class User {
     }
 
     /**
+     * Set the existing flag.
+     * @param existing The flag to set.
+     */
+    public void setExisting(boolean existing) {
+        this.existing = existing;
+    }
+
+    /**
      * Convert this class to a string.
      * @return String representation of the class.
      */
     @Override
     public String toString() {
         return this.username;
+    }
+
+    /**
+     * Override the equals method
+     * @param other Object to test against.
+     * @return True iff they are equal
+     */
+    public boolean equals(Object other) {
+        if(!(other instanceof User)) {
+            return false;
+        }
+
+        User otherUser = (User) other;
+
+        if(this.existing && otherUser.existing && this.id != otherUser.id) return false;
+        if(!this.username.equals(otherUser.username)) return false;
+
+        return true;
     }
 }
