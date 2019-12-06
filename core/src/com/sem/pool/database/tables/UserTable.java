@@ -50,8 +50,6 @@ public class UserTable extends Table {
             String pass = res.getString("password");
 
             return new User(id, dataUser, pass);
-        } catch (Exception e) {
-            return null;
         } finally {
             stmt.close();
             res.close();
@@ -70,7 +68,12 @@ public class UserTable extends Table {
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, user.getUsername());
         stmt.setString(2, user.getPassword());
-        return stmt.executeUpdate() > 0;
+
+        try {
+            return stmt.executeUpdate() > 0;
+        } catch(Exception ignored) {}
+
+        return false;
     }
 
     /**
@@ -90,7 +93,12 @@ public class UserTable extends Table {
         stmt.setString(1, user.getUsername());
         stmt.setString(2, user.getPassword());
         stmt.setInt(3, user.getUserID());
-        return stmt.executeUpdate() > 0;
+
+        try {
+            return stmt.executeUpdate() > 0;
+        } catch(Exception ignored) {}
+
+        return false;
     }
 
     /**

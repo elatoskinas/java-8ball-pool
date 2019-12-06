@@ -27,6 +27,9 @@ class UserTest {
         assertEquals(this.defaultUsername, user.getUsername());
         assertNotEquals(this.defaultPassword, user.getPassword());
         assertTrue(this.user.checkPassword(this.defaultPassword));
+
+        user.setExisting(true);
+        assertTrue(user.isExisting());
     }
 
     @Test

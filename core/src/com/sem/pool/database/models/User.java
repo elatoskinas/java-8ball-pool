@@ -102,6 +102,14 @@ public class User {
     }
 
     /**
+     * Set the existing flag.
+     * @param existing The flag to set.
+     */
+    public void setExisting(boolean existing) {
+        this.existing = existing;
+    }
+
+    /**
      * Convert this class to a string.
      * @return String representation of the class.
      */
