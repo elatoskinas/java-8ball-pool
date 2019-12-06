@@ -127,7 +127,12 @@ public class User {
         return true;
     }
 
+    /**
+     * Calculate the hashcode of the class.
+     * @return the hashcode.
+     */
     @Override
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public int hashCode() {
         int result = 17;
         result = 31 * result + this.id;

@@ -10,9 +10,10 @@ import com.sem.pool.database.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserControllerTest {
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         Database.setTestMode();
     }
 
