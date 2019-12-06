@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 class UserTest {
     private final transient String defaultPassword = "testPassword";
     private final transient String defaultUsername = "test";
