@@ -1,6 +1,5 @@
 package com.sem.pool;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -40,6 +39,11 @@ public class Pool implements Screen {
     // has finished.
     private transient boolean loaded;
 
+    /**
+     * Creates an instance of the Pool game screen,
+     * and handles all of the initialization for the
+     * game.
+     */
     public Pool() {
         initializeAssetLoader();
 

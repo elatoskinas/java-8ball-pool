@@ -6,7 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
@@ -36,7 +41,7 @@ public class Login implements Screen {
      * This actually renders the screen.
      */
     @Override
-    public void show () {
+    public void show() {
         // Set up the screen.
         this.stage = new Stage(new FitViewport(1000, 1000));
         Gdx.input.setInputProcessor(stage);
@@ -62,11 +67,12 @@ public class Login implements Screen {
     }
 
     /**
-     * Render the screen
+     * Render the screen.
+     *
      * @param delta Delta time in seconds between the last render
      */
     @Override
-    public void render (float delta) {
+    public void render(float delta) {
         Gdx.gl.glClearColor(0.04f, 0.42f, 0.01f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
@@ -74,7 +80,8 @@ public class Login implements Screen {
     }
 
     /**
-     * Resize event of the screen
+     * Resize event of the screen.
+     *
      * @param w The new width
      * @param h The new height
      */
@@ -88,14 +95,20 @@ public class Login implements Screen {
      * This is currently not needed, so it is empty.
      */
     @Override
-    public void pause() {};
+    public void pause() {
+    }
+
+    ;
 
     /**
      * Resuming of the paused screen.
      * It's currently not possible to pause, so you can't resume either.
      */
     @Override
-    public void resume() {};
+    public void resume() {
+    }
+
+    ;
 
     /**
      * Hide the screen.
@@ -104,7 +117,9 @@ public class Login implements Screen {
     @Override
     public void hide() {
         this.dispose();
-    };
+    }
+
+    ;
 
     /**
      * Dispose of the screen.
@@ -115,10 +130,13 @@ public class Login implements Screen {
         this.stage.dispose();
         this.skin.dispose();
         this.atlas.dispose();
-    };
+    }
+
+    ;
 
     /**
      * Show the username field.
+     *
      * @param table The table to add the username to.
      * @return The text field of the username.
      */
@@ -136,15 +154,16 @@ public class Login implements Screen {
 
     /**
      * Show the password field.
+     *
      * @param table The table to add the password to.
      * @return The text field of the password
      */
     private TextField showPassword(Table table) {
-        Label passwordLabel = new Label("Password: ", this.skin);
         TextField password = new TextField("", this.skin);
         password.setMessageText("P@ssWord");
         password.setPasswordCharacter('*');
         password.setPasswordMode(true);
+        Label passwordLabel = new Label("Password: ", this.skin);
 
         table.add(passwordLabel).colspan(2);
         table.add(password).minWidth(100).expandX().fillX().colspan(2);
@@ -155,6 +174,7 @@ public class Login implements Screen {
 
     /**
      * Show the output label on the screen.
+     *
      * @param table The table to add to.
      * @return The label to change when there is a message.
      */
@@ -168,6 +188,7 @@ public class Login implements Screen {
 
     /**
      * Show the login & register buttons.
+     *
      * @param table The table to add the buttons to.
      */
     private void showButtons(Table table) {
@@ -176,13 +197,13 @@ public class Login implements Screen {
         Button register = new TextButton("Register", this.skin);
 
         login.addListener(new ClickListener() {
-            public void clicked (InputEvent e, float x, float y) {
+            public void clicked(InputEvent e, float x, float y) {
                 screen.handleLogin();
             }
         });
 
         register.addListener(new ClickListener() {
-            public void clicked (InputEvent e, float x, float y) {
+            public void clicked(InputEvent e, float x, float y) {
                 screen.handleRegister();
             }
         });
@@ -198,14 +219,14 @@ public class Login implements Screen {
         String username = this.userfield.getText();
         String password = this.passfield.getText();
 
-        if(username.length() <= 0 || password.length() <= 0) {
+        if (username.length() <= 0 || password.length() <= 0) {
             this.outLabel.setText("Please fill in both username and password!");
             return;
         }
 
         User user = this.userController.login(username, password);
 
-        if(user == null) {
+        if (user == null) {
             this.outLabel.setText("Invalid username/password!");
             return;
         }
@@ -220,14 +241,14 @@ public class Login implements Screen {
         String username = this.userfield.getText();
         String password = this.passfield.getText();
 
-        if(username.length() <= 0 || password.length() <= 0) {
+        if (username.length() <= 0 || password.length() <= 0) {
             this.outLabel.setText("Please fill in both username and password!");
             return;
         }
 
         User user = this.userController.register(username, password);
 
-        if(user == null) {
+        if (user == null) {
             this.outLabel.setText("User already exists!");
             return;
         }

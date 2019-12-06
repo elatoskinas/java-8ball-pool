@@ -1,20 +1,24 @@
 package com.sem.pool.database.tables;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
 import com.sem.pool.database.models.User;
+import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.sql.SQLException;
 
 public class UserTableTest {
     private transient UserTable userTable;
 
+    /**
+     * Sets up the database in test (in-memory) mode to prepare
+     * for integration testing. Also initializes user table to the
+     * database's table.
+     */
     @BeforeEach
     public void setUp() {
         Database.setTestMode();

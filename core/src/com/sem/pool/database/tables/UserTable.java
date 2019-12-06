@@ -71,7 +71,9 @@ public class UserTable extends Table {
 
         try {
             return stmt.executeUpdate() > 0;
-        } catch(Exception ignored) {}
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
 
         return false;
     }
@@ -96,7 +98,9 @@ public class UserTable extends Table {
 
         try {
             return stmt.executeUpdate() > 0;
-        } catch(Exception ignored) {}
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
 
         return false;
     }

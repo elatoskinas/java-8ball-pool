@@ -25,7 +25,9 @@ public class Database {
      * Private to prevent multiple instances with a singleton.
      * CloseResource suppressed as the connection should never be closed.
      * DoNotCallSystemExit suppressed as this is a fatal error.
-     * @param inmemory True if the database should be in memory, false if it should be written to a file.
+         *
+     * @param inmemory True if the database should be in memory,
+     *                 false if it should be written to a file.
      */
     @SuppressWarnings({"PMD.CloseResource", "PMD.DoNotCallSystemExit"})
     private Database(boolean inmemory) {
@@ -35,7 +37,7 @@ public class Database {
             Class.forName("org.sqlite.JDBC");
             Connection conn;
 
-            if(inmemory) {
+            if (inmemory) {
                 conn = DriverManager.getConnection("jdbc:sqlite::memory:");
             } else {
                 conn = DriverManager.getConnection("jdbc:sqlite:database.db");
@@ -54,6 +56,7 @@ public class Database {
 
     /**
      * Get the database.
+     *
      * @return The database instance.
      */
     public static Database getInstance() {
@@ -74,6 +77,7 @@ public class Database {
 
     /**
      * Get a table.
+     *
      * @param table The table to get.
      * @return The table requested.
      */
