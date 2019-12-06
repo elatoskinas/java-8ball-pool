@@ -14,3 +14,6 @@ build/**
 /core/out/
 /desktop/out/
 database.db
+
+# Error logs
+*.log

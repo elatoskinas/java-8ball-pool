@@ -1,11 +1,16 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.sem.pool.GameConstants;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.sem.pool.game.GameConstants;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.Table3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,10 +22,10 @@ import org.mockito.Mockito;
  */
 class SceneFactoryTest {
     transient SceneFactory sceneFactory;
-
     transient BallFactory ballFactory;
     transient TableFactory tableFactory;
     transient CameraFactory cameraFactory;
+    transient CueFactory cueFactory;
     transient ModelBatch modelBatch;
 
     /**
@@ -34,9 +39,11 @@ class SceneFactoryTest {
         ballFactory = Mockito.mock(BallFactory.class);
         tableFactory = Mockito.mock(TableFactory.class);
         cameraFactory = Mockito.mock(CameraFactory.class);
+        cueFactory = Mockito.mock(CueFactory.class);
         modelBatch = Mockito.mock(ModelBatch.class);
 
-        sceneFactory = new SceneFactory(tableFactory, ballFactory, cameraFactory, modelBatch);
+        sceneFactory =
+                new SceneFactory(tableFactory, ballFactory, cameraFactory, cueFactory, modelBatch);
 
         Mockito.when(tableFactory.createTable())
                 .thenReturn(Mockito.mock(Table3D.class));
@@ -46,6 +53,9 @@ class SceneFactoryTest {
 
         Mockito.when(cameraFactory.createCamera())
                 .thenReturn(Mockito.mock(Camera.class));
+
+        Mockito.when(cueFactory.createCue())
+                .thenReturn(Mockito.mock(Cue3D.class));
     }
 
 
@@ -103,6 +113,7 @@ class SceneFactoryTest {
      */
     @Test
     public void testInstantiateSuccessful() {
+        Bullet.init();
         Scene3D scene = sceneFactory.createScene();
 
         assertNotNull(scene.getEnvironment());
@@ -118,6 +129,7 @@ class SceneFactoryTest {
      */
     @Test
     public void testInstantiateModels() {
+        Bullet.init();
         Scene3D scene = sceneFactory.createScene();
 
         // Verify the required amount of pool balls for scene

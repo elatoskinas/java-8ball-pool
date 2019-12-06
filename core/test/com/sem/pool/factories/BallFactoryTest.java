@@ -1,18 +1,27 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.sem.pool.game.GameConstants;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
+import com.sem.pool.scene.RegularBall3D;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 
 /**
  * Test class containing unit tests for the BallFactory class and
@@ -26,9 +35,32 @@ class BallFactoryTest {
 
     @BeforeEach
     public void setUp() {
-        textures = new ArrayList<Texture>();
+        textures = new ArrayList<>();
         assetLoader = Mockito.mock(AssetLoader.class);
         factory = new BallFactory(textures, assetLoader);
+    }
+
+    /**
+     * Test that the balls returned by the ball factory are the right type of ball.
+     */
+    @Test
+    public void testBallTypes() {
+        ModelInstance mockModelInstance = Mockito.mock(ModelInstance.class);
+        Mockito.when(assetLoader.loadModel(AssetLoader.ModelType.BALL))
+                .thenReturn(mockModelInstance);
+        
+        for (int i = 0; i < GameConstants.BALLCOUNT; i++) {
+            Ball3D ball = factory.createBall(i);
+            if (i == GameConstants.CUEBALL_ID) {
+                assertTrue(ball instanceof CueBall3D);
+            } else if (i == GameConstants.EIGHTBALL_ID) {
+                assertTrue(ball instanceof EightBall3D);
+            } else {
+                assertTrue(ball instanceof RegularBall3D);
+                assertEquals(i < GameConstants.EIGHTBALL_ID,
+                        (RegularBall3D.Type.FULL == ((RegularBall3D) ball).getType()));
+            }
+        }
     }
 
     /**
@@ -55,7 +87,7 @@ class BallFactoryTest {
 
         Ball3D ball = factory.createBall(id);
 
-        Ball3D expectedBall = new Ball3D(id, model);
+        Ball3D expectedBall = new CueBall3D(id, model);
         assertEquals(expectedBall, ball);
     }
 
@@ -178,5 +210,20 @@ class BallFactoryTest {
 
         // Verify attribute matches expected
         assertEquals(attribute, resultingAttribute);
+    }
+
+    @Test
+    public void testAssertions() {
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+
+        // We must also verify that the appropriate call is made in the asset loader.
+        Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
+
+        assertThrows(AssertionError.class, () ->  {
+            factory.createBall(-1);
+        });
+        assertThrows(AssertionError.class, () ->  {
+            factory.createBall(16);
+        });
     }
 }

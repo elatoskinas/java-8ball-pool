@@ -1,4 +1,4 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
