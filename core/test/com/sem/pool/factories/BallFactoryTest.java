@@ -166,7 +166,7 @@ class BallFactoryTest {
      * Helper method to verify the setting of id given a creation of
      * a ball with specified id, the texture count and the expected texture id.
      * The method creates a List of mock textures equal to the specified count
-     * for verificcation.
+     * for verification.
      * @param ballId  ID of the ball to create
      * @param textureId ID of the expected texture
      * @param textureCount Number of mock textures to initialize

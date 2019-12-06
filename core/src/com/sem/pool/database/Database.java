@@ -18,7 +18,7 @@ public class Database {
     /**
      * The tables of the database.
      */
-    private transient HashMap<String, Table> tables;
+    private final transient HashMap<String, Table> tables;
 
     /**
      * Create the database.

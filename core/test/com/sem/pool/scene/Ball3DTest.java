@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -94,7 +93,7 @@ abstract class Ball3DTest {
         Ball3D ball2 = getBall(id, model);
 
         assertEquals(ball1, ball2);
-        assertFalse(ball1.equals("test"));
+        assertNotEquals("test", ball1);
     }
 
     /**
@@ -131,7 +130,7 @@ abstract class Ball3DTest {
 
     /**
      * Test case to ensure that comparing equality between a Ball3D
-     * object with an object of a differnt type returns false.
+     * object with an object of a different type returns false.
      */
     @Test
     public void testNotEqualsDifferentObjectType() {
@@ -210,109 +209,6 @@ abstract class Ball3DTest {
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
     }
 
-    /**
-     * Test case to verify that when the mouse is "behind" the ball
-     * (relative to world coordinates, i.e. left of the ball),
-     * then the cue shot direction goes forward from the mouse to the ball.
-     */
-    @Test
-    public void testCueShotDirectionBehindBall() {
-        Vector3 ballPosition = new Vector3(0, 0, 0);
-        Vector3 mousePosition = new Vector3(-1, 0, 0);
-        Vector3 expectedDirection = new Vector3(1, 0, 0);
-
-        testCueShotDirectionHelper(ballPosition, mousePosition, expectedDirection);
-    }
-
-    /**
-     * Test case to verify that differing y coordinates for the mouse position
-     * and the ball has no effect on the cue shot direction. We verify
-     * this by making sure the final direction has a y value of 0.
-     */
-    @Test
-    public void testCueShotDirectionDifferentY() {
-        Vector3 ballPosition = new Vector3(0, 3, 0);
-        Vector3 mousePosition = new Vector3(-1, 0, 0);
-        Vector3 expectedDirection = new Vector3(1, 0, 0);
-
-        testCueShotDirectionHelper(ballPosition, mousePosition, expectedDirection);
-    }
-
-    /**
-     * Test case to verify that when the mouse is "in front" of the ball
-     * (relative to world coordinates, i.e. right of the ball),
-     * then the cue shot direction goes forward from the mouse to the ball.
-     */
-    @Test
-    public void testCueShotDirectionInFrontBall() {
-        Vector3 ballPosition = new Vector3(0, 0, 0);
-        Vector3 mousePosition = new Vector3(1, 0, 0);
-        Vector3 expectedDirection = new Vector3(-1, 0, 0);
-
-        testCueShotDirectionHelper(ballPosition, mousePosition, expectedDirection);
-    }
-
-    /**
-     * Test case to verify that the return cue shot direction
-     * is a normalized vector (unit length).
-     */
-    @Test
-    public void testCueShotDirectionNormalization() {
-        Vector3 ballPosition = new Vector3(0, 0, 0);
-        Vector3 mousePosition = new Vector3(10, 0, 0);
-        Vector3 expectedDirection = new Vector3(-1, 0, 0);
-
-        testCueShotDirectionHelper(ballPosition, mousePosition, expectedDirection);
-    }
-
-    /**
-     * Test case to verify that when the mouse is both
-     * "above" and "in front" the ball (relative to world coordinates),
-     * then the cue shot direction goes forward from the mouse to the ball
-     * in the diagonal direction.
-     */
-    @Test
-    public void testCueShotDirectionDiagonal() {
-        Vector3 ballPosition = new Vector3(0, 0, 0);
-        Vector3 mousePosition = new Vector3(1, 0, 1);
-        float expectedXZ = -1f / (float) Math.sqrt(2f);
-        Vector3 expectedDirection = new Vector3(expectedXZ, 0, expectedXZ);
-
-        testCueShotDirectionHelper(ballPosition, mousePosition, expectedDirection);
-    }
-
-    /**
-     * Helper method for testing Cue Shot direction given the
-     * specified setup for the ball and the mouse position,
-     * and the expected direction. The method handles assertions
-     * for the specified setup.
-     *
-     * @param ballPosition      Position of the ball
-     * @param mousePosition     Passed in position of the mouse
-     * @param expectedDirection Expected direction of the cue shot
-     */
-    private void testCueShotDirectionHelper(Vector3 ballPosition,
-                                            Vector3 mousePosition, Vector3 expectedDirection) {
-        // Create mock Ball3D instance
-        final int id = 0;
-        final ModelInstance model = Mockito.mock(ModelInstance.class);
-        final Matrix4 matrix = Mockito.mock(Matrix4.class);
-
-        // When we get the position of the model (by getting the translation of
-        // a zero vector), then the ball position should be returned.
-        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(ballPosition);
-
-        // Set the mock matrix to the model
-        model.transform = matrix;
-
-        Ball3D ball = getBall(id, model);
-
-        // Get the direction given the mouse position
-        Vector3 direction = ball.getCueShotDirection(mousePosition);
-
-        // Assert expected direction equal to actual direction
-        assertEquals(expectedDirection, direction);
-    }
 
     /**
      * Test case to verify that the correct radius is returned
@@ -363,8 +259,7 @@ abstract class Ball3DTest {
 
         Ball3D ball = getBall(id1, model);
 
-        ball.getRadius(); // Perform radius side effect to construct bounding box
-        float radius = ball.getRadius(); // Get radius again
+        float radius = ball.getRadius(); // Get radius
 
         assertEquals(expectedRadius, radius);
     }
@@ -424,5 +319,53 @@ abstract class Ball3DTest {
 
         assertFalse(ball.isInMotion());
     }
-}
 
+    /**
+     * Test if the handler is called by the ball on collision check.
+     */
+    @Test
+    public void testCollisions() {
+        final int initId = 0;
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        final Ball3D mockedBall = Mockito.mock(Ball3D.class);
+        Ball3D ball = getBall(initId, mockModel);
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        ball.setCollisionHandler(mockedHandler);
+        Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        ball.checkCollision(mockedBall);
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(), Mockito.any(HitBox.class));
+    }
+
+    /**
+     * Test if the handler is called by the ball on collision check.
+     */
+    @Test
+    public void testIfCollision() {
+        // mock modelinstance for ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        // mock matrix for ball transform
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+
+        // created mocked ball to collide with
+        Ball3D other = getBall(0, mockModel);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        other.getModel().transform = mockedMatrix;
+        // create ball we use to test
+        Ball3D ball = getBall(0, mockModel);
+        // set transform of model
+        ball.getModel().transform = mockedMatrix;
+
+        // mock handler, set handler to always return true and set handler for ball
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(true);
+        ball.setCollisionHandler(mockedHandler);
+        // assert that if the handler returns true, the checkCollision method returns true.
+        assertTrue(ball.checkCollision(other));
+        // verify that the handler is called once
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(), Mockito.any());
+    }
+}

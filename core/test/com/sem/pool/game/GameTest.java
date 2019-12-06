@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,7 @@ public class GameTest {
         // Start the game
         game.startGame();
 
-        // Verify game state started & game is staretd
+        // Verify game state started & game is started
         Mockito.verify(gameState).startGame();
         assertTrue(game.isStarted());
     }
@@ -181,5 +184,22 @@ public class GameTest {
         }
 
         Mockito.when(scene.getPoolBalls()).thenReturn(balls);
+    }
+
+    /**
+     * Test case to verify that shoot is called when the left mouse button is clicked.
+     */
+    @Test
+    void testLeftClickShot() {
+        Cue3D cue = Mockito.mock(Cue3D.class);
+        Mockito.when(scene.getCue()).thenReturn(cue);
+        Mockito.when(scene.getCamera()).thenReturn(Mockito.mock(Camera.class));
+        Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
+        setupScenePoolBallsHelper(false);
+
+        game.startGame();
+        game.advanceGameLoop();
+
+        Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
     }
 }

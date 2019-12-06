@@ -19,6 +19,15 @@ public abstract class Ball3D {
     private transient HitBox hitBox;
     private transient Vector3 direction;
     private transient float speed;
+    private transient CollisionHandler collisionHandler;
+
+    public CollisionHandler getCollisionHandler() {
+        return collisionHandler;
+    }
+
+    public void setCollisionHandler(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
+    }
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -39,7 +48,7 @@ public abstract class Ball3D {
      * This should be called when a ball is loaded into the scene.
      */
     public void setUpBoxes() {
-        btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
+        btSphereShape ballShape = new btSphereShape(this.getRadius());
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
@@ -144,33 +153,48 @@ public abstract class Ball3D {
         return false;
     }
 
-    /**
-     * Given the mouse position, determines the direction of the cue
-     * shot for the current ball.
-     * TODO: This should be in the CueBall extended class, as it is not
-     * TODO: relevant for other pool balls.
-     *
-     * @param mousePosition  Position of the mouse as a 3D Vector
-     * @return  Direction of the cue shot
-     */
-    public Vector3 getCueShotDirection(Vector3 mousePosition) {
-        Vector3 ballPosition = getCoordinates();
-
-        // The direction is the center of the ball (ball position)
-        // from which the mouse position is subtracted.
-        // We normalize this vector to reduce ambiguity with direction,
-        // and work on unit length vectors.
-        Vector3 direction = new Vector3();
-        direction.add(ballPosition).sub(mousePosition);
-        direction.y = 0; // Set y direction 0 because we never move up
-        direction.nor();
-
-        return direction;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, model);
+    }
+
+    /**
+     * Method that checks if this and another ball collide.
+     * If they do, both ball change directions and speed.
+     * If a ball with no speed or direction is hit, they get
+     * a new one. This is to respond to the cue ball hitting a ball that was just placed.
+     * @param other Other ball.
+     * @return whether the ball collided with the other ball.
+     */
+    public boolean checkCollision(Ball3D other) {
+        if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
+            // Create vector from ball to other
+            Vector3 directionToOther = new Vector3(other.getCoordinates())
+                    .sub(new Vector3(getCoordinates()));
+            // Create vector from other to ball.
+            Vector3 directionToMe = new Vector3(getCoordinates())
+                    .sub(new Vector3(other.getCoordinates()));
+
+            // set directions of balls to opposite of their direction to the other.
+            setDirection(directionToOther.scl(-1));
+            other.setDirection(directionToMe.scl(-1));
+
+            // halve our speed on collision (implementation will be improved later)
+            setSpeed(getSpeed() / 2);
+
+            // if we hit a ball that is not moving or has no direction, give it speed/direction.
+            if (other.getSpeed() <= 0) {
+                other.setSpeed(getSpeed());
+            } else { // else, give it more speed if the similar direction, slow down if not.
+                other.setSpeed(other.getSpeed() - getDirection()
+                        .dot(other.getDirection()) / 100);
+            }
+            if (other.getDirection().equals(new Vector3())) {
+                other.setDirection(new Vector3(getDirection()));
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
