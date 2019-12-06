@@ -21,6 +21,7 @@ public class Login implements Screen {
     private TextureAtlas atlas;
     private TextField userfield;
     private TextField passfield;
+    private Label outLabel;
 
     /**
      * Show the screen.
@@ -40,6 +41,7 @@ public class Login implements Screen {
         table.setPosition(0, 0);
         table.defaults().spaceBottom(10);
         table.row().fill().expandX();
+        this.outLabel = this.showOutput(table);
         this.userfield = this.showUsername(table);
         this.passfield = this.showPassword(table);
         this.showButtons(table);
@@ -141,6 +143,14 @@ public class Login implements Screen {
         return password;
     }
 
+    private Label showOutput(Table table) {
+        Label out = new Label("", this.skin);
+        table.add(out);
+        table.row();
+
+        return out;
+    }
+
     /**
      * Show the login & register buttons.
      * @param table The table to add the buttons to.
@@ -167,12 +177,19 @@ public class Login implements Screen {
     }
 
     private void handleLogin() {
-        if(this.userfield.getText().length() <= 0 || this.passfield.getText().length() <= 0) {
-            // ToDo: handle nicely
+        String username = this.userfield.getText();
+        String password = this.passfield.getText();
+
+        if(username.length() <= 0 || password.length() <= 0) {
+            this.outLabel.setText("Please fill in both username and password!");
             return;
         }
 
-        System.out.println(UserController.login(this.userfield.getText(), this.passfield.getText()).getUsername());
+        User user = UserController.login(username, password);
+
+        if(user == null) {
+            this.outLabel.setText("Invalid username/password!");
+        }
     }
 
     private void handleRegister() {
@@ -180,12 +197,14 @@ public class Login implements Screen {
         String password = this.passfield.getText();
 
         if(username.length() <= 0 || password.length() <= 0) {
-            // ToDo: handle nicely
+            this.outLabel.setText("Please fill in both username and password!");
             return;
         }
 
         User user = UserController.register(username, password);
-        System.out.println(user);
-        System.out.println(user.getUsername());
+
+        if(user == null) {
+            this.outLabel.setText("User already exists!");
+        }
     }
 }
