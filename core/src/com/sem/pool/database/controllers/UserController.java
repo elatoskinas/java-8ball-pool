@@ -14,6 +14,7 @@ public class UserController {
 
     /**
      * Constructor, supplies the database to use.
+     *
      * @param db The database instance to use.
      */
     public UserController(Database db) {
@@ -22,6 +23,7 @@ public class UserController {
 
     /**
      * Try to log a user in.
+     *
      * @param username The username of the user to log in.
      * @param password The password to check against.
      * @return Null if login failed. User object if it succeeded.
@@ -30,20 +32,23 @@ public class UserController {
         try {
             User user = this.table.getUser(username);
 
-            if(user == null) {
+            if (user == null) {
                 return null;
             }
 
-            if(user.checkPassword(password)) {
+            if (user.checkPassword(password)) {
                 return user;
             }
-        } catch (SQLException ignored) { }
+        } catch (SQLException ignored) {
+            ignored.printStackTrace();
+        }
 
         return null;
     }
 
     /**
      * Try to register a user.
+     *
      * @param username The username of the user to create.
      * @param password The password associate with it.
      * @return Null if registration failed. User object if it succeeded.
@@ -52,7 +57,7 @@ public class UserController {
         User user = new User(username, password);
 
         try {
-            if(!this.table.save(user)) {
+            if (!this.table.save(user)) {
                 return null;
             }
 
@@ -64,13 +69,14 @@ public class UserController {
 
     /**
      * Check if a user exists.
+     *
      * @param username The username of the user to check.
      * @return True if the user exists, false if it does not.
      */
     public boolean exists(String username) {
         try {
             User user = this.table.getUser(username);
-            if(user != null) {
+            if (user != null) {
                 return true;
             }
         } catch (SQLException e) {
