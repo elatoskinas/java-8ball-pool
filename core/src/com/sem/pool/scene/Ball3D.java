@@ -48,7 +48,7 @@ public abstract class Ball3D {
      * This should be called when a ball is loaded into the scene.
      */
     public void setUpBoxes() {
-        btSphereShape ballShape = new btSphereShape(0.5f * this.getRadius());
+        btSphereShape ballShape = new btSphereShape(this.getRadius());
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
