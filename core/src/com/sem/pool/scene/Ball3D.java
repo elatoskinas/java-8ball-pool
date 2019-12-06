@@ -19,6 +19,15 @@ public abstract class Ball3D {
     private transient HitBox hitBox;
     private transient Vector3 direction;
     private transient float speed;
+    private transient CollisionHandler collisionHandler;
+
+    public CollisionHandler getCollisionHandler() {
+        return collisionHandler;
+    }
+
+    public void setCollisionHandler(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
+    }
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -171,6 +180,45 @@ public abstract class Ball3D {
     @Override
     public int hashCode() {
         return Objects.hash(id, model);
+    }
+
+    /**
+     * Method that checks if this and another ball collide.
+     * If they do, both ball change directions and speed.
+     * If a ball with no speed or direction is hit, they get
+     * a new one. This is to respond to the cue ball hitting a ball that was just placed.
+     * @param other Other ball.
+     * @return whether the ball collided with the other ball.
+     */
+    public boolean checkCollision(Ball3D other) {
+        if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
+            // Create vector from ball to other
+            Vector3 directionToOther = new Vector3(other.getCoordinates())
+                    .sub(new Vector3(getCoordinates()));
+            // Create vector from other to ball.
+            Vector3 directionToMe = new Vector3(getCoordinates())
+                    .sub(new Vector3(other.getCoordinates()));
+
+            // set directions of balls to opposite of their direction to the other.
+            setDirection(directionToOther.scl(-1));
+            other.setDirection(directionToMe.scl(-1));
+
+            // halve our speed on collision (implementation will be improved later)
+            setSpeed(getSpeed() / 2);
+
+            // if we hit a ball that is not moving or has no direction, give it speed/direction.
+            if (other.getSpeed() <= 0) {
+                other.setSpeed(getSpeed());
+            } else { // else, give it more speed if the similar direction, slow down if not.
+                other.setSpeed(other.getSpeed() - getDirection()
+                        .dot(other.getDirection()) / 100);
+            }
+            if (other.getDirection().equals(new Vector3())) {
+                other.setDirection(new Vector3(getDirection()));
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
