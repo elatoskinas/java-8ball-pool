@@ -145,8 +145,12 @@ public class Pool implements Screen {
         return scene;
     }
 
+    /**
+     * Render the scene.
+     * @param delta Time in seconds between last render.
+     */
     @Override
-    public void render(float f) {
+    public void render(float delta) {
         // Initialize scene if uninitialized
         initializeScene();
 

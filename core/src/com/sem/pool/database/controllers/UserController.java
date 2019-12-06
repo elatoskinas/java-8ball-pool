@@ -10,10 +10,15 @@ import java.sql.SQLException;
  * Controller of the User table.
  */
 public class UserController {
+    private transient UserTable table;
+
     /**
-     * Prevent anyone from creating an instance of this class, as that does not make sense.
+     * Constructor, supplies the database to use.
+     * @param db The database instance to use.
      */
-    private UserController() {}
+    public UserController(Database db) {
+        this.table = (UserTable) db.table("User");
+    }
 
     /**
      * Try to log a user in.
@@ -21,9 +26,9 @@ public class UserController {
      * @param password The password to check against.
      * @return Null if login failed. User object if it succeeded.
      */
-    public static User login(String username, String password) {
+    public User login(String username, String password) {
         try {
-            User user = UserController.table().getUser(username);
+            User user = this.table.getUser(username);
 
             if(user == null) {
                 return null;
@@ -43,19 +48,15 @@ public class UserController {
      * @param password The password associate with it.
      * @return Null if registration failed. User object if it succeeded.
      */
-    public static User register(String username, String password) {
-        if(UserController.exists(username)) {
-            return null;
-        }
-
+    public User register(String username, String password) {
         User user = new User(username, password);
 
         try {
-            if(!UserController.table().save(user)) {
+            if(!this.table.save(user)) {
                 return null;
             }
 
-            return UserController.table().getUser(username);
+            return this.table.getUser(username);
         } catch (SQLException e) {
             return null;
         }
@@ -66,9 +67,9 @@ public class UserController {
      * @param username The username of the user to check.
      * @return True if the user exists, false if it does not.
      */
-    public static boolean exists(String username) {
+    public boolean exists(String username) {
         try {
-            User user = UserController.table().getUser(username);
+            User user = this.table.getUser(username);
             if(user != null) {
                 return true;
             }
@@ -77,13 +78,5 @@ public class UserController {
         }
 
         return false;
-    }
-
-    /**
-     * Get the table from the Database class.
-     * @return The UserTable instance to work with.
-     */
-    private static UserTable table() {
-        return (UserTable) Database.getInstance().table("User");
     }
 }

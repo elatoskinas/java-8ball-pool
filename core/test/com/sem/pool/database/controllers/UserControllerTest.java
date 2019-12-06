@@ -12,49 +12,52 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserControllerTest {
+    private transient UserController userController;
+
     @BeforeEach
     public void setUp() {
         Database.setTestMode();
+        this.userController = new UserController(Database.getInstance());
     }
 
     @Test
     public void login() {
         User testUser = new User("real", "foobar");
-        UserController.register("real", "foobar");
-        assertEquals(testUser, UserController.login("real", "foobar"));
+        this.userController.register("real", "foobar");
+        assertEquals(testUser, this.userController.login("real", "foobar"));
     }
 
     @Test
     public void loginWrongPW() {
-        UserController.register("real", "foobar");
-        assertNull(UserController.login("real", "barfoo"));
+        this.userController.register("real", "foobar");
+        assertNull(this.userController.login("real", "barfoo"));
     }
 
     @Test
     public void loginNonExisting() {
-        assertNull(UserController.login("notreal", "foobar"));
+        assertNull(this.userController.login("notreal", "foobar"));
     }
 
     @Test
     public void register() {
         User testUser = new User("other", "foobar");
-        assertEquals(testUser, UserController.register("other", "foobar"));
+        assertEquals(testUser, this.userController.register("other", "foobar"));
     }
 
     @Test
     public void registerExists() {
-        UserController.register("other", "foobar");
-        assertNull(UserController.register("other", "foobar"));
+        this.userController.register("other", "foobar");
+        assertNull(this.userController.register("other", "foobar"));
     }
 
     @Test
     public void nonExistingUser() {
-        assertFalse(UserController.exists("notreal"));
+        assertFalse(this.userController.exists("notreal"));
     }
 
     @Test
     public void existingUser() {
-        UserController.register("real", "foobar");
-        assertTrue(UserController.exists("real"));
+        this.userController.register("real", "foobar");
+        assertTrue(this.userController.exists("real"));
     }
 }

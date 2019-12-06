@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.User;
 
@@ -23,9 +24,11 @@ public class Login implements Screen {
     private transient TextField userfield;
     private transient TextField passfield;
     private transient Label outLabel;
+    private transient UserController userController;
 
     public Login(MainGame game) {
         this.game = game;
+        this.userController = new UserController(Database.getInstance());
     }
 
     /**
@@ -60,10 +63,10 @@ public class Login implements Screen {
 
     /**
      * Render the screen
-     * @param f A float
+     * @param delta Delta time in seconds between the last render
      */
     @Override
-    public void render (float f) {
+    public void render (float delta) {
         Gdx.gl.glClearColor(0.04f, 0.42f, 0.01f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
@@ -89,7 +92,7 @@ public class Login implements Screen {
 
     /**
      * Resuming of the paused screen.
-     * It's currently not possible to pause, so you can resume either.
+     * It's currently not possible to pause, so you can't resume either.
      */
     @Override
     public void resume() {};
@@ -200,10 +203,11 @@ public class Login implements Screen {
             return;
         }
 
-        User user = UserController.login(username, password);
+        User user = this.userController.login(username, password);
 
         if(user == null) {
             this.outLabel.setText("Invalid username/password!");
+            return;
         }
 
         this.game.startPool();
@@ -221,10 +225,11 @@ public class Login implements Screen {
             return;
         }
 
-        User user = UserController.register(username, password);
+        User user = this.userController.register(username, password);
 
         if(user == null) {
             this.outLabel.setText("User already exists!");
+            return;
         }
 
         this.game.startPool();

@@ -3,7 +3,8 @@ package com.sem.pool;
 import com.badlogic.gdx.Game;
 
 /**
- * Login game screen.
+ * Game class.
+ * This handles the switching between screens.
  */
 public class MainGame extends Game {
     /**

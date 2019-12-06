@@ -68,10 +68,6 @@ public class UserTable extends Table {
      * @throws SQLException SQL errors.
      */
     public boolean save(User user) throws SQLException {
-        if (user.isExisting()) {
-            return false;
-        }
-
         String sql = "insert into " + this.tableName + " (username, password) values (?, ?)";
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, user.getUsername());
