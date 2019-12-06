@@ -22,21 +22,17 @@ public class UserController {
      * @return Null if login failed. User object if it succeeded.
      */
     public static User login(String username, String password) {
-        User user;
-
         try {
-            user = UserController.table().getUser(username);
-        } catch (SQLException e) {
-            return null;
-        }
+            User user = UserController.table().getUser(username);
 
-        if(user == null) {
-            return null;
-        }
+            if(user == null) {
+                return null;
+            }
 
-        if(user.checkPassword(password)) {
-            return user;
-        }
+            if(user.checkPassword(password)) {
+                return user;
+            }
+        } catch (SQLException ignored) { }
 
         return null;
     }
@@ -59,14 +55,10 @@ public class UserController {
                 return null;
             }
 
-            System.out.println("yeet");
-
-            user = UserController.table().getUser(username);
+            return UserController.table().getUser(username);
         } catch (SQLException e) {
             return null;
         }
-
-        return user;
     }
 
     /**

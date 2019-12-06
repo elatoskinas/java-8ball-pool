@@ -16,13 +16,13 @@ import com.sem.pool.database.models.User;
  * This class implements the Login screen.
  */
 public class Login implements Screen {
-    private MainGame game;
-    private Stage stage;
-    private Skin skin;
-    private TextureAtlas atlas;
-    private TextField userfield;
-    private TextField passfield;
-    private Label outLabel;
+    private transient MainGame game;
+    private transient Stage stage;
+    private transient Skin skin;
+    private transient TextureAtlas atlas;
+    private transient TextField userfield;
+    private transient TextField passfield;
+    private transient Label outLabel;
 
     public Login(MainGame game) {
         this.game = game;
@@ -117,6 +117,7 @@ public class Login implements Screen {
     /**
      * Show the username field.
      * @param table The table to add the username to.
+     * @return The text field of the username.
      */
     private TextField showUsername(Table table) {
         Label usernameLabel = new Label("Username: ", this.skin);
@@ -133,6 +134,7 @@ public class Login implements Screen {
     /**
      * Show the password field.
      * @param table The table to add the password to.
+     * @return The text field of the password
      */
     private TextField showPassword(Table table) {
         Label passwordLabel = new Label("Password: ", this.skin);
@@ -148,6 +150,11 @@ public class Login implements Screen {
         return password;
     }
 
+    /**
+     * Show the output label on the screen.
+     * @param table The table to add to.
+     * @return The label to change when there is a message.
+     */
     private Label showOutput(Table table) {
         Label out = new Label("", this.skin);
         table.add(out);
@@ -181,6 +188,9 @@ public class Login implements Screen {
         table.add(register).colspan(2);
     }
 
+    /**
+     * Handle login button press.
+     */
     private void handleLogin() {
         String username = this.userfield.getText();
         String password = this.passfield.getText();
@@ -199,6 +209,9 @@ public class Login implements Screen {
         this.game.startPool();
     }
 
+    /**
+     * Handle registration button press.
+     */
     private void handleRegister() {
         String username = this.userfield.getText();
         String password = this.passfield.getText();
