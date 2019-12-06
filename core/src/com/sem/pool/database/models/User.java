@@ -23,7 +23,7 @@ public class User {
     }
 
     /**
-     * Create a existing user.
+     * Create an existing user.
      * @param id The userID.
      * @param username The username to use.
      * @param password The password to use.

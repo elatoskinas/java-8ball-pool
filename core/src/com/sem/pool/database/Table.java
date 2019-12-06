@@ -13,11 +13,11 @@ public abstract class Table {
     /**
      * Connection to use for queries.
      */
-    protected transient Connection conn;
+    protected final transient Connection conn;
     /**
      * Name of the table.
      */
-    protected transient String tableName;
+    protected final transient String tableName;
 
     /**
      * Create the table instance.

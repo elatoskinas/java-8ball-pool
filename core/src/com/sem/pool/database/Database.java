@@ -18,7 +18,7 @@ public class Database {
     /**
      * The tables of the database.
      */
-    private transient HashMap<String, Table> tables;
+    private final transient HashMap<String, Table> tables;
 
     /**
      * Create the database.
@@ -28,7 +28,7 @@ public class Database {
      */
     @SuppressWarnings({"PMD.CloseResource", "PMD.DoNotCallSystemExit"})
     private Database() {
-        this.tables = new HashMap<String, Table>();
+        this.tables = new HashMap<>();
 
         try {
             Class.forName("org.sqlite.JDBC");
