@@ -76,7 +76,7 @@ public class UserTable extends Table {
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, user.getUsername());
         stmt.setString(2, user.getPassword());
-        return stmt.execute();
+        return stmt.executeUpdate() > 0;
     }
 
     /**
