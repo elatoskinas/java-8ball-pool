@@ -108,4 +108,31 @@ public class User {
     public String toString() {
         return this.username;
     }
+
+    /**
+     * Override the equals method
+     * @param other Object to test against.
+     * @return True iff they are equal
+     */
+    public boolean equals(Object other) {
+        if(!(other instanceof User)) {
+            return false;
+        }
+
+        User otherUser = (User) other;
+
+        if(this.existing && otherUser.existing && this.id != otherUser.id) return false;
+        if(!this.username.equals(otherUser.username)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + this.id;
+        result = 31 * result + this.username.hashCode();
+        result = 31 * result + this.password.hashCode();
+        return result;
+    }
 }

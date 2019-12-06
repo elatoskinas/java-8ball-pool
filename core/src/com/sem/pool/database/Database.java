@@ -25,14 +25,21 @@ public class Database {
      * Private to prevent multiple instances with a singleton.
      * CloseResource suppressed as the connection should never be closed.
      * DoNotCallSystemExit suppressed as this is a fatal error.
+     * @param inmemory True if the database should be in memory, false if it should be written to a file.
      */
     @SuppressWarnings({"PMD.CloseResource", "PMD.DoNotCallSystemExit"})
-    private Database() {
-        this.tables = new HashMap<String, Table>();
+    private Database(boolean inmemory) {
+        this.tables = new HashMap<>();
 
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
+            Connection conn;
+
+            if(inmemory) {
+                conn = DriverManager.getConnection("jdbc:sqlite::memory:");
+            } else {
+                conn = DriverManager.getConnection("jdbc:sqlite:database.db");
+            }
 
             // Add all tables.
             this.tables.put("User", new UserTable(conn));
@@ -47,20 +54,26 @@ public class Database {
 
     /**
      * Get the database.
-     *
      * @return The database instance.
      */
     public static Database getInstance() {
         if (Database.db == null) {
-            Database.db = new Database();
+            Database.db = new Database(false);
         }
 
         return db;
     }
 
     /**
+     * Set the database in test mode.
+     * This means the data is stored in memory, not in a file.
+     */
+    public static void setTestMode() {
+        Database.db = new Database(true);
+    }
+
+    /**
      * Get a table.
-     *
      * @param table The table to get.
      * @return The table requested.
      */
