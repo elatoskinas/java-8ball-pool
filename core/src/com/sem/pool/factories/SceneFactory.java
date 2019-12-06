@@ -1,4 +1,4 @@
-package com.sem.pool.scene;
+package com.sem.pool.factories;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -6,17 +6,23 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.GameConstants;
+import com.sem.pool.game.GameConstants;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.Table3D;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SceneFactory {
-    // Factories used to create Tables & Pool Balls
+
+    // Factories used to create Tables & Pool Balls & Camera & Cue
     private transient TableFactory tableFactory;
     private transient BallFactory ballFactory;
-
     private transient CameraFactory cameraFactory;
+    private transient CueFactory cueFactory;
+
     private transient ModelBatch modelBatch;
 
     // Initial offsets for the pool balls to set up for break shot
@@ -28,14 +34,16 @@ public class SceneFactory {
      * specified parameters to be used for scene instantiation.
      * @param tableFactory  Table Factory to use for Table instantiation
      * @param ballFactory   Ball Factory to use for Pool Ball instantiation
-     * @param cameraFactory    Camera Factory to use for Camera instantiation
+     * @param cameraFactory  Camera Factory to use for Camera instantiation
+     * @param cueFactory  Cue Factory to use for Cue instantiation
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
-                        CameraFactory cameraFactory, ModelBatch modelBatch) {
+                        CameraFactory cameraFactory, CueFactory cueFactory, ModelBatch modelBatch) {
         this.tableFactory = tableFactory;
         this.ballFactory = ballFactory;
         this.cameraFactory = cameraFactory;
+        this.cueFactory = cueFactory;
         this.modelBatch = modelBatch;
     }
 
@@ -63,6 +71,15 @@ public class SceneFactory {
         this.cameraFactory = cameraFactory;
     }
 
+    public CueFactory getCueFactory() {
+        return cueFactory;
+    }
+
+    public void setCueFactory(CueFactory cueFactory) {
+        this.cueFactory = cueFactory;
+    }
+
+
     /**
      * Instantiates the 3D scene by setting up the environment, camera
      * and models. The method instantiates all the necessary models,
@@ -80,6 +97,7 @@ public class SceneFactory {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));
 
+
         // Create pool balls
         List<Ball3D> poolBalls = new ArrayList<>();
 
@@ -93,10 +111,19 @@ public class SceneFactory {
 
         // Create table
         Table3D table = tableFactory.createTable();
-        Camera camera = cameraFactory.createCamera();
+        tableFactory.setBoundingBoxes(table);
+        tableFactory.setUpPotHitBoxes(table);
 
+        // Create cue
+        Cue3D cue = cueFactory.createCue();
+
+        // Set cue to cueBall position
+        cue.toShotPosition(poolBalls.get(0));
+
+        // Create camera
+        Camera camera = cameraFactory.createCamera();
         // Create scene with the constructed objects
-        return new Scene3D(environment, camera, poolBalls, table, modelBatch);
+        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);
     }
 
     /**
@@ -108,7 +135,7 @@ public class SceneFactory {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void positionPoolBalls(List<Ball3D> poolBalls) {
         // Position cue ball to it's right position
-        poolBalls.get(0).move(CUE_BALL_OFFSET);
+        poolBalls.get(0).translate(CUE_BALL_OFFSET);
 
         // Keep track of the current row of balls and the
         // current ball in the row
@@ -133,8 +160,8 @@ public class SceneFactory {
             // the pool balls. Furthermore, move the ball
             // by the predetermined offset to position it
             // at one side of the board.
-            ball.move(getPyramidOffset(spacing, row, count));
-            ball.move(BALL_OFFSET);
+            ball.translate(getPyramidOffset(spacing, row, count));
+            ball.translate(BALL_OFFSET);
 
             // Increase row elemet count
             count++;
