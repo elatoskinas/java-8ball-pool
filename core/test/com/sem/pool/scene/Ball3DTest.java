@@ -446,22 +446,29 @@ abstract class Ball3DTest {
      */
     @Test
     public void testIfCollision() {
-        final int initId = 0;
+        // mock modelinstance for ball
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
-        Vector3 position = new Vector3(0,0,0);
+        // mock matrix for ball transform
         Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
-        final Ball3D mockedBall = Mockito.mock(Ball3D.class);
-        Ball3D other = getBall(1, mockModel);
+
+        // created mocked ball to collide with
+        Ball3D other = getBall(0, mockModel);
+        Vector3 position = new Vector3(0,0,0);
         Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
         other.getModel().transform = mockedMatrix;
-        Ball3D ball = getBall(initId, mockModel);
+        // create ball we use to test
+        Ball3D ball = getBall(0, mockModel);
+        // set transform of model
         ball.getModel().transform = mockedMatrix;
+
+        // mock handler, set handler to always return true and set handler for ball
         CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
         Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
                 Mockito.any())).thenReturn(true);
         ball.setCollisionHandler(mockedHandler);
-        Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        // assert that if the handler returns true, the checkCollision method returns true.
         assertTrue(ball.checkCollision(other));
+        // verify that the handler is called once
         Mockito.verify(mockedHandler, Mockito.times(1))
                 .checkHitBoxCollision(Mockito.any(), Mockito.any());
     }
