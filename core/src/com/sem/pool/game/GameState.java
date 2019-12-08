@@ -16,7 +16,12 @@ import java.util.Set;
 public class GameState {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
-    private transient int playerTurn;
+
+    enum PlayerTurn {
+        ONE,
+        TWO
+    }
+    private transient PlayerTurn playerTurn;
     private transient int turnCount;
 
     private transient boolean started;
@@ -71,18 +76,35 @@ public class GameState {
      * for the break shot.
      */
     public void startGame() {
-        // TODO: Implement random player picking
+        initStartingPlayer();
+
         this.started = true;
+    }
+
+    /**
+     * Initializes the starting player.
+     */
+    public void initStartingPlayer(){
+        final double chance = 0.5;
+        if (Math.random() < chance){
+            playerTurn = PlayerTurn.ONE;
+        } else {
+            playerTurn = PlayerTurn.TWO;
+        }
     }
 
     /**
      * Advances the turn of the game, ending the current Player's
      * turn and starting the subsequent Player's turn.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void advanceTurn() {
         // TODO: Turn should be advanced
-        throw new UnsupportedOperationException("Not yet implemented!");
+        if (playerTurn == PlayerTurn.ONE){
+            playerTurn = PlayerTurn.TWO;
+        } else {
+            playerTurn = PlayerTurn.ONE;
+        }
+        turnCount += 1;
     }
 
     /**
