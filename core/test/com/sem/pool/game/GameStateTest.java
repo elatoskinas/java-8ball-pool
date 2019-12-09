@@ -1,10 +1,5 @@
 package com.sem.pool.game;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
@@ -14,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class GameStateTest {
     transient GameState gameState;
@@ -90,6 +87,37 @@ class GameStateTest {
         assertEquals(expectedBalls, gameState2.getRemainingBalls().size());
         assertNotNull(gameState2.getObservers());
         assertTrue(gameState2.getObservers().isEmpty());
+    }
+
+
+    /**
+     * Tests if the number of the random
+     * starting player is valid.
+     */
+    @Test
+    void testInitStartingPlayer() {
+        for (int i = 0; i < 10; i++) {
+            gameState.initStartingPlayer();
+            int playerTurn = gameState.getPlayerTurn();
+            assertTrue(playerTurn == 1 || playerTurn == 0);
+        }
+    }
+
+    /**
+     * Tests case to verify that the player turn
+     * is set to the next player.
+     */
+    @Test
+    void testAdvancePlayerTurn() {
+        int playerTurn = gameState.getPlayerTurn();
+        gameState.advanceTurn();
+        int newPlayerTurn = gameState.getPlayerTurn();
+
+        assertNotEquals(playerTurn, newPlayerTurn);
+        assertEquals(Math.abs(playerTurn - newPlayerTurn), 1);
+
+        gameState.advanceTurn();
+        assertEquals(playerTurn, gameState.getPlayerTurn());
     }
 
     /**
@@ -217,5 +245,15 @@ class GameStateTest {
 
         // Assert that game is stopped
         assertFalse(gameState.isStarted());
+    }
+
+    /**
+     * Test case to verify that the game is correctly set to running
+     */
+    @Test
+    void testGameStateIsRunning() {
+        assertFalse(gameState.isRunning());
+        gameState.setToRunning();
+        assertTrue(gameState.isRunning());
     }
 }

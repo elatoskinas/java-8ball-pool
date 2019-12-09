@@ -13,7 +13,9 @@ import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class GameTest {
@@ -159,6 +161,25 @@ public class GameTest {
     }
 
     /**
+     * Test case to verify the game advances when there are no balls
+     * in motion and the game is currently in the run state.
+     * The players should switch turns.
+     */
+    @Test
+    void testAdvanceGameLoopCallRunningState() {
+        assertFalse(game.isStarted());
+        game.startGame();
+        assertTrue(game.isStarted());
+
+        assertFalse(game.isInMotion());
+        Mockito.when(gameState.isRunning()).thenReturn(true);
+
+        game.advanceGameLoop();
+
+        Mockito.verify(gameState).advanceTurn();
+    }
+
+    /**
      * Test case to verify that a stopped game does not trigger
      * any functionality. This is done by making sure that there
      * are no interactions with the scene or the input objects
@@ -197,8 +218,7 @@ public class GameTest {
         Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
         setupScenePoolBallsHelper(false);
 
-        game.startGame();
-        game.advanceGameLoop();
+        game.respondToInput();
 
         Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
     }

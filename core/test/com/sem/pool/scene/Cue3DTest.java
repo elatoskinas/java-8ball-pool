@@ -180,4 +180,24 @@ public class Cue3DTest {
         // Assert expected direction equal to actual direction
         assertEquals(expectedDirection, direction);
     }
+
+    @Test
+    public void testShoot(){
+
+
+        final int id = 0;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        final Matrix4 matrix = Mockito.mock(Matrix4.class);
+        model.transform = matrix;
+
+        Cue3D cue = new Cue3D(null);
+        CueBall3D cueBall = new CueBall3D(id, model);
+        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
+
+        Vector3 mouseposition = new Vector3(1, 0, 0);
+        cue.shoot(mouseposition, cueBall);
+        assertEquals(cueBall.getSpeed(), 0.1f);
+        assertEquals(cueBall.getDirection(), new Vector3(-1, 0, 0));
+
+    }
 }

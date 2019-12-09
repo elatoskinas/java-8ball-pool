@@ -75,19 +75,24 @@ public class Game implements GameStateObserver {
      */
     public void advanceGameLoop() {
         if (started) {
-            // Determine if game is currently in motion
-            boolean newInMotion = determineIsInMotion();
 
-            // TODO: inMotion -> !newInMotion: advance turn
-
-            // Update current game motion flag
-            inMotion = newInMotion;
+            // Check if any ball is in motion
+            inMotion = determineIsInMotion();
 
             // If no balls are in motion, that means
             // we are at the phase where we can respond to input.
             // Otherwise, we need to move the balls.
             if (!inMotion) {
-                respondToInput();
+
+                if (state.isWaitingForInput()){
+                    respondToInput();
+                }
+
+                // Game should stop running when there are no
+                // balls in motion and the current state is running
+                if (state.isRunning()) {
+                    state.advanceTurn();
+                }
             } else {
                 moveBalls();
             }
@@ -129,6 +134,7 @@ public class Game implements GameStateObserver {
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
             scene.getCue().shoot(mousePosition, cueBall);
+            state.setToRunning();
         }
     }
 

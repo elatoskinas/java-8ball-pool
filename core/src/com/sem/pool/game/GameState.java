@@ -17,15 +17,18 @@ public class GameState {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
 
-    enum PlayerTurn {
-        ONE,
-        TWO
-    }
-    private transient PlayerTurn playerTurn;
+    private transient int playerTurn;
     private transient int turnCount;
 
     private transient boolean started;
 
+    enum State {
+        WaitForInput,
+        Running,
+        Ended
+    }
+
+    private transient State state;
     private transient Set<GameStateObserver> observers;
 
     /**
@@ -63,6 +66,14 @@ public class GameState {
         return observers;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public int getPlayerTurn() {
+        return playerTurn;
+    }
+
     public void addObserver(GameStateObserver observer) {
         observers.add(observer);
     }
@@ -70,6 +81,23 @@ public class GameState {
     public void removeObserver(GameStateObserver observer) {
         observers.remove(observer);
     }
+
+    public void setToRunning() {
+        this.state = State.Running;
+    }
+
+    public boolean isRunning() {
+        return state == State.Running;
+    }
+
+    public boolean isWaitingForInput() {
+        return state == State.WaitForInput;
+    }
+
+    public void setToWaitingForInput() {
+        state = State.WaitForInput;
+    }
+
 
     /**
      * Starts the pool game by picking a random Player
@@ -79,31 +107,28 @@ public class GameState {
         initStartingPlayer();
 
         this.started = true;
+        this.state = State.WaitForInput;
     }
 
     /**
-     * Initializes the starting player.
+     * Initializes the starting player at random.
      */
-    public void initStartingPlayer(){
-        final double chance = 0.5;
-        if (Math.random() < chance){
-            playerTurn = PlayerTurn.ONE;
-        } else {
-            playerTurn = PlayerTurn.TWO;
-        }
+    public void initStartingPlayer() {
+        playerTurn = (int) Math.round(Math.random());
     }
 
     /**
      * Advances the turn of the game, ending the current Player's
      * turn and starting the subsequent Player's turn.
      */
+    @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
     public void advanceTurn() {
-        // TODO: Turn should be advanced
-        if (playerTurn == PlayerTurn.ONE){
-            playerTurn = PlayerTurn.TWO;
+        if (playerTurn == 1) {
+            playerTurn = 0;
         } else {
-            playerTurn = PlayerTurn.ONE;
+            playerTurn = 1;
         }
+        state = State.WaitForInput;
         turnCount += 1;
     }
 
@@ -125,6 +150,7 @@ public class GameState {
         }
 
         // Stop the game
+        state = State.Ended;
         started = false;
     }
 
