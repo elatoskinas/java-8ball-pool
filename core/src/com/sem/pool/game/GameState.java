@@ -121,13 +121,11 @@ public class GameState {
      * Advances the turn of the game, ending the current Player's
      * turn and starting the subsequent Player's turn.
      */
-    @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
     public void advanceTurn() {
-        if (playerTurn == 1) {
-            playerTurn = 0;
-        } else {
-            playerTurn = 1;
-        }
+        // Increment player turn and wrap turn ID around
+        // players size to keep it within bounds
+        playerTurn = (playerTurn + 1) % players.size();
+
         state = State.WaitForInput;
         turnCount += 1;
     }
