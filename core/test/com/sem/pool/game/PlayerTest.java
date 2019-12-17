@@ -1,11 +1,12 @@
 package com.sem.pool.game;
 
-import com.sem.pool.scene.Ball3D;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.sem.pool.scene.RegularBall3D;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
     /**

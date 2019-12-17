@@ -40,6 +40,11 @@ public class Player {
         // TODO: Do not assign ball type when cue ball is potted
     }
 
+    /**
+     * Pots the ball for the Player. To be called when this
+     * Player pots the specified ball.
+     * @param ball  Ball that the player has potted
+     */
     public void potBall(Ball3D ball) {
         // TODO: Implement ball potting logic
         if (ball instanceof RegularBall3D) {
