@@ -291,6 +291,9 @@ abstract class Ball3DTest {
         ball.setSpeed(1f);
         ball.move(1);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+        ball.setSpeed(-1);
+        ball.move(1);
+        assertEquals(ball.getSpeed(), 0);
     }
 
     /**
