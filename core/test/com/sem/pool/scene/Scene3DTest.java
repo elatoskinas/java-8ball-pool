@@ -180,16 +180,13 @@ class Scene3DTest {
      */
     @Test
     public void testTriggerCollisionsMultipleBallsPotted() {
-        Ball3D ball1 = Mockito.mock(Ball3D.class);
-        Ball3D ball2 = Mockito.mock(Ball3D.class);
-        Ball3D ball3 = Mockito.mock(Ball3D.class);
-        scene.getPoolBalls().add(ball1);
-        scene.getPoolBalls().add(ball2);
-        scene.getPoolBalls().add(ball3);
+        final int ballCount = 3;
 
-        // Set ball to be potted
-        for (Ball3D ball : scene.getPoolBalls()) {
+        // Create specified number of balls & set ball to be potted
+        for (int i = 0; i < ballCount; ++i) {
+            Ball3D ball = Mockito.mock(Ball3D.class);
             Mockito.when(table.checkIfPot(ball)).thenReturn(true);
+            scene.getPoolBalls().add(ball);
         }
 
         // Geth the potted balls after triggering collisions
