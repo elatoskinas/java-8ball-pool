@@ -40,8 +40,10 @@ public class Player {
         // TODO: Do not assign ball type when cue ball is potted
     }
 
-    public void potBall(RegularBall3D ball) {
+    public void potBall(Ball3D ball) {
         // TODO: Implement ball potting logic
-        pottedBalls.add(ball);
+        if (ball instanceof RegularBall3D) {
+            pottedBalls.add((RegularBall3D)ball);
+        }
     }
 }
