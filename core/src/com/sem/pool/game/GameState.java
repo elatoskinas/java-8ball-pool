@@ -116,6 +116,9 @@ public class GameState {
     public void onBallPotted(Ball3D ball) {
         // TODO: Ball should be potted and tracked for the Player
         // TODO: Should handle dispatching events back to Game
-        throw new UnsupportedOperationException("Not yet implemented!");
+        //throw new UnsupportedOperationException("Not yet implemented!");
+
+        // Remove the ball from the remaining balls set
+        remainingBalls.remove(ball);
     }
 }

@@ -227,7 +227,8 @@ class GameStateTest {
     @Test
     void testBallPottedRemovedFromRemaining() {
         // Get first ball (constructed in setUp)
-        Ball3D ball = balls.get(0);
+        // NOTE: Id 0 won't work since it's a cue ball
+        Ball3D ball = balls.get(1);
 
         // Verify that ball is contained in remaining set (handled
         // in constructor)
