@@ -107,16 +107,8 @@ public abstract class Ball3D {
      * Moves the ball with current direction and speed.
      */
     public void move() {
-        // TODO: Make translation calculation more realistic
         Vector3 translation = new Vector3(getDirection()).scl(speed);
         translate(translation);
-
-        final float stopSpeed = 0.05f;
-        // Stops the ball from rolling when the speed is very low
-        // otherwise it takes too long to reach speed 0
-        if (speed < stopSpeed) {
-            speed = 0;
-        }
     }
 
     /**
