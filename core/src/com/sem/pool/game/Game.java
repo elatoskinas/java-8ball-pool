@@ -114,8 +114,8 @@ public class Game implements GameStateObserver {
      */
     protected void respondToInput() {
         // input relevant for cue and shot
-        Vector3 mousePosition = scene.getUnprojectedMousePosition();
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
             Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
             scene.getCue().shoot(mousePosition, cueBall);
             state.setToRunning();
