@@ -146,7 +146,7 @@ class Table3DTest {
         board.checkIfPot(mockedBall);
         Mockito.verify(mockedHandler, Mockito.times(1))
                 .checkHitBoxCollision(Mockito.any(HitBox.class), Mockito.any(HitBox.class));
-        Mockito.verify(mockedBall, Mockito.times(1)).pot();
+        //Mockito.verify(mockedBall, Mockito.times(1)).pot();
     }
 
     /**

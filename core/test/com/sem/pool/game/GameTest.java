@@ -250,4 +250,22 @@ public class GameTest {
         Mockito.verify(gameState, Mockito.times(0))
                 .onBallPotted(Mockito.any(Ball3D.class));
     }
+
+    /**
+     * Test case to verify that upon potting a ball, the proper
+     * interactions are made between the ball itself, the Game State
+     * and the Game class.
+     */
+    @Test
+    void testPotBall() {
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        game.startGame();
+        game.potBall(ball);
+
+        // Verify ball is potted
+        Mockito.verify(ball).pot();
+
+        // Verify ball potted in Game State
+        Mockito.verify(gameState).onBallPotted(ball);
+    }
 }

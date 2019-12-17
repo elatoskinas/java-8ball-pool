@@ -114,10 +114,10 @@ public class Game implements GameStateObserver {
         // Check collisions for current game loop iteration
         List<Ball3D> potted = scene.triggerCollisions();
 
-        // Trigger ball potting for every potted ball returned by scene;
-        // Propagate to the Game State to handle the logical part of potting.
+        // Pot the ball for every ball that was determined to be potted
+        // by the scene
         for (Ball3D ball : potted) {
-            state.onBallPotted(ball);
+            potBall(ball);
         }
 
         // TODO: Need to stop balls after some point so that inMotion becomes false
@@ -170,9 +170,11 @@ public class Game implements GameStateObserver {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void potBall(Ball3D ball) {
-        // TODO: Implement ball potting logic (3D)
-        // TODO: Implement ball potting logic (Game State)
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // Pot the ball (handles potting the ball visually)
+        ball.pot();
+
+        // Propagate to the Game State to handle the logical part of potting.
+        state.onBallPotted(ball);
     }
 
     /**
