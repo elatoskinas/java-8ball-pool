@@ -117,12 +117,18 @@ public class Scene3D {
     // Suppress false positive for Dataflow Anomalies caused by the
     // defined loop in the method.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void triggerCollisions() {
+    public List<Ball3D> triggerCollisions() {
+        ArrayList<Ball3D> potted = new ArrayList<>();
+
         // Check collisions between the board and
         // every ball in the scene.
         for (Ball3D ball : poolBalls) {
             table.checkCollision(ball);
-            table.checkIfPot(ball);
+            boolean potResult = table.checkIfPot(ball);
+
+            if (potResult) {
+                potted.add(ball);
+            }
         }
 
         for (int i = 0; i < poolBalls.size(); i++) {
@@ -132,5 +138,7 @@ public class Scene3D {
                 ball.checkCollision(other);
             }
         }
+
+        return potted;
     }
 }

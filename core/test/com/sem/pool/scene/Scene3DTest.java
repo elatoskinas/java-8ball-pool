@@ -206,7 +206,7 @@ class Scene3DTest {
      * the returned List of potted balls is empty.
      */
     @Test
-    public void testTriggerCollisionsBallPotted() {
+    public void testTriggerCollisionsNoBallPotted() {
         Ball3D ball = Mockito.mock(Ball3D.class);
         scene.getPoolBalls().add(ball);
 
