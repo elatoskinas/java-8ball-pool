@@ -120,7 +120,7 @@ public class Scene3D {
     // defined loop in the method.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public List<Ball3D> triggerCollisions() {
-        ArrayList<Ball3D> potted = new ArrayList<>();
+        List<Ball3D> potted = new ArrayList<>();
 
         for (int i = 0; i < poolBalls.size(); i++) {
             Ball3D ball = poolBalls.get(i);

@@ -114,6 +114,8 @@ public class Game implements GameStateObserver {
         // Check collisions for current game loop iteration
         List<Ball3D> potted = scene.triggerCollisions();
 
+        // Trigger ball potting for every potted ball returned by scene;
+        // Propagate to the Game State to handle the logical part of potting.
         for (Ball3D ball : potted) {
             state.onBallPotted(ball);
         }
