@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
+import java.util.List;
+
 /**
  * Class that handles everything related to the pool game.
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
@@ -110,9 +112,11 @@ public class Game implements GameStateObserver {
         }
 
         // Check collisions for current game loop iteration
-        scene.triggerCollisions();
+        List<Ball3D> potted = scene.triggerCollisions();
 
-        // TODO: Handle calling pot balls methods
+        for (Ball3D ball : potted) {
+            state.onBallPotted(ball);
+        }
 
         // TODO: Need to stop balls after some point so that inMotion becomes false
         //       Otherwise we will end up in an infinite movement loop.
