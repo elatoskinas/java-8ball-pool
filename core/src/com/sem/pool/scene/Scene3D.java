@@ -120,19 +120,20 @@ public class Scene3D {
     public List<Ball3D> triggerCollisions() {
         ArrayList<Ball3D> potted = new ArrayList<>();
 
-        // Check collisions between the board and
-        // every ball in the scene.
-        for (Ball3D ball : poolBalls) {
+        for (int i = 0; i < poolBalls.size(); i++) {
+            Ball3D ball = poolBalls.get(i);
+
+            // Check collisions between the board and
+            // every ball in the scene
             table.checkCollision(ball);
+
+            // Check if ball is potted
             boolean potResult = table.checkIfPot(ball);
 
             if (potResult) {
                 potted.add(ball);
             }
-        }
 
-        for (int i = 0; i < poolBalls.size(); i++) {
-            Ball3D ball = poolBalls.get(i);
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
                 ball.checkCollision(other);
