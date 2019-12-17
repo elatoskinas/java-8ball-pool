@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class GameTest {
@@ -201,5 +202,53 @@ public class GameTest {
         game.advanceGameLoop();
 
         Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
+    }
+
+    /**
+     * Test case to ensure that when balls are moved and potted,
+     * the actions are propagated to the Game State.
+     */
+    @Test
+    void testMoveBallsPotted() {
+        // Create 2 mock balls and add them to the expected Ball list
+        // resulting from triggering collisions
+        List<Ball3D> ballResult = new ArrayList<>();
+        Ball3D ball1 = Mockito.mock(Ball3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+        ballResult.add(ball1);
+        ballResult.add(ball2);
+
+        // Set the resut to be returned after triggering collisions
+        Mockito.when(scene.triggerCollisions()).thenReturn(ballResult);
+
+        // Start the game & move the balls
+        game.startGame();
+        game.moveBalls();
+
+        // Ensure that the balls are potted (since we set them
+        // to be after triggering collisions)
+        Mockito.verify(gameState).onBallPotted(ball1);
+        Mockito.verify(gameState).onBallPotted(ball2);
+    }
+
+    /**
+     * Test case to ensure that when the balls are moved
+     * and not potted, no interactions are done with the Game State
+     * with regards to potting.
+     */
+    @Test
+    void testMoveBallsNotPotted() {
+        // Set the scene to not pot any balls
+        List<Ball3D> ballResult = new ArrayList<>();
+        Mockito.when(scene.triggerCollisions()).thenReturn(ballResult);
+
+        // Start game & move balls
+        game.startGame();
+        game.moveBalls();
+
+        // Verify ball potting is never called on the game state,
+        // since no balls were potted
+        Mockito.verify(gameState, Mockito.times(0))
+                .onBallPotted(Mockito.any(Ball3D.class));
     }
 }
