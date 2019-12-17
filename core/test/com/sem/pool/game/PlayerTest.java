@@ -1,6 +1,7 @@
 package com.sem.pool.game;
 
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.RegularBall3D;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -32,7 +33,7 @@ class PlayerTest {
         final int id = 0;
         Player player = new Player(id);
 
-        Ball3D ball = Mockito.mock(Ball3D.class);
+        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
         player.potBall(ball);
 
         assertTrue(player.pottedBalls.contains(ball));

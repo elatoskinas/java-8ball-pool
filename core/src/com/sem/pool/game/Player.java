@@ -3,6 +3,7 @@ package com.sem.pool.game;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.RegularBall3D;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
@@ -15,7 +16,17 @@ public class Player {
      * @param id  ID to assign to the player
      */
     public Player(int id) {
+        this.id = id;
+        pottedBalls = new HashSet<>();
+        // TODO: Initialize ball type
+    }
 
+    public int getId() {
+        return id;
+    }
+
+    public Set<RegularBall3D> getPottedBalls() {
+        return pottedBalls;
     }
 
     /**
@@ -29,7 +40,8 @@ public class Player {
         // TODO: Do not assign ball type when cue ball is potted
     }
 
-    public void potBall(Ball3D ball) {
+    public void potBall(RegularBall3D ball) {
         // TODO: Implement ball potting logic
+        pottedBalls.add(ball);
     }
 }
