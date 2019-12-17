@@ -90,13 +90,13 @@ public class GameTest {
         poolBalls.add(ball2);
 
         Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
-
         // Start the game and attempt to move the balls
         game.startGame();
-        game.moveBalls();
+        game.moveBalls(42069);
 
-        Mockito.verify(ball).move();
-        Mockito.verify(ball2).move();
+        System.out.println(ball);
+        Mockito.verify(ball).move(42069);
+        Mockito.verify(ball2).move(42069);
     }
 
     /**
@@ -153,7 +153,7 @@ public class GameTest {
 
         assertFalse(game.isInMotion());
 
-        game.advanceGameLoop();
+        game.advanceGameLoop(420);
 
         assertTrue(game.isInMotion());
     }
@@ -166,7 +166,7 @@ public class GameTest {
      */
     @Test
     void testLoopNotStarted() {
-        game.advanceGameLoop();
+        game.advanceGameLoop(42);
 
         Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
@@ -198,7 +198,7 @@ public class GameTest {
         setupScenePoolBallsHelper(false);
 
         game.startGame();
-        game.advanceGameLoop();
+        game.advanceGameLoop(69);
 
         Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
     }

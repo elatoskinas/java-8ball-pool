@@ -11,4 +11,6 @@ public final class GameConstants {
     public static final int CUEBALL_ID = 0;
     public static final int EIGHTBALL_ID = 8;
     public static final int BALLCOUNT = 16;
+    public static final float DRAG_COEFFICIENT = 0.03f;
+    public static final float MIN_SPEED = 0.0001f;
 }

@@ -286,9 +286,10 @@ abstract class Ball3DTest {
         model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final Vector3 translation = new Vector3(1f, 0, 0);
+        translation.scl((1 - 0.03f));
         ball.setDirection(new Vector3(1,0,0));
         ball.setSpeed(1f);
-        ball.move();
+        ball.move(1);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
     }
 

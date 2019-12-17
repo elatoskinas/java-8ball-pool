@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.sem.pool.game.GameConstants;
 
 import java.util.Objects;
 
@@ -106,9 +107,14 @@ public abstract class Ball3D {
     /**
      * Moves the ball with current direction and speed.
      */
-    public void move() {
+    public void move(float deltaTime) {
+        setSpeed(getSpeed() - (deltaTime * GameConstants.DRAG_COEFFICIENT));
+        if (getSpeed() <= GameConstants.MIN_SPEED) {
+            setSpeed(0);
+        }
         Vector3 translation = new Vector3(getDirection()).scl(speed);
         translate(translation);
+
     }
 
     /**

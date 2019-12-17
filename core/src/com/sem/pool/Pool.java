@@ -136,7 +136,7 @@ public class Pool implements Screen {
         // Render the scene only if the game is loaded
         if (loaded) {
             // Advance the game loop of the game & render scene
-            game.advanceGameLoop();
+            game.advanceGameLoop(Gdx.graphics.getDeltaTime());
             scene.render();
         }
     }
