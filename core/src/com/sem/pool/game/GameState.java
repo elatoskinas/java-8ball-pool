@@ -23,7 +23,8 @@ public class GameState {
     private transient boolean started;
 
     enum State {
-        WaitForInput,
+        Stopped,
+        Idle,
         Running,
         Ended
     }
@@ -90,14 +91,21 @@ public class GameState {
         return state == State.Running;
     }
 
-    public boolean isWaitingForInput() {
-        return state == State.WaitForInput;
+    public boolean isIdle() {
+        return state == State.Idle;
     }
 
-    public void setToWaitingForInput() {
-        state = State.WaitForInput;
+    public void setToIdle() {
+        state = State.Idle;
     }
 
+    public void setToStopped() {
+        this.state = State.Stopped;
+    }
+
+    public boolean isStopped() {
+        return state == State.Stopped;
+    }
 
     /**
      * Starts the pool game by picking a random Player
@@ -107,7 +115,7 @@ public class GameState {
         initStartingPlayer();
 
         this.started = true;
-        this.state = State.WaitForInput;
+        this.state = State.Idle;
     }
 
     /**
@@ -126,7 +134,7 @@ public class GameState {
         // players size to keep it within bounds
         playerTurn = (playerTurn + 1) % players.size();
 
-        state = State.WaitForInput;
+        state = State.Idle;
         turnCount += 1;
     }
 

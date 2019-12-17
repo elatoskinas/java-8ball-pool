@@ -13,9 +13,7 @@ import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class GameTest {
@@ -28,7 +26,13 @@ public class GameTest {
     void setUp() {
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
-        gameState = Mockito.mock(GameState.class);
+
+        List<Player> players = new ArrayList<>();
+        players.add(Mockito.mock(Player.class));
+        players.add(Mockito.mock(Player.class));
+
+        List<Ball3D> poolBalls = new ArrayList<>();
+        gameState = new GameState(players, poolBalls);
         game = new Game(scene, input, gameState);
     }
 
@@ -38,6 +42,7 @@ public class GameTest {
      */
     @Test
     void testConstructor() {
+        gameState = Mockito.mock(GameState.class);
         Game game2 = new Game(scene, input, gameState);
 
         assertEquals(scene, game2.getScene());
@@ -56,14 +61,12 @@ public class GameTest {
     @Test
     void testStartGame() {
         // Ensure game is not started
-        assertFalse(game.isStarted());
+        assertFalse(gameState.isStarted());
 
         // Start the game
         game.startGame();
 
-        // Verify game state started & game is started
-        Mockito.verify(gameState).startGame();
-        assertTrue(game.isStarted());
+        assertTrue(gameState.isStarted());
     }
 
     /**
@@ -73,7 +76,7 @@ public class GameTest {
     @Test
     void testStartGameInMotion() {
         game.startGame();
-        assertFalse(game.isInMotion());
+        assertFalse(game.determineIsInMotion());
     }
 
     /**
@@ -141,42 +144,19 @@ public class GameTest {
     }
 
     /**
-     * Test case to verify the state transition from a game that has
-     * not yet been started, to a started game that is not in motion,
-     * and then to a game that is in motion because at least one
-     * ball is in motion.
-     */
-    @Test
-    void testLoopToMotion() {
-        setupScenePoolBallsHelper(false, true);
-
-        game.startGame();
-        assertTrue(game.isStarted());
-
-        assertFalse(game.isInMotion());
-
-        game.advanceGameLoop();
-
-        assertTrue(game.isInMotion());
-    }
-
-    /**
      * Test case to verify the game advances when there are no balls
      * in motion and the game is currently in the run state.
      * The players should switch turns.
      */
     @Test
     void testAdvanceGameLoopCallRunningState() {
-        assertFalse(game.isStarted());
+
+        setupScenePoolBallsHelper(false, false, false);
         game.startGame();
-        assertTrue(game.isStarted());
-
-        assertFalse(game.isInMotion());
-        Mockito.when(gameState.isRunning()).thenReturn(true);
-
+        assertFalse(game.determineIsInMotion());
+        gameState.setToRunning();
         game.advanceGameLoop();
-
-        Mockito.verify(gameState).advanceTurn();
+        assertTrue(gameState.isIdle());
     }
 
     /**
@@ -214,7 +194,7 @@ public class GameTest {
     void testLeftClickShot() {
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
-        Mockito.when(scene.getCamera()).thenReturn(Mockito.mock(Camera.class));
+        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0,0,0));
         Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
         setupScenePoolBallsHelper(false);
 

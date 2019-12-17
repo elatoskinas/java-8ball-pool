@@ -1,5 +1,11 @@
 package com.sem.pool.game;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
@@ -9,8 +15,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class GameStateTest {
     transient GameState gameState;
@@ -248,7 +252,7 @@ class GameStateTest {
     }
 
     /**
-     * Test case to verify that the game is correctly set to running
+     * Test case to verify that the game is correctly set to running.
      */
     @Test
     void testGameStateIsRunning() {

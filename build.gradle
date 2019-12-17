@@ -116,7 +116,7 @@ allprojects {
                 // more complex LibGDX testing setups.
                 // Also exclude the database main class, as this is not really testable
                 // Ball3D needs more branch tests
-                excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.scene']
+                excludes = ['com.sem.pool', 'com.sem.pool.database']
 
                 limit {
                     counter = 'BRANCH'
