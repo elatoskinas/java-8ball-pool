@@ -218,4 +218,25 @@ class GameStateTest {
         // Assert that game is stopped
         assertFalse(gameState.isStarted());
     }
+
+    /**
+     * Test case to verify that potting a ball via the
+     * onBallPotted call in GameState removes the Ball
+     * from the remaining pool balls set.
+     */
+    @Test
+    void testBallPottedRemovedFromRemaining() {
+        // Get first ball (constructed in setUp)
+        Ball3D ball = balls.get(0);
+
+        // Verify that ball is contained in remaining set (handled
+        // in constructor)
+        assertTrue(gameState.getRemainingBalls().contains(ball));
+
+        // Pot the ball
+        gameState.onBallPotted(ball);
+
+        // Assert ball is no longer contained in remaining ball set
+        assertFalse(gameState.getRemainingBalls().contains(ball));
+    }
 }
