@@ -37,6 +37,6 @@ class PlayerTest {
         RegularBall3D ball = Mockito.mock(RegularBall3D.class);
         player.potBall(ball);
 
-        assertTrue(player.pottedBalls.contains(ball));
+        assertTrue(player.getPottedBalls().contains(ball));
     }
 }

@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
-    private int id;
-    private RegularBall3D.Type ballType;
-    Set<RegularBall3D> pottedBalls;
+    private transient int id;
+    private transient RegularBall3D.Type ballType;
+    private transient Set<RegularBall3D> pottedBalls;
 
     /**
      * Creates a new Player with the specified id.
