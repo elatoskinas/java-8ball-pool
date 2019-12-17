@@ -122,5 +122,6 @@ public class GameState {
         // TODO: Do action based on type of ball potted; Maybe this should
         //       be handled in the Player class and an event propagated back somehow?
         // TODO: Should handle dispatching events back to Game
+        // TODO: Special eight ball & cue ball handling
     }
 }
