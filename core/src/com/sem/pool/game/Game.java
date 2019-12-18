@@ -168,7 +168,6 @@ public class Game implements GameStateObserver {
      * active Player.
      * @param ball  Ball to be potted
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void potBall(Ball3D ball) {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
