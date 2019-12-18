@@ -106,6 +106,7 @@ public abstract class Ball3D {
     
     /**
      * Moves the ball with current direction and speed.
+     * @param deltaTime deltaTime, time between current and last frame.
      */
     public void move(float deltaTime) {
         setSpeed(getSpeed() - (deltaTime * GameConstants.DRAG_COEFFICIENT));

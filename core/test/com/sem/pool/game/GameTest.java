@@ -92,11 +92,11 @@ public class GameTest {
         Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
         // Start the game and attempt to move the balls
         game.startGame();
-        game.moveBalls(42069);
+        final float deltaTime = 3.14159f;
+        game.moveBalls(deltaTime);
 
-        System.out.println(ball);
-        Mockito.verify(ball).move(42069);
-        Mockito.verify(ball2).move(42069);
+        Mockito.verify(ball).move(deltaTime);
+        Mockito.verify(ball2).move(deltaTime);
     }
 
     /**
@@ -153,7 +153,8 @@ public class GameTest {
 
         assertFalse(game.isInMotion());
 
-        game.advanceGameLoop(420);
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
 
         assertTrue(game.isInMotion());
     }
@@ -166,7 +167,8 @@ public class GameTest {
      */
     @Test
     void testLoopNotStarted() {
-        game.advanceGameLoop(42);
+        final float deltaTime = 4;
+        game.advanceGameLoop(deltaTime);
 
         Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
@@ -198,7 +200,8 @@ public class GameTest {
         setupScenePoolBallsHelper(false);
 
         game.startGame();
-        game.advanceGameLoop(69);
+        final float deltaTime = 69;
+        game.advanceGameLoop(deltaTime);
 
         Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
     }

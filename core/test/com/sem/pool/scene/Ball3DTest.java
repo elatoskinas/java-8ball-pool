@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.sem.pool.game.GameConstants;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -286,13 +287,17 @@ abstract class Ball3DTest {
         model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final Vector3 translation = new Vector3(1f, 0, 0);
-        translation.scl((1 - 0.03f));
         ball.setDirection(new Vector3(1,0,0));
         ball.setSpeed(1f);
+        // set our translation scaled to what we expect the ball to have, its speed - the drag coefficient.
+        translation.scl((ball.getSpeed() - GameConstants.DRAG_COEFFICIENT));
         ball.move(1);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
         ball.setSpeed(-1);
         ball.move(1);
+        assertEquals(ball.getSpeed(), 0);
+        ball.setSpeed(0);
+        ball.move(10);
         assertEquals(ball.getSpeed(), 0);
     }
 
