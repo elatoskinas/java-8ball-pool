@@ -137,7 +137,7 @@ public class Scene3D {
     }
 
     /**
-     * Get the unprojected mouseposition
+     * Get the unprojected mouseposition.
      * @return Vector3 mouseposition
      */
     public Vector3 getUnprojectedMousePosition() {

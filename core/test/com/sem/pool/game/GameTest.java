@@ -3,9 +3,9 @@ package com.sem.pool.game;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 
 public class GameTest {
     transient Scene3D scene;
@@ -201,5 +202,61 @@ public class GameTest {
         game.respondToInput();
 
         Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
+    }
+
+    /**
+     * Test case to verify that a running game
+     * with no moving balls advances turns.
+     */
+    @Test
+    void testAdvanceGameLoopAdvanceTurn() {
+
+        scene = Mockito.mock(Scene3D.class);
+        input = Mockito.mock(Input.class);
+        gameState = Mockito.mock(GameState.class);
+        game = new Game(scene, input, gameState);
+        setupScenePoolBallsHelper(false, false);
+
+        Mockito.when(gameState.isStarted()).thenReturn(true);
+        Mockito.when(gameState.isRunning()).thenReturn(true);
+
+        game.advanceGameLoop();
+        Mockito.verify(gameState).advanceTurn();
+    }
+
+    /**
+     * Test case to verify that a running game
+     * with moving balls doesn't advance turns.
+     */
+    @Test
+    void testAdvanceGameLoopNotAdvanceTurn() {
+
+        scene = Mockito.mock(Scene3D.class);
+        input = Mockito.mock(Input.class);
+        gameState = Mockito.mock(GameState.class);
+        game = new Game(scene, input, gameState);
+        setupScenePoolBallsHelper(true, false);
+
+        Mockito.when(gameState.isStarted()).thenReturn(true);
+        Mockito.when(gameState.isRunning()).thenReturn(true);
+
+        game.advanceGameLoop();
+        Mockito.verify(gameState, never()).advanceTurn();
+    }
+
+    /**
+     * Test case to verify that a running game with moving balls
+     * will move the balls and trigger collisions when the advance game loop is called.
+     */
+    @Test
+    void testAdvanceGameLoopMoveBalls() {
+
+        setupScenePoolBallsHelper(true, false);
+
+        gameState.startGame();
+        gameState.setToRunning();
+        game.advanceGameLoop();
+
+        Mockito.verify(scene).triggerCollisions();
     }
 }
