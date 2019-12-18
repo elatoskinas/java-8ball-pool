@@ -288,7 +288,7 @@ abstract class Ball3DTest {
         final Vector3 translation = new Vector3(1f, 0, 0);
         ball.setDirection(new Vector3(1,0,0));
         ball.setSpeed(1f);
-        // set our translation scaled to what we expect the ball to have, its speed - the drag coefficient.
+        // set our translation scaled to what we expect the ball to have
         translation.scl((ball.getSpeed() - GameConstants.DRAG_COEFFICIENT));
         ball.move(1);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
@@ -311,10 +311,12 @@ abstract class Ball3DTest {
         ball.setSpeed(GameConstants.MIN_SPEED);
         ball.move(deltaTime);
         assertEquals(ball.getSpeed(), 0);
-        // test if speed above boundary is not set to zero but decremented by the drag coefficient times delta time.
+        // test if speed above boundary is not set to zero
+        // but decremented by the drag coefficient times delta time.
         ball.setSpeed(GameConstants.MIN_SPEED + 1);
         ball.move(deltaTime);
-        assertEquals(ball.getSpeed(), GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
+        assertEquals(ball.getSpeed(),
+                GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
     }
 
     /**
@@ -332,7 +334,6 @@ abstract class Ball3DTest {
         assertEquals(ball.getSpeed(), 0);
     }
 
-
     /**
      * Tests whether when the speed is above the boundary the speed is not set to 0.
      */
@@ -342,10 +343,12 @@ abstract class Ball3DTest {
         model.transform = new Matrix4();
         Ball3D ball = getBall(0, model);
         final float deltaTime = 1;
-        // test if speed above boundary is not set to zero but decremented by the drag coefficient times delta time.
+        // test if speed above boundary is not set to zero
+        // but decremented by the drag coefficient times delta time.
         ball.setSpeed(GameConstants.MIN_SPEED + 1);
         ball.move(deltaTime);
-        assertEquals(ball.getSpeed(), GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
+        assertEquals(ball.getSpeed(),
+                GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
     }
 
     /**
