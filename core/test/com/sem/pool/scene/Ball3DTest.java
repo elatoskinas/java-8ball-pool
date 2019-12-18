@@ -301,6 +301,8 @@ abstract class Ball3DTest {
     public void testMoveBoundaryOutPoint() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         ball.setSpeed(-1);
         final float deltaTime = 1;
@@ -326,6 +328,8 @@ abstract class Ball3DTest {
     public void testBoundaryOn() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final float deltaTime = 1;
         // test if speed on boundary is set to zero
@@ -341,6 +345,8 @@ abstract class Ball3DTest {
     public void testBoundaryInPoint() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final float deltaTime = 1;
         // test if speed above boundary is not set to zero
