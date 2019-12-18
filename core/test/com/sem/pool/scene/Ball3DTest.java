@@ -296,9 +296,12 @@ abstract class Ball3DTest {
         ball.setSpeed(-1);
         ball.move(1);
         assertEquals(ball.getSpeed(), 0);
-        ball.setSpeed(0);
+        ball.setSpeed(GameConstants.MIN_SPEED);
         ball.move(10);
         assertEquals(ball.getSpeed(), 0);
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
+        ball.move(10);
+        assertEquals(ball.getSpeed(), GameConstants.MIN_SPEED + 1);
     }
 
     /**
