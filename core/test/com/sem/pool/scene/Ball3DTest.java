@@ -295,10 +295,10 @@ abstract class Ball3DTest {
     }
 
     /**
-     * Tests whether the boundaries for the move method that changes the speed works properly.
+     * Tests whether the boundary for the move method that changes the speed works properly.
      */
     @Test
-    public void testMoveBoundary() {
+    public void testMoveBoundaryOutPoint() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
         Ball3D ball = getBall(0, model);
@@ -316,6 +316,38 @@ abstract class Ball3DTest {
         ball.move(deltaTime);
         assertEquals(ball.getSpeed(), GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
     }
+
+    /**
+     * Tests whether when the speed is on the boundary the speed is set to 0.
+     */
+    @Test
+    public void testBoundaryOn() {
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
+        Ball3D ball = getBall(0, model);
+        final float deltaTime = 1;
+        // test if speed on boundary is set to zero
+        ball.setSpeed(GameConstants.MIN_SPEED);
+        ball.move(deltaTime);
+        assertEquals(ball.getSpeed(), 0);
+    }
+
+
+    /**
+     * Tests whether when the speed is above the boundary the speed is not set to 0.
+     */
+    @Test
+    public void testBoundaryInPoint() {
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
+        Ball3D ball = getBall(0, model);
+        final float deltaTime = 1;
+        // test if speed above boundary is not set to zero but decremented by the drag coefficient times delta time.
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
+        ball.move(deltaTime);
+        assertEquals(ball.getSpeed(), GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
+    }
+
     /**
      * Test case to test if the inMotion() method returns
      * the right value when the Ball is moving.
