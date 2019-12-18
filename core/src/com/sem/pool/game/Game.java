@@ -73,7 +73,7 @@ public class Game implements GameStateObserver {
      * moving the balls, responding to input, and ending
      * the current turn.
      */
-    public void advanceGameLoop() {
+    public void advanceGameLoop(float deltaTime) {
         if (started) {
             // Determine if game is currently in motion
             boolean newInMotion = determineIsInMotion();
@@ -89,7 +89,7 @@ public class Game implements GameStateObserver {
             if (!inMotion) {
                 respondToInput();
             } else {
-                moveBalls();
+                moveBalls(deltaTime);
             }
         } // Do nothing if game is not started
     }
@@ -101,21 +101,18 @@ public class Game implements GameStateObserver {
     // Seems like there is a false positive with regards to UR anomalies that
     // is caused by the loop.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    protected void moveBalls() {
+    protected void moveBalls(float deltaTime) {
         // Move all the balls in the scene, regardless of whether
         // they are in motion or not. Here, we assume that the ball
         // is simply not moved if it is not in motion (via internal logic of ball)
         for (Ball3D ball : scene.getPoolBalls()) {
-            ball.move();
+            ball.move(deltaTime);
         }
 
         // Check collisions for current game loop iteration
         scene.triggerCollisions();
 
         // TODO: Handle calling pot balls methods
-
-        // TODO: Need to stop balls after some point so that inMotion becomes false
-        //       Otherwise we will end up in an infinite movement loop.
     }
 
     /**
