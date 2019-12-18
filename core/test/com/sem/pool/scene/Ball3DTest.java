@@ -294,14 +294,15 @@ abstract class Ball3DTest {
         ball.move(1);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
         ball.setSpeed(-1);
-        ball.move(1);
+        final float deltaTime = 1;
+        ball.move(deltaTime);
         assertEquals(ball.getSpeed(), 0);
         ball.setSpeed(GameConstants.MIN_SPEED);
-        ball.move(10);
+        ball.move(deltaTime);
         assertEquals(ball.getSpeed(), 0);
         ball.setSpeed(GameConstants.MIN_SPEED + 1);
-        ball.move(10);
-        assertEquals(ball.getSpeed(), GameConstants.MIN_SPEED + 1);
+        ball.move(deltaTime);
+        assertEquals(ball.getSpeed(), GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
     }
 
     /**
