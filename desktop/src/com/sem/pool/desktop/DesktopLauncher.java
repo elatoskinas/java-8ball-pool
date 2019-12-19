@@ -8,6 +8,13 @@ import com.sem.pool.MainGame;
  * Launcher to launch the Game application on a Desktop platform.
  */
 public class DesktopLauncher {
+
+    public static final String GAME_NAME =  "8 Ball Pool";
+    public static int screenWidth = 1024;
+    public static int screenHeight = 768;
+
+    private static final int ANTI_ALIASING_SAMPLES = 3;
+
     /**
      * Starts the Game application on the DesktopLauncher.
      * @param arg  Optional arguments (unused in the Game application)
@@ -16,11 +23,10 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         new LwjglApplication(new MainGame(), config);
 
-        config.title = "8 Ball Pool";
-        config.width = 1024;
-        config.height = 768;
+        config.title = GAME_NAME;
+        config.width = screenWidth;
+        config.height = screenHeight;
 
-        // Anti-aliasing samples
-        config.samples = 3;
+        config.samples = ANTI_ALIASING_SAMPLES;
     }
 }

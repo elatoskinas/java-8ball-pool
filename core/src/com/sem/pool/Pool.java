@@ -52,7 +52,6 @@ public class Pool implements Screen {
 
         // Initialize viewport to the relevant width & height
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
         // Initialize the Bullet wrapper used for collisions
         Bullet.init();
     }
@@ -175,6 +174,7 @@ public class Pool implements Screen {
 
     @Override
     public void resize(int width, int height) {
+
     }
 
     @Override
