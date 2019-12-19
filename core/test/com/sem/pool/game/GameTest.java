@@ -160,9 +160,9 @@ public class GameTest {
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
         
-        assertTrue(game.isStarted());
-        assertFalse(game.isInMotion());
-        assertTrue(game.isIdle());
+        assertTrue(gameState.isStarted());
+        assertFalse(gameState.isInMotion());
+        assertTrue(gameState.isIdle());
 
     }
 
@@ -174,7 +174,7 @@ public class GameTest {
      */
     @Test
     void testLoopNotStarted() {
-        final float deltaTime = 4;
+        final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
 
         Mockito.verifyNoInteractions(scene);
@@ -225,7 +225,8 @@ public class GameTest {
         Mockito.when(gameState.isStarted()).thenReturn(true);
         Mockito.when(gameState.isInMotion()).thenReturn(true);
 
-        game.advanceGameLoop();
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
         Mockito.verify(gameState).advanceTurn();
     }
 
@@ -245,7 +246,8 @@ public class GameTest {
         Mockito.when(gameState.isStarted()).thenReturn(true);
         Mockito.when(gameState.isInMotion()).thenReturn(true);
 
-        game.advanceGameLoop();
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
         Mockito.verify(gameState, never()).advanceTurn();
     }
 
@@ -260,7 +262,9 @@ public class GameTest {
 
         gameState.startGame();
         gameState.setInMotion();
-        game.advanceGameLoop();
+
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
 
         Mockito.verify(scene).triggerCollisions();
     }

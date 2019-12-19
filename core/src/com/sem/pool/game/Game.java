@@ -57,15 +57,16 @@ public class Game implements GameStateObserver {
      * logic for the current game loop iteration, such as
      * moving the balls, responding to input, and ending
      * the current turn.
+     * @param deltaTime deltaTime, time between current and last frame.
      */
-    public void advanceGameLoop() {
+    public void advanceGameLoop(float deltaTime) {
         if (state.isStarted()) {
 
             // Check if any ball is in motion
             determineIsInMotion();
 
             if (state.isInMotion()) {
-                moveBalls();
+                moveBalls(deltaTime);
             } else if (state.isIdle()) {
                 respondToInput();
             }
