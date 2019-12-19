@@ -51,7 +51,7 @@ allprojects {
     checkstyle {
         toolVersion "8.25"
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-        maxErrors = 2
+        maxErrors = 0
         maxWarnings = 4
     }
 
