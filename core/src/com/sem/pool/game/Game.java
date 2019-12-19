@@ -16,12 +16,6 @@ public class Game implements GameStateObserver {
     private transient Input input;
     private transient GameState state;
 
-    // Boolean to keep track whether balls are in motion;
-    // If that is the case, we will ignore user input.
-    private transient boolean inMotion;
-
-    private transient boolean started;
-
     /**
      * Constructs a new Game object with the given scene, input, and state.
      * @param scene The scene of the game.
@@ -32,7 +26,6 @@ public class Game implements GameStateObserver {
         this.scene = scene;
         this.input = input;
         this.state = state;
-        this.started = false;
 
         // Add game as an observer to the GameState
         state.addObserver(this);
@@ -50,13 +43,6 @@ public class Game implements GameStateObserver {
         return state;
     }
 
-    public boolean isStarted() {
-        return started;
-    }
-
-    public boolean isInMotion() {
-        return inMotion;
-    }
 
     /**
      * Starts the game and takes care of starting the
@@ -64,7 +50,6 @@ public class Game implements GameStateObserver {
      */
     public void startGame() {
         state.startGame();
-        this.started = true;
     }
 
     /**
@@ -72,25 +57,20 @@ public class Game implements GameStateObserver {
      * logic for the current game loop iteration, such as
      * moving the balls, responding to input, and ending
      * the current turn.
+     * @param deltaTime deltaTime, time between current and last frame.
      */
     public void advanceGameLoop(float deltaTime) {
-        if (started) {
-            // Determine if game is currently in motion
-            boolean newInMotion = determineIsInMotion();
+        if (state.isStarted()) {
 
-            // TODO: inMotion -> !newInMotion: advance turn
+            // Check if any ball is in motion
+            determineIsInMotion();
 
-            // Update current game motion flag
-            inMotion = newInMotion;
-
-            // If no balls are in motion, that means
-            // we are at the phase where we can respond to input.
-            // Otherwise, we need to move the balls.
-            if (!inMotion) {
-                respondToInput();
-            } else {
+            if (state.isInMotion()) {
                 moveBalls(deltaTime);
+            } else if (state.isIdle()) {
+                respondToInput();
             }
+
         } // Do nothing if game is not started
     }
 
@@ -120,12 +100,11 @@ public class Game implements GameStateObserver {
      */
     protected void respondToInput() {
         // input relevant for cue and shot
-        Vector3 mousePosition = new Vector3(input.getX(), input.getY(), 0);
-        scene.getCamera().unproject(mousePosition);
-
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
             Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
             scene.getCue().shoot(mousePosition, cueBall);
+            state.setInMotion();
         }
     }
 
@@ -149,6 +128,12 @@ public class Game implements GameStateObserver {
         }
 
         // No ball in motion; Game should not be in motion either.
+        // If no balls are in motion, that means
+        // we are at the phase where we can respond to input.
+        // Otherwise, we need to move the balls.
+        if (state.isInMotion()) {
+            state.advanceTurn();
+        }
         return false;
     }
 

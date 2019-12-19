@@ -9,7 +9,8 @@ import com.sem.pool.game.GameConstants;
 public class RegularBall3D extends Ball3D {
     public enum Type {
         STRIPED,
-        FULL
+        FULL,
+        UNASSIGNED
     }
 
     private final transient Type type;

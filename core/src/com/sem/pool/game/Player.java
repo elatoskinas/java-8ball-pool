@@ -3,19 +3,20 @@ package com.sem.pool.game;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.RegularBall3D;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
-    private int id;
-    private RegularBall3D.Type ballType;
-    Set<RegularBall3D> pottedBalls;
+    private transient int id;
+    private transient RegularBall3D.Type ballType;
+    public transient Set<RegularBall3D> pottedBalls;
 
     /**
      * Creates a new Player with the specified id.
      * @param id  ID to assign to the player
      */
     public Player(int id) {
-
+        this.ballType = RegularBall3D.Type.UNASSIGNED;
     }
 
     /**

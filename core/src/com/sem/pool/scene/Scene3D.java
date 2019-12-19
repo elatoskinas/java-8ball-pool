@@ -1,9 +1,11 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,4 +135,16 @@ public class Scene3D {
             }
         }
     }
+
+    /**
+     * Get the unprojected mouseposition.
+     * @return Vector3 mouseposition
+     */
+    public Vector3 getUnprojectedMousePosition() {
+        Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePosition);
+        return mousePosition;
+    }
+
+
 }
