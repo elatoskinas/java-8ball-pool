@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
+import java.util.List;
+
 /**
  * Class that handles everything related to the pool game.
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
@@ -90,9 +92,16 @@ public class Game implements GameStateObserver {
         }
 
         // Check collisions for current game loop iteration
-        scene.triggerCollisions();
+        List<Ball3D> potted = scene.triggerCollisions();
 
-        // TODO: Handle calling pot balls methods
+        // Pot the ball for every ball that was determined to be potted
+        // by the scene
+        for (Ball3D ball : potted) {
+            potBall(ball);
+        }
+
+        // TODO: Need to stop balls after some point so that inMotion becomes false
+        //       Otherwise we will end up in an infinite movement loop.
     }
 
     /**
@@ -144,11 +153,12 @@ public class Game implements GameStateObserver {
      * active Player.
      * @param ball  Ball to be potted
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void potBall(Ball3D ball) {
-        // TODO: Implement ball potting logic (3D)
-        // TODO: Implement ball potting logic (Game State)
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // Pot the ball (handles potting the ball visually)
+        ball.pot();
+
+        // Propagate to the Game State to handle the logical part of potting.
+        state.onBallPotted(ball);
     }
 
     /**

@@ -92,7 +92,6 @@ public class Table3D {
     public boolean checkIfPot(Ball3D ball) {
         for (HitBox pot: Table3D.potHitBoxes) {
             if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), pot)) {
-                ball.pot();
                 return true;
             }
         }

@@ -252,6 +252,58 @@ class GameStateTest {
     }
 
     /**
+     * Test case to verify that potting a ball via the
+     * onBallPotted call in GameState removes the Ball
+     * from the remaining pool balls set.
+     */
+    @Test
+    void testBallPottedRemovedFromRemaining() {
+        // Get first ball (constructed in setUp)
+        // NOTE: Id 0 won't work since it's a cue ball
+        Ball3D ball = balls.get(1);
+
+        // Verify that ball is contained in remaining set (handled
+        // in constructor)
+        assertTrue(gameState.getRemainingBalls().contains(ball));
+
+        // Pot the ball
+        gameState.onBallPotted(ball);
+
+        // Assert ball is no longer contained in remaining ball set
+        assertFalse(gameState.getRemainingBalls().contains(ball));
+    }
+
+    /**
+     * Test case to verify that upon a ball being potted
+     * in the Game State, the active Player (which is assumed
+     * to be player with id 0 by default) pots the ball.
+     */
+    @Test
+    void testBallPottedPlayerInteraction() {
+        // Create List of 2 mocked players
+        Player player1 = Mockito.mock(Player.class);
+        Player player2 = Mockito.mock(Player.class);
+        players.clear();
+        players.add(player1);
+        players.add(player2);
+
+        // Re-create game state with mocked players
+        gameState = new GameState(players, balls);
+
+        // Pot first non-cue ball
+        Ball3D ball = balls.get(1);
+        gameState.onBallPotted(ball);
+
+        // Verify the active player (which is the first Player by default
+        // after constructing GameState object) pots the ball
+        Mockito.verify(player1).potBall(ball);
+
+        // Ensure that nothing is updated for player 2 (since they did
+        // not pot the ball and the potted ball was not an 8-ball)
+        Mockito.verifyNoInteractions(player2);
+    }
+        
+    /**
      * Test case to verify that the game is correctly set to running.
      */
     @Test

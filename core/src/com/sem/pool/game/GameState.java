@@ -166,10 +166,16 @@ public class GameState {
      * result in the victory or loss of the game.
      * @param ball  Ball to pot
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void onBallPotted(Ball3D ball) {
-        // TODO: Ball should be potted and tracked for the Player
+        // Remove the ball from the remaining balls set
+        remainingBalls.remove(ball);
+
+        // Pot ball for active player
+        players.get(playerTurn).potBall(ball);
+
+        // TODO: Do action based on type of ball potted; Maybe this should
+        //       be handled in the Player class and an event propagated back somehow?
         // TODO: Should handle dispatching events back to Game
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // TODO: Special eight ball & cue ball handling
     }
 }
