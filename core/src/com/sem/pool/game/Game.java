@@ -99,9 +99,6 @@ public class Game implements GameStateObserver {
         for (Ball3D ball : potted) {
             potBall(ball);
         }
-
-        // TODO: Need to stop balls after some point so that inMotion becomes false
-        //       Otherwise we will end up in an infinite movement loop.
     }
 
     /**
