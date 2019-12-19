@@ -96,13 +96,13 @@ public class GameTest {
         poolBalls.add(ball2);
 
         Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
-
         // Start the game and attempt to move the balls
         game.startGame();
-        game.moveBalls();
+        final float deltaTime = 3.14159f;
+        game.moveBalls(deltaTime);
 
-        Mockito.verify(ball).move();
-        Mockito.verify(ball2).move();
+        Mockito.verify(ball).move(deltaTime);
+        Mockito.verify(ball2).move(deltaTime);
     }
 
     /**
@@ -146,7 +146,7 @@ public class GameTest {
 
     /**
      * Test case to verify the game advances when there are no balls
-     * in motion and the game is currently in the run state.
+     * in motion and the game is currently in the in motion state.
      * The players should switch turns.
      */
     @Test
@@ -156,8 +156,14 @@ public class GameTest {
         game.startGame();
         assertFalse(game.determineIsInMotion());
         gameState.setInMotion();
-        game.advanceGameLoop();
-        assertTrue(gameState.isIdle());
+        
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
+        
+        assertTrue(game.isStarted());
+        assertFalse(game.isInMotion());
+        assertTrue(game.isIdle());
+
     }
 
     /**
@@ -168,7 +174,8 @@ public class GameTest {
      */
     @Test
     void testLoopNotStarted() {
-        game.advanceGameLoop();
+        final float deltaTime = 4;
+        game.advanceGameLoop(deltaTime);
 
         Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
@@ -198,9 +205,7 @@ public class GameTest {
         Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0,0,0));
         Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
         setupScenePoolBallsHelper(false);
-
         game.respondToInput();
-
         Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
     }
 

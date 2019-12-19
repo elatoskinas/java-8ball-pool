@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.sem.pool.game.GameConstants;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -281,15 +282,79 @@ abstract class Ball3DTest {
         // the constructed box
         Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
                 .thenReturn(box);
-
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
         model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final Vector3 translation = new Vector3(1f, 0, 0);
         ball.setDirection(new Vector3(1,0,0));
         ball.setSpeed(1f);
-        ball.move();
+        // set our translation scaled to what we expect the ball to have
+        translation.scl((ball.getSpeed() - GameConstants.DRAG_COEFFICIENT));
+        ball.move(1);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+    }
+
+    /**
+     * Tests whether the boundary for the move method that changes the speed works properly.
+     */
+    @Test
+    public void testMoveBoundaryOutPoint() {
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        model.transform = mockMatrix;
+        Ball3D ball = getBall(0, model);
+        ball.setSpeed(-1);
+        final float deltaTime = 1;
+        ball.move(deltaTime);
+        // tests if negative speed (below boundary) is set to 0
+        assertEquals(ball.getSpeed(), 0);
+        // test if speed on boundary is set to zero
+        ball.setSpeed(GameConstants.MIN_SPEED);
+        ball.move(deltaTime);
+        assertEquals(ball.getSpeed(), 0);
+        // test if speed above boundary is not set to zero
+        // but decremented by the drag coefficient times delta time.
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
+        ball.move(deltaTime);
+        assertEquals(ball.getSpeed(),
+                GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
+    }
+
+    /**
+     * Tests whether when the speed is on the boundary the speed is set to 0.
+     */
+    @Test
+    public void testBoundaryOn() {
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        model.transform = mockMatrix;
+        Ball3D ball = getBall(0, model);
+        final float deltaTime = 1;
+        // test if speed on boundary is set to zero
+        ball.setSpeed(GameConstants.MIN_SPEED);
+        ball.move(deltaTime);
+        assertEquals(ball.getSpeed(), 0);
+    }
+
+    /**
+     * Tests whether when the speed is above the boundary the speed is not set to 0.
+     */
+    @Test
+    public void testBoundaryInPoint() {
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        model.transform = mockMatrix;
+        Ball3D ball = getBall(0, model);
+        final float deltaTime = 1;
+        // test if speed above boundary is not set to zero
+        // but decremented by the drag coefficient times delta time.
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
+        ball.move(deltaTime);
+        assertEquals(ball.getSpeed(),
+                GameConstants.MIN_SPEED + 1 - GameConstants.DRAG_COEFFICIENT * deltaTime);
     }
 
     /**
