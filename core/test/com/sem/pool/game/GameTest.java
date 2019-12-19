@@ -212,6 +212,8 @@ public class GameTest {
      */
     @Test
     void testMoveBallsPotted() {
+        final float deltaTime = 0;
+
         // Create 2 mock balls and add them to the expected Ball list
         // resulting from triggering collisions
         List<Ball3D> ballResult = new ArrayList<>();
@@ -225,7 +227,7 @@ public class GameTest {
 
         // Start the game & move the balls
         game.startGame();
-        game.moveBalls();
+        game.moveBalls(deltaTime);
 
         // Ensure that the balls are potted (since we set them
         // to be after triggering collisions)
@@ -240,13 +242,15 @@ public class GameTest {
      */
     @Test
     void testMoveBallsNotPotted() {
+        final float deltaTime = 0;
+
         // Set the scene to not pot any balls
         List<Ball3D> ballResult = new ArrayList<>();
         Mockito.when(scene.triggerCollisions()).thenReturn(ballResult);
 
         // Start game & move balls
         game.startGame();
-        game.moveBalls();
+        game.moveBalls(deltaTime);
 
         // Verify ball potting is never called on the game state,
         // since no balls were potted
