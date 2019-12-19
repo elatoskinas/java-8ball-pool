@@ -15,22 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test class for Game & Game State integration testing.
  */
-class GameAndStateIntegrationTest {
-    transient Scene3D scene;
-    transient Input input;
-    transient GameState gameState;
-    transient Game game;
-
+class GameAndStateIntegrationTest extends GameBaseTest {
+    @Override
     @BeforeEach
     void setUp() {
-        scene = Mockito.mock(Scene3D.class);
-        input = Mockito.mock(Input.class);
-
-        List<Player> players = new ArrayList<>();
-        players.add(Mockito.mock(Player.class));
-        players.add(Mockito.mock(Player.class));
-
-        List<Ball3D> poolBalls = new ArrayList<>();
+        super.setUp();
         gameState = new GameState(players, poolBalls);
         game = new Game(scene, input, gameState);
     }
@@ -88,19 +77,5 @@ class GameAndStateIntegrationTest {
         game.advanceGameLoop(deltaTime);
 
         Mockito.verify(scene).triggerCollisions();
-    }
-
-    // Seems like an FP indicating a DU caused by the loop
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    void setupScenePoolBallsHelper(boolean... motion) {
-        List<Ball3D> balls = new ArrayList<>();
-
-        for (boolean b : motion) {
-            Ball3D ball = Mockito.mock(Ball3D.class);
-            Mockito.when(ball.isInMotion()).thenReturn(b);
-            balls.add(ball);
-        }
-
-        Mockito.when(scene.getPoolBalls()).thenReturn(balls);
     }
 }

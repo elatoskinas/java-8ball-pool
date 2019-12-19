@@ -17,22 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 
-public class GameTest {
-    transient Scene3D scene;
-    transient Input input;
-    transient GameState gameState;
-    transient Game game;
-
+public class GameTest extends GameBaseTest {
     @BeforeEach
     void setUp() {
-        scene = Mockito.mock(Scene3D.class);
-        input = Mockito.mock(Input.class);
-
-        List<Player> players = new ArrayList<>();
-        players.add(Mockito.mock(Player.class));
-        players.add(Mockito.mock(Player.class));
-
-        List<Ball3D> poolBalls = new ArrayList<>();
+        super.setUp();
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
     }
@@ -141,20 +129,6 @@ public class GameTest {
 
         Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
-    }
-
-    // Seems like an FP indicating a DU caused by the loop
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    void setupScenePoolBallsHelper(boolean... motion) {
-        List<Ball3D> balls = new ArrayList<>();
-
-        for (boolean b : motion) {
-            Ball3D ball = Mockito.mock(Ball3D.class);
-            Mockito.when(ball.isInMotion()).thenReturn(b);
-            balls.add(ball);
-        }
-
-        Mockito.when(scene.getPoolBalls()).thenReturn(balls);
     }
 
     /**
