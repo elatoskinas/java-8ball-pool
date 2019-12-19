@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 public class CameraFactory {
 
     // Direction the camera is pointed at
-    private static final Vector3 LOOK_AT = new Vector3(0, 0,0);
+    private static final Vector3 LOOK_AT = new Vector3(0, 0, 0);
 
     private static final float ZOOM = 120f;
 
