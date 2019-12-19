@@ -25,7 +25,7 @@ public class GameState {
     enum State {
         Stopped,
         Idle,
-        Running,
+        InMotion,
         Ended
     }
 
@@ -83,12 +83,12 @@ public class GameState {
         observers.remove(observer);
     }
 
-    public void setToRunning() {
-        this.state = State.Running;
+    public void setInMotion() {
+        this.state = State.InMotion;
     }
 
-    public boolean isRunning() {
-        return state == State.Running;
+    public boolean isInMotion() {
+        return state == State.InMotion;
     }
 
     public boolean isIdle() {

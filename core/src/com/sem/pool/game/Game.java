@@ -62,26 +62,14 @@ public class Game implements GameStateObserver {
         if (state.isStarted()) {
 
             // Check if any ball is in motion
-            boolean inMotion = determineIsInMotion();
+            determineIsInMotion();
 
-            // If no balls are in motion, that means
-            // we are at the phase where we can respond to input.
-            // Otherwise, we need to move the balls.
-            if (!inMotion) {
-
-                // Game should stop running when there are no
-                // balls in motion and the current state is running
-                if (state.isRunning()) {
-                    state.advanceTurn();
-                }
-
-                if (state.isIdle()) {
-                    respondToInput();
-                }
-
-            } else {
+            if (state.isInMotion()) {
                 moveBalls();
+            } else if (state.isIdle()) {
+                respondToInput();
             }
+
         } // Do nothing if game is not started
     }
 
@@ -118,7 +106,7 @@ public class Game implements GameStateObserver {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
             Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
             scene.getCue().shoot(mousePosition, cueBall);
-            state.setToRunning();
+            state.setInMotion();
         }
     }
 
@@ -142,6 +130,13 @@ public class Game implements GameStateObserver {
         }
 
         // No ball in motion; Game should not be in motion either.
+        // If no balls are in motion, that means
+        // we are at the phase where we can respond to input.
+        // Otherwise, we need to move the balls.
+        if (state.isInMotion()) {
+            state.setToIdle();
+            state.advanceTurn();
+        }
         return false;
     }
 

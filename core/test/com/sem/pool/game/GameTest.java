@@ -155,7 +155,7 @@ public class GameTest {
         setupScenePoolBallsHelper(false, false, false);
         game.startGame();
         assertFalse(game.determineIsInMotion());
-        gameState.setToRunning();
+        gameState.setInMotion();
         game.advanceGameLoop();
         assertTrue(gameState.isIdle());
     }
@@ -218,7 +218,7 @@ public class GameTest {
         setupScenePoolBallsHelper(false, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
-        Mockito.when(gameState.isRunning()).thenReturn(true);
+        Mockito.when(gameState.isInMotion()).thenReturn(true);
 
         game.advanceGameLoop();
         Mockito.verify(gameState).advanceTurn();
@@ -238,7 +238,7 @@ public class GameTest {
         setupScenePoolBallsHelper(true, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
-        Mockito.when(gameState.isRunning()).thenReturn(true);
+        Mockito.when(gameState.isInMotion()).thenReturn(true);
 
         game.advanceGameLoop();
         Mockito.verify(gameState, never()).advanceTurn();
@@ -254,7 +254,7 @@ public class GameTest {
         setupScenePoolBallsHelper(true, false);
 
         gameState.startGame();
-        gameState.setToRunning();
+        gameState.setInMotion();
         game.advanceGameLoop();
 
         Mockito.verify(scene).triggerCollisions();

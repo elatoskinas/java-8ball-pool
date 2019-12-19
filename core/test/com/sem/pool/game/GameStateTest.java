@@ -256,8 +256,8 @@ class GameStateTest {
      */
     @Test
     void testGameStateIsRunning() {
-        assertFalse(gameState.isRunning());
-        gameState.setToRunning();
-        assertTrue(gameState.isRunning());
+        assertFalse(gameState.isInMotion());
+        gameState.setInMotion();
+        assertTrue(gameState.isInMotion());
     }
 }
