@@ -175,7 +175,6 @@ public class Pool implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
