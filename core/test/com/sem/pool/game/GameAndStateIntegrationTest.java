@@ -31,7 +31,7 @@ class GameAndStateIntegrationTest {
         players.add(Mockito.mock(Player.class));
 
         List<Ball3D> poolBalls = new ArrayList<>();
-        gameState = Mockito.mock(GameState.class);
+        gameState = new GameState(players, poolBalls);
         game = new Game(scene, input, gameState);
     }
 
