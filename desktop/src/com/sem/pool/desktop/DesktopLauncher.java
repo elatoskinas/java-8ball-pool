@@ -16,6 +16,10 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         new LwjglApplication(new MainGame(), config);
 
+        config.title = "8 Ball Pool";
+        config.width = 1024;
+        config.height = 768;
+
         // Anti-aliasing samples
         config.samples = 3;
     }
