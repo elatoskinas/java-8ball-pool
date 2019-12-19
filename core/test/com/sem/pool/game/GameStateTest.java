@@ -2,6 +2,7 @@ package com.sem.pool.game;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -90,6 +91,37 @@ class GameStateTest {
         assertEquals(expectedBalls, gameState2.getRemainingBalls().size());
         assertNotNull(gameState2.getObservers());
         assertTrue(gameState2.getObservers().isEmpty());
+    }
+
+
+    /**
+     * Tests if the number of the random
+     * starting player is valid.
+     */
+    @Test
+    void testInitStartingPlayer() {
+        for (int i = 0; i < 10; i++) {
+            gameState.initStartingPlayer();
+            int playerTurn = gameState.getPlayerTurn();
+            assertTrue(playerTurn == 1 || playerTurn == 0);
+        }
+    }
+
+    /**
+     * Tests case to verify that the player turn
+     * is set to the next player.
+     */
+    @Test
+    void testAdvancePlayerTurn() {
+        int playerTurn = gameState.getPlayerTurn();
+        gameState.advanceTurn();
+        int newPlayerTurn = gameState.getPlayerTurn();
+
+        assertNotEquals(playerTurn, newPlayerTurn);
+        assertEquals(Math.abs(playerTurn - newPlayerTurn), 1);
+
+        gameState.advanceTurn();
+        assertEquals(playerTurn, gameState.getPlayerTurn());
     }
 
     /**
@@ -269,5 +301,15 @@ class GameStateTest {
         // Ensure that nothing is updated for player 2 (since they did
         // not pot the ball and the potted ball was not an 8-ball)
         Mockito.verifyNoInteractions(player2);
+    }
+        
+    /**
+     * Test case to verify that the game is correctly set to running.
+     */
+    @Test
+    void testGameStateIsRunning() {
+        assertFalse(gameState.isInMotion());
+        gameState.setInMotion();
+        assertTrue(gameState.isInMotion());
     }
 }

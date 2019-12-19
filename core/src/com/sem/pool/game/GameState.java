@@ -16,11 +16,20 @@ import java.util.Set;
 public class GameState {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
+
     private transient int playerTurn;
     private transient int turnCount;
 
     private transient boolean started;
 
+    enum State {
+        Stopped,
+        Idle,
+        InMotion,
+        Ended
+    }
+
+    private transient State state;
     private transient Set<GameStateObserver> observers;
 
     /**
@@ -58,6 +67,14 @@ public class GameState {
         return observers;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public int getPlayerTurn() {
+        return playerTurn;
+    }
+
     public void addObserver(GameStateObserver observer) {
         observers.add(observer);
     }
@@ -66,23 +83,59 @@ public class GameState {
         observers.remove(observer);
     }
 
+    public void setInMotion() {
+        this.state = State.InMotion;
+    }
+
+    public boolean isInMotion() {
+        return state == State.InMotion;
+    }
+
+    public boolean isIdle() {
+        return state == State.Idle;
+    }
+
+    public void setToIdle() {
+        state = State.Idle;
+    }
+
+    public void setToStopped() {
+        this.state = State.Stopped;
+    }
+
+    public boolean isStopped() {
+        return state == State.Stopped;
+    }
+
     /**
      * Starts the pool game by picking a random Player
      * for the break shot.
      */
     public void startGame() {
-        // TODO: Implement random player picking
+        initStartingPlayer();
+
         this.started = true;
+        this.state = State.Idle;
+    }
+
+    /**
+     * Initializes the starting player at random.
+     */
+    public void initStartingPlayer() {
+        playerTurn = (int) Math.round(Math.random());
     }
 
     /**
      * Advances the turn of the game, ending the current Player's
      * turn and starting the subsequent Player's turn.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void advanceTurn() {
-        // TODO: Turn should be advanced
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // Increment player turn and wrap turn ID around
+        // players size to keep it within bounds
+        playerTurn = (playerTurn + 1) % players.size();
+
+        state = State.Idle;
+        turnCount += 1;
     }
 
     /**
@@ -103,6 +156,7 @@ public class GameState {
         }
 
         // Stop the game
+        state = State.Ended;
         started = false;
     }
 

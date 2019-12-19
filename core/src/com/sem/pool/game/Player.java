@@ -18,7 +18,7 @@ public class Player {
     public Player(int id) {
         this.id = id;
         pottedBalls = new HashSet<>();
-        // TODO: Initialize ball type
+        this.ballType = RegularBall3D.Type.UNASSIGNED;
     }
 
     public int getId() {
