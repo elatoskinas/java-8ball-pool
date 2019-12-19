@@ -2,12 +2,13 @@
 # Sprint Retrospective, Iteration #2
 | User Story # | Task # | Task Assigned To | Estimated Effort | Actual Effort | Done? | Notes |
 | ------------ | ------ | ---------------- | ---------------- | ------------- | ----- | ----- |
-| Turn System  | Game State & Game Classes | Evaldas   | 4 hours   | 5 hours | Yes | Feature completed & verified successfully |
-| Turn System | Local Multiplayer Gamestate | Pepijn, Evaldas   | 4 hours   | 4 hours | Yes | Feature completed & verified successfully |
-| Turn System | Break shot & Unassigned Ball Type| Pepijn   | 2 hours   | 2 hours | Yes | Feature completed & verified successfully and integrated into the game  |
-| Ball Interactions  | Ball Potting | Luuk, Thomas, Evaldas    | 4 hours   | 8 hours | Yes | Feature completed & verified successfully and integrated into the game |
-| Player Cue Interaction | Hit Cueball | Pepijn   | 3 hours   | 4 hours | Yes | Feature completed & verified successfully and integrated into the game |
-| Player Cue Interaction | Control Cue Force | Pepijn   | 3 hours   | 4 hours | Yes | Feature completed but not verified  |
+| Turn System | Game State & Game Classes | Evaldas   | 4 hours | 5 hours | Yes | Feature completed & verified successfully |
+| Turn System | Local Multiplayer Gamestate | Pepijn, Evaldas | 4 hours   | 4 hours | Yes | Feature completed & verified successfully |
+| Turn System | Break shot | Pepijn | 2 hours | 2 hours | Yes | Feature completed & verified successfully and integrated into the game  |
+| Ball Types | Player Ball Type Assignment| Pepijn | 2,5 hours | 0 hours | No | Not done yet because potting wasn't implemented |
+| Ball Interactions  | Ball Potting | Luuk, Thomas, Evaldas | 4 hours | 8 hours | Yes | Feature completed & verified successfully and integrated into the game |
+| Player Cue Interaction | Hit Cueball | Pepijn | 3 hours | 4 hours | Yes | Feature completed & verified successfully and integrated into the game |
+| Player Cue Interaction | Control Cue Force | Pepijn | 3 hours | 4 hours | Yes | Feature completed but not verified  |
 
 ## Main Problems Encountered
 ### Problem 1: Rescheduling of issues
