@@ -33,7 +33,7 @@ public class GameTest {
         players.add(Mockito.mock(Player.class));
 
         List<Ball3D> poolBalls = new ArrayList<>();
-        gameState = new GameState(players, poolBalls);
+        gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
     }
 
@@ -52,22 +52,6 @@ public class GameTest {
 
         // Verify that game is added as an observer
         Mockito.verify(gameState).addObserver(game2);
-    }
-
-    /**
-     * Test that test the transition from a new (stopped) game to a started game.
-     * Verifies the interaction with game state and ensures that the game
-     * is now marked as started.
-     */
-    @Test
-    void testStartGame() {
-        // Ensure game is not started
-        assertFalse(gameState.isStarted());
-
-        // Start the game
-        game.startGame();
-
-        assertTrue(gameState.isStarted());
     }
 
     /**
@@ -142,28 +126,6 @@ public class GameTest {
         game.startGame();
 
         assertFalse(game.determineIsInMotion());
-    }
-
-    /**
-     * Test case to verify the game advances when there are no balls
-     * in motion and the game is currently in the in motion state.
-     * The players should switch turns.
-     */
-    @Test
-    void testAdvanceGameLoopCallRunningState() {
-
-        setupScenePoolBallsHelper(false, false, false);
-        game.startGame();
-        assertFalse(game.determineIsInMotion());
-        gameState.setInMotion();
-        
-        final float deltaTime = 42f;
-        game.advanceGameLoop(deltaTime);
-        
-        assertTrue(gameState.isStarted());
-        assertFalse(gameState.isInMotion());
-        assertTrue(gameState.isIdle());
-
     }
 
     /**
@@ -249,24 +211,6 @@ public class GameTest {
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
         Mockito.verify(gameState, never()).advanceTurn();
-    }
-
-    /**
-     * Test case to verify that a running game with moving balls
-     * will move the balls and trigger collisions when the advance game loop is called.
-     */
-    @Test
-    void testAdvanceGameLoopMoveBalls() {
-
-        setupScenePoolBallsHelper(true, false);
-
-        gameState.startGame();
-        gameState.setInMotion();
-
-        final float deltaTime = 42f;
-        game.advanceGameLoop(deltaTime);
-
-        Mockito.verify(scene).triggerCollisions();
     }
 
     /**
