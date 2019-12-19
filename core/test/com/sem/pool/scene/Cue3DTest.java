@@ -1,8 +1,12 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -29,6 +33,7 @@ public class Cue3DTest {
     @BeforeEach
     public void setUp() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
+        Mockito.when(model.materials.get(anyInt())).thenReturn(Mockito.mock(Material.class));
         cue = new Cue3D(model);
     }
 
@@ -187,7 +192,6 @@ public class Cue3DTest {
      */
     @Test
     public void testShoot() {
-
 
         final int id = 0;
         final ModelInstance model = Mockito.mock(ModelInstance.class);

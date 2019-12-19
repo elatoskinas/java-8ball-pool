@@ -1,7 +1,6 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
@@ -108,13 +107,9 @@ public class Game implements GameStateObserver {
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
     protected void respondToInput() {
-        // input relevant for cue and shot
-        if (input.isButtonPressed(Input.Buttons.LEFT)) {
-            Vector3 mousePosition = scene.getUnprojectedMousePosition();
-            Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
-            scene.getCue().shoot(mousePosition, cueBall);
-            state.setInMotion();
-        }
+
+        scene.getCue().processInput(input, scene, state);
+
     }
 
     /**
