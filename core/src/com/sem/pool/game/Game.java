@@ -132,7 +132,6 @@ public class Game implements GameStateObserver {
         // we are at the phase where we can respond to input.
         // Otherwise, we need to move the balls.
         if (state.isInMotion()) {
-            state.setToIdle();
             state.advanceTurn();
         }
         return false;

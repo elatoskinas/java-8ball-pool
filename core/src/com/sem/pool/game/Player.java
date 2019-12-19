@@ -16,9 +16,7 @@ public class Player {
      * @param id  ID to assign to the player
      */
     public Player(int id) {
-        this.id = id;
         this.ballType = RegularBall3D.Type.UNASSIGNED;
-        this.pottedBalls = new HashSet<>();
     }
 
     /**
