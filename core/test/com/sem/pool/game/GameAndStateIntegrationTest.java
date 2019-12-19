@@ -1,16 +1,11 @@
 package com.sem.pool.game;
 
-import com.badlogic.gdx.Input;
-import com.sem.pool.scene.Ball3D;
-import com.sem.pool.scene.Scene3D;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for Game & Game State integration testing.
