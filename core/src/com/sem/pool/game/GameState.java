@@ -3,6 +3,7 @@ package com.sem.pool.game;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.RegularBall3D;
+import javafx.print.PageLayout;
 
 import java.util.HashSet;
 import java.util.List;
@@ -102,6 +103,14 @@ public class GameState {
 
     public boolean isStopped() {
         return state == State.Stopped;
+    }
+
+    public Player getActivePlayer(){
+        return players.get(playerTurn);
+    }
+
+    public Player getInactivePlayer(){
+        return players.get((playerTurn + 1) % 2);
     }
 
     /**
@@ -204,10 +213,9 @@ public class GameState {
      * If the players don't have a ball type -> assign ball types to players.
      * @param ball regular ball
      */
-    @SuppressWarnings("PMD.EmptyIfStmt")
     public void potRegularBall(RegularBall3D ball) {
 
-        Player activePlayer = players.get(playerTurn);
+        Player activePlayer = getActivePlayer();
 
         if (activePlayer.getBallType() == RegularBall3D.Type.UNASSIGNED) {
             assignBallTypesToPlayers(ball);
@@ -219,10 +227,9 @@ public class GameState {
 
             // Remove the ball from the remaining balls set
             remainingBalls.remove(ball);
-        } else {
-            // Potted a ball with the ball type of the opponent
-            // TODO: Not a valid move
+
         }
+        // TODO: Logic for an invalid move
     }
 
     /**
@@ -232,8 +239,8 @@ public class GameState {
      */
     public void assignBallTypesToPlayers(RegularBall3D ball) {
 
-        Player activePlayer = players.get(playerTurn);
-        Player otherPlayer = players.get((playerTurn + 1) % 2);
+        Player activePlayer = getActivePlayer();
+        Player otherPlayer = getInactivePlayer();
 
         // TODO: Take into account that the ball type should not
         //       be assigned during the break shot
