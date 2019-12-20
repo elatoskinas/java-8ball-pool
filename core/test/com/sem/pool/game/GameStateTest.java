@@ -306,12 +306,12 @@ class GameStateTest {
     }
 
     /**
-     * Test case to verify that upon a ball being potted
-     * in the Game State, the active player en the other
-     * player get the right ball type assigned.
+     * Test case to verify that upon a full regular ball
+     * being potted in the Game State, the active player and
+     * the other player get the right ball type assigned.
      */
     @Test
-    void ballTypeAssignmentPlayers() {
+    void ballTypeAssignmentPlayersFullBall() {
         // Create List of 2 mocked players
         Player player1 = Mockito.mock(Player.class);
         Player player2 = Mockito.mock(Player.class);
@@ -333,6 +333,36 @@ class GameStateTest {
 
         Mockito.verify(player1).assignBallType(RegularBall3D.Type.FULL);
         Mockito.verify(player2).assignBallType(RegularBall3D.Type.STRIPED);
+    }
+
+    /**
+     * Test case to verify that upon a striped regular ball
+     * being potted in the Game State, the active player and
+     * the other player get the right ball type assigned.
+     */
+    @Test
+    void ballTypeAssignmentPlayersStripedBall() {
+        // Create List of 2 mocked players
+        Player player1 = Mockito.mock(Player.class);
+        Player player2 = Mockito.mock(Player.class);
+        players.clear();
+        players.add(player1);
+        players.add(player2);
+
+        Mockito.when(player1.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
+        Mockito.when(player2.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
+
+        // Re-create game state with mocked players
+        gameState = new GameState(players, balls);
+
+        RegularBall3D ball = (RegularBall3D) balls.get(4);
+        assertEquals(ball.getType(), RegularBall3D.Type.STRIPED);
+
+        // Pot a full regular ball
+        gameState.onBallPotted(ball);
+
+        Mockito.verify(player1).assignBallType(RegularBall3D.Type.STRIPED);
+        Mockito.verify(player2).assignBallType(RegularBall3D.Type.FULL);
     }
 
 
