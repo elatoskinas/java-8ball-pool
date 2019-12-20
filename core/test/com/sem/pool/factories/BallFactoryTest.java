@@ -49,7 +49,7 @@ class BallFactoryTest {
         Mockito.when(assetLoader.loadModel(AssetLoader.ModelType.BALL))
                 .thenReturn(mockModelInstance);
         
-        for (int i = 0; i < GameConstants.BALLCOUNT; i++) {
+        for (int i = 0; i < GameConstants.BALL_COUNT; i++) {
             Ball3D ball = factory.createBall(i);
             if (i == GameConstants.CUEBALL_ID) {
                 assertTrue(ball instanceof CueBall3D);
