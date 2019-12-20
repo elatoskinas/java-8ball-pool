@@ -38,25 +38,4 @@ public class ResultTableTest {
         assertTrue(this.resultTable.save(result));
         assertTrue(this.resultTable.save(result));
     }
-
-//    @Test
-//    public void testInvalidExistingUpdate() throws SQLException {
-//        User user = new User("abc", "pass");
-//        assertTrue(this.userTable.save(user));
-//
-//        user = this.userTable.getUser("abc");
-//        user.setExisting(false);
-//        assertFalse(this.userTable.update(user));
-//    }
-//
-//    @Test
-//    public void testInvalidNameUpdate() throws SQLException {
-//        User user = new User("def", "pass");
-//        assertTrue(this.userTable.save(user));
-//
-//        user = this.userTable.getUser("def");
-//        user.setUsername("ghi");
-//        user.setUserID(42);
-//        assertFalse(this.userTable.update(user));
-//    }
 }
