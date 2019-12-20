@@ -52,7 +52,7 @@ public class Pool implements Screen {
 
         // Initialize viewport to the relevant width &amp; height
 <span class="nc" id="L54">        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());</span>
-
+        
         // Initialize the Bullet wrapper used for collisions
 <span class="nc" id="L57">        Bullet.init();</span>
 <span class="nc" id="L58">    }</span>
@@ -131,22 +131,23 @@ public class Pool implements Screen {
     /**
      * Updates the scene &amp; game for the current render iteration.
      * Handles rendering the scene and advancing the game loop.
+     * @param deltaTime deltaTime, time between the last and current frame.
      */
-    private void update() {
+    private void update(float deltaTime) {
         // Render the scene only if the game is loaded
-<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (loaded) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (loaded) {</span>
             // Advance the game loop of the game &amp; render scene
-<span class="nc" id="L139">            game.advanceGameLoop();</span>
-<span class="nc" id="L140">            scene.render();</span>
+<span class="nc" id="L140">            game.advanceGameLoop(deltaTime);</span>
+<span class="nc" id="L141">            scene.render();</span>
         }
-<span class="nc" id="L142">    }</span>
+<span class="nc" id="L143">    }</span>
 
     public AssetLoader getAssetLoader() {
-<span class="nc" id="L145">        return assetLoader;</span>
+<span class="nc" id="L146">        return assetLoader;</span>
     }
 
     public Scene3D getScene() {
-<span class="nc" id="L149">        return scene;</span>
+<span class="nc" id="L150">        return scene;</span>
     }
 
     /**
@@ -156,40 +157,40 @@ public class Pool implements Screen {
     @Override
     public void render(float delta) {
         // Initialize scene if uninitialized
-<span class="nc" id="L159">        initializeScene();</span>
+<span class="nc" id="L160">        initializeScene();</span>
 
         // Clear depth buffer &amp; color buffer masks
-<span class="nc" id="L162">        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);</span>
+<span class="nc" id="L163">        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);</span>
 
         // Update the scene &amp; game for the current iteration
-<span class="nc" id="L165">        update();</span>
-<span class="nc" id="L166">    }</span>
+<span class="nc" id="L166">        update(delta);</span>
+<span class="nc" id="L167">    }</span>
 
     @Override
     public void dispose() {
-<span class="nc" id="L170">        scene.dispose();</span>
-<span class="nc" id="L171">        assetLoader.dispose();</span>
+<span class="nc" id="L171">        scene.dispose();</span>
+<span class="nc" id="L172">        assetLoader.dispose();</span>
 
-<span class="nc" id="L173">    }</span>
+<span class="nc" id="L174">    }</span>
 
     @Override
     public void resize(int width, int height) {
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L178">    }</span>
 
     @Override
     public void show() {
-<span class="nc" id="L181">    }</span>
+<span class="nc" id="L182">    }</span>
 
     @Override
     public void hide() {
-<span class="nc" id="L185">    }</span>
+<span class="nc" id="L186">    }</span>
 
     @Override
     public void pause() {
-<span class="nc" id="L189">    }</span>
+<span class="nc" id="L190">    }</span>
 
     @Override
     public void resume() {
-<span class="nc" id="L193">    }</span>
+<span class="nc" id="L194">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

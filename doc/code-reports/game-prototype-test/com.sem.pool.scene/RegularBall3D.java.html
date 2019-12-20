@@ -9,7 +9,8 @@ import com.sem.pool.game.GameConstants;
 public class RegularBall3D extends Ball3D {
 <span class="fc" id="L10">    public enum Type {</span>
 <span class="fc" id="L11">        STRIPED,</span>
-<span class="fc" id="L12">        FULL</span>
+<span class="fc" id="L12">        FULL,</span>
+<span class="fc" id="L13">        UNASSIGNED</span>
     }
 
     private final transient Type type;
@@ -22,13 +23,13 @@ public class RegularBall3D extends Ball3D {
      * @param model Model object of the ball
      */
     public RegularBall3D(int id, ModelInstance model) {
-<span class="fc" id="L25">        super(id, model);</span>
-<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (id &lt; GameConstants.EIGHTBALL_ID) {</span>
-<span class="fc" id="L27">            this.type = Type.FULL;</span>
+<span class="fc" id="L26">        super(id, model);</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (id &lt; GameConstants.EIGHTBALL_ID) {</span>
+<span class="fc" id="L28">            this.type = Type.FULL;</span>
         } else {
-<span class="fc" id="L29">            this.type = Type.STRIPED;</span>
+<span class="fc" id="L30">            this.type = Type.STRIPED;</span>
         }
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L32">    }</span>
 
     /**
      * Returns the type of the ball.
@@ -36,7 +37,7 @@ public class RegularBall3D extends Ball3D {
      * @return Type, the type of the ball.
      */
     public Type getType() {
-<span class="fc" id="L39">        return this.type;</span>
+<span class="fc" id="L40">        return this.type;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

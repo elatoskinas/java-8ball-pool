@@ -92,11 +92,10 @@ public class Table3D {
     public boolean checkIfPot(Ball3D ball) {
 <span class="fc bfc" id="L93" title="All 2 branches covered.">        for (HitBox pot: Table3D.potHitBoxes) {</span>
 <span class="fc bfc" id="L94" title="All 2 branches covered.">            if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), pot)) {</span>
-<span class="fc" id="L95">                ball.pot();</span>
-<span class="fc" id="L96">                return true;</span>
+<span class="fc" id="L95">                return true;</span>
             }
-<span class="fc" id="L98">        }</span>
-<span class="fc" id="L99">        return false;</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

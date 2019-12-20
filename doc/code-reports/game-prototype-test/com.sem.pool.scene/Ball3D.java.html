@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.sem.pool.game.GameConstants;
 
 import java.util.Objects;
 
@@ -22,12 +23,12 @@ public abstract class Ball3D {
     private transient CollisionHandler collisionHandler;
 
     public CollisionHandler getCollisionHandler() {
-<span class="fc" id="L25">        return collisionHandler;</span>
+<span class="fc" id="L26">        return collisionHandler;</span>
     }
 
     public void setCollisionHandler(CollisionHandler collisionHandler) {
-<span class="fc" id="L29">        this.collisionHandler = collisionHandler;</span>
-<span class="fc" id="L30">    }</span>
+<span class="fc" id="L30">        this.collisionHandler = collisionHandler;</span>
+<span class="fc" id="L31">    }</span>
 
     /**
      * Constructs a new 3D Pool Ball instance with
@@ -35,64 +36,64 @@ public abstract class Ball3D {
      * @param id  ID of the ball
      * @param model  Model object of the ball
      */
-<span class="fc" id="L38">    public Ball3D(int id, ModelInstance model) {</span>
-<span class="fc" id="L39">        this.id = id;</span>
-<span class="fc" id="L40">        this.model = model;</span>
-<span class="fc" id="L41">        this.direction = new Vector3(0,0,0);</span>
-<span class="fc" id="L42">        boundingBox = new BoundingBox();</span>
-<span class="fc" id="L43">        boundingBox = model.calculateBoundingBox(boundingBox);</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L39">    public Ball3D(int id, ModelInstance model) {</span>
+<span class="fc" id="L40">        this.id = id;</span>
+<span class="fc" id="L41">        this.model = model;</span>
+<span class="fc" id="L42">        this.direction = new Vector3(0,0,0);</span>
+<span class="fc" id="L43">        boundingBox = new BoundingBox();</span>
+<span class="fc" id="L44">        boundingBox = model.calculateBoundingBox(boundingBox);</span>
+<span class="fc" id="L45">    }</span>
 
     /**
      * Sets up the bounding box and hit boxes after the game is loaded.
      * This should be called when a ball is loaded into the scene.
      */
     public void setUpBoxes() {
-<span class="nc" id="L51">        btSphereShape ballShape = new btSphereShape(this.getRadius());</span>
-<span class="nc" id="L52">        btCollisionObject ballObject = new btCollisionObject();</span>
-<span class="nc" id="L53">        ballObject.setCollisionShape(ballShape);</span>
-<span class="nc" id="L54">        ballObject.setWorldTransform(this.model.transform);</span>
-<span class="nc" id="L55">        hitBox = new HitBox(ballShape, ballObject);</span>
-<span class="nc" id="L56">    }</span>
+<span class="nc" id="L52">        btSphereShape ballShape = new btSphereShape(this.getRadius());</span>
+<span class="nc" id="L53">        btCollisionObject ballObject = new btCollisionObject();</span>
+<span class="nc" id="L54">        ballObject.setCollisionShape(ballShape);</span>
+<span class="nc" id="L55">        ballObject.setWorldTransform(this.model.transform);</span>
+<span class="nc" id="L56">        hitBox = new HitBox(ballShape, ballObject);</span>
+<span class="nc" id="L57">    }</span>
 
     public int getId() {
-<span class="fc" id="L59">        return id;</span>
+<span class="fc" id="L60">        return id;</span>
     }
 
     public void setId(int id) {
-<span class="fc" id="L63">        this.id = id;</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc" id="L64">        this.id = id;</span>
+<span class="fc" id="L65">    }</span>
 
     public ModelInstance getModel() {
-<span class="fc" id="L67">        return model;</span>
+<span class="fc" id="L68">        return model;</span>
     }
 
     public HitBox getHitBox() {
-<span class="fc" id="L71">        return hitBox;</span>
+<span class="fc" id="L72">        return hitBox;</span>
     }
 
     public Vector3 getDirection() {
-<span class="fc" id="L75">        return direction;</span>
+<span class="fc" id="L76">        return direction;</span>
     }
 
     public void setDirection(Vector3 direction) {
-<span class="fc" id="L79">        this.direction = direction.nor();</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L80">        this.direction = direction.nor();</span>
+<span class="fc" id="L81">    }</span>
 
     public float getSpeed() {
-<span class="fc" id="L83">        return speed;</span>
+<span class="fc" id="L84">        return speed;</span>
     }
 
     public void setSpeed(float speed) {
-<span class="fc" id="L87">        this.speed = speed;</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L88">        this.speed = speed;</span>
+<span class="fc" id="L89">    }</span>
 
     /**
      * Returns the current coordinates of the ball.
      * @return The coordinates of the ball.
      */
     public Vector3 getCoordinates() {
-<span class="fc" id="L95">        return this.model.transform.getTranslation(new Vector3());</span>
+<span class="fc" id="L96">        return this.model.transform.getTranslation(new Vector3());</span>
     }
 
     /**
@@ -100,16 +101,22 @@ public abstract class Ball3D {
      * @return  True if the ball is in motion.
      */
     public boolean isInMotion() {
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        return speed != 0;</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        return speed != 0;</span>
     }
     
     /**
      * Moves the ball with current direction and speed.
+     * @param deltaTime deltaTime, time between current and last frame.
      */
-    public void move() {
-<span class="fc" id="L110">        Vector3 translation = new Vector3(getDirection()).scl(speed);</span>
-<span class="fc" id="L111">        translate(translation);</span>
-<span class="fc" id="L112">    }</span>
+    public void move(float deltaTime) {
+<span class="fc" id="L112">        setSpeed(getSpeed() - (deltaTime * GameConstants.DRAG_COEFFICIENT));</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (getSpeed() &lt;= GameConstants.MIN_SPEED) {</span>
+<span class="fc" id="L114">            setSpeed(0);</span>
+        }
+<span class="fc" id="L116">        Vector3 translation = new Vector3(getDirection()).scl(speed);</span>
+<span class="fc" id="L117">        translate(translation);</span>
+
+<span class="fc" id="L119">    }</span>
 
     /**
      * Method called to move the ball in a direction.
@@ -117,14 +124,14 @@ public abstract class Ball3D {
      */
     public void translate(Vector3 translation) {
         // move the visual model of the ball
-<span class="fc" id="L120">        this.model.transform.translate(translation);</span>
+<span class="fc" id="L127">        this.model.transform.translate(translation);</span>
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
         // TODO: refactor code to fix this issue with tests
-<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (hitBox != null) {</span>
-<span class="nc" id="L125">            this.hitBox.updateLocation(this.model.transform);</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (hitBox != null) {</span>
+<span class="nc" id="L132">            this.hitBox.updateLocation(this.model.transform);</span>
         }
-<span class="fc" id="L127">    }</span>
+<span class="fc" id="L134">    }</span>
 
     /**
      * Returns the radius of the 3D Ball as a scalar.
@@ -133,7 +140,7 @@ public abstract class Ball3D {
     public float getRadius() {
         // Calculate the radius; One axis is enough to determine the radius,
         // as we assume we have a perfect sphere.
-<span class="fc" id="L136">        return boundingBox.max.x - boundingBox.getCenterX();</span>
+<span class="fc" id="L143">        return boundingBox.max.x - boundingBox.getCenterX();</span>
     }
 
     /**
@@ -143,19 +150,19 @@ public abstract class Ball3D {
      */
     @Override
     public boolean equals(Object other) {
-<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (other instanceof Ball3D) {</span>
-<span class="fc" id="L147">            Ball3D otherBall = (Ball3D) other;</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (other instanceof Ball3D) {</span>
+<span class="fc" id="L154">            Ball3D otherBall = (Ball3D) other;</span>
 
-<span class="fc bfc" id="L149" title="All 2 branches covered.">            return this.id == otherBall.id</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">                    &amp;&amp; this.model.equals(otherBall.model);</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            return this.id == otherBall.id</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">                    &amp;&amp; this.model.equals(otherBall.model);</span>
         }
 
-<span class="nc" id="L153">        return false;</span>
+<span class="nc" id="L160">        return false;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L158">        return Objects.hash(id, model);</span>
+<span class="fc" id="L165">        return Objects.hash(id, model);</span>
     }
 
     /**
@@ -167,34 +174,34 @@ public abstract class Ball3D {
      * @return whether the ball collided with the other ball.
      */
     public boolean checkCollision(Ball3D other) {
-<span class="fc bfc" id="L170" title="All 2 branches covered.">        if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {</span>
             // Create vector from ball to other
-<span class="fc" id="L172">            Vector3 directionToOther = new Vector3(other.getCoordinates())</span>
-<span class="fc" id="L173">                    .sub(new Vector3(getCoordinates()));</span>
+<span class="fc" id="L179">            Vector3 directionToOther = new Vector3(other.getCoordinates())</span>
+<span class="fc" id="L180">                    .sub(new Vector3(getCoordinates()));</span>
             // Create vector from other to ball.
-<span class="fc" id="L175">            Vector3 directionToMe = new Vector3(getCoordinates())</span>
-<span class="fc" id="L176">                    .sub(new Vector3(other.getCoordinates()));</span>
+<span class="fc" id="L182">            Vector3 directionToMe = new Vector3(getCoordinates())</span>
+<span class="fc" id="L183">                    .sub(new Vector3(other.getCoordinates()));</span>
 
             // set directions of balls to opposite of their direction to the other.
-<span class="fc" id="L179">            setDirection(directionToOther.scl(-1));</span>
-<span class="fc" id="L180">            other.setDirection(directionToMe.scl(-1));</span>
+<span class="fc" id="L186">            setDirection(directionToOther.scl(-1));</span>
+<span class="fc" id="L187">            other.setDirection(directionToMe.scl(-1));</span>
 
             // halve our speed on collision (implementation will be improved later)
-<span class="fc" id="L183">            setSpeed(getSpeed() / 2);</span>
+<span class="fc" id="L190">            setSpeed(getSpeed() / 2);</span>
 
             // if we hit a ball that is not moving or has no direction, give it speed/direction.
-<span class="pc bpc" id="L186" title="1 of 2 branches missed.">            if (other.getSpeed() &lt;= 0) {</span>
-<span class="fc" id="L187">                other.setSpeed(getSpeed());</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">            if (other.getSpeed() &lt;= 0) {</span>
+<span class="fc" id="L194">                other.setSpeed(getSpeed());</span>
             } else { // else, give it more speed if the similar direction, slow down if not.
-<span class="nc" id="L189">                other.setSpeed(other.getSpeed() - getDirection()</span>
-<span class="nc" id="L190">                        .dot(other.getDirection()) / 100);</span>
+<span class="nc" id="L196">                other.setSpeed(other.getSpeed() - getDirection()</span>
+<span class="nc" id="L197">                        .dot(other.getDirection()) / 100);</span>
             }
-<span class="pc bpc" id="L192" title="1 of 2 branches missed.">            if (other.getDirection().equals(new Vector3())) {</span>
-<span class="nc" id="L193">                other.setDirection(new Vector3(getDirection()));</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">            if (other.getDirection().equals(new Vector3())) {</span>
+<span class="nc" id="L200">                other.setDirection(new Vector3(getDirection()));</span>
             }
-<span class="fc" id="L195">            return true;</span>
+<span class="fc" id="L202">            return true;</span>
         }
-<span class="fc" id="L197">        return false;</span>
+<span class="fc" id="L204">        return false;</span>
     }
 
     /**
@@ -204,11 +211,11 @@ public abstract class Ball3D {
      */
     public void pot() {
         // move ball back to origin
-<span class="nc" id="L207">        translate(getCoordinates().scl(-1));</span>
+<span class="nc" id="L214">        translate(getCoordinates().scl(-1));</span>
         // set ball below the table.
-<span class="nc" id="L209">        translate(new Vector3(0, -100, 0));</span>
-<span class="nc" id="L210">        setSpeed(0);</span>
-<span class="nc" id="L211">        setDirection(new Vector3());</span>
-<span class="nc" id="L212">    }</span>
+<span class="nc" id="L216">        translate(new Vector3(0, -100, 0));</span>
+<span class="nc" id="L217">        setSpeed(0);</span>
+<span class="nc" id="L218">        setDirection(new Vector3());</span>
+<span class="nc" id="L219">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -30,14 +30,6 @@ public class Cue3D {
     }
 
     /**
-     * Returns the current coordinates of the cue.
-     * @return The coordinates of the cue.
-     */
-    public Vector3 getCoordinates() {
-<span class="nc" id="L37">        return this.model.transform.getTranslation(new Vector3());</span>
-    }
-
-    /**
      * Given the mouse position, determines the direction of the cue
      * shot for the cueball.
      *
@@ -46,17 +38,17 @@ public class Cue3D {
      * @return  Direction of the cue shot
      */
     public Vector3 getCueShotDirection(Vector3 mousePosition, Ball3D cueBall) {
-<span class="fc" id="L49">        Vector3 ballPosition = cueBall.getCoordinates();</span>
+<span class="fc" id="L41">        Vector3 ballPosition = cueBall.getCoordinates();</span>
 
         // The direction is the center of the ball (ball position)
         // from which the mouse position is subtracted.
         // We normalize this vector to reduce ambiguity with direction,
         // and work on unit length vectors.
-<span class="fc" id="L55">        Vector3 direction = new Vector3();</span>
-<span class="fc" id="L56">        direction.add(ballPosition).sub(mousePosition);</span>
-<span class="fc" id="L57">        direction.y = 0; // Set y direction 0 because we never move up</span>
-<span class="fc" id="L58">        direction.nor();</span>
-<span class="fc" id="L59">        return direction;</span>
+<span class="fc" id="L47">        Vector3 direction = new Vector3();</span>
+<span class="fc" id="L48">        direction.add(ballPosition).sub(mousePosition);</span>
+<span class="fc" id="L49">        direction.y = 0; // Set y direction 0 because we never move up</span>
+<span class="fc" id="L50">        direction.nor();</span>
+<span class="fc" id="L51">        return direction;</span>
     }
 
     /**
@@ -65,12 +57,12 @@ public class Cue3D {
      */
     public void toBeginPosition(Ball3D cueBall) {
 
-<span class="fc" id="L68">        Vector3 position = cueBall.getCoordinates();</span>
+<span class="fc" id="L60">        Vector3 position = cueBall.getCoordinates();</span>
         // Sets the cue left from the cue ball
-<span class="fc" id="L70">        float x = position.x - CUE_OFFSET - cueBall.getRadius();</span>
+<span class="fc" id="L62">        float x = position.x - CUE_OFFSET - cueBall.getRadius();</span>
 
-<span class="fc" id="L72">        model.transform.translate(x,  Y_COORDINATE, position.z);</span>
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L64">        model.transform.translate(x,  Y_COORDINATE, position.z);</span>
+<span class="fc" id="L65">    }</span>
 
     /**
      * Shoots the cueball based on the mouse-postion and the mouse-position when the drag started.
@@ -80,13 +72,13 @@ public class Cue3D {
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
         // Calculates the force based on the distance
         // TODO: Add force control
-<span class="nc" id="L83">        float force = 0.1f;</span>
-<span class="nc" id="L84">        Vector3 direction = getCueShotDirection(mousePosition, cueBall);</span>
+<span class="fc" id="L75">        float force = 0.1f;</span>
+<span class="fc" id="L76">        Vector3 direction = getCueShotDirection(mousePosition, cueBall);</span>
 
         // Apply the force in the shoot direction
-<span class="nc" id="L87">        cueBall.setDirection(direction);</span>
-<span class="nc" id="L88">        cueBall.setSpeed(force);</span>
-<span class="nc" id="L89">    }</span>
+<span class="fc" id="L79">        cueBall.setDirection(direction);</span>
+<span class="fc" id="L80">        cueBall.setSpeed(force);</span>
+<span class="fc" id="L81">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
