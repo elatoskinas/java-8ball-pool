@@ -104,12 +104,20 @@ public class GameState {
         return state == State.Stopped;
     }
 
+    /**
+     * Gets the active player.
+     * @return active player
+     */
     public Player getActivePlayer() {
         return players.get(playerTurn);
     }
 
+    /**
+     * Gets the next inactive player.
+     * @return an inactive player
+     */
     public Player getInactivePlayer() {
-        return players.get((playerTurn + 1) % 2);
+        return players.get((playerTurn + 1) % players.size());
     }
 
     /**

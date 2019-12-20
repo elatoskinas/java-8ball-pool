@@ -375,4 +375,34 @@ class GameStateTest {
         gameState.setInMotion();
         assertTrue(gameState.isInMotion());
     }
+
+    /**
+     * Test case to verify the get active player.
+     */
+    @Test
+    void testGetActivePlayer() {
+        int activePlayerIndex = gameState.getPlayerTurn();
+        assertEquals(players.get(activePlayerIndex), gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify the get inactive player.
+     */
+    @Test
+    void testGetInactivePlayer() {
+        int inactivePlayerIndex = gameState.getPlayerTurn() + 1;
+        assertEquals(players.get(inactivePlayerIndex), gameState.getInactivePlayer());
+    }
+
+
+    /**
+     * Test case to verify that the next inactive player
+     * becomes the active player when turn advances.
+     */
+    @Test
+    void testGetNextActivePlayer() {
+        Player inactivePlayer = gameState.getInactivePlayer();
+        gameState.advanceTurn();
+        assertEquals(gameState.getActivePlayer(), inactivePlayer);
+    }
 }
