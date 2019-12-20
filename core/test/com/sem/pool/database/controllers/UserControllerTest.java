@@ -60,4 +60,11 @@ public class UserControllerTest {
         this.userController.register("real", "foobar");
         assertTrue(this.userController.exists("real"));
     }
+
+    @Test
+    public void getUser() {
+        User user = this.userController.register("user", "pass");
+        User user2 = this.userController.getUser(user.getUserID());
+        assertEquals(user, user2);
+    }
 }
