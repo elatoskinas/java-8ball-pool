@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cue3D.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.scene</a> &gt; <span class="el_source">Cue3D.java</span></div><h1>Cue3D.java</h1><pre class="source lang-java linenums">package com.sem.pool.scene;
+
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
+
+/**
+ * Class representing a 3D Cue.
+ * TODO: Rotation of the cue.
+ * TODO: Set position according to the force.
+ */
+public class Cue3D {
+
+    // The distance between the cueBall and the tip of the cue.
+    protected static final float CUE_OFFSET = 0.05f;
+
+    // The Y of the cue can't be 0 because it will end up in the bumpers.
+    protected static final float Y_COORDINATE = 1f;
+
+    private transient ModelInstance model;
+
+    /**
+     * Constructs a new 3D Cue instance.
+     */
+<span class="fc" id="L24">    public Cue3D(ModelInstance model) {</span>
+<span class="fc" id="L25">        this.model = model;</span>
+<span class="fc" id="L26">    }</span>
+
+    public ModelInstance getModel() {
+<span class="fc" id="L29">        return model;</span>
+    }
+
+    /**
+     * Given the mouse position, determines the direction of the cue
+     * shot for the cueball.
+     *
+     * @param mousePosition  Position of the mouse as a 3D Vector
+     * @param cueBall  Ball3D to get the position of the cueBall
+     * @return  Direction of the cue shot
+     */
+    public Vector3 getCueShotDirection(Vector3 mousePosition, Ball3D cueBall) {
+<span class="fc" id="L41">        Vector3 ballPosition = cueBall.getCoordinates();</span>
+
+        // The direction is the center of the ball (ball position)
+        // from which the mouse position is subtracted.
+        // We normalize this vector to reduce ambiguity with direction,
+        // and work on unit length vectors.
+<span class="fc" id="L47">        Vector3 direction = new Vector3();</span>
+<span class="fc" id="L48">        direction.add(ballPosition).sub(mousePosition);</span>
+<span class="fc" id="L49">        direction.y = 0; // Set y direction 0 because we never move up</span>
+<span class="fc" id="L50">        direction.nor();</span>
+<span class="fc" id="L51">        return direction;</span>
+    }
+
+    /**
+     * Set the cue to the begin position when there is no mouse input yet.
+     * @param cueBall cue ball to determine cue position.
+     */
+    public void toBeginPosition(Ball3D cueBall) {
+
+<span class="fc" id="L60">        Vector3 position = cueBall.getCoordinates();</span>
+        // Sets the cue left from the cue ball
+<span class="fc" id="L62">        float x = position.x - CUE_OFFSET - cueBall.getRadius();</span>
+
+<span class="fc" id="L64">        model.transform.translate(x,  Y_COORDINATE, position.z);</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * Shoots the cueball based on the mouse-postion and the mouse-position when the drag started.
+     * @param mousePosition the mouse coordinates
+     * @param cueBall the cueball
+     */
+    public void shoot(Vector3 mousePosition, Ball3D cueBall) {
+        // Calculates the force based on the distance
+        // TODO: Add force control
+<span class="fc" id="L75">        float force = 0.1f;</span>
+<span class="fc" id="L76">        Vector3 direction = getCueShotDirection(mousePosition, cueBall);</span>
+
+        // Apply the force in the shoot direction
+<span class="fc" id="L79">        cueBall.setDirection(direction);</span>
+<span class="fc" id="L80">        cueBall.setSpeed(force);</span>
+<span class="fc" id="L81">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

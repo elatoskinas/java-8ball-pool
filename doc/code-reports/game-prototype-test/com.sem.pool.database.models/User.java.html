@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.database.models</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.sem.pool.database.models;
+
+import org.mindrot.jbcrypt.BCrypt;
+
+/**
+ * User object, from the database.
+ */
+@SuppressWarnings(&quot;PMD.OverrideBothEqualsAndHashcode&quot;)
+public class User {
+    private transient boolean existing;
+    private transient int id;
+    private String username;
+    private String password;
+
+    /**
+     * Create a new user, without ID.
+     *
+     * @param username The username to use.
+     * @param password The password to use, this is hashed when initializing.
+     */
+<span class="fc" id="L21">    public User(String username, String password) {</span>
+<span class="fc" id="L22">        this.existing = false;</span>
+<span class="fc" id="L23">        this.username = username;</span>
+<span class="fc" id="L24">        this.password = BCrypt.hashpw(password, BCrypt.gensalt());</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * Create an existing user.
+     *
+     * @param id       The userID.
+     * @param username The username to use.
+     * @param password The password to use.
+     */
+<span class="fc" id="L34">    public User(int id, String username, String password) {</span>
+<span class="fc" id="L35">        this.existing = true;</span>
+<span class="fc" id="L36">        this.id = id;</span>
+<span class="fc" id="L37">        this.username = username;</span>
+<span class="fc" id="L38">        this.password = password;</span>
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Check if the password is correct.
+     *
+     * @param password The password to check.
+     * @return If the password is correct.
+     */
+    public boolean checkPassword(String password) {
+<span class="fc" id="L48">        return BCrypt.checkpw(password, this.password);</span>
+    }
+
+    /**
+     * If this is an existing user.
+     *
+     * @return True if it's existing already.
+     */
+    public boolean isExisting() {
+<span class="fc" id="L57">        return this.existing;</span>
+    }
+
+    /**
+     * Get the user id.
+     *
+     * @return user id
+     */
+    public int getUserID() {
+<span class="fc" id="L66">        return this.id;</span>
+    }
+
+    /**
+     * Get the username.
+     *
+     * @return username
+     */
+    public String getUsername() {
+<span class="fc" id="L75">        return this.username;</span>
+    }
+
+    /**
+     * Get the password.
+     *
+     * @return password
+     */
+    public String getPassword() {
+<span class="fc" id="L84">        return this.password;</span>
+    }
+
+    /**
+     * Set the user ID.
+     *
+     * @param userID The userID
+     */
+    public void setUserID(int userID) {
+<span class="fc" id="L93">        this.id = userID;</span>
+<span class="fc" id="L94">    }</span>
+
+    /**
+     * Set the username.
+     *
+     * @param username The username
+     */
+    public void setUsername(String username) {
+<span class="fc" id="L102">        this.username = username;</span>
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * Set the password.
+     *
+     * @param password The password
+     */
+    public void setPassword(String password) {
+<span class="fc" id="L111">        this.password = password;</span>
+<span class="fc" id="L112">    }</span>
+
+    /**
+     * Set the existing flag.
+     *
+     * @param existing The flag to set.
+     */
+    public void setExisting(boolean existing) {
+<span class="fc" id="L120">        this.existing = existing;</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * Convert this class to a string.
+     *
+     * @return String representation of the class.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L130">        return this.username;</span>
+    }
+
+    /**
+     * Override the equals method.
+     *
+     * @param other Object to test against.
+     * @return True iff they are equal
+     */
+    public boolean equals(Object other) {
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        if (!(other instanceof User)) {</span>
+<span class="fc" id="L141">            return false;</span>
+        }
+
+<span class="fc" id="L144">        User otherUser = (User) other;</span>
+
+<span class="pc bpc" id="L146" title="1 of 6 branches missed.">        if (this.existing &amp;&amp; otherUser.existing &amp;&amp; this.id != otherUser.id) {</span>
+<span class="fc" id="L147">            return false;</span>
+        }
+
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (!this.username.equals(otherUser.username)) {</span>
+<span class="fc" id="L151">            return false;</span>
+        }
+
+<span class="fc" id="L154">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
