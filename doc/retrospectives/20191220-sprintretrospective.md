@@ -14,6 +14,8 @@
 | Ball Interactions | Bounded borders for the board | Luuk, Thomas | 3 hours | 3 hours | Yes | Feature completed and verified succesfully |
 | Ball Interactions | Ball vs Board Collisions | Luuk, Thomas | 6 hours | 12 hours | Yes | Testing took up most time as testing with libgdx and relevant collision library turned out difficult |
 | Ball Interactions | Ball Rolling Friction | Luuk | 1 hour | 1 hour | Yes | Feature completed and verified succesfully |
+| Game Win & Loss | 8-ball Potting Victory | Evaldas | 1 hour | N/A | No | Feature not started due to prerequisite featurese not delivered on time |
+| Game Win & Loss | 8-ball Potting Loss | Evaldas | 1 hour 30 mins | N/A | No | Feature not started due to prerequisite featurese not delivered on time |
 
 
 
