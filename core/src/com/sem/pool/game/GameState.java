@@ -163,7 +163,6 @@ public class GameState {
      * result in the victory or loss of the game.
      * @param ball  Ball to pot
      */
-    @SuppressWarnings("PMD.EmptyIfStmt")
     public void onBallPotted(Ball3D ball) {
 
         // TODO: Do action based on type of ball potted; Maybe this should
@@ -199,7 +198,6 @@ public class GameState {
     //            // TODO: Other player wins the game
     //        }
     }
-
 
     /**
      * Logic for a regular ball pot.
