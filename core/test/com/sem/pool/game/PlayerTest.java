@@ -47,7 +47,7 @@ class PlayerTest {
     public void testAssignBallType() {
         final int id = 0;
         Player player = new Player(id);
-        
+
         player.assignBallType(RegularBall3D.Type.FULL);
         assertEquals(player.getBallType(), RegularBall3D.Type.FULL);
 

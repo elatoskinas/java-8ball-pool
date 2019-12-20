@@ -3,7 +3,6 @@ package com.sem.pool.game;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.RegularBall3D;
-import javafx.print.PageLayout;
 
 import java.util.HashSet;
 import java.util.List;
@@ -105,11 +104,11 @@ public class GameState {
         return state == State.Stopped;
     }
 
-    public Player getActivePlayer(){
+    public Player getActivePlayer() {
         return players.get(playerTurn);
     }
 
-    public Player getInactivePlayer(){
+    public Player getInactivePlayer() {
         return players.get((playerTurn + 1) % 2);
     }
 
