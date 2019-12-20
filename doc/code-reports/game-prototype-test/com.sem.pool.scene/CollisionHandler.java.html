@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CollisionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.scene</a> &gt; <span class="el_source">CollisionHandler.java</span></div><h1>CollisionHandler.java</h1><pre class="source lang-java linenums">package com.sem.pool.scene;
+
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.CollisionObjectWrapper;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithm;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
+import com.badlogic.gdx.physics.bullet.collision.btManifoldResult;
+import com.badlogic.gdx.physics.bullet.collision.btSphereBoxCollisionAlgorithm;
+
+/**
+ * Class that handles the collisions which can be passed to a class
+ * such as Table3D to detect collisions on which the class can decide which action to take.
+ */
+public class CollisionHandler {
+
+    private transient btDefaultCollisionConfiguration collisionConfig;
+    private transient btCollisionDispatcher dispatcher;
+    private transient btCollisionAlgorithmConstructionInfo constructionInfo;
+    private transient btDispatcherInfo dispatcherInfo;
+
+    /**
+     * Constructor for a collision handler.
+     * @param configuration collision configuration.
+     * @param dispatcher dispatcher for collisions.
+     * @param constructionInfo algorithm construction info for collision algorithm.
+     * @param dispatcherInfo dispatcher information.
+     */
+    public CollisionHandler(btDefaultCollisionConfiguration configuration,
+                            btCollisionDispatcher dispatcher,
+                            btCollisionAlgorithmConstructionInfo constructionInfo,
+<span class="fc" id="L35">                            btDispatcherInfo dispatcherInfo) {</span>
+<span class="fc" id="L36">        this.collisionConfig = configuration;</span>
+<span class="fc" id="L37">        this.dispatcher = dispatcher;</span>
+<span class="fc" id="L38">        this.constructionInfo = constructionInfo;</span>
+<span class="fc" id="L39">        this.constructionInfo.setDispatcher1(dispatcher);</span>
+<span class="fc" id="L40">        this.dispatcherInfo = dispatcherInfo;</span>
+
+<span class="fc" id="L42">    }</span>
+
+    public btDefaultCollisionConfiguration getCollisionConfig() {
+<span class="fc" id="L45">        return collisionConfig;</span>
+    }
+
+    public btCollisionDispatcher getDispatcher() {
+<span class="fc" id="L49">        return dispatcher;</span>
+    }
+
+    public btCollisionAlgorithmConstructionInfo getConstructionInfo() {
+<span class="fc" id="L53">        return constructionInfo;</span>
+    }
+
+    public btDispatcherInfo getDispatcherInfo() {
+<span class="fc" id="L57">        return dispatcherInfo;</span>
+    }
+
+    /**
+     * Checks for a single hit box whether it collided with the ball.
+     * @param obj1 first object.
+     * @param obj2 second object.
+     * @return whether the ball collided with the table.
+     */
+    public boolean checkHitBoxCollision(HitBox obj1, HitBox obj2) {
+<span class="nc" id="L67">        btCollisionObject collisionObject = obj1.getObject();</span>
+<span class="nc" id="L68">        btCollisionObject collisionObject1 = obj2.getObject();</span>
+<span class="nc" id="L69">        CollisionObjectWrapper co0 = new CollisionObjectWrapper(collisionObject);</span>
+<span class="nc" id="L70">        CollisionObjectWrapper co1 = new CollisionObjectWrapper(collisionObject1);</span>
+
+        // construct algorithm
+<span class="nc" id="L73">        btSphereBoxCollisionAlgorithm algorithm =</span>
+                new btSphereBoxCollisionAlgorithm(null, this.constructionInfo,
+                co0.wrapper, co1.wrapper, false);
+
+        // create result using object wrappers
+<span class="nc" id="L78">        btManifoldResult result = new btManifoldResult(co0.wrapper, co1.wrapper);</span>
+
+<span class="nc" id="L80">        return checkCollisionAlgorithm(algorithm, co0, co1, result);</span>
+    }
+
+    /**
+     * Returns whether two objects passed as CollisionObjectWrappers
+     * collide.
+     * @param algorithm collision algorithm.
+     * @param co0 first object.
+     * @param co1 second object.
+     * @param result bt manifest result, used to determine collision.
+     * @return whether there was a collision between the two objects according to the algorithm.
+     */
+    public boolean checkCollisionAlgorithm(btCollisionAlgorithm algorithm,
+                                           CollisionObjectWrapper co0,
+                                           CollisionObjectWrapper co1,
+                                           btManifoldResult result) {
+<span class="fc" id="L96">        algorithm.processCollision(co0.wrapper, co1.wrapper, this.dispatcherInfo, result);</span>
+
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        final boolean r = result.getPersistentManifold().getNumContacts() &gt; 0;</span>
+<span class="fc" id="L99">        result.dispose();</span>
+<span class="fc" id="L100">        algorithm.dispose();</span>
+<span class="fc" id="L101">        co1.dispose();</span>
+<span class="fc" id="L102">        co0.dispose();</span>
+<span class="fc" id="L103">        return r;</span>
+    }
+
+    /**
+     * Method which can be called to reflect a vector off another vector
+     * which can be used for changing direction after collision.
+     * @param directionV direction of our object.
+     * @param normalV normal of the object we collide with.
+     * @return a new Vector3 which is the reflected vector.
+     */
+    public static Vector3 reflectVector(Vector3 directionV, Vector3 normalV) {
+<span class="fc" id="L114">        Vector3 direction = new Vector3(directionV);</span>
+<span class="fc" id="L115">        Vector3 normal = new Vector3(normalV);</span>
+<span class="fc" id="L116">        direction.nor();</span>
+<span class="fc" id="L117">        normal.nor();</span>
+<span class="fc" id="L118">        Vector3 reflectedVector = direction.add(normal.scl(-2 * direction.dot(normal)));</span>
+<span class="fc" id="L119">        return new Vector3(reflectedVector.nor());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

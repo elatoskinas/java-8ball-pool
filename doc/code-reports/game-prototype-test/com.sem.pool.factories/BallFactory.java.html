@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BallFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.factories</a> &gt; <span class="el_source">BallFactory.java</span></div><h1>BallFactory.java</h1><pre class="source lang-java linenums">package com.sem.pool.factories;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btDispatcherInfo;
+import com.sem.pool.game.GameConstants;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CollisionHandler;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
+import com.sem.pool.scene.RegularBall3D;
+
+import java.util.List;
+
+/**
+ * Factory class which allows the instantiation
+ * of Ball3D objects from the specified texture set.
+ */
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">public class BallFactory extends Base3DFactory {</span>
+    // Fixed constant path to use for the ball model asset
+<span class="fc" id="L25">    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;</span>
+
+    // Name of the ball model material (defined in model itself)
+    protected static final String BALL_MATERIAL_NAME = &quot;ball&quot;;
+
+    private List&lt;Texture&gt; textures;
+
+    /**
+     * Creates a new Ball Factory instance with the specified
+     * textures. The indices of the provided List directly
+     * correspond to the Ball IDs.
+     * E.g. 0 - cue ball, 1 - solid 1, 9 - striped 1, etc.
+     *
+     * @param textures  List of textures for the balls
+     */
+    public BallFactory(List&lt;Texture&gt; textures, AssetLoader assetLoader) {
+<span class="fc" id="L41">        super(assetLoader);</span>
+<span class="fc" id="L42">        this.textures = textures;</span>
+<span class="fc" id="L43">    }</span>
+
+    public List&lt;Texture&gt; getTextures() {
+<span class="fc" id="L46">        return textures;</span>
+    }
+
+    public void setTextures(List&lt;Texture&gt; textures) {
+<span class="fc" id="L50">        this.textures = textures;</span>
+<span class="fc" id="L51">    }</span>
+
+    /**
+     * Creates a 3D Pool Ball object instance with the specified id.
+     * The appearance of the ball is set accordingly to the id and
+     * the internal textures parameter of the BallFactory.
+     * @param id  Id of the ball to instantiate
+     * @return  New Ball3D object instance corresponding to the specified id
+     */
+    public Ball3D createBall(int id) {
+        // we assert ID is a valid ID.
+<span class="pc bpc" id="L62" title="1 of 6 branches missed.">        assert (id &gt;= GameConstants.CUEBALL_ID &amp;&amp; id &lt; GameConstants.BALL_COUNT);</span>
+<span class="fc" id="L63">        ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);</span>
+        // If textures List empty, do not change textures at all
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (!textures.isEmpty()) {</span>
+            // Wrap the index around the textures length to avoid
+            // index out of bounds exceptions (in case there are less textures)
+<span class="fc" id="L68">            int index = id % textures.size();</span>
+
+            // Get the texture at index and create a new diffuse texture attribute
+            // from the texture; This applies the texture to the material's
+            // diffuse component directly so that the object's color is now the
+            // texture instead.
+<span class="fc" id="L74">            Texture texture = textures.get(index);</span>
+<span class="fc" id="L75">            TextureAttribute attribute = TextureAttribute.createDiffuse(texture);</span>
+
+            // For the created ball instance, get the material and set
+            // the newly created texture attribute.
+<span class="fc" id="L79">            ballInstance.getMaterial(BALL_MATERIAL_NAME).set(attribute);</span>
+        }
+<span class="fc" id="L81">        Ball3D ball = returnBall(id, ballInstance);</span>
+<span class="fc" id="L82">        setUpCollisionHandler(ball);</span>
+<span class="fc" id="L83">        return ball;</span>
+    }
+
+    /**
+     * Returns the proper type of ball given an id.
+     * @param id id of the ball.
+     * @param ballInstance model instance of the ball.
+     * @return An instance of Ball3D.
+     */
+    private Ball3D returnBall(int id, ModelInstance ballInstance) {
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (id == GameConstants.CUEBALL_ID) {</span>
+<span class="fc" id="L94">            return new CueBall3D(id, ballInstance);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        } else if (id == GameConstants.EIGHTBALL_ID) {</span>
+<span class="fc" id="L96">            return new EightBall3D(id, ballInstance);</span>
+        } else {
+<span class="fc" id="L98">            return new RegularBall3D(id, ballInstance);</span>
+        }
+    }
+
+    /**
+     * Method called to set up the collision handler for a ball.
+     * @param ball ball that needs collision handler.
+     */
+    private void setUpCollisionHandler(Ball3D ball) {
+        // configuration for the collisions
+<span class="fc" id="L108">        btDefaultCollisionConfiguration configuration = new  btDefaultCollisionConfiguration();</span>
+        // dispatcher for the collisions
+<span class="fc" id="L110">        btCollisionDispatcher dispatcher = new btCollisionDispatcher(configuration);</span>
+        // info regarding construction of collision algorithm
+<span class="fc" id="L112">        btCollisionAlgorithmConstructionInfo constructionInfo =</span>
+                new btCollisionAlgorithmConstructionInfo();
+        // info regarding dispatcher
+<span class="fc" id="L115">        btDispatcherInfo dispatcherInfo = new btDispatcherInfo();</span>
+
+        // creation of collision handler
+<span class="fc" id="L118">        CollisionHandler collisionHandler = new CollisionHandler(configuration, dispatcher,</span>
+                constructionInfo, dispatcherInfo);
+<span class="fc" id="L120">        ball.setCollisionHandler(collisionHandler);</span>
+<span class="fc" id="L121">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

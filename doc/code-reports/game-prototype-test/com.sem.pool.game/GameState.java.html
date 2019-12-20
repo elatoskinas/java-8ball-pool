@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameState.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.game</a> &gt; <span class="el_source">GameState.java</span></div><h1>GameState.java</h1><pre class="source lang-java linenums">package com.sem.pool.game;
+
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Class to keep track of the current state of the game with regards to the rules.
+ * GameState can be observed by implementing the GameStateObserver interface.
+ * The methods that update observers are WinGame.
+ * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
+ */
+public class GameState {
+    private transient List&lt;Player&gt; players;
+    private transient Set&lt;Ball3D&gt; remainingBalls;
+    private transient int playerTurn;
+    private transient int turnCount;
+
+    private transient boolean started;
+
+    private transient Set&lt;GameStateObserver&gt; observers;
+
+    /**
+     * Creates a new game state with the specified Players and
+     * the specified Pool balls.
+     * @param players     List of Players for the game
+     * @param poolBalls   List of pool balls to use for the game
+     */
+<span class="fc" id="L32">    public GameState(List&lt;Player&gt; players, List&lt;Ball3D&gt; poolBalls) {</span>
+<span class="fc" id="L33">        this.players = players;</span>
+<span class="fc" id="L34">        this.remainingBalls = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L35">        this.observers = new HashSet&lt;&gt;();</span>
+
+        // Add all pool balls except cue ball to remaining balls set
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (Ball3D ball : poolBalls) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (!(ball instanceof CueBall3D)) {</span>
+<span class="fc" id="L40">                remainingBalls.add(ball);</span>
+            }
+<span class="fc" id="L42">        }</span>
+<span class="fc" id="L43">    }</span>
+
+    public boolean isStarted() {
+<span class="fc" id="L46">        return started;</span>
+    }
+
+    public List&lt;Player&gt; getPlayers() {
+<span class="fc" id="L50">        return players;</span>
+    }
+
+    public Set&lt;Ball3D&gt; getRemainingBalls() {
+<span class="fc" id="L54">        return remainingBalls;</span>
+    }
+
+    public Set&lt;GameStateObserver&gt; getObservers() {
+<span class="fc" id="L58">        return observers;</span>
+    }
+
+    public void addObserver(GameStateObserver observer) {
+<span class="fc" id="L62">        observers.add(observer);</span>
+<span class="fc" id="L63">    }</span>
+
+    public void removeObserver(GameStateObserver observer) {
+<span class="fc" id="L66">        observers.remove(observer);</span>
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * Starts the pool game by picking a random Player
+     * for the break shot.
+     */
+    public void startGame() {
+        // TODO: Implement random player picking
+<span class="fc" id="L75">        this.started = true;</span>
+<span class="fc" id="L76">    }</span>
+
+    /**
+     * Advances the turn of the game, ending the current Player's
+     * turn and starting the subsequent Player's turn.
+     */
+    @SuppressWarnings(&quot;PMD.AvoidDuplicateLiterals&quot;)
+    public void advanceTurn() {
+        // TODO: Turn should be advanced
+<span class="nc" id="L85">        throw new UnsupportedOperationException(&quot;Not yet implemented!&quot;);</span>
+    }
+
+    /**
+     * Ends the game with the specified Player ID to be marked
+     * as the winner.
+     * Notifies the observers of the won game.
+     * @param winnerId  ID of the winning player (0-baseed)
+     */
+    // False positive on Dataflow Anomaly for the observer
+    // loop in the method. Also false positive for the winningPlayer.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    public void winGame(int winnerId) {
+<span class="fc" id="L98">        Player winningPlayer = players.get(winnerId);</span>
+
+        // Notify the observers of the victory
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        for (GameStateObserver observer : observers) {</span>
+<span class="fc" id="L102">            observer.endGame(winningPlayer);</span>
+<span class="fc" id="L103">        }</span>
+
+        // Stop the game
+<span class="fc" id="L106">        started = false;</span>
+<span class="fc" id="L107">    }</span>
+
+    /**
+     * Handles ball potting of the specified ball, including
+     * special cases on potting the cue and 8-ball, which might
+     * result in the victory or loss of the game.
+     * @param ball  Ball to pot
+     */
+    @SuppressWarnings(&quot;PMD.AvoidDuplicateLiterals&quot;)
+    public void onBallPotted(Ball3D ball) {
+        // TODO: Ball should be potted and tracked for the Player
+        // TODO: Should handle dispatching events back to Game
+<span class="nc" id="L119">        throw new UnsupportedOperationException(&quot;Not yet implemented!&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

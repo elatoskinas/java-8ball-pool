@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Pool.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool</a> &gt; <span class="el_source">Pool.java</span></div><h1>Pool.java</h1><pre class="source lang-java linenums">package com.sem.pool;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.sem.pool.factories.AssetLoader;
+import com.sem.pool.factories.BallFactory;
+
+import com.sem.pool.factories.CameraFactory;
+import com.sem.pool.factories.CueFactory;
+import com.sem.pool.factories.SceneFactory;
+import com.sem.pool.factories.TableFactory;
+import com.sem.pool.game.Game;
+import com.sem.pool.game.GameState;
+import com.sem.pool.game.Player;
+import com.sem.pool.scene.Scene3D;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Main Pool Game application class that handles
+ * the 3D pool scene and all the interactions.
+ * TODO: Split this off into smaller components?
+ */
+public class Pool implements Screen {
+    private transient AssetLoader assetLoader;
+    private transient ModelBatch modelBatch;
+    private transient Scene3D scene;
+<span class="nc" id="L35">    private static final Vector3 cameraPosition = new Vector3(0f, 100f, 0f);</span>
+    private transient Game game;
+
+    // State flag to keep track of whether asset loading
+    // has finished.
+    private transient boolean loaded;
+
+    /**
+     * Creates an instance of the Pool game screen,
+     * and handles all of the initialization for the
+     * game.
+     */
+<span class="nc" id="L47">    public Pool() {</span>
+<span class="nc" id="L48">        initializeAssetLoader();</span>
+
+        // Initialize model batch for rendering
+<span class="nc" id="L51">        modelBatch = new ModelBatch();</span>
+
+        // Initialize viewport to the relevant width &amp; height
+<span class="nc" id="L54">        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());</span>
+
+        // Initialize the Bullet wrapper used for collisions
+<span class="nc" id="L57">        Bullet.init();</span>
+<span class="nc" id="L58">    }</span>
+
+    /**
+     * Initializes the asset loader &amp; loads the necessary
+     * models into the asset loader.
+     */
+    private void initializeAssetLoader() {
+        // Initialize objects to handle asset loading
+<span class="nc" id="L66">        AssetManager manager = new AssetManager();</span>
+<span class="nc" id="L67">        assetLoader = new AssetLoader(manager);</span>
+
+        // Initialize models by queueing them for loading
+<span class="nc" id="L70">        assetLoader.initializeAssets();</span>
+<span class="nc" id="L71">    }</span>
+
+    /**
+     * Initializes the scene if loading of assets has
+     * been completed and the scene is not yet initialized.
+     */
+    private void initializeScene() {
+        // If the game has not yet been loaded, and an
+        // assetLoader update event is received in current iteration,
+        // then load the game.
+<span class="nc bnc" id="L81" title="All 4 branches missed.">        if (!loaded &amp;&amp; assetLoader.getAssetManager().update()) {</span>
+
+<span class="nc" id="L83">            float width = Gdx.graphics.getWidth();</span>
+<span class="nc" id="L84">            float height = Gdx.graphics.getHeight();</span>
+<span class="nc" id="L85">            CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);</span>
+
+<span class="nc" id="L87">            Texture cueTexture = null;</span>
+<span class="nc" id="L88">            CueFactory cueFactory = new CueFactory(cueTexture, assetLoader);</span>
+
+<span class="nc" id="L90">            List&lt;Texture&gt; ballTextures = assetLoader.getBallTextures();</span>
+<span class="nc" id="L91">            BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);</span>
+
+<span class="nc" id="L93">            Texture tableTexture = null;</span>
+<span class="nc" id="L94">            TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);</span>
+
+<span class="nc" id="L96">            SceneFactory sceneFactory = new SceneFactory(tableFactory,</span>
+                    ballFactory, cameraFactory, cueFactory, modelBatch);
+
+            // Instantiate the scene
+<span class="nc" id="L100">            scene = sceneFactory.createScene();</span>
+
+            // Update the camera of the scene to point to the right location
+<span class="nc" id="L103">            scene.getCamera().update();</span>
+
+<span class="nc" id="L105">            initializeGame();</span>
+
+            // The assets of the game are now fully loaded
+<span class="nc" id="L108">            loaded = true;</span>
+        }
+<span class="nc" id="L110">    }</span>
+
+    /**
+     * Initializes the Game instance for the current Pool Game.
+     */
+    private void initializeGame() {
+        // Create players with IDs 0 and 1
+<span class="nc" id="L117">        List&lt;Player&gt; players = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L118">        players.add(new Player(0));</span>
+<span class="nc" id="L119">        players.add(new Player(1));</span>
+
+        // Create game state with the scene's pool balls and created players
+<span class="nc" id="L122">        GameState gameState = new GameState(players, scene.getPoolBalls());</span>
+
+        // Create game instance with GDX input, the scene and the created game state
+<span class="nc" id="L125">        game = new Game(scene, Gdx.input, gameState);</span>
+
+        // Start the game
+<span class="nc" id="L128">        game.startGame();</span>
+<span class="nc" id="L129">    }</span>
+
+    /**
+     * Updates the scene &amp; game for the current render iteration.
+     * Handles rendering the scene and advancing the game loop.
+     */
+    private void update() {
+        // Render the scene only if the game is loaded
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (loaded) {</span>
+            // Advance the game loop of the game &amp; render scene
+<span class="nc" id="L139">            game.advanceGameLoop();</span>
+<span class="nc" id="L140">            scene.render();</span>
+        }
+<span class="nc" id="L142">    }</span>
+
+    public AssetLoader getAssetLoader() {
+<span class="nc" id="L145">        return assetLoader;</span>
+    }
+
+    public Scene3D getScene() {
+<span class="nc" id="L149">        return scene;</span>
+    }
+
+    /**
+     * Render the scene.
+     * @param delta Time in seconds between last render.
+     */
+    @Override
+    public void render(float delta) {
+        // Initialize scene if uninitialized
+<span class="nc" id="L159">        initializeScene();</span>
+
+        // Clear depth buffer &amp; color buffer masks
+<span class="nc" id="L162">        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);</span>
+
+        // Update the scene &amp; game for the current iteration
+<span class="nc" id="L165">        update();</span>
+<span class="nc" id="L166">    }</span>
+
+    @Override
+    public void dispose() {
+<span class="nc" id="L170">        scene.dispose();</span>
+<span class="nc" id="L171">        assetLoader.dispose();</span>
+
+<span class="nc" id="L173">    }</span>
+
+    @Override
+    public void resize(int width, int height) {
+<span class="nc" id="L177">    }</span>
+
+    @Override
+    public void show() {
+<span class="nc" id="L181">    }</span>
+
+    @Override
+    public void hide() {
+<span class="nc" id="L185">    }</span>
+
+    @Override
+    public void pause() {
+<span class="nc" id="L189">    }</span>
+
+    @Override
+    public void resume() {
+<span class="nc" id="L193">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
