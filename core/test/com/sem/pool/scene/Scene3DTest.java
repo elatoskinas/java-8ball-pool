@@ -135,7 +135,7 @@ class Scene3DTest {
      * collisions for the scene.
      */
     @Test
-    public void testTriggerCollisionsTableBalls() {
+    public void testTriggerCollisionsTableBallInteractions() {
         // Create 2 mock pool balls, and add them to the scene
         Ball3D ball1 = Mockito.mock(Ball3D.class);
         Ball3D ball2 = Mockito.mock(Ball3D.class);
@@ -150,5 +150,70 @@ class Scene3DTest {
         // the balls and the table.
         Mockito.verify(table).checkCollision(ball1);
         Mockito.verify(table).checkCollision(ball2);
+    }
+
+    /**
+     * Test case to verify that when a ball is potted after
+     * triggering collisions for the scene, the List
+     * contains the potted ball in the returned List.
+     */
+    @Test
+    public void testTriggerCollisionsBallPotted() {
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        scene.getPoolBalls().add(ball);
+
+        // Set ball to be potted
+        Mockito.when(table.checkIfPot(ball)).thenReturn(true);
+
+        // Geth the potted balls after triggering collisions
+        List<Ball3D> potted = scene.triggerCollisions();
+
+        // Ensure that the ball was potted
+        assertEquals(1, potted.size());
+        assertEquals(ball, potted.get(0));
+    }
+
+    /**
+     * Test case to verify that when all the balls are
+     * potted after triggering collisions for the scene, the List
+     * contains all the Balls present in the scene.
+     */
+    @Test
+    public void testTriggerCollisionsMultipleBallsPotted() {
+        final int ballCount = 3;
+
+        // Create specified number of balls & set ball to be potted
+        for (int i = 0; i < ballCount; ++i) {
+            Ball3D ball = Mockito.mock(Ball3D.class);
+            Mockito.when(table.checkIfPot(ball)).thenReturn(true);
+            scene.getPoolBalls().add(ball);
+        }
+
+        // Geth the potted balls after triggering collisions
+        List<Ball3D> potted = scene.triggerCollisions();
+
+        // Ensure that the list of potted balls is equal to
+        // the list of the scene's balls
+        assertEquals(scene.getPoolBalls(), potted);
+    }
+
+    /**
+     * Test case to verify that when the collisions are
+     * triggered for a scene, and no ball is potted, then
+     * the returned List of potted balls is empty.
+     */
+    @Test
+    public void testTriggerCollisionsNoBallPotted() {
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        scene.getPoolBalls().add(ball);
+
+        // Set ball to be potted
+        Mockito.when(table.checkIfPot(ball)).thenReturn(false);
+
+        // Geth the potted balls after triggering collisions
+        List<Ball3D> potted = scene.triggerCollisions();
+
+        // Ensure that no ball was potted
+        assertEquals(0, potted.size());
     }
 }

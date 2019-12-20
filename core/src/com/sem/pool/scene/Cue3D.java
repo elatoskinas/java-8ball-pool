@@ -30,14 +30,6 @@ public class Cue3D {
     }
 
     /**
-     * Returns the current coordinates of the cue.
-     * @return The coordinates of the cue.
-     */
-    public Vector3 getCoordinates() {
-        return this.model.transform.getTranslation(new Vector3());
-    }
-
-    /**
      * Given the mouse position, determines the direction of the cue
      * shot for the cueball.
      *
