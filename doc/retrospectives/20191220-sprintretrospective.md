@@ -34,8 +34,7 @@ somewhat off due to not allocatiing enough time for each issue.
 #### Description
 This week, the work distribution could have been far better. Due to priorities provided by our TA for tasks, two people (Luuk and Thomas) ended
 up doing a large bulk of the main work for the Sprint initially. This lead to some imbalance due to priorities, even though the task
-distribution was even.
-This is more of an issue with estimation rather than distribution, which we could have put more thought into.
+distribution was even. This problem was completely caused by the fact that the prototype deadline was initially set on friday the 6th of december.
 
 #### Reaction
 To counteract the issue, the team started co-operating more, especially in the testing & bug fix regard. We debugged code together
