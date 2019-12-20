@@ -5,7 +5,7 @@
 | Turn System | Game State & Game Classes | Evaldas   | 4 hours | 5 hours | Yes | Feature completed & verified successfully |
 | Turn System | Local Multiplayer Gamestate | Pepijn, Evaldas | 4 hours   | 4 hours | Yes | Feature completed & verified successfully |
 | Turn System | Break shot | Pepijn | 2 hours | 2 hours | Yes | Feature completed & verified successfully and integrated into the game  |
-| Ball Types | Player Ball Type Assignment | Pepijn | 2,5 hours | 2.5 hours | Yes | Feature completed but not verified |
+| Ball Types | Player Ball Type Assignment | Pepijn | 2,5 hours | 2.5 hours | Yes | Feature completed & verified successfully |
 | Ball Types | Ball Types| Luuk | 2 hours | 2 hours | Yes | Feature completed and verified succesfully |
 | Player Cue Interaction | Hit Cueball | Pepijn | 3 hours | 4 hours | Yes | Feature completed & verified successfully and integrated into the game |
 | Player Cue Interaction | Control Cue Force | Pepijn | 3 hours | 4 hours | Yes | Feature completed but not verified  |
