@@ -52,7 +52,7 @@ public class Pool implements Screen {
 
         // Initialize viewport to the relevant width & height
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+        
         // Initialize the Bullet wrapper used for collisions
         Bullet.init();
     }
@@ -131,12 +131,13 @@ public class Pool implements Screen {
     /**
      * Updates the scene & game for the current render iteration.
      * Handles rendering the scene and advancing the game loop.
+     * @param deltaTime deltaTime, time between the last and current frame.
      */
-    private void update() {
+    private void update(float deltaTime) {
         // Render the scene only if the game is loaded
         if (loaded) {
             // Advance the game loop of the game & render scene
-            game.advanceGameLoop();
+            game.advanceGameLoop(deltaTime);
             scene.render();
         }
     }
@@ -162,7 +163,7 @@ public class Pool implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         // Update the scene & game for the current iteration
-        update();
+        update(delta);
     }
 
     @Override

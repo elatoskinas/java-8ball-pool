@@ -3,9 +3,9 @@ package com.sem.pool.game;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
@@ -16,16 +16,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class GameTest {
-    transient Scene3D scene;
-    transient Input input;
-    transient GameState gameState;
-    transient Game game;
 
+public class GameTest extends GameBaseTest {
     @BeforeEach
     void setUp() {
-        scene = Mockito.mock(Scene3D.class);
-        input = Mockito.mock(Input.class);
+        super.setUp();
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
     }
@@ -36,6 +31,7 @@ public class GameTest {
      */
     @Test
     void testConstructor() {
+        gameState = Mockito.mock(GameState.class);
         Game game2 = new Game(scene, input, gameState);
 
         assertEquals(scene, game2.getScene());
@@ -47,31 +43,13 @@ public class GameTest {
     }
 
     /**
-     * Test that test the transition from a new (stopped) game to a started game.
-     * Verifies the interaction with game state and ensures that the game
-     * is now marked as started.
-     */
-    @Test
-    void testStartGame() {
-        // Ensure game is not started
-        assertFalse(game.isStarted());
-
-        // Start the game
-        game.startGame();
-
-        // Verify game state started & game is started
-        Mockito.verify(gameState).startGame();
-        assertTrue(game.isStarted());
-    }
-
-    /**
      * Test that verifies that upon immediately starting the game,
      * the pool balls are not initially in motion.
      */
     @Test
     void testStartGameInMotion() {
         game.startGame();
-        assertFalse(game.isInMotion());
+        assertFalse(game.determineIsInMotion());
     }
 
     /**
@@ -90,13 +68,13 @@ public class GameTest {
         poolBalls.add(ball2);
 
         Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
-
         // Start the game and attempt to move the balls
         game.startGame();
-        game.moveBalls();
+        final float deltaTime = 3.14159f;
+        game.moveBalls(deltaTime);
 
-        Mockito.verify(ball).move();
-        Mockito.verify(ball2).move();
+        Mockito.verify(ball).move(deltaTime);
+        Mockito.verify(ball2).move(deltaTime);
     }
 
     /**
@@ -139,26 +117,6 @@ public class GameTest {
     }
 
     /**
-     * Test case to verify the state transition from a game that has
-     * not yet been started, to a started game that is not in motion,
-     * and then to a game that is in motion because at least one
-     * ball is in motion.
-     */
-    @Test
-    void testLoopToMotion() {
-        setupScenePoolBallsHelper(false, true);
-
-        game.startGame();
-        assertTrue(game.isStarted());
-
-        assertFalse(game.isInMotion());
-
-        game.advanceGameLoop();
-
-        assertTrue(game.isInMotion());
-    }
-
-    /**
      * Test case to verify that a stopped game does not trigger
      * any functionality. This is done by making sure that there
      * are no interactions with the scene or the input objects
@@ -166,24 +124,11 @@ public class GameTest {
      */
     @Test
     void testLoopNotStarted() {
-        game.advanceGameLoop();
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
 
         Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
-    }
-
-    // Seems like an FP indicating a DU caused by the loop
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    void setupScenePoolBallsHelper(boolean... motion) {
-        List<Ball3D> balls = new ArrayList<>();
-
-        for (boolean b : motion) {
-            Ball3D ball = Mockito.mock(Ball3D.class);
-            Mockito.when(ball.isInMotion()).thenReturn(b);
-            balls.add(ball);
-        }
-
-        Mockito.when(scene.getPoolBalls()).thenReturn(balls);
     }
 
     /**
@@ -193,13 +138,122 @@ public class GameTest {
     void testLeftClickShot() {
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
-        Mockito.when(scene.getCamera()).thenReturn(Mockito.mock(Camera.class));
+        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0,0,0));
         Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
         setupScenePoolBallsHelper(false);
-
-        game.startGame();
-        game.advanceGameLoop();
-
+        game.respondToInput();
         Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
+    }
+
+    /**
+     * Test case to verify that a running game
+     * with no moving balls advances turns.
+     */
+    @Test
+    void testAdvanceGameLoopAdvanceTurn() {
+
+        scene = Mockito.mock(Scene3D.class);
+        input = Mockito.mock(Input.class);
+        gameState = Mockito.mock(GameState.class);
+        game = new Game(scene, input, gameState);
+        setupScenePoolBallsHelper(false, false);
+
+        Mockito.when(gameState.isStarted()).thenReturn(true);
+        Mockito.when(gameState.isInMotion()).thenReturn(true);
+
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
+        Mockito.verify(gameState).advanceTurn();
+    }
+
+    /**
+     * Test case to verify that a running game
+     * with moving balls doesn't advance turns.
+     */
+    @Test
+    void testAdvanceGameLoopNotAdvanceTurn() {
+
+        scene = Mockito.mock(Scene3D.class);
+        input = Mockito.mock(Input.class);
+        gameState = Mockito.mock(GameState.class);
+        game = new Game(scene, input, gameState);
+        setupScenePoolBallsHelper(true, false);
+
+        Mockito.when(gameState.isStarted()).thenReturn(true);
+        Mockito.when(gameState.isInMotion()).thenReturn(true);
+
+        final float deltaTime = 42f;
+        game.advanceGameLoop(deltaTime);
+        Mockito.verify(gameState, never()).advanceTurn();
+    }
+
+    /**
+     * Test case to ensure that when balls are moved and potted,
+     * the actions are propagated to the Game State.
+     */
+    @Test
+    void testMoveBallsPotted() {
+        final float deltaTime = 0;
+
+        // Create 2 mock balls and add them to the expected Ball list
+        // resulting from triggering collisions
+        List<Ball3D> ballResult = new ArrayList<>();
+        Ball3D ball1 = Mockito.mock(Ball3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+        ballResult.add(ball1);
+        ballResult.add(ball2);
+
+        // Set the resut to be returned after triggering collisions
+        Mockito.when(scene.triggerCollisions()).thenReturn(ballResult);
+
+        // Start the game & move the balls
+        game.startGame();
+        game.moveBalls(deltaTime);
+
+        // Ensure that the balls are potted (since we set them
+        // to be after triggering collisions)
+        Mockito.verify(gameState).onBallPotted(ball1);
+        Mockito.verify(gameState).onBallPotted(ball2);
+    }
+
+    /**
+     * Test case to ensure that when the balls are moved
+     * and not potted, no interactions are done with the Game State
+     * with regards to potting.
+     */
+    @Test
+    void testMoveBallsNotPotted() {
+        final float deltaTime = 0;
+
+        // Set the scene to not pot any balls
+        List<Ball3D> ballResult = new ArrayList<>();
+        Mockito.when(scene.triggerCollisions()).thenReturn(ballResult);
+
+        // Start game & move balls
+        game.startGame();
+        game.moveBalls(deltaTime);
+
+        // Verify ball potting is never called on the game state,
+        // since no balls were potted
+        Mockito.verify(gameState, Mockito.times(0))
+                .onBallPotted(Mockito.any(Ball3D.class));
+    }
+
+    /**
+     * Test case to verify that upon potting a ball, the proper
+     * interactions are made between the ball itself, the Game State
+     * and the Game class.
+     */
+    @Test
+    void testPotBall() {
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        game.startGame();
+        game.potBall(ball);
+
+        // Verify ball is potted
+        Mockito.verify(ball).pot();
+
+        // Verify ball potted in Game State
+        Mockito.verify(gameState).onBallPotted(ball);
     }
 }

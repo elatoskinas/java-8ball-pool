@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Scene3D.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.scene</a> &gt; <span class="el_source">Scene3D.java</span></div><h1>Scene3D.java</h1><pre class="source lang-java linenums">package com.sem.pool.scene;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 3D Scene representation of a single Pool game.
+ */
+public class Scene3D {
+    // ModelBatch LibGDX dependency that allows rendering
+    private final transient ModelBatch modelBatch;
+
+    // Scene elements
+    private final transient Environment environment;
+    private final transient Camera camera;
+    private final transient List&lt;ModelInstance&gt; models;
+
+    // Game elements
+    private final transient List&lt;Ball3D&gt; poolBalls;
+    private final transient Table3D table;
+    private final transient Cue3D cue;
+
+    /**
+     * Creates an instance of a 3D Pool Game scene from the specified
+     * parameters of the scene.
+     *
+     * @param environment Environment settings of the scene (e.g. light)
+     * @param camera      Camera used in the scene
+     * @param poolBalls   List of pool balls part of the scene
+     * @param table       The table to use for the scene
+     * @param cue         The cue to use for the scene
+     * @param batch       Model Batch to use for rendering
+     */
+    public Scene3D(Environment environment, Camera camera, List&lt;Ball3D&gt; poolBalls,
+<span class="fc" id="L42">                   Table3D table, Cue3D cue, ModelBatch batch) {</span>
+<span class="fc" id="L43">        this.environment = environment;</span>
+<span class="fc" id="L44">        this.camera = camera;</span>
+<span class="fc" id="L45">        this.poolBalls = poolBalls;</span>
+<span class="fc" id="L46">        this.table = table;</span>
+<span class="fc" id="L47">        this.cue = cue;</span>
+<span class="fc" id="L48">        this.modelBatch = batch;</span>
+
+        // For all the pool balls and the table, add the models
+        // of the entities to a single List for rendering.
+<span class="fc" id="L52">        this.models = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L53">        models.add(table.getModel());</span>
+<span class="fc" id="L54">        models.add(cue.getModel());</span>
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (Ball3D ball : poolBalls) {</span>
+<span class="fc" id="L57">            models.add(ball.getModel());</span>
+<span class="fc" id="L58">            ball.setUpBoxes();</span>
+            // can be used to quickly simulate a ball moving and colliding
+            // if (ball instanceof CueBall3D) {
+            // ball.setDirection(new Vector3(1,0,0));
+            // ball.setSpeed(0.2f);
+            // }
+<span class="fc" id="L64">        }</span>
+<span class="fc" id="L65">    }</span>
+
+    public Environment getEnvironment() {
+<span class="fc" id="L68">        return environment;</span>
+    }
+
+    public Camera getCamera() {
+<span class="fc" id="L72">        return camera;</span>
+    }
+
+    public List&lt;ModelInstance&gt; getModels() {
+<span class="fc" id="L76">        return models;</span>
+    }
+
+    public List&lt;Ball3D&gt; getPoolBalls() {
+<span class="fc" id="L80">        return poolBalls;</span>
+    }
+
+    public Table3D getTable() {
+<span class="fc" id="L84">        return table;</span>
+    }
+
+    public Cue3D getCue() {
+<span class="nc" id="L88">        return cue;</span>
+    }
+
+
+    /**
+     * Renders the scene with the scene's models, environment
+     * and camera. Should be called on every game loop iteration.
+     */
+    public void render() {
+<span class="fc" id="L97">        modelBatch.begin(camera);</span>
+<span class="fc" id="L98">        modelBatch.render(models, environment);</span>
+<span class="fc" id="L99">        modelBatch.end();</span>
+<span class="fc" id="L100">    }</span>
+
+    /**
+     * Disposes &amp; completely cleans up the scene of models.
+     * To be used when the lifecycle of the game making use
+     * of the 3D scene ends.
+     */
+    public void dispose() {
+<span class="fc" id="L108">        modelBatch.dispose();</span>
+<span class="fc" id="L109">        models.clear();</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * Checks collisions between the balls and the board,
+     * and handles the reactions of the collisions.
+     * Returns the List of balls that have been potted immediately
+     * after the collision, or an empty List if no Ball has been
+     * potted.
+     * TODO: Refactor this to it's own class, preferably
+     *       This method should probably not even belong in the Scene class.
+     */
+    // Suppress false positive for Dataflow Anomalies caused by the
+    // defined loop in the method.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    public List&lt;Ball3D&gt; triggerCollisions() {
+<span class="fc" id="L125">        List&lt;Ball3D&gt; potted = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (int i = 0; i &lt; poolBalls.size(); i++) {</span>
+<span class="fc" id="L128">            Ball3D ball = poolBalls.get(i);</span>
+
+            // Check collisions between the board and
+            // every ball in the scene
+<span class="fc" id="L132">            table.checkCollision(ball);</span>
+
+            // Check if ball is potted
+<span class="fc" id="L135">            boolean potResult = table.checkIfPot(ball);</span>
+
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            if (potResult) {</span>
+<span class="fc" id="L138">                potted.add(ball);</span>
+            }
+
+<span class="fc bfc" id="L141" title="All 2 branches covered.">            for (int j = i + 1; j &lt; poolBalls.size(); j++) {</span>
+<span class="fc" id="L142">                Ball3D other = poolBalls.get(j);</span>
+<span class="fc" id="L143">                ball.checkCollision(other);</span>
+            }
+        }
+
+<span class="fc" id="L147">        return potted;</span>
+    }
+
+    /**
+     * Get the unprojected mouseposition.
+     * @return Vector3 mouseposition
+     */
+    public Vector3 getUnprojectedMousePosition() {
+<span class="nc" id="L155">        Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);</span>
+<span class="nc" id="L156">        camera.unproject(mousePosition);</span>
+<span class="nc" id="L157">        return mousePosition;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

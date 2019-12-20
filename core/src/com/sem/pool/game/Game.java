@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
+import java.util.List;
+
 /**
  * Class that handles everything related to the pool game.
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
@@ -16,12 +18,6 @@ public class Game implements GameStateObserver {
     private transient Input input;
     private transient GameState state;
 
-    // Boolean to keep track whether balls are in motion;
-    // If that is the case, we will ignore user input.
-    private transient boolean inMotion;
-
-    private transient boolean started;
-
     /**
      * Constructs a new Game object with the given scene, input, and state.
      * @param scene The scene of the game.
@@ -32,7 +28,6 @@ public class Game implements GameStateObserver {
         this.scene = scene;
         this.input = input;
         this.state = state;
-        this.started = false;
 
         // Add game as an observer to the GameState
         state.addObserver(this);
@@ -50,13 +45,6 @@ public class Game implements GameStateObserver {
         return state;
     }
 
-    public boolean isStarted() {
-        return started;
-    }
-
-    public boolean isInMotion() {
-        return inMotion;
-    }
 
     /**
      * Starts the game and takes care of starting the
@@ -64,7 +52,6 @@ public class Game implements GameStateObserver {
      */
     public void startGame() {
         state.startGame();
-        this.started = true;
     }
 
     /**
@@ -72,25 +59,20 @@ public class Game implements GameStateObserver {
      * logic for the current game loop iteration, such as
      * moving the balls, responding to input, and ending
      * the current turn.
+     * @param deltaTime deltaTime, time between current and last frame.
      */
-    public void advanceGameLoop() {
-        if (started) {
-            // Determine if game is currently in motion
-            boolean newInMotion = determineIsInMotion();
+    public void advanceGameLoop(float deltaTime) {
+        if (state.isStarted()) {
 
-            // TODO: inMotion -> !newInMotion: advance turn
+            // Check if any ball is in motion
+            determineIsInMotion();
 
-            // Update current game motion flag
-            inMotion = newInMotion;
-
-            // If no balls are in motion, that means
-            // we are at the phase where we can respond to input.
-            // Otherwise, we need to move the balls.
-            if (!inMotion) {
+            if (state.isInMotion()) {
+                moveBalls(deltaTime);
+            } else if (state.isIdle()) {
                 respondToInput();
-            } else {
-                moveBalls();
             }
+
         } // Do nothing if game is not started
     }
 
@@ -101,21 +83,22 @@ public class Game implements GameStateObserver {
     // Seems like there is a false positive with regards to UR anomalies that
     // is caused by the loop.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    protected void moveBalls() {
+    protected void moveBalls(float deltaTime) {
         // Move all the balls in the scene, regardless of whether
         // they are in motion or not. Here, we assume that the ball
         // is simply not moved if it is not in motion (via internal logic of ball)
         for (Ball3D ball : scene.getPoolBalls()) {
-            ball.move();
+            ball.move(deltaTime);
         }
 
         // Check collisions for current game loop iteration
-        scene.triggerCollisions();
+        List<Ball3D> potted = scene.triggerCollisions();
 
-        // TODO: Handle calling pot balls methods
-
-        // TODO: Need to stop balls after some point so that inMotion becomes false
-        //       Otherwise we will end up in an infinite movement loop.
+        // Pot the ball for every ball that was determined to be potted
+        // by the scene
+        for (Ball3D ball : potted) {
+            potBall(ball);
+        }
     }
 
     /**
@@ -123,12 +106,9 @@ public class Game implements GameStateObserver {
      */
     protected void respondToInput() {
         // input relevant for cue and shot
-        Vector3 mousePosition = new Vector3(input.getX(), input.getY(), 0);
-        scene.getCamera().unproject(mousePosition);
-
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
-            Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
-            scene.getCue().shoot(mousePosition, cueBall);
+            performCueShot();
+            state.setInMotion();
         }
     }
 
@@ -152,6 +132,12 @@ public class Game implements GameStateObserver {
         }
 
         // No ball in motion; Game should not be in motion either.
+        // If no balls are in motion, that means
+        // we are at the phase where we can respond to input.
+        // Otherwise, we need to move the balls.
+        if (state.isInMotion()) {
+            state.advanceTurn();
+        }
         return false;
     }
 
@@ -162,21 +148,23 @@ public class Game implements GameStateObserver {
      * active Player.
      * @param ball  Ball to be potted
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void potBall(Ball3D ball) {
-        // TODO: Implement ball potting logic (3D)
-        // TODO: Implement ball potting logic (Game State)
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // Pot the ball (handles potting the ball visually)
+        ball.pot();
+
+        // Propagate to the Game State to handle the logical part of potting.
+        state.onBallPotted(ball);
     }
 
     /**
      * Performs the cue shot by firing the cue ball with the
      * cue's current power and rotation.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private void performCueShot() {
-        // TODO: Perform cue shot
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // TODO: Integrate power & rotation
+        Vector3 mousePosition = scene.getUnprojectedMousePosition();
+        Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
+        scene.getCue().shoot(mousePosition, cueBall);
     }
 
     @Override

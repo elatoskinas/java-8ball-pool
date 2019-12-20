@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
@@ -38,6 +39,7 @@ class BallFactoryTest {
         textures = new ArrayList<>();
         assetLoader = Mockito.mock(AssetLoader.class);
         factory = new BallFactory(textures, assetLoader);
+        Bullet.init();
     }
 
     /**
@@ -49,7 +51,7 @@ class BallFactoryTest {
         Mockito.when(assetLoader.loadModel(AssetLoader.ModelType.BALL))
                 .thenReturn(mockModelInstance);
         
-        for (int i = 0; i < GameConstants.BALLCOUNT; i++) {
+        for (int i = 0; i < GameConstants.BALL_COUNT; i++) {
             Ball3D ball = factory.createBall(i);
             if (i == GameConstants.CUEBALL_ID) {
                 assertTrue(ball instanceof CueBall3D);

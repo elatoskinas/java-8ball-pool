@@ -1,9 +1,11 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,27 +112,50 @@ public class Scene3D {
     /**
      * Checks collisions between the balls and the board,
      * and handles the reactions of the collisions.
-     * TODO: Integrate ball vs ball collision
+     * Returns the List of balls that have been potted immediately
+     * after the collision, or an empty List if no Ball has been
+     * potted.
      * TODO: Refactor this to it's own class, preferably
      *       This method should probably not even belong in the Scene class.
      */
     // Suppress false positive for Dataflow Anomalies caused by the
     // defined loop in the method.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void triggerCollisions() {
-        // Check collisions between the board and
-        // every ball in the scene.
-        for (Ball3D ball : poolBalls) {
-            table.checkCollision(ball);
-            table.checkIfPot(ball);
-        }
+    public List<Ball3D> triggerCollisions() {
+        List<Ball3D> potted = new ArrayList<>();
 
         for (int i = 0; i < poolBalls.size(); i++) {
             Ball3D ball = poolBalls.get(i);
+
+            // Check collisions between the board and
+            // every ball in the scene
+            table.checkCollision(ball);
+
+            // Check if ball is potted
+            boolean potResult = table.checkIfPot(ball);
+
+            if (potResult) {
+                potted.add(ball);
+            }
+
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
                 ball.checkCollision(other);
             }
         }
+
+        return potted;
     }
+
+    /**
+     * Get the unprojected mouseposition.
+     * @return Vector3 mouseposition
+     */
+    public Vector3 getUnprojectedMousePosition() {
+        Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePosition);
+        return mousePosition;
+    }
+
+
 }
