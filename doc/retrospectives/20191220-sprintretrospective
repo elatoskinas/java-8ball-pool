@@ -10,7 +10,6 @@
 | Player Cue Interaction | Hit Cueball | Pepijn | 3 hours | 4 hours | Yes | Feature completed & verified successfully and integrated into the game |
 | Player Cue Interaction | Control Cue Force | Pepijn | 3 hours | 4 hours | Yes | Feature completed but not verified  |
 | Ball Interactions  | Ball Potting | Luuk, Thomas, Evaldas | 4 hours | 8 hours | Yes | Feature completed & verified successfully and integrated into the game |
-| Ball Interactions | Ball vs Board Collisions | Luuk, Thomas | 6 hours | 12 hours | Yes | Feature completed and verified succesfully |
 | Ball Interactions | Ball vs Ball Collisions | Luuk, Thomas | 4 hours | 10 hours | Yes | Feature completed but could be optimalized for more realistic collisions |
 | Ball Interactions | Bounded borders for the board | Luuk, Thomas | 3 hours | 3 hours | Yes | Feature completed and verified succesfully |
 | Ball Interactions | Ball vs Board Collisions | Luuk, Thomas | 6 hours | 12 hours | Yes | Testing took up most time as testing with libgdx and relevant collision library turned out difficult |
