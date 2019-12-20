@@ -116,7 +116,7 @@ public class GameState {
      * Gets the next inactive player.
      * @return an inactive player
      */
-    public Player getInactivePlayer() {
+    public Player getNextInactivePlayer() {
         return players.get((playerTurn + 1) % players.size());
     }
 
@@ -247,7 +247,7 @@ public class GameState {
     public void assignBallTypesToPlayers(RegularBall3D ball) {
 
         Player activePlayer = getActivePlayer();
-        Player otherPlayer = getInactivePlayer();
+        Player otherPlayer = getNextInactivePlayer();
 
         // TODO: Take into account that the ball type should not
         //       be assigned during the break shot
