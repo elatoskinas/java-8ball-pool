@@ -99,9 +99,6 @@ public class Game implements GameStateObserver {
         for (Ball3D ball : potted) {
             potBall(ball);
         }
-
-        // TODO: Need to stop balls after some point so that inMotion becomes false
-        //       Otherwise we will end up in an infinite movement loop.
     }
 
     /**
@@ -110,9 +107,7 @@ public class Game implements GameStateObserver {
     protected void respondToInput() {
         // input relevant for cue and shot
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
-            Vector3 mousePosition = scene.getUnprojectedMousePosition();
-            Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
-            scene.getCue().shoot(mousePosition, cueBall);
+            performCueShot();
             state.setInMotion();
         }
     }
@@ -165,10 +160,11 @@ public class Game implements GameStateObserver {
      * Performs the cue shot by firing the cue ball with the
      * cue's current power and rotation.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private void performCueShot() {
-        // TODO: Perform cue shot
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // TODO: Integrate power & rotation
+        Vector3 mousePosition = scene.getUnprojectedMousePosition();
+        Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
+        scene.getCue().shoot(mousePosition, cueBall);
     }
 
     @Override
