@@ -85,4 +85,17 @@ public class UserController {
 
         return false;
     }
+
+    /**
+     * Get a user by ID.
+     * @param id The ID of the user to get.
+     * @return The user if found, NULL if not.
+     */
+    public User getUser(int id) {
+        try {
+            return this.table.getUser(id);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
 }

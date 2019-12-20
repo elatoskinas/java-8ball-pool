@@ -18,6 +18,8 @@ import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.User;
 
+import java.util.ArrayList;
+
 /**
  * This class implements the Login screen.
  */
@@ -231,7 +233,7 @@ public class Login implements Screen {
             return;
         }
 
-        this.game.startPool();
+        this.startGame(user);
     }
 
     /**
@@ -253,6 +255,24 @@ public class Login implements Screen {
             return;
         }
 
+        this.startGame(user);
+    }
+
+    // The system.exit() call is an exceptional case, where the program can't recover from.
+    // Therefor it should close the program.
+    @SuppressWarnings({"PMD.DoNotCallSystemExit"})
+    private void startGame(User user) {
+        ArrayList<User> users = new ArrayList<>();
+        users.add(user);
+
+        // TODO: Let the user select there opponent and handle this more gracefully.
+        User opponent = this.userController.getUser(0);
+        if (opponent == null) {
+            System.out.println("Failed to launch game, does player `0` exists?");
+            System.exit(1);
+        }
+
+        // TODO: Send the users list to the game.
         this.game.startPool();
     }
 }

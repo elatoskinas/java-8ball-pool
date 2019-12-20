@@ -1,5 +1,6 @@
 package com.sem.pool.database;
 
+import com.sem.pool.database.tables.ResultTable;
 import com.sem.pool.database.tables.UserTable;
 
 import java.sql.Connection;
@@ -45,6 +46,7 @@ public class Database {
 
             // Add all tables.
             this.tables.put("User", new UserTable(conn));
+            this.tables.put("Result", new ResultTable(conn));
         } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
