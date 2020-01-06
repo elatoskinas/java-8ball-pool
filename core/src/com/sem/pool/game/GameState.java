@@ -14,7 +14,7 @@ import java.util.Set;
  * The methods that update observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-public class GameState {
+public class GameState implements ObservableGameState {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
 
@@ -161,16 +161,23 @@ public class GameState {
     // loop in the method. Also false positive for the winningPlayer.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void winGame(int winnerId) {
+        // Get winning Player
         Player winningPlayer = players.get(winnerId);
 
-        // Notify the observers of the victory
-        for (GameStateObserver observer : observers) {
-            observer.endGame(winningPlayer);
-        }
+        // Notify observers
+        endGame(winningPlayer);
 
         // Stop the game
         state = State.Ended;
         started = false;
+    }
+
+    @Override
+    public void endGame(Player winner) {
+        // Notify the observers of the victory
+        for (GameStateObserver observer : observers) {
+            observer.endGame(winner);
+        }
     }
 
     /**
