@@ -11,7 +11,10 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -256,5 +259,72 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball potted in Game State
         Mockito.verify(gameState).onBallPotted(ball);
+    }
+
+    /**
+     * Test case to verify that the game state is an observer of the Game
+     * class after constructing the Game class.
+     */
+    @Test
+    public void testGameStateIsObserver() {
+        assertTrue(game.getObservers().contains(gameState));
+    }
+
+    /**
+     * Test case to verify that retrieving the observers of the
+     * instantiated Game object returns a non-empty Set
+     * containing the Game State, thus verifying that the Game
+     * State is added as an observer, and that the proper collection is returned.
+     */
+    @Test
+    public void testGameStateGetObservers() {
+        final Set<GameObserver> expected = new HashSet<>();
+        expected.add(gameState);
+
+        assertEquals(expected, game.getObservers());
+    }
+
+    /**
+     * Test case to verify that adding an observer to the Game object
+     * properly adds it to the underlying collection.
+     */
+    @Test
+    public void testGameStateAddObserver() {
+        GameObserver observer = Mockito.mock(GameObserver.class);
+        assertFalse(game.getObservers().contains(observer));
+
+        game.addObserver(observer);
+        assertTrue(game.getObservers().contains(observer));
+    }
+
+    /**
+     * Test case to verify that removing an observer from the Game
+     * object will properly remove it from the underlying collection
+     * in the case that it exists.
+     */
+    @Test
+    public void testGameStateRemoveObserver() {
+        GameObserver observer = Mockito.mock(GameObserver.class);
+
+        game.addObserver(observer);
+        assertTrue(game.getObservers().contains(observer));
+
+        game.removeObserver(observer);
+        assertFalse(game.getObservers().contains(observer));
+    }
+
+    /**
+     * Test case to verify that removing an observer which does not
+     * exist in the Game's observers does not remove anything.
+     */
+    @Test
+    public void testGameStateRemoveObserverNonExistent() {
+        int size = game.getObservers().size();
+
+        GameObserver observer = Mockito.mock(GameObserver.class);
+        assertFalse(game.getObservers().contains(observer));
+
+        game.removeObserver(observer);
+        assertEquals(size, game.getObservers().size());
     }
 }
