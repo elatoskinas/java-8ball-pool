@@ -179,6 +179,21 @@ public class Game implements ObservableGame {
     }
 
     @Override
+    public Iterable<GameObserver> getObservers() {
+        return null;
+    }
+
+    @Override
+    public void onMotionStart() {
+
+    }
+
+    @Override
+    public void onMotionStop() {
+
+    }
+
+    @Override
     public void endGame() {
 
     }
