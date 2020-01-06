@@ -13,7 +13,7 @@ import java.util.List;
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
 
-public class Game implements GameStateObserver {
+public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
     private transient GameState state;
@@ -29,8 +29,8 @@ public class Game implements GameStateObserver {
         this.input = input;
         this.state = state;
 
-        // Add game as an observer to the GameState
-        state.addObserver(this);
+        // Add State as an observer to the game
+        addObserver(state);
     }
 
     public Scene3D getScene() {
@@ -51,7 +51,7 @@ public class Game implements GameStateObserver {
      * Game State as well.
      */
     public void startGame() {
-        state.startGame();
+        state.onGameStarted();
     }
 
     /**
@@ -108,7 +108,7 @@ public class Game implements GameStateObserver {
         // input relevant for cue and shot
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             performCueShot();
-            state.setInMotion();
+            state.onMotion();
         }
     }
 
@@ -136,8 +136,9 @@ public class Game implements GameStateObserver {
         // we are at the phase where we can respond to input.
         // Otherwise, we need to move the balls.
         if (state.isInMotion()) {
-            state.advanceTurn();
+            state.onMotionStop();
         }
+
         return false;
     }
 
@@ -168,7 +169,17 @@ public class Game implements GameStateObserver {
     }
 
     @Override
-    public void endGame(Player winner) {
-        // TODO: Implement logic for ending game here.
+    public void addObserver(GameObserver observer) {
+
+    }
+
+    @Override
+    public void removeObserver(GameObserver observer) {
+
+    }
+
+    @Override
+    public void endGame() {
+
     }
 }

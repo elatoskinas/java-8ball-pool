@@ -14,24 +14,20 @@ import java.util.Set;
  * The methods that update observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-public class GameState implements ObservableGameState {
+public class GameState implements GameObserver {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
 
     private transient int playerTurn;
     private transient int turnCount;
 
-    private transient boolean started;
-
-    enum State {
+    public enum State {
         Stopped,
         Idle,
-        InMotion,
-        Ended
+        InMotion
     }
 
     private transient State state;
-    private transient Set<GameStateObserver> observers;
 
     /**
      * Creates a new game state with the specified Players and
@@ -40,9 +36,9 @@ public class GameState implements ObservableGameState {
      * @param poolBalls   List of pool balls to use for the game
      */
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
+        this.state = State.Stopped;
         this.players = players;
         this.remainingBalls = new HashSet<>();
-        this.observers = new HashSet<>();
 
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
@@ -53,35 +49,7 @@ public class GameState implements ObservableGameState {
     }
 
     public boolean isStarted() {
-        return started;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public Set<Ball3D> getRemainingBalls() {
-        return remainingBalls;
-    }
-
-    public Set<GameStateObserver> getObservers() {
-        return observers;
-    }
-
-    public int getPlayerTurn() {
-        return playerTurn;
-    }
-
-    public void addObserver(GameStateObserver observer) {
-        observers.add(observer);
-    }
-
-    public void removeObserver(GameStateObserver observer) {
-        observers.remove(observer);
-    }
-
-    public void setInMotion() {
-        this.state = State.InMotion;
+        return state != State.Stopped;
     }
 
     public boolean isInMotion() {
@@ -92,16 +60,20 @@ public class GameState implements ObservableGameState {
         return state == State.Idle;
     }
 
-    public void setToIdle() {
-        state = State.Idle;
-    }
-
-    public void setToStopped() {
-        this.state = State.Stopped;
-    }
-
     public boolean isStopped() {
         return state == State.Stopped;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Set<Ball3D> getRemainingBalls() {
+        return remainingBalls;
+    }
+
+    public int getPlayerTurn() {
+        return playerTurn;
     }
 
     /**
@@ -124,10 +96,9 @@ public class GameState implements ObservableGameState {
      * Starts the pool game by picking a random Player
      * for the break shot.
      */
-    public void startGame() {
+    public void onGameStarted() {
         initStartingPlayer();
 
-        this.started = true;
         this.state = State.Idle;
     }
 
@@ -165,19 +136,21 @@ public class GameState implements ObservableGameState {
         Player winningPlayer = players.get(winnerId);
 
         // Notify observers
-        endGame(winningPlayer);
+        //endGame(winningPlayer);
 
         // Stop the game
-        state = State.Ended;
-        started = false;
+        state = State.Stopped;
     }
 
     @Override
-    public void endGame(Player winner) {
-        // Notify the observers of the victory
-        for (GameStateObserver observer : observers) {
-            observer.endGame(winner);
-        }
+    public void onMotion() {
+        this.state = State.InMotion;
+    }
+
+    @Override
+    public void onMotionStop() {
+        advanceTurn();
+        this.state = State.Idle;
     }
 
     /**
