@@ -35,6 +35,9 @@ public class Game implements ObservableGame {
         this.observers = new HashSet<>();
 
         // Add State as an observer to the game
+        // NOTE: Since the Game State is an observer,
+        // it will react to al the required functionality for
+        // starting the game, potting balls and reacting to motion.
         addObserver(state);
     }
 
@@ -52,11 +55,13 @@ public class Game implements ObservableGame {
 
 
     /**
-     * Starts the game and takes care of starting the
-     * Game State as well.
+     * Starts the game and notifies all observers that the game
+     * has been started.
      */
     public void startGame() {
-        state.onGameStarted();
+        for (GameObserver o : observers) {
+            o.onGameStarted();
+        }
     }
 
     /**
@@ -113,7 +118,7 @@ public class Game implements ObservableGame {
         // input relevant for cue and shot
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             performCueShot();
-            state.onMotion();
+            startMotion();
         }
     }
 
@@ -141,7 +146,7 @@ public class Game implements ObservableGame {
         // we are at the phase where we can respond to input.
         // Otherwise, we need to move the balls.
         if (state.isInMotion()) {
-            state.onMotionStop();
+            stopMotion();
         }
 
         return false;
@@ -190,16 +195,22 @@ public class Game implements ObservableGame {
 
     @Override
     public void startMotion() {
-
+        for (GameObserver o : observers) {
+            o.onMotion();
+        }
     }
 
     @Override
     public void stopMotion() {
-
+        for (GameObserver o : observers) {
+            o.onMotionStop();
+        }
     }
 
     @Override
     public void endGame() {
-
+        for (GameObserver o : observers) {
+            o.onGameEnded();
+        }
     }
 }

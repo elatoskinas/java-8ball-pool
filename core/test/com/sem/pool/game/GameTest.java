@@ -402,6 +402,7 @@ public class GameTest extends GameBaseTest {
 
         for (int i = 0; i < count; ++i) {
             GameObserver observer = Mockito.mock(GameObserver.class);
+            game.addObserver(observer);
             result.add(observer);
         }
 
