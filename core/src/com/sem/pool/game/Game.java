@@ -6,7 +6,9 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class that handles everything related to the pool game.
@@ -18,6 +20,7 @@ public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
     private transient GameState state;
+    private transient Set<GameObserver> observers;
 
     /**
      * Constructs a new Game object with the given scene, input, and state.
@@ -29,6 +32,7 @@ public class Game implements ObservableGame {
         this.scene = scene;
         this.input = input;
         this.state = state;
+        this.observers = new HashSet<>();
 
         // Add State as an observer to the game
         addObserver(state);
@@ -171,17 +175,17 @@ public class Game implements ObservableGame {
 
     @Override
     public void addObserver(GameObserver observer) {
-
+        observers.add(observer);
     }
 
     @Override
     public void removeObserver(GameObserver observer) {
-
+        observers.remove(observer);
     }
 
     @Override
     public Collection<GameObserver> getObservers() {
-        return null;
+        return observers;
     }
 
     @Override
