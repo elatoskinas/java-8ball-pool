@@ -339,7 +339,8 @@ public class GameTest extends GameBaseTest {
 
         game.startGame();
 
-        for (GameObserver o : observers) {
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
             Mockito.verify(o).onGameStarted();
         }
     }
@@ -355,7 +356,8 @@ public class GameTest extends GameBaseTest {
 
         game.endGame();
 
-        for (GameObserver o : observers) {
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
             Mockito.verify(o).onGameEnded();
         }
     }
@@ -371,7 +373,8 @@ public class GameTest extends GameBaseTest {
 
         game.stopMotion();
 
-        for (GameObserver o : observers) {
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
             Mockito.verify(o).onMotionStop();
         }
     }
@@ -387,7 +390,8 @@ public class GameTest extends GameBaseTest {
 
         game.startMotion();
 
-        for (GameObserver o : observers) {
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
             Mockito.verify(o).onMotion();
         }
     }
@@ -404,7 +408,8 @@ public class GameTest extends GameBaseTest {
         Ball3D ball = Mockito.mock(Ball3D.class);
         game.potBall(ball);
 
-        for (GameObserver o : observers) {
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
             Mockito.verify(o).onBallPotted(ball);
         }
     }

@@ -38,7 +38,7 @@ public class Game implements ObservableGame {
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
         // starting the game, potting balls and reacting to motion.
-        addObserver(state);
+        this.observers.add(state);
     }
 
     public Scene3D getScene() {
@@ -51,17 +51,6 @@ public class Game implements ObservableGame {
 
     public GameState getState() {
         return state;
-    }
-
-
-    /**
-     * Starts the game and notifies all observers that the game
-     * has been started.
-     */
-    public void startGame() {
-        for (GameObserver o : observers) {
-            o.onGameStarted();
-        }
     }
 
     /**
@@ -159,6 +148,8 @@ public class Game implements ObservableGame {
      * active Player.
      * @param ball  Ball to be potted
      */
+    // False positive in the foreach loop with regards to variable 'o'.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void potBall(Ball3D ball) {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
@@ -196,23 +187,22 @@ public class Game implements ObservableGame {
     }
 
     @Override
+    public void startGame() {
+        observers.forEach(GameObserver::onGameStarted);
+    }
+
+    @Override
     public void startMotion() {
-        for (GameObserver o : observers) {
-            o.onMotion();
-        }
+        observers.forEach(GameObserver::onMotion);
     }
 
     @Override
     public void stopMotion() {
-        for (GameObserver o : observers) {
-            o.onMotionStop();
-        }
+        observers.forEach(GameObserver::onMotionStop);
     }
 
     @Override
     public void endGame() {
-        for (GameObserver o : observers) {
-            o.onGameEnded();
-        }
+        observers.forEach(GameObserver::onGameEnded);
     }
 }
