@@ -163,8 +163,10 @@ public class Game implements ObservableGame {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
 
-        // Propagate to the Game State to handle the logical part of potting.
-        state.onBallPotted(ball);
+        // Notify all observers of the potted ball
+        for (GameObserver o : observers) {
+            o.onBallPotted(ball);
+        }
     }
 
     /**

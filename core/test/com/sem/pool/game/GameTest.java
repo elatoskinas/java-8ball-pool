@@ -393,6 +393,23 @@ public class GameTest extends GameBaseTest {
     }
 
     /**
+     * Test case to verify that upon potting a ball in the Game object,
+     * all observers are notified of the pot.
+     */
+    @Test
+    public void testGamePotObservers() {
+        final int observerCount = 5;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        game.potBall(ball);
+
+        for (GameObserver o : observers) {
+            Mockito.verify(o).onBallPotted(ball);
+        }
+    }
+
+    /**
      * Helper method to set up the specified number of mock observers.
      * @param count  Number of observers to create
      * @return       List of mock observers
