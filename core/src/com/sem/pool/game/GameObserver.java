@@ -7,4 +7,5 @@ public interface GameObserver {
     public void onBallPotted(Ball3D ball);
     public void onMotion();
     public void onMotionStop();
+    public void onGameEnded();
 }

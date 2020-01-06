@@ -189,12 +189,12 @@ public class Game implements ObservableGame {
     }
 
     @Override
-    public void onMotionStart() {
+    public void startMotion() {
 
     }
 
     @Override
-    public void onMotionStop() {
+    public void stopMotion() {
 
     }
 

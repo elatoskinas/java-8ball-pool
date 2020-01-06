@@ -9,9 +9,11 @@ public interface ObservableGame {
 
     public Collection<GameObserver> getObservers();
 
-    public void onMotionStart();
+    public void startGame();
 
-    public void onMotionStop();
+    public void startMotion();
+
+    public void stopMotion();
 
     public void endGame();
 }

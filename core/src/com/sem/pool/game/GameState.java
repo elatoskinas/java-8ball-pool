@@ -153,6 +153,11 @@ public class GameState implements GameObserver {
         this.state = State.Idle;
     }
 
+    @Override
+    public void onGameEnded() {
+        // TODO: ?
+    }
+
     /**
      * Handles ball potting of the specified ball, including
      * special cases on potting the cue and 8-ball, which might
