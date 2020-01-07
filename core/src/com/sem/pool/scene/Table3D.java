@@ -8,8 +8,7 @@ import java.util.ArrayList;
 /**
  * Class representing a 3D Board of a single game.
  */
-public class Table3D {
-    private transient ModelInstance model;
+public class Table3D extends Object3D {
     private transient ArrayList<HitBox> hitBoxes;
     private transient CollisionHandler collisionHandler;
 
@@ -20,16 +19,12 @@ public class Table3D {
      * @param model  Model object of the Board
      */
     public Table3D(ModelInstance model) {
-        this.model = model;
+        super(model);
         this.hitBoxes = new ArrayList<>();
     }
 
     public ArrayList<HitBox> getHitBoxes() {
         return hitBoxes;
-    }
-
-    public ModelInstance getModel() {
-        return model;
     }
 
     public void addHitBox(HitBox hitBox) {

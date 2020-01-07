@@ -13,9 +13,8 @@ import java.util.Objects;
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
  */
-public abstract class Ball3D {
+public abstract class Ball3D extends Object3D {
     private int id;
-    private transient ModelInstance model;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
     private transient Vector3 direction;
@@ -37,8 +36,8 @@ public abstract class Ball3D {
      * @param model  Model object of the ball
      */
     public Ball3D(int id, ModelInstance model) {
+        super(model);
         this.id = id;
-        this.model = model;
         this.direction = new Vector3(0,0,0);
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
@@ -62,10 +61,6 @@ public abstract class Ball3D {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public ModelInstance getModel() {
-        return model;
     }
 
     public HitBox getHitBox() {
