@@ -48,12 +48,20 @@ public class Cue3D {
         this.dragOriginMouse = new Vector3();
 
         blendingAttribute = new BlendingAttribute(GL20.GL_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        model.materials.get(0).set(blendingAttribute);
+        model.getMaterial("CueMaterial").set(blendingAttribute);
         blendingAttribute.opacity = 0;
     }
 
     public ModelInstance getModel() {
         return model;
+    }
+
+    public void setDragOriginMouse(Vector3 dragOriginMouse) {
+        this.dragOriginMouse = dragOriginMouse;
+    }
+
+    public void setDragOriginCue(Vector3 dragOriginCue) {
+        this.dragOriginCue = dragOriginCue;
     }
 
     /**
@@ -157,8 +165,8 @@ public class Cue3D {
             // Enter dragging
             if (state != State.Dragging) {
                 state = State.Dragging;
-                dragOriginCue = getCoordinates();
-                dragOriginMouse = mousePosition;
+                setDragOriginCue(getCoordinates());
+                setDragOriginMouse(mousePosition);
             }
             toDragPosition(mousePosition, cueBall);
 
@@ -244,6 +252,8 @@ public class Cue3D {
         if (force > FORCE_CAP) {
             force = FORCE_CAP;
         }
+
+        System.out.println(direction);
 
         // Apply the force in the shoot direction
         cueBall.setDirection(direction);

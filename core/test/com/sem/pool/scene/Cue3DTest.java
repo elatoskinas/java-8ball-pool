@@ -2,11 +2,9 @@ package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -33,7 +31,9 @@ public class Cue3DTest {
     @BeforeEach
     public void setUp() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
-        Mockito.when(model.materials.get(anyInt())).thenReturn(Mockito.mock(Material.class));
+        Material mat = new Material();
+
+        Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
         cue = new Cue3D(model);
     }
 
@@ -45,6 +45,9 @@ public class Cue3DTest {
     public void testConstructor() {
 
         ModelInstance model = Mockito.mock(ModelInstance.class);
+        Material mat = new Material();
+        Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
+
         Cue3D cue = new Cue3D(model);
         assertEquals(model, cue.getModel());
     }
@@ -67,12 +70,16 @@ public class Cue3DTest {
 
         // Make the mock model's calculate bounding box method return
         // the constructed box
-        Mockito.when(ballModel.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+        Mockito.when(ballModel.calculateBoundingBox(any(BoundingBox.class)))
                 .thenReturn(box);
 
         Ball3D ball = new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
 
         ModelInstance cueModel = Mockito.mock(ModelInstance.class);
+
+        Material mat = new Material();
+        Mockito.when(cueModel.getMaterial("CueMaterial")).thenReturn(mat);
+
         Matrix4 ballMockMatrix = Mockito.mock(Matrix4.class);
         cueModel.transform = ballMockMatrix;
         Cue3D cue = new Cue3D(cueModel);
@@ -194,17 +201,17 @@ public class Cue3DTest {
     public void testShoot() {
 
         final int id = 0;
-        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        final ModelInstance cueBallModel = Mockito.mock(ModelInstance.class);
         final Matrix4 matrix = Mockito.mock(Matrix4.class);
-        model.transform = matrix;
+        cueBallModel.transform = matrix;
 
-        Cue3D cue = new Cue3D(null);
-        CueBall3D cueBall = new CueBall3D(id, model);
+        CueBall3D cueBall = new CueBall3D(id, cueBallModel);
         Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
 
         Vector3 mouseposition = new Vector3(1, 0, 0);
+        cue.setDragOriginMouse(new Vector3(0.5f, 0, 0));
         cue.shoot(mouseposition, cueBall);
-        assertEquals(cueBall.getDirection(), new Vector3(-1, 0, 0));
+        assertEquals(new Vector3(-1, 0, 0), cueBall.getDirection());
 
     }
 }
