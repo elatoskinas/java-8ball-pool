@@ -9,6 +9,8 @@ import com.sem.pool.game.GameConstants;
 
 import java.util.Objects;
 
+import static java.lang.Math.*;
+
 /**
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
@@ -178,27 +180,61 @@ public abstract class Ball3D {
             // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
                     .sub(new Vector3(getCoordinates()));
-            // Create vector from other to ball.
-            Vector3 directionToMe = new Vector3(getCoordinates())
-                    .sub(new Vector3(other.getCoordinates()));
-
-            // set directions of balls to opposite of their direction to the other.
-            setDirection(directionToOther.scl(-1));
-            other.setDirection(directionToMe.scl(-1));
-
-            // halve our speed on collision (implementation will be improved later)
-            setSpeed(getSpeed() / 2);
-
-            // if we hit a ball that is not moving or has no direction, give it speed/direction.
-            if (other.getSpeed() <= 0) {
-                other.setSpeed(getSpeed());
-            } else { // else, give it more speed if the similar direction, slow down if not.
-                other.setSpeed(other.getSpeed() - getDirection()
-                        .dot(other.getDirection()) / 100);
+            
+            if(other.getDirection().equals(new Vector3(0, 0, 0))) {
+                other.setDirection(directionToOther);
             }
-            if (other.getDirection().equals(new Vector3())) {
-                other.setDirection(new Vector3(getDirection()));
-            }
+            
+            double phi = acos(directionToOther.nor().x);
+            // Calculate theta1 and theta2
+            double theta1 = acos(this.getDirection().x);
+            double theta2 = acos(other.getDirection().x);
+            
+            System.out.println("printing");
+            System.out.println(getDirection());
+            System.out.println(theta1);
+
+            // Declaration of the speed of both balls before the collision for calculation purposes
+            double v1 = this.getSpeed();
+            double v2 = other.getSpeed();
+
+            // Calculate and set the speed and direction of ball 1
+            double v1x = v2*cos(theta2 - phi)*cos(phi) + v1*sin(theta1 - phi)*cos(phi + (PI/2));
+            double v1z = v2*cos(theta2 - phi)*sin(phi) + v1*sin(theta1 - phi)*sin(phi + (PI/2));
+
+            this.setSpeed((float) Math.sqrt(v1x*v1x + v1z*v1z));
+            this.setDirection(new Vector3((float) v1x, 0, (float) v1z));
+
+            // Calculate and set the speed and direction of ball 2
+            double v2x = v1*cos(theta1 - phi)*cos(phi) + v2*sin(theta2 - phi)*cos(phi + (PI/2));
+            double v2z = v1*cos(theta1 - phi)*sin(phi) + v2*sin(theta2 - phi)*sin(phi + (PI/2));
+
+            other.setSpeed((float) Math.sqrt(v2x*v2x + v2z*v2z));
+            other.setDirection(new Vector3((float) v2x, 0, (float) v2z));
+            
+//            move(0.0001f);
+//            other.move(0.0001f);
+//            // Create vector from other to ball.
+//            Vector3 directionToMe = new Vector3(getCoordinates())
+//                    .sub(new Vector3(other.getCoordinates()));
+//
+//            // set directions of balls to opposite of their direction to the other.
+//            setDirection(directionToOther.scl(-1));
+//            other.setDirection(directionToMe.scl(-1));
+//
+//            // halve our speed on collision (implementation will be improved later)
+//            setSpeed(getSpeed() / 2);
+//
+//            // if we hit a ball that is not moving or has no direction, give it speed/direction.
+//            if (other.getSpeed() <= 0) {
+//                other.setSpeed(getSpeed());
+//            } else { // else, give it more speed if the similar direction, slow down if not.
+//                other.setSpeed(other.getSpeed() - getDirection()
+//                        .dot(other.getDirection()) / 100);
+//            }
+//            if (other.getDirection().equals(new Vector3())) {
+//                other.setDirection(new Vector3(getDirection()));
+//            }
             return true;
         }
         return false;
