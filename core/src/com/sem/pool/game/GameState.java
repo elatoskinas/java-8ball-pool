@@ -4,6 +4,7 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.RegularBall3D;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,7 @@ public class GameState {
         this.players = players;
         this.remainingBalls = new HashSet<>();
         this.observers = new HashSet<>();
+        this.currentPottedBalls = new ArrayList<>();
 
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
@@ -63,6 +65,10 @@ public class GameState {
 
     public Set<Ball3D> getRemainingBalls() {
         return remainingBalls;
+    }
+
+    public List<Ball3D> getCurrentPottedBalls() {
+        return currentPottedBalls;
     }
 
     public Set<GameStateObserver> getObservers() {
@@ -144,6 +150,8 @@ public class GameState {
      * turn and starting the subsequent Player's turn.
      */
     public void advanceTurn() {
+        currentPottedBalls.clear();
+
         // Increment player turn and wrap turn ID around
         // players size to keep it within bounds
         playerTurn = (playerTurn + 1) % players.size();
@@ -181,6 +189,8 @@ public class GameState {
      * @param ball  Ball to pot
      */
     public void onBallPotted(Ball3D ball) {
+        // Pot ball in current turn
+        currentPottedBalls.add(ball);
 
         // TODO: Do action based on type of ball potted; Maybe this should
         //       be handled in the Player class and an event propagated back somehow?
