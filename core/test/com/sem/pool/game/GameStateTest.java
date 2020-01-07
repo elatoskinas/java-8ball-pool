@@ -12,6 +12,7 @@ import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -260,7 +261,9 @@ class GameStateTest {
     void testBallPottedRemovedFromRemaining() {
         // Get first ball (constructed in setUp)
         // NOTE: Id 0 won't work since it's a cue ball
-        Ball3D ball = balls.get(1);
+        // NOTE: Id 1 won't work since it's a eight ball
+
+        RegularBall3D ball = (RegularBall3D) balls.get(2);
 
         // Verify that ball is contained in remaining set (handled
         // in constructor)
@@ -277,9 +280,38 @@ class GameStateTest {
      * Test case to verify that upon a ball being potted
      * in the Game State, the active Player (which is assumed
      * to be player with id 0 by default) pots the ball.
+     * Because it is the first regular ball that is potted,
+     * both players get a ball type assigned.
+     * TODO: Update test case for break shot or unvalid pot.
      */
     @Test
     void testBallPottedPlayerInteraction() {
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
+
+        RegularBall3D ball = (RegularBall3D) balls.get(2);
+        assertEquals(ball.getType(), RegularBall3D.Type.FULL);
+
+        // Pot a full regular ball
+        gameState.onBallPotted(ball);
+
+        // Verify the active player (which is the first Player by default
+        // after constructing GameState object) pots the ball
+        assertEquals(players.get(0).getPottedBalls().size(), 1);
+
+        // Ensure that both player types are updated
+        // from unassigned to the right regular ball type
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
+    }
+
+    /**
+     * Test case to verify that upon a full regular ball
+     * being potted in the Game State, the active player and
+     * the other player get the right ball type assigned.
+     */
+    @Test
+    void ballTypeAssignmentPlayersFullBall() {
         // Create List of 2 mocked players
         Player player1 = Mockito.mock(Player.class);
         Player player2 = Mockito.mock(Player.class);
@@ -287,22 +319,53 @@ class GameStateTest {
         players.add(player1);
         players.add(player2);
 
+        Mockito.when(player1.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
+        Mockito.when(player2.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
+
         // Re-create game state with mocked players
         gameState = new GameState(players, balls);
 
-        // Pot first non-cue ball
-        Ball3D ball = balls.get(1);
+        RegularBall3D ball = (RegularBall3D) balls.get(2);
+        assertEquals(ball.getType(), RegularBall3D.Type.FULL);
+
+        // Pot a full regular ball
         gameState.onBallPotted(ball);
 
-        // Verify the active player (which is the first Player by default
-        // after constructing GameState object) pots the ball
-        Mockito.verify(player1).potBall(ball);
-
-        // Ensure that nothing is updated for player 2 (since they did
-        // not pot the ball and the potted ball was not an 8-ball)
-        Mockito.verifyNoInteractions(player2);
+        Mockito.verify(player1).assignBallType(RegularBall3D.Type.FULL);
+        Mockito.verify(player2).assignBallType(RegularBall3D.Type.STRIPED);
     }
-        
+
+    /**
+     * Test case to verify that upon a striped regular ball
+     * being potted in the Game State, the active player and
+     * the other player get the right ball type assigned.
+     */
+    @Test
+    void ballTypeAssignmentPlayersStripedBall() {
+        // Create List of 2 mocked players
+        Player player1 = Mockito.mock(Player.class);
+        Player player2 = Mockito.mock(Player.class);
+        players.clear();
+        players.add(player1);
+        players.add(player2);
+
+        Mockito.when(player1.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
+        Mockito.when(player2.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
+
+        // Re-create game state with mocked players
+        gameState = new GameState(players, balls);
+
+        RegularBall3D ball = (RegularBall3D) balls.get(4);
+        assertEquals(ball.getType(), RegularBall3D.Type.STRIPED);
+
+        // Pot a full regular ball
+        gameState.onBallPotted(ball);
+
+        Mockito.verify(player1).assignBallType(RegularBall3D.Type.STRIPED);
+        Mockito.verify(player2).assignBallType(RegularBall3D.Type.FULL);
+    }
+
+
     /**
      * Test case to verify that the game is correctly set to running.
      */
@@ -311,5 +374,35 @@ class GameStateTest {
         assertFalse(gameState.isInMotion());
         gameState.setInMotion();
         assertTrue(gameState.isInMotion());
+    }
+
+    /**
+     * Test case to verify the get active player.
+     */
+    @Test
+    void testGetActivePlayer() {
+        int activePlayerIndex = gameState.getPlayerTurn();
+        assertEquals(players.get(activePlayerIndex), gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify the get inactive player.
+     */
+    @Test
+    void testGetInactivePlayer() {
+        int inactivePlayerIndex = gameState.getPlayerTurn() + 1;
+        assertEquals(players.get(inactivePlayerIndex), gameState.getNextInactivePlayer());
+    }
+
+
+    /**
+     * Test case to verify that the next inactive player
+     * becomes the active player when turn advances.
+     */
+    @Test
+    void testGetNextActivePlayer() {
+        Player inactivePlayer = gameState.getNextInactivePlayer();
+        gameState.advanceTurn();
+        assertEquals(gameState.getActivePlayer(), inactivePlayer);
     }
 }

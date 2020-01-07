@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserTable.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.database.tables</a> &gt; <span class="el_source">UserTable.java</span></div><h1>UserTable.java</h1><pre class="source lang-java linenums">package com.sem.pool.database.tables;
+
+import com.sem.pool.database.Table;
+import com.sem.pool.database.models.User;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * Users table, for in the database.
+ */
+public class UserTable extends Table {
+    /**
+     * Create the new instance.
+     *
+     * @param conn Conection to use.
+     */
+    public UserTable(Connection conn) throws SQLException {
+<span class="fc" id="L22">        super(conn, &quot;User&quot;);</span>
+<span class="fc" id="L23">    }</span>
+
+    /**
+     * Get a user by username.
+     * Warning suppressed as it's a false positive.
+     *
+     * @param username Get the user by username.
+     * @return A user object.
+     * @throws SQLException SQL exceptions.
+     */
+    @SuppressWarnings(&quot;PMD.CloseResource&quot;)
+    public User getUser(String username) throws SQLException {
+<span class="fc" id="L35">        String sql = &quot;select id, username, password from User where username = ?&quot;;</span>
+<span class="fc" id="L36">        PreparedStatement stmt = this.conn.prepareStatement(sql);</span>
+<span class="fc" id="L37">        stmt.setString(1, username);</span>
+<span class="fc" id="L38">        ResultSet res = stmt.executeQuery();</span>
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (res.isAfterLast()) {</span>
+<span class="fc" id="L41">            stmt.close();</span>
+<span class="fc" id="L42">            res.close();</span>
+<span class="fc" id="L43">            return null;</span>
+        }
+
+        try {
+<span class="fc" id="L47">            res.next();</span>
+<span class="fc" id="L48">            int id = res.getInt(&quot;id&quot;);</span>
+<span class="fc" id="L49">            String dataUser = res.getString(&quot;username&quot;);</span>
+<span class="fc" id="L50">            String pass = res.getString(&quot;password&quot;);</span>
+
+<span class="fc" id="L52">            return new User(id, dataUser, pass);</span>
+        } finally {
+<span class="fc" id="L54">            stmt.close();</span>
+<span class="fc" id="L55">            res.close();</span>
+        }
+    }
+
+    /**
+     * Save a user object.
+     *
+     * @param user The user to save.
+     * @return The result.
+     * @throws SQLException SQL errors.
+     */
+    public boolean save(User user) throws SQLException {
+<span class="fc" id="L67">        String sql = &quot;insert into User (username, password) values (?, ?)&quot;;</span>
+<span class="fc" id="L68">        PreparedStatement stmt = this.conn.prepareStatement(sql);</span>
+<span class="fc" id="L69">        stmt.setString(1, user.getUsername());</span>
+<span class="fc" id="L70">        stmt.setString(2, user.getPassword());</span>
+
+        try {
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">            return stmt.executeUpdate() &gt; 0;</span>
+<span class="fc" id="L74">        } catch (Exception ignored) {</span>
+<span class="fc" id="L75">            ignored.printStackTrace();</span>
+        }
+
+<span class="fc" id="L78">        return false;</span>
+    }
+
+    /**
+     * Update an exiting user object.
+     *
+     * @param user The user to update.
+     * @return The result.
+     * @throws SQLException SQL errors.
+     */
+    public boolean update(User user) throws SQLException {
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (!user.isExisting()) {</span>
+<span class="fc" id="L90">            return false;</span>
+        }
+
+<span class="fc" id="L93">        String sql = &quot;update User set username = ?, password = ? where id = ?&quot;;</span>
+<span class="fc" id="L94">        PreparedStatement stmt = this.conn.prepareStatement(sql);</span>
+<span class="fc" id="L95">        stmt.setString(1, user.getUsername());</span>
+<span class="fc" id="L96">        stmt.setString(2, user.getPassword());</span>
+<span class="fc" id="L97">        stmt.setInt(3, user.getUserID());</span>
+
+        try {
+<span class="fc bfc" id="L100" title="All 2 branches covered.">            return stmt.executeUpdate() &gt; 0;</span>
+<span class="nc" id="L101">        } catch (Exception ignored) {</span>
+<span class="nc" id="L102">            ignored.printStackTrace();</span>
+        }
+
+<span class="nc" id="L105">        return false;</span>
+    }
+
+    /**
+     * Create the table.
+     * This is only called if the table does not exist.
+     *
+     * @throws SQLException SQL Errors.
+     */
+    @Override
+    protected void createTable() throws SQLException {
+<span class="fc" id="L116">        Statement stmt = this.conn.createStatement();</span>
+<span class="fc" id="L117">        String query = &quot;create table &quot; + this.tableName + &quot; (&quot;</span>
+                + &quot;   id       integer primary key autoincrement,&quot;
+                + &quot;   username text    not null unique,&quot;
+                + &quot;   password text    not null&quot;
+                + &quot;)&quot;;
+
+        // This comment is to ignore IntelIJ to complain about a &quot;fix&quot; which would make
+        // PMD complain again.
+        // noinspection TryFinallyCanBeTryWithResources
+        try {
+<span class="fc" id="L127">            stmt.execute(query);</span>
+        } finally {
+<span class="fc" id="L129">            stmt.close();</span>
+        }
+<span class="fc" id="L131">        stmt.close();</span>
+<span class="fc" id="L132">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,6 +1,7 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
@@ -98,18 +99,13 @@ public class Game implements GameStateObserver {
         for (Ball3D ball : potted) {
             potBall(ball);
         }
-
-        // TODO: Need to stop balls after some point so that inMotion becomes false
-        //       Otherwise we will end up in an infinite movement loop.
     }
 
     /**
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
     protected void respondToInput() {
-
         scene.getCue().processInput(input, scene, state);
-
     }
 
     /**
@@ -160,10 +156,11 @@ public class Game implements GameStateObserver {
      * Performs the cue shot by firing the cue ball with the
      * cue's current power and rotation.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private void performCueShot() {
-        // TODO: Perform cue shot
-        throw new UnsupportedOperationException("Not yet implemented!");
+        // TODO: Integrate power & rotation
+        Vector3 mousePosition = scene.getUnprojectedMousePosition();
+        Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
+        scene.getCue().shoot(mousePosition, cueBall);
     }
 
     @Override

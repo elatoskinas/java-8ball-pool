@@ -39,4 +39,19 @@ class PlayerTest {
 
         assertTrue(player.getPottedBalls().contains(ball));
     }
+
+    /**
+     * Test case to verify assigning of ball types.
+     */
+    @Test
+    public void testAssignBallType() {
+        final int id = 0;
+        Player player = new Player(id);
+
+        player.assignBallType(RegularBall3D.Type.FULL);
+        assertEquals(player.getBallType(), RegularBall3D.Type.FULL);
+
+        player.assignBallType(RegularBall3D.Type.STRIPED);
+        assertEquals(player.getBallType(), RegularBall3D.Type.STRIPED);
+    }
 }

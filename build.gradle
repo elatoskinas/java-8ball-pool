@@ -51,6 +51,8 @@ allprojects {
     checkstyle {
         toolVersion "8.25"
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        maxErrors = 0
+        maxWarnings = 4
     }
 
     pmd {
@@ -112,8 +114,8 @@ allprojects {
             rule {
                 element = 'PACKAGE'
 
-                // Ignore root com.sem.pool for now, as it requires
-                // more complex LibGDX testing setups.
+                // Ignore root com.sem.pool, as it contains GUI & 3d rendering
+                // functionality that requires full on system testing.
                 // Also exclude the database main class, as this is not really testable
                 excludes = ['com.sem.pool', 'com.sem.pool.database']
 

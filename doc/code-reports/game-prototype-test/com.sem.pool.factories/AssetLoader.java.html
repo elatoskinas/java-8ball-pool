@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssetLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.factories</a> &gt; <span class="el_source">AssetLoader.java</span></div><h1>AssetLoader.java</h1><pre class="source lang-java linenums">package com.sem.pool.factories;
+
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.sem.pool.game.GameConstants;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Class used for loading assets to the scene.
+ * Simplifies the usage of the AssetManager for loading scenes
+ * by providing a simpler to use interface.
+ */
+public class AssetLoader {
+    // Paths to models for loading
+    protected static final String BALL_MODEL_PATH = &quot;models/ball.obj&quot;;
+    protected static final String TABLE_MODEL_PATH = &quot;models/table.obj&quot;;
+    protected static final String CUE_MODEL_PATH = &quot;models/cue.obj&quot;;
+    protected static final String BALL_TEXTURE_PATH = &quot;models/Textures/ball%d.jpg&quot;;
+
+    // Parameters for loading 3D models
+    private transient ObjLoader.ObjLoaderParameters objectLoaderParameters;
+
+    // Underlying AssetManager (LibGDX dependency) to use
+    // for loading assets
+    private transient AssetManager assetManager;
+
+    /**
+     * Enum to represent loadable model types.
+     * Simplifies the specification of paths for models to load.
+     */
+<span class="fc" id="L36">    public enum ModelType {</span>
+<span class="fc" id="L37">        BALL(BALL_MODEL_PATH),</span>
+<span class="fc" id="L38">        TABLE(TABLE_MODEL_PATH),</span>
+<span class="fc" id="L39">        CUE(CUE_MODEL_PATH);</span>
+
+        private final String path;
+
+<span class="fc" id="L43">        ModelType(String path) {</span>
+<span class="fc" id="L44">            this.path = path;</span>
+<span class="fc" id="L45">        }</span>
+
+        public String getPath() {
+<span class="fc" id="L48">            return path;</span>
+        }
+    }
+
+    /**
+     * Creates a new Asset Loader from the specified Asset Manager
+     * object instance.
+     * @param assetManager  Asset Manager to use to load assets (LibGDX dependency)
+     */
+<span class="fc" id="L57">    public AssetLoader(AssetManager assetManager) {</span>
+<span class="fc" id="L58">        this.assetManager = assetManager;</span>
+
+        // Initialize object loader parameters to flip the texture coordinates.
+        // Otherwise, the Blender object textures will appear wrong due to
+        // the textures being flipped by default in LibGDX.
+<span class="fc" id="L63">        objectLoaderParameters = new ObjLoader.ObjLoaderParameters(true);</span>
+<span class="fc" id="L64">    }</span>
+
+    public AssetManager getAssetManager() {
+<span class="fc" id="L67">        return assetManager;</span>
+    }
+
+    public ObjLoader.ObjLoaderParameters getObjectLoaderParameters() {
+<span class="fc" id="L71">        return objectLoaderParameters;</span>
+    }
+
+    /**
+     * Initializes all of the assets needed for a Pool game, including
+     * models and textures.
+     * To be called during the create() stage of the game lifecycle.
+     */
+    // type.getPath() in the loop seems to cause an UR anomaly.
+    // Using a value other than the ModelType's getPath seems
+    // to not cause the issue. Thus, we suppress it here.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    public void initializeAssets() {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (ModelType type : ModelType.values()) {</span>
+<span class="fc" id="L85">            assetManager.load(type.getPath(), Model.class, objectLoaderParameters);</span>
+        }
+
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        for (int i = 0; i &lt; GameConstants.BALL_COUNT; ++i) {</span>
+<span class="fc" id="L89">            String texturePath = getBallTexturePath(i);</span>
+<span class="fc" id="L90">            assetManager.load(texturePath, Texture.class);</span>
+        }
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Returns a List of Pool Ball textures, where each entry's
+     * index in the List corresponds to the specific ball, i.e.:
+     * 0 - cue ball
+     * 1 - solid 1
+     * 8 - 8-ball
+     * 9 - striped 1
+     * @return List of pool ball textures containing 16 texture entries
+     */
+    public List&lt;Texture&gt; getBallTextures() {
+<span class="fc" id="L104">        List&lt;Texture&gt; ballTextures = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        for (int i = 0; i &lt; GameConstants.BALL_COUNT; ++i) {</span>
+            // Get the i-th ball texture from the asset manager
+<span class="fc" id="L108">            String texturePath = getBallTexturePath(i);</span>
+<span class="fc" id="L109">            Texture ballTexture = assetManager.get(texturePath, Texture.class);</span>
+
+<span class="fc" id="L111">            ballTextures.add(ballTexture);</span>
+        }
+
+<span class="fc" id="L114">        return ballTextures;</span>
+    }
+
+    /**
+     * Returns the texture path for the ball of the specified id.
+     * @param id  Id of the ball
+     * @return    Texture path (String) for the ball
+     */
+    private String getBallTexturePath(int id) {
+        // Get the texture path for the i-th texture (replace %d placeholder with i)
+<span class="fc" id="L124">        return String.format(BALL_TEXTURE_PATH, id);</span>
+    }
+
+    /**
+     * Creates a model of the specified type.
+     * @param type  Type of the model to load
+     * @return  new Model Instance corresponding to the specified type.
+     */
+    public ModelInstance loadModel(ModelType type) {
+<span class="fc" id="L133">        Model model = assetManager.get(type.getPath(), Model.class);</span>
+
+<span class="fc" id="L135">        return new ModelInstance(model);</span>
+    }
+
+    /**
+     * Disposes the asset loader. To be used when the lifecycle of
+     * an application using the asset loader ends.
+     */
+    public void dispose() {
+<span class="fc" id="L143">        assetManager.dispose();</span>
+<span class="fc" id="L144">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
