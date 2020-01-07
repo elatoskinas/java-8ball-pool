@@ -183,9 +183,7 @@ public class GameState {
     }
 
     /**
-     * Handles ball potting of the specified ball, including
-     * special cases on potting the cue and 8-ball, which might
-     * result in the victory or loss of the game.
+     * Pots the specified ball for the current turn of the Game State.
      * @param ball  Ball to pot
      */
     public void onBallPotted(Ball3D ball) {
@@ -207,6 +205,15 @@ public class GameState {
         //            // Eight ball potted
         //            eightBallPotted();
         //        }
+    }
+
+    /**
+     * Handles ball potting logic of all balls in the current turn,
+     * including special cases on potting the cue and 8-ball, which might
+     * result in the victory or loss of the game.
+     */
+    protected void handleBallPotting() {
+        // TODO: Implement ball potting logic handling
     }
 
     /**
