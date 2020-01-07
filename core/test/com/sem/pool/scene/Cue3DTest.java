@@ -31,6 +31,7 @@ public class Cue3DTest {
     @BeforeEach
     public void setUp() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
+        model.transform = new Matrix4();
         Material mat = new Material();
 
         Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
@@ -214,4 +215,57 @@ public class Cue3DTest {
         assertEquals(new Vector3(-1, 0, 0), cueBall.getDirection());
 
     }
+
+    /**
+     * Test case to verify that the cue shoots the cueball in the right direction.
+     */
+    @Test
+    public void testCueForce() {
+
+        final int id = 0;
+        final ModelInstance cueBallModel = Mockito.mock(ModelInstance.class);
+        final Matrix4 matrix = Mockito.mock(Matrix4.class);
+        cueBallModel.transform = matrix;
+
+        CueBall3D cueBall = new CueBall3D(id, cueBallModel);
+        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
+
+        Vector3 mouseposition = new Vector3(1, 0, 0);
+        cue.setDragOriginMouse(new Vector3(0.8f, 0, 0));
+        cue.shoot(mouseposition, cueBall);
+        assertEquals(0.2f, cueBall.getSpeed(), 0.0001f);
+    }
+
+    /**
+     * Test case to verify that the cue shoots the cueball in the right direction.
+     */
+    @Test
+    public void testMaxCueForce() {
+
+        final int id = 0;
+        final ModelInstance cueBallModel = Mockito.mock(ModelInstance.class);
+        final Matrix4 matrix = Mockito.mock(Matrix4.class);
+        cueBallModel.transform = matrix;
+
+        CueBall3D cueBall = new CueBall3D(id, cueBallModel);
+        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
+
+        Vector3 mouseposition = new Vector3(1000000, 0, 0);
+        cue.setDragOriginMouse(new Vector3(0, 0, 0));
+        cue.shoot(mouseposition, cueBall);
+
+        assertEquals(Cue3D.FORCE_CAP, cueBall.getSpeed(), 0.0001f);
+    }
+
+    /**
+     * Test case to verify that the cue shoots the cueball in the right direction.
+     * TODO: Test that the opacity is 1 first
+     */
+    @Test
+    public void testHideCue() {
+//        assertEquals(1, cue.getBlendingAttribute().opacity);
+        cue.hideCue();
+        assertEquals(0, cue.getBlendingAttribute().opacity);
+    }
+    
 }

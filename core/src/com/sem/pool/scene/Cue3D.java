@@ -21,7 +21,7 @@ public class Cue3D {
     protected static final float Y_COORDINATE = 1f;
 
     // The max force that can be applied
-    private static final float FORCE_CAP = 0.3f;
+    protected static final float FORCE_CAP = 0.3f;
 
     private transient ModelInstance model;
     private transient BlendingAttribute blendingAttribute;
@@ -62,6 +62,10 @@ public class Cue3D {
 
     public void setDragOriginCue(Vector3 dragOriginCue) {
         this.dragOriginCue = dragOriginCue;
+    }
+
+    public BlendingAttribute getBlendingAttribute() {
+        return blendingAttribute;
     }
 
     /**
@@ -253,10 +257,10 @@ public class Cue3D {
             force = FORCE_CAP;
         }
 
-        System.out.println(direction);
-
         // Apply the force in the shoot direction
         cueBall.setDirection(direction);
         cueBall.setSpeed(force);
     }
+
+
 }
