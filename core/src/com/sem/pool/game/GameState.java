@@ -196,6 +196,8 @@ public class GameState {
      * including special cases on potting the cue and 8-ball, which might
      * result in the victory or loss of the game.
      */
+    // UR anomaly false positive triggered by foreach loop (ball variable)
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     protected void handleBallPotting() {
         // TODO: Do action based on type of ball potted; Maybe this should
         //       be handled in the Player class and an event propagated back somehow?
@@ -224,7 +226,6 @@ public class GameState {
      * @param ball regular ball
      */
     public void potRegularBall(RegularBall3D ball) {
-
         Player activePlayer = getActivePlayer();
 
         if (activePlayer.getBallType() == RegularBall3D.Type.UNASSIGNED) {
