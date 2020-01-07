@@ -17,6 +17,7 @@ import java.util.Set;
 public class GameState {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
+    private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
 
     private transient int playerTurn;
     private transient int turnCount;

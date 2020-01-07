@@ -405,4 +405,55 @@ class GameStateTest {
         gameState.advanceTurn();
         assertEquals(gameState.getActivePlayer(), inactivePlayer);
     }
+
+    /**
+     * Test case to verify that the current potted balls
+     * List is initialized to empty List initially (after constructcion).
+     */
+    @Test
+    void testGetCurrentPottedBalls() {
+        List<Ball3D> currentPotted = gameState.getCurrentPottedBalls();
+
+        assertNotNull(currentPotted);
+        assertEquals(0, currentPotted.size());
+    }
+
+    /**
+     * Test case to verify that advancing the turn in Game State
+     * clears the potted balls.
+     */
+    @Test
+    void testAdvanceTurnClearPottedBalls() {
+        final int potCount = 4;
+
+        // Pot balls
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            gameState.onBallPotted(ball);
+        }
+
+        assertEquals(potCount, gameState.getCurrentPottedBalls().size());
+
+        gameState.advanceTurn();
+        assertEquals(0, gameState.getCurrentPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that upon potting ball in Game State, the
+     * current potted balls List is updated accordingly.
+     */
+    @Test
+    void testPotBallsAddToPotted() {
+        assertEquals(0, gameState.getCurrentPottedBalls().size());
+
+        final int potCount = 2;
+
+        // Pot balls
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            gameState.onBallPotted(ball);
+        }
+
+        assertEquals(potCount, gameState.getCurrentPottedBalls().size());
+    }
 }
