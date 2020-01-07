@@ -150,7 +150,7 @@ public class GameState {
      * turn and starting the subsequent Player's turn.
      */
     public void advanceTurn() {
-        currentPottedBalls.clear();
+        handleBallPotting();
 
         // Increment player turn and wrap turn ID around
         // players size to keep it within bounds
@@ -189,22 +189,6 @@ public class GameState {
     public void onBallPotted(Ball3D ball) {
         // Pot ball in current turn
         currentPottedBalls.add(ball);
-
-        // TODO: Do action based on type of ball potted; Maybe this should
-        //       be handled in the Player class and an event propagated back somehow?
-        // TODO: Should handle dispatching events back to Game
-        // TODO: Special eight ball & cue ball handling
-
-        if (ball instanceof RegularBall3D) {
-            potRegularBall((RegularBall3D) ball);
-        }
-        //        else if (ball instanceof CueBall3D) {
-        //            // TODO: Logic for cue ball potted
-        //            // TODO: reset Cueball after turn and make the turn invalid
-        //        } else {
-        //            // Eight ball potted
-        //            eightBallPotted();
-        //        }
     }
 
     /**
@@ -213,24 +197,25 @@ public class GameState {
      * result in the victory or loss of the game.
      */
     protected void handleBallPotting() {
-        // TODO: Implement ball potting logic handling
-    }
+        // TODO: Do action based on type of ball potted; Maybe this should
+        //       be handled in the Player class and an event propagated back somehow?
+        // TODO: Should handle dispatching events back to Game
+        // TODO: Special eight ball & cue ball handling
 
-    /**
-     * Eight ball is potted. Either the active or the other player wins the game.
-     */
-    public void eightBallPotted() {
-    //        Player activePlayer = players.get(playerTurn);
+        for (Ball3D ball : currentPottedBalls) {
+            if (ball instanceof RegularBall3D) {
+                potRegularBall((RegularBall3D) ball);
+            }
+            //        else if (ball instanceof CueBall3D) {
+            //            // TODO: Logic for cue ball potted
+            //            // TODO: reset Cueball after turn and make the turn invalid
+            //        } else {
+            //            // Eight ball potted
+            //            // TODO: Handle ball pottingg logic for 8-ball
+            //        }
+        }
 
-    //        // Active player pots the eight ball after all his regular type balls.
-    //        if (activePlayer.getPottedBalls().size() == GameConstants.REGULAR_BALL_COUNT) {
-    //            // TODO: Current player wins the game if the move is valid
-    //            // TODO: Wait until there are no balls in motion
-    //        } else {
-    //            // Not a valid eight ball pot. Active player loses the game.
-    //            // TODO: Active player loses the game
-    //            // TODO: Other player wins the game
-    //        }
+        currentPottedBalls.clear();
     }
 
     /**

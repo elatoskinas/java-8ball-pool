@@ -271,6 +271,7 @@ class GameStateTest {
 
         // Pot the ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         // Assert ball is no longer contained in remaining ball set
         assertFalse(gameState.getRemainingBalls().contains(ball));
@@ -294,6 +295,7 @@ class GameStateTest {
 
         // Pot a full regular ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         // Verify the active player (which is the first Player by default
         // after constructing GameState object) pots the ball
@@ -330,6 +332,7 @@ class GameStateTest {
 
         // Pot a full regular ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         Mockito.verify(player1).assignBallType(RegularBall3D.Type.FULL);
         Mockito.verify(player2).assignBallType(RegularBall3D.Type.STRIPED);
@@ -360,6 +363,7 @@ class GameStateTest {
 
         // Pot a full regular ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         Mockito.verify(player1).assignBallType(RegularBall3D.Type.STRIPED);
         Mockito.verify(player2).assignBallType(RegularBall3D.Type.FULL);
