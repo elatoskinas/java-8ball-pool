@@ -31,6 +31,8 @@ import java.util.List;
  * TODO: Split this off into smaller components?
  */
 public class Pool implements Screen, GameObserver {
+    private transient MainGame mainGame;
+
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
@@ -46,7 +48,9 @@ public class Pool implements Screen, GameObserver {
      * and handles all of the initialization for the
      * game.
      */
-    public Pool() {
+    public Pool(MainGame game) {
+        this.mainGame = game;
+
         initializeAssetLoader();
 
         // Initialize model batch for rendering
@@ -220,6 +224,8 @@ public class Pool implements Screen, GameObserver {
 
     @Override
     public void onGameEnded() {
-
+        // Go back to login screen when Game is ended
+        // TODO: Change to stats/leaderboards screen
+        mainGame.create();
     }
 }

@@ -14,10 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 class PoolTest {
     transient Pool pool;
 
-    @BeforeEach
+    /*@BeforeEach
     public void setUp() {
         pool = new Pool();
-    }
+    }*/
 
     /*@Test
     public void testCreate() {
