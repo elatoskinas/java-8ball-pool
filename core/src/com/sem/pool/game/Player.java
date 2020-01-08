@@ -56,11 +56,22 @@ public class Player {
 
     /**
      * Checks whether the Player has potted all of their balls, given
-     * a Set of balls that are not yet potted
+     * a Set of balls that are not yet potted.
      * @param unpotted - Set of unpotted balls
      * @return  True iff Player has ball type assigned & all balls were potted.
      */
     public boolean allBallsPotted(Set<Ball3D> unpotted) {
-        return false;
+        if (ballType == RegularBall3D.Type.UNASSIGNED) {
+            return false;
+        }
+
+        for (Ball3D ball : unpotted) {
+            if (ball instanceof RegularBall3D
+                    && ((RegularBall3D)ball).getType() == ballType) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
