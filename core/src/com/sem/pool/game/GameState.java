@@ -229,6 +229,9 @@ public class GameState implements GameObserver {
             //            // TODO: Logic for cue ball potted
             //            // TODO: reset Cueball after turn and make the turn invalid
             //        }
+
+            // Remove the ball from the remaining balls set
+            remainingBalls.remove(ball);
         }
 
         // 8-ball potted
@@ -255,10 +258,6 @@ public class GameState implements GameObserver {
         // Valid pot
         if (activePlayer.getBallType() == ball.getType()) {
             activePlayer.potBall(ball);
-
-            // Remove the ball from the remaining balls set
-            remainingBalls.remove(ball);
-
         }
         // TODO: Logic for an invalid move
     }
