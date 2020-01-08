@@ -507,6 +507,16 @@ class GameStateTest {
         assertTrue(gameState.isWon());
     }
 
+    /**
+     * Test case to verify that triggering the end game event
+     * causes the inner Game State to be tracked as stopped.
+     */
+    @Test
+    void testEndGame() {
+        gameState.onGameEnded();
+        assertTrue(gameState.isStopped());
+    }
+
     //    /**
     //     * Test case to verify that when retrieving a winner
     //     * when a winner is not yet determined returns an

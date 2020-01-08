@@ -90,7 +90,7 @@ public class GameState implements GameObserver {
     }
 
     public boolean isStopped() {
-        return state == State.Stopped;
+        return !isStarted();
     }
 
     public int getPlayerTurn() {
@@ -190,7 +190,7 @@ public class GameState implements GameObserver {
 
     @Override
     public void onGameEnded() {
-        // TODO: ?
+        this.state = State.Ended;
     }
 
     /**
