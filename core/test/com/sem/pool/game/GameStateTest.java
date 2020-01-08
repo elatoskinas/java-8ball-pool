@@ -453,4 +453,58 @@ class GameStateTest {
         Optional<Player> winner = gameState.getWinningPlayer();
         assertFalse(winner.isPresent());
     }
+
+    /**
+     * Test case to verify that retrieving the ball count
+     * for solid balls returns the appropriate count.
+     */
+    @Test
+    void testGetCountSolid() {
+        final int solid = 4;
+        final int striped = 5;
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+        constructBallsList(true, true, solid, striped);
+
+        int result = gameState.getRemainingBallCount(type);
+
+        assertEquals(result, solid);
+    }
+
+    /**
+     * Test case to verify that retrieving the ball count
+     * for striped balls returns the appropriate count.
+     */
+    @Test
+    void testGetCountStriped() {
+        final int solid = 6;
+        final int striped = 7;
+        final RegularBall3D.Type type = RegularBall3D.Type.STRIPED;
+        constructBallsList(true, true, solid, striped);
+
+        int result = gameState.getRemainingBallCount(type);
+
+        assertEquals(result, striped);
+    }
+
+    /**
+     * Test case to verify that when balls are potted,
+     * retrieving the count for that type becomes smaller.
+     */
+    @Test
+    void testGetCountPotted() {
+        final int solid = 5;
+        final int striped = 5;
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+        constructBallsList(true, true, solid, striped);
+
+        int count1 = gameState.getRemainingBallCount(type);
+        assertEquals(solid, count1);
+
+        gameState.potRegularBall((RegularBall3D)balls.get(2));
+        gameState.potRegularBall((RegularBall3D)balls.get(3));
+
+        int count2 = gameState.getRemainingBallCount(type);
+        int expected2 = solid - 2;
+        assertEquals(expected2, count2);
+    }
 }

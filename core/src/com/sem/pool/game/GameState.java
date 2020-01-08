@@ -291,4 +291,13 @@ public class GameState implements GameObserver {
     public Optional<Player> getWinningPlayer() {
         return Optional.ofNullable(winningPlayer);
     }
+
+    /**
+     * Returns the remaining number of balls of the specified type.
+     * @param type  Type of ball to get count for
+     * @return  Number of balls remaining in Game of specified type.
+     */
+    public int getRemainingBallCount(RegularBall3D.Type type) {
+        return 0;
+    }
 }
