@@ -184,7 +184,9 @@ public class GameState implements GameObserver {
 
     @Override
     public void onMotionStop() {
-        advanceTurn();
+        if (this.state != State.Won) {
+            advanceTurn();
+        }
     }
 
     @Override
