@@ -70,6 +70,8 @@ public class Game implements ObservableGame {
                 moveBalls(deltaTime);
             } else if (state.isIdle()) {
                 respondToInput();
+            } else if (state.isWon()) {
+                endGame();
             }
 
         } // Do nothing if game is not started
