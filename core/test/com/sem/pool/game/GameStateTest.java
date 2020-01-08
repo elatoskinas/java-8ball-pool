@@ -463,7 +463,9 @@ class GameStateTest {
         final int solid = 4;
         final int striped = 5;
         final RegularBall3D.Type type = RegularBall3D.Type.FULL;
-        constructBallsList(true, true, solid, striped);
+
+        balls = constructBallsList(true, true, solid, striped);
+        gameState = new GameState(players, balls);
 
         int result = gameState.getRemainingBallCount(type);
 
@@ -479,11 +481,13 @@ class GameStateTest {
         final int solid = 6;
         final int striped = 7;
         final RegularBall3D.Type type = RegularBall3D.Type.STRIPED;
-        constructBallsList(true, true, solid, striped);
+
+        balls = constructBallsList(true, true, solid, striped);
+        gameState = new GameState(players, balls);
 
         int result = gameState.getRemainingBallCount(type);
 
-        assertEquals(result, striped);
+        assertEquals(striped, result);
     }
 
     /**
@@ -495,7 +499,9 @@ class GameStateTest {
         final int solid = 5;
         final int striped = 5;
         final RegularBall3D.Type type = RegularBall3D.Type.FULL;
-        constructBallsList(true, true, solid, striped);
+
+        balls = constructBallsList(true, true, solid, striped);
+        gameState = new GameState(players, balls);
 
         int count1 = gameState.getRemainingBallCount(type);
         assertEquals(solid, count1);

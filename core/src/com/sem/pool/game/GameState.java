@@ -298,6 +298,17 @@ public class GameState implements GameObserver {
      * @return  Number of balls remaining in Game of specified type.
      */
     public int getRemainingBallCount(RegularBall3D.Type type) {
-        return 0;
+        int count = 0;
+
+        System.out.println(remainingBalls.size());
+
+        for (Ball3D ball : remainingBalls) {
+            if (ball instanceof RegularBall3D
+                    && ((RegularBall3D)ball).getType() == type) {
+                count++;
+            }
+        }
+
+        return count;
     }
 }
