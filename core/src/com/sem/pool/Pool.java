@@ -16,8 +16,10 @@ import com.sem.pool.factories.CueFactory;
 import com.sem.pool.factories.SceneFactory;
 import com.sem.pool.factories.TableFactory;
 import com.sem.pool.game.Game;
+import com.sem.pool.game.GameObserver;
 import com.sem.pool.game.GameState;
 import com.sem.pool.game.Player;
+import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ import java.util.List;
  * the 3D pool scene and all the interactions.
  * TODO: Split this off into smaller components?
  */
-public class Pool implements Screen {
+public class Pool implements Screen, GameObserver {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
@@ -124,6 +126,9 @@ public class Pool implements Screen {
         // Create game instance with GDX input, the scene and the created game state
         game = new Game(scene, Gdx.input, gameState);
 
+        // Observe the created Game
+        game.addObserver(this);
+
         // Start the game
         game.startGame();
     }
@@ -191,5 +196,30 @@ public class Pool implements Screen {
 
     @Override
     public void resume() {
+    }
+
+    @Override
+    public void onGameStarted() {
+
+    }
+
+    @Override
+    public void onBallPotted(Ball3D ball) {
+
+    }
+
+    @Override
+    public void onMotion() {
+
+    }
+
+    @Override
+    public void onMotionStop() {
+        
+    }
+
+    @Override
+    public void onGameEnded() {
+
     }
 }
