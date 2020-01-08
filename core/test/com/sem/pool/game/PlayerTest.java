@@ -28,10 +28,12 @@ class PlayerTest {
 
     /**
      * Test case to verify that making the Player pot a ball
-     * adds the Ball to their potted balls set.
+     * of their own type adds the Ball to their potted balls set.
+     * For simplicity, both types (for Player and ball) is
+     * the unassigned type.
      */
     @Test
-    public void testPotBall() {
+    public void testPotBallSameType() {
         final int id = 0;
         Player player = new Player(id);
 
@@ -101,5 +103,69 @@ class PlayerTest {
         player.assignBallType(RegularBall3D.Type.FULL);
         player.updateBallsLeft(1);
         assertFalse(player.allBallsPotted());
+    }
+
+    /**
+     * Test case to verify that making the Player pot a ball
+     * that is not of their assigned type does not pot the ball.
+     */
+    @Test
+    public void testPotBallDifferentType() {
+        final int id = 0;
+        Player player = new Player(id);
+
+        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+        Mockito.when(ball.getType()).thenReturn(RegularBall3D.Type.STRIPED);
+
+        player.potBall(ball);
+
+        assertFalse(player.getPottedBalls().contains(ball));
+    }
+
+    /**
+     * Test case to verify that when the pot method for Player
+     * is called with a ball of type not equal to theirs,
+     * then the count of potted balls is not decreased.
+     * (Here, we rely on checking if all balls are potted with count 1 before)
+     */
+    @Test
+    public void testPotBallDifferentTypeCountSame() {
+        final int id = 0;
+        final RegularBall3D.Type type1 = RegularBall3D.Type.FULL;
+        final RegularBall3D.Type type2 = RegularBall3D.Type.STRIPED;
+
+        Player player = new Player(id);
+        player.assignBallType(type1);
+        player.updateBallsLeft(1);
+
+        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+        Mockito.when(ball.getType()).thenReturn(type2);
+
+        player.potBall(ball);
+
+        assertFalse(player.allBallsPotted());
+    }
+
+    /**
+     * Test case to verify that when the pot method for Player
+     * is called with a ball of type equals theirs,
+     * then the count of potted balls is decreased.
+     * (Here, we rely on checking if all balls are potted with count 1 before)
+     */
+    @Test
+    public void testPotBallSameTypeChangeCount() {
+        final int id = 0;
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+
+        Player player = new Player(id);
+        player.assignBallType(type);
+        player.updateBallsLeft(1);
+
+        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+        Mockito.when(ball.getType()).thenReturn(type);
+
+        player.potBall(ball);
+
+        assertTrue(player.allBallsPotted());
     }
 }

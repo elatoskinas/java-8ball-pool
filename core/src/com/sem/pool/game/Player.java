@@ -64,6 +64,6 @@ public class Player {
      * @return  True iff Player potted all of their balls
      */
     public boolean allBallsPotted() {
-        return false;
+        return this.getBallType() != RegularBall3D.Type.UNASSIGNED && this.ballsLeft == 0;
     }
 }
