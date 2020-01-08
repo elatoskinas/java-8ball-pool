@@ -5,9 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.RegularBall3D;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.HashSet;
+import java.util.Set;
 
 class PlayerTest {
     /**
@@ -71,11 +75,11 @@ class PlayerTest {
     @Test
     public void testCheckAllBallsPottedUnassignedType() {
         final int id = 0;
+        final Set<Ball3D> unpotted = new HashSet<>();
         Player player = new Player(id);
 
-        player.updateBallsLeft(0);
         assertEquals(RegularBall3D.Type.UNASSIGNED, player.getBallType());
-        assertFalse(player.allBallsPotted());
+        assertFalse(player.allBallsPotted(unpotted));
     }
 
     /**
@@ -86,11 +90,12 @@ class PlayerTest {
     @Test
     public void testCheckAllBallsPottedAssignedType() {
         final int id = 0;
+        final Set<Ball3D> unpotted = new HashSet<>();
         Player player = new Player(id);
 
+
         player.assignBallType(RegularBall3D.Type.FULL);
-        player.updateBallsLeft(0);
-        assertTrue(player.allBallsPotted());
+        assertTrue(player.allBallsPotted(unpotted));
     }
 
     /**
@@ -102,11 +107,17 @@ class PlayerTest {
     @Test
     public void testCheckAllBallsNotPotted() {
         final int id = 0;
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+        final Set<Ball3D> unpotted = new HashSet<>();
+        final RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+
+        Mockito.when(ball.getType()).thenReturn(type);
+        unpotted.add(ball);
+
         Player player = new Player(id);
 
-        player.assignBallType(RegularBall3D.Type.FULL);
-        player.updateBallsLeft(1);
-        assertFalse(player.allBallsPotted());
+        player.assignBallType(type);
+        assertFalse(player.allBallsPotted(unpotted));
     }
 
     /**
@@ -124,52 +135,5 @@ class PlayerTest {
         player.potBall(ball);
 
         assertFalse(player.getPottedBalls().contains(ball));
-    }
-
-    /**
-     * Test case to verify that when the pot method for Player
-     * is called with a ball of type not equal to theirs,
-     * then the count of potted balls is not decreased.
-     * (Here, we rely on checking if all balls are potted with count 1 before)
-     */
-    @Test
-    public void testPotBallDifferentTypeCountSame() {
-        final int id = 0;
-        final RegularBall3D.Type type1 = RegularBall3D.Type.FULL;
-        final RegularBall3D.Type type2 = RegularBall3D.Type.STRIPED;
-
-        Player player = new Player(id);
-        player.assignBallType(type1);
-        player.updateBallsLeft(1);
-
-        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
-        Mockito.when(ball.getType()).thenReturn(type2);
-
-        player.potBall(ball);
-
-        assertFalse(player.allBallsPotted());
-    }
-
-    /**
-     * Test case to verify that when the pot method for Player
-     * is called with a ball of type equals theirs,
-     * then the count of potted balls is decreased.
-     * (Here, we rely on checking if all balls are potted with count 1 before)
-     */
-    @Test
-    public void testPotBallSameTypeChangeCount() {
-        final int id = 0;
-        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
-
-        Player player = new Player(id);
-        player.assignBallType(type);
-        player.updateBallsLeft(1);
-
-        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
-        Mockito.when(ball.getType()).thenReturn(type);
-
-        player.potBall(ball);
-
-        assertTrue(player.allBallsPotted());
     }
 }

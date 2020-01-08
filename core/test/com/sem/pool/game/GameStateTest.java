@@ -404,9 +404,12 @@ class GameStateTest {
      */
     @Test
     void testPotEightBallLossNotAllPotted() {
-        constructBallsList(true, true, 2, 2);
+        balls  = constructBallsList(true, true, 2, 2);
         Ball3D eightBall = balls.get(1);
 
+        gameState = new GameState(players, balls);
+
+        // Assign ball type to Player
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
@@ -428,9 +431,10 @@ class GameStateTest {
      */
     @Test
     void testPotOnlyEightBallWin() {
-        constructBallsList(true, true, 0, 0);
+        balls = constructBallsList(true, true, 0, 0);
         Ball3D eightBall = balls.get(1);
 
+        gameState = new GameState(players, balls);
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
@@ -514,36 +518,5 @@ class GameStateTest {
         int count2 = gameState.getRemainingBallCount(type);
         int expected2 = solid - 2;
         assertEquals(expected2, count2);
-    }
-
-    /**
-     * Test case to verify that the Player's ball count
-     * is updated after a ball type is assigned to them.
-     */
-    @Test
-    void testVerifyPlayerBallCountUpdate() {
-        final RegularBall3D.Type type1 = RegularBall3D.Type.FULL;
-        final RegularBall3D.Type type2 = RegularBall3D.Type.STRIPED;
-        final int fullCount = gameState.getRemainingBallCount(type1);
-        final int stripedCount = gameState.getRemainingBallCount(type2);
-
-        // Create mock ball with specified type
-        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
-        Mockito.when(ball.getType()).thenReturn(type1);
-
-        // Create mock players
-        Player player1 = Mockito.mock(Player.class);
-        Player player2 = Mockito.mock(Player.class);
-
-        // Add mock players to game
-        gameState.getPlayers().clear();
-        gameState.getPlayers().add(player1);
-        gameState.getPlayers().add(player2);
-
-        // Assign ball type to active player
-        gameState.assignBallTypesToPlayers(ball);
-
-        Mockito.verify(player1).updateBallsLeft(fullCount);
-        Mockito.verify(player2).updateBallsLeft(stripedCount);
     }
 }

@@ -1,5 +1,6 @@
 package com.sem.pool.game;
 
+import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.RegularBall3D;
 
 import java.util.HashSet;
@@ -54,19 +55,12 @@ public class Player {
     }
 
     /**
-     * Updates the number of balls potted by the Player.
-     * @param newCount  New count of potted balls.
+     * Checks whether the Player has potted all of their balls, given
+     * a Set of balls that are not yet potted
+     * @param unpotted - Set of unpotted balls
+     * @return  True iff Player has ball type assigned & all balls were potted.
      */
-    public void updateBallsLeft(int newCount) {
-        this.ballsLeft = newCount;
-    }
-
-    /**
-     * Returns true if the Player has a ball type assigned
-     * and has potted all of their balls.
-     * @return  True iff Player potted all of their balls
-     */
-    public boolean allBallsPotted() {
-        return this.getBallType() != RegularBall3D.Type.UNASSIGNED && this.ballsLeft == 0;
+    public boolean allBallsPotted(Set<Ball3D> unpotted) {
+        return false;
     }
 }

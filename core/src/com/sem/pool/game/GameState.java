@@ -211,7 +211,7 @@ public class GameState implements GameObserver {
         // because a Player might pot the 8-ball and then all of
         // their balls after, which would result in a win when
         // it should be a loss.
-        boolean allPotted = getActivePlayer().allBallsPotted();
+        boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
         boolean eightPotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
@@ -273,9 +273,7 @@ public class GameState implements GameObserver {
         // TODO: Do not assign ball type when cue ball is potted
 
         activePlayer.assignBallType(ball.getType());
-        activePlayer.updateBallsLeft(getRemainingBallCount(ball.getType()));
-
-        RegularBall3D.Type otherType = RegularBall3D.Type.UNASSIGNED;
+        RegularBall3D.Type otherType;
 
         // Assign the other ball type to the other player
         if (ball.getType() == RegularBall3D.Type.STRIPED) {
@@ -285,7 +283,6 @@ public class GameState implements GameObserver {
         }
 
         otherPlayer.assignBallType(otherType);
-        otherPlayer.updateBallsLeft(getRemainingBallCount(otherType));
     }
 
     /**
