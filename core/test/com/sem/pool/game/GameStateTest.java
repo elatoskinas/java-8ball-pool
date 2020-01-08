@@ -10,12 +10,14 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 class GameStateTest {
@@ -38,11 +40,11 @@ class GameStateTest {
     /**
      * Helper method to construct a List of Ball3D objects from the specified configuraion.
      *
-     * @param cueBall     True to add the cue ball to resulting list
-     * @param eightBall   True to add he eight ball to resulting list
-     * @param solid       Number of solid balls to add to list
-     * @param striped     Number of striped balls to add to list
-     * @return            Resulting list of balls
+     * @param cueBall   True to add the cue ball to resulting list
+     * @param eightBall True to add he eight ball to resulting list
+     * @param solid     Number of solid balls to add to list
+     * @param striped   Number of striped balls to add to list
+     * @return Resulting list of balls
      */
     private List<Ball3D> constructBallsList(boolean cueBall, boolean eightBall,
                                             int solid, int striped) {
@@ -506,11 +508,42 @@ class GameStateTest {
         int count1 = gameState.getRemainingBallCount(type);
         assertEquals(solid, count1);
 
-        gameState.potRegularBall((RegularBall3D)balls.get(2));
-        gameState.potRegularBall((RegularBall3D)balls.get(3));
+        gameState.potRegularBall((RegularBall3D) balls.get(2));
+        gameState.potRegularBall((RegularBall3D) balls.get(3));
 
         int count2 = gameState.getRemainingBallCount(type);
         int expected2 = solid - 2;
         assertEquals(expected2, count2);
+    }
+
+    /**
+     * Test case to verify that the Player's ball count
+     * is updated after a ball type is assigned to them.
+     */
+    @Test
+    void testVerifyPlayerBallCountUpdate() {
+        final RegularBall3D.Type type1 = RegularBall3D.Type.FULL;
+        final RegularBall3D.Type type2 = RegularBall3D.Type.STRIPED;
+        final int fullCount = gameState.getRemainingBallCount(type1);
+        final int stripedCount = gameState.getRemainingBallCount(type2);
+
+        // Create mock ball with specified type
+        RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+        Mockito.when(ball.getType()).thenReturn(type1);
+
+        // Create mock players
+        Player player1 = Mockito.mock(Player.class);
+        Player player2 = Mockito.mock(Player.class);
+
+        // Add mock players to game
+        gameState.getPlayers().clear();
+        gameState.getPlayers().add(player1);
+        gameState.getPlayers().add(player2);
+
+        // Assign ball type to active player
+        gameState.assignBallTypesToPlayers(ball);
+
+        Mockito.verify(player1).updateBallsLeft(fullCount);
+        Mockito.verify(player2).updateBallsLeft(stripedCount);
     }
 }

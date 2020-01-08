@@ -273,13 +273,19 @@ public class GameState implements GameObserver {
         // TODO: Do not assign ball type when cue ball is potted
 
         activePlayer.assignBallType(ball.getType());
+        activePlayer.updateBallsLeft(getRemainingBallCount(ball.getType()));
+
+        RegularBall3D.Type otherType = RegularBall3D.Type.UNASSIGNED;
 
         // Assign the other ball type to the other player
         if (ball.getType() == RegularBall3D.Type.STRIPED) {
-            otherPlayer.assignBallType(RegularBall3D.Type.FULL);
+            otherType = RegularBall3D.Type.FULL;
         } else {
-            otherPlayer.assignBallType(RegularBall3D.Type.STRIPED);
+            otherType = RegularBall3D.Type.STRIPED;
         }
+
+        otherPlayer.assignBallType(otherType);
+        otherPlayer.updateBallsLeft(getRemainingBallCount(otherType));
     }
 
     /**
@@ -299,8 +305,6 @@ public class GameState implements GameObserver {
      */
     public int getRemainingBallCount(RegularBall3D.Type type) {
         int count = 0;
-
-        System.out.println(remainingBalls.size());
 
         for (Ball3D ball : remainingBalls) {
             if (ball instanceof RegularBall3D
