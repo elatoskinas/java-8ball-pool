@@ -404,7 +404,7 @@ class GameStateTest {
      */
     @Test
     void testPotEightBallLossNotAllPotted() {
-        balls  = constructBallsList(true, true, 2, 2);
+        balls = constructBallsList(true, true, 2, 2);
         Ball3D eightBall = balls.get(1);
 
         gameState = new GameState(players, balls);
@@ -425,6 +425,37 @@ class GameStateTest {
     }
 
     /**
+     * Test case to verify that when all the balls
+     * of the Player's assigned type are potted
+     * during the current turn together with the 8-ball,
+     * a loss occurs.
+     */
+    @Test
+    void testPotEightBallLossPotAll() {
+        balls = constructBallsList(true, true, 2, 1);
+        Ball3D eightBall = balls.get(1);
+
+        gameState = new GameState(players, balls);
+
+        // Assign ball type to Player
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot balls for current Player
+        gameState.onBallPotted(balls.get(2));
+        gameState.onBallPotted(balls.get(3));
+        gameState.onBallPotted(eightBall);
+        gameState.handleBallPotting();
+
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+        assertFalse(gameState.isStarted());
+    }
+
+
+    /**
      * Test case to verify that when -ONLY- an eight ball is potted
      * when the Player has potted all of their balls, then
      * the Player wins the game.
@@ -438,6 +469,33 @@ class GameStateTest {
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
+        gameState.onBallPotted(eightBall);
+        gameState.handleBallPotting();
+
+        Player expectedWinner = gameState.getActivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+        assertFalse(gameState.isStarted());
+    }
+
+    /**
+     * Test case to verify that when the active Player
+     * has already potted all of their balls, and they
+     * pot the 8-ball, but accidentally pot balls which
+     * are not of their type, they still win the game.
+     */
+    @Test
+    void testPotEightBallAndOthersWin() {
+        balls = constructBallsList(true, true, 0, 3);
+        Ball3D eightBall = balls.get(1);
+
+        gameState = new GameState(players, balls);
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(balls.get(3));
         gameState.onBallPotted(eightBall);
         gameState.handleBallPotting();
 
