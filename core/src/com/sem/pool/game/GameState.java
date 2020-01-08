@@ -41,7 +41,6 @@ public class GameState implements GameObserver {
         this.state = State.Stopped;
         this.players = players;
         this.remainingBalls = new HashSet<>();
-        this.observers = new HashSet<>();
         this.currentPottedBalls = new ArrayList<>();
 
         // Add all pool balls except cue ball to remaining balls set
@@ -68,22 +67,6 @@ public class GameState implements GameObserver {
         return currentPottedBalls;
     }
 
-    public Set<GameStateObserver> getObservers() {
-        return observers;
-    }
-
-    public int getPlayerTurn() {
-        return playerTurn;
-    }
-
-    public void addObserver(GameStateObserver observer) {
-        observers.add(observer);
-    }
-
-    public void removeObserver(GameStateObserver observer) {
-        observers.remove(observer);
-    }
-
     public void setInMotion() {
         this.state = State.InMotion;
     }
@@ -98,14 +81,6 @@ public class GameState implements GameObserver {
 
     public boolean isStopped() {
         return state == State.Stopped;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public Set<Ball3D> getRemainingBalls() {
-        return remainingBalls;
     }
 
     public int getPlayerTurn() {
