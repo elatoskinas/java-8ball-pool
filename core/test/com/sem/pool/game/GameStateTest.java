@@ -440,4 +440,15 @@ class GameStateTest {
         assertEquals(expectedWinner, winner.get());
         assertFalse(gameState.isStarted());
     }
+
+    /**
+     * Test case to verify that when retrieving a winner
+     * when a winner is not yet determined returns an
+     * empty optional object.
+     */
+    @Test
+    void testGetWinnerNoWinner() {
+        Optional<Player> winner = gameState.getWinningPlayer();
+        assertFalse(winner.isPresent());
+    }
 }

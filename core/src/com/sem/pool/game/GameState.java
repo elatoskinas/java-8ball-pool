@@ -266,6 +266,6 @@ public class GameState implements GameObserver {
      * @return  Optional object holding the winner.
      */
     public Optional<Player> getWinningPlayer() {
-        return null;
+        return Optional.ofNullable(winningPlayer);
     }
 }
