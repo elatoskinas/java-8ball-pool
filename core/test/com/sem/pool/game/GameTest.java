@@ -413,7 +413,7 @@ public class GameTest extends GameBaseTest {
             Mockito.verify(o).onBallPotted(ball);
         }
     }
-
+    
     /**
      * Helper method to set up the specified number of mock observers.
      * @param count  Number of observers to create

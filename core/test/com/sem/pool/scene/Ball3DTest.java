@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -94,7 +95,7 @@ abstract class Ball3DTest {
         Ball3D ball2 = getBall(id, model);
 
         assertEquals(ball1, ball2);
-        assertNotEquals("test", ball1);
+        assertNotEquals(ball1, "test");
     }
 
     /**
@@ -208,6 +209,11 @@ abstract class Ball3DTest {
         Vector3 translation = new Vector3(1f, 0, 0);
         ball.translate(translation);
         Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+
+        HitBox mockedHitBox = Mockito.mock(HitBox.class);
+        ball.setHitBox(mockedHitBox);
+        Mockito.doNothing().when(mockedHitBox).updateLocation(Mockito.any());
+        ball.translate(translation);
     }
 
 
@@ -394,10 +400,12 @@ abstract class Ball3DTest {
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
         final Ball3D mockedBall = Mockito.mock(Ball3D.class);
         Ball3D ball = getBall(initId, mockModel);
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
         CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
         ball.setCollisionHandler(mockedHandler);
         Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
         ball.checkCollision(mockedBall);
+        assertFalse(ball.checkCollision(ball));
         Mockito.verify(mockedHandler, Mockito.times(1))
                 .checkHitBoxCollision(Mockito.any(), Mockito.any(HitBox.class));
     }
@@ -427,10 +435,86 @@ abstract class Ball3DTest {
         Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
                 Mockito.any())).thenReturn(true);
         ball.setCollisionHandler(mockedHandler);
+
+        // set ball speed to above minimum
+        ball.setSpeed((GameConstants.MIN_SPEED + 1f));
         // assert that if the handler returns true, the checkCollision method returns true.
         assertTrue(ball.checkCollision(other));
         // verify that the handler is called once
         Mockito.verify(mockedHandler, Mockito.times(1))
                 .checkHitBoxCollision(Mockito.any(), Mockito.any());
+    }
+
+    /**
+     * Additional tests to test if the collisionCheck method returns no when it should.
+     */
+    @Test
+    public void testCollisionCheck() {
+        // mock modelinstance for ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        // mock matrix for ball transform
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+
+        // created mocked ball to collide with
+        Ball3D other = getBall(0, mockModel);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        other.getModel().transform = mockedMatrix;
+        // create ball we use to test
+        Ball3D ball = getBall(0, mockModel);
+        // set transform of model
+        ball.getModel().transform = mockedMatrix;
+
+        // mock handler, set handler to always return true and set handler for ball
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(true);
+        ball.setCollisionHandler(mockedHandler);
+
+        // assert that even if the handler returns true, the checkCollision method returns false
+        // because the ball is not moving.
+        assertFalse(ball.checkCollision(other));
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
+        // assert that balls can not collide with itself
+        assertFalse(ball.checkCollision(ball));
+    }
+
+    /**
+     * Tests if the pot method works properly.
+     */
+    @Test
+    public void testPot() {
+        // mock model instance for ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+
+        Mockito.when(mockMatrix.getTranslation(new Vector3()))
+                .thenReturn(new Vector3(0, -100, 0).scl(-1));
+        mockModel.transform = mockMatrix;
+        Ball3D ball = getBall(0, mockModel);
+
+        // created mocked ball to collide with
+        ball.pot();
+        assertEquals(ball.getCoordinates(), new Vector3(0, -100, 0));
+        assertEquals(ball.getSpeed(), 0);
+        assertEquals(ball.getDirection(), new Vector3());
+
+    }
+
+    /**
+     * Test if sound is being played.
+     */
+    @Test
+    public void testSound() {
+        Music mockedMusic = Mockito.mock(Music.class);
+
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        Ball3D ball = getBall(0, mockModel);
+        ball.playCollisionSound(mockedMusic);
+        Mockito.when(mockedMusic.isPlaying()).thenReturn(false);
+        Mockito.verify(mockedMusic, Mockito.times(1)).play();
+
+        Mockito.when(mockedMusic.isPlaying()).thenReturn(true);
+        Mockito.verify(mockedMusic, Mockito.times(1)).play();
     }
 }

@@ -148,6 +148,7 @@ class GameStateTest {
         // NOTE: Id 1 won't work since it's a eight ball
 
         RegularBall3D ball = (RegularBall3D) balls.get(2);
+        CueBall3D ball2 = (CueBall3D) balls.get(0);
 
         // Verify that ball is contained in remaining set (handled
         // in constructor)
@@ -155,9 +156,14 @@ class GameStateTest {
 
         // Pot the ball
         gameState.onBallPotted(ball);
+        // Pot ball2
+        gameState.onBallPotted(ball2);
+        gameState.getRemainingBalls().add(ball2);
 
         // Assert ball is no longer contained in remaining ball set
         assertFalse(gameState.getRemainingBalls().contains(ball));
+        // Assert ball2 is contained in remaining ball set
+        assertTrue(gameState.getRemainingBalls().contains(ball2));
     }
 
     /**
@@ -289,4 +295,16 @@ class GameStateTest {
         gameState.advanceTurn();
         assertEquals(gameState.getActivePlayer(), inactivePlayer);
     }
+
+    /**
+     * Tests if the isStopped method returns the correct result.
+     */
+    @Test
+    void testIsStopped() {
+        gameState.onGameStarted();
+        assertFalse(gameState.isStopped());
+        gameState.winGame(0);
+        assertTrue(gameState.isStopped());
+    }
+
 }

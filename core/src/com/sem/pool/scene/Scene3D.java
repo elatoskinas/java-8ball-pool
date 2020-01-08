@@ -1,6 +1,7 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -129,18 +130,34 @@ public class Scene3D {
 
             // Check collisions between the board and
             // every ball in the scene
-            table.checkCollision(ball);
+            if (table.checkCollision(ball)) {
+                if (Gdx.audio != null) {
+                    Music tableSound = Gdx.audio.newMusic(
+                            Gdx.files.internal("sounds/ballandtablecollision.mp3"));
+                    ball.playCollisionSound(tableSound);
+                }
+            }
 
             // Check if ball is potted
             boolean potResult = table.checkIfPot(ball);
-
             if (potResult) {
+                if (Gdx.audio != null) {
+                    Music potSound = Gdx.audio.newMusic(
+                            Gdx.files.internal("sounds/ballpot.mp3"));
+                    ball.playCollisionSound(potSound);
+                }
                 potted.add(ball);
             }
 
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
-                ball.checkCollision(other);
+                if (ball.checkCollision(other)) {
+                    if (Gdx.audio != null) {
+                        Music ballSound = Gdx.audio.newMusic(
+                                Gdx.files.internal("sounds/ballandballcollision.mp3"));
+                        ball.playCollisionSound(ballSound);
+                    }
+                }
             }
         }
 

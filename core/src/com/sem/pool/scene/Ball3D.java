@@ -1,5 +1,6 @@
 package com.sem.pool.scene;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -174,6 +175,9 @@ public abstract class Ball3D {
      * @return whether the ball collided with the other ball.
      */
     public boolean checkCollision(Ball3D other) {
+        if (other == this || this.getSpeed() < GameConstants.MIN_SPEED) {
+            return false;
+        }
         if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
             // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
@@ -216,5 +220,19 @@ public abstract class Ball3D {
         translate(new Vector3(0, -100, 0));
         setSpeed(0);
         setDirection(new Vector3());
+    }
+
+    public void setHitBox(HitBox hitBox) {
+        this.hitBox = hitBox;
+    }
+
+    /**
+     * Plays a sound effect after collision, such as ball and ball collision or potting.
+     * @param sound sound effect, of type Music as music allows us to use the isPlaying() method.
+     */
+    public void playCollisionSound(Music sound) {
+        if (!sound.isPlaying()) {
+            sound.play();
+        }
     }
 }
