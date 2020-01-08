@@ -295,21 +295,23 @@ public class GameState implements GameObserver {
         return Optional.ofNullable(winningPlayer);
     }
 
-    /**
-     * Returns the remaining number of balls of the specified type.
-     * @param type  Type of ball to get count for
-     * @return  Number of balls remaining in Game of specified type.
-     */
-    public int getRemainingBallCount(RegularBall3D.Type type) {
-        int count = 0;
-
-        for (Ball3D ball : remainingBalls) {
-            if (ball instanceof RegularBall3D
-                    && ((RegularBall3D)ball).getType() == type) {
-                count++;
-            }
-        }
-
-        return count;
-    }
+    // Might come useful at some point; Determines count for specified
+    // Ball type.
+    //    /**
+    //     * Returns the remaining number of balls of the specified type.
+    //     * @param type  Type of ball to get count for
+    //     * @return  Number of balls remaining in Game of specified type.
+    //     */
+    //    public int getRemainingBallCount(RegularBall3D.Type type) {
+    //        int count = 0;
+    //
+    //        for (Ball3D ball : remainingBalls) {
+    //            if (ball instanceof RegularBall3D
+    //                    && ((RegularBall3D)ball).getType() == type) {
+    //                count++;
+    //            }
+    //        }
+    //
+    //        return count;
+    //    }
 }
