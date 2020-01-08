@@ -7,6 +7,7 @@ import com.sem.pool.scene.RegularBall3D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -22,6 +23,8 @@ public class GameState implements GameObserver {
 
     private transient int playerTurn;
     private transient int turnCount;
+
+    private transient Player winningPlayer;
 
     public enum State {
         Stopped,
@@ -254,5 +257,15 @@ public class GameState implements GameObserver {
         } else {
             otherPlayer.assignBallType(RegularBall3D.Type.STRIPED);
         }
+    }
+
+    /**
+     * Returns an object representing the winning Player.
+     * If there is no winner yet, the returned Optional object
+     * is empty.
+     * @return  Optional object holding the winner.
+     */
+    public Optional<Player> getWinningPlayer() {
+        return null;
     }
 }

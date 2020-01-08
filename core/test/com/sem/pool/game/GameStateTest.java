@@ -12,6 +12,7 @@ import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -392,5 +393,51 @@ class GameStateTest {
 
         gameState.advanceTurn();
         assertEquals(1, player.getPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that when an eight ball is potted
+     * when the Player has not yet potted all of their balls,
+     * then the Player loses the game.
+     */
+    @Test
+    void testPotEightBallLossNotAllPotted() {
+        constructBallsList(true, true, 2, 2);
+        Ball3D eightBall = balls.get(1);
+
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(eightBall);
+
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+        assertFalse(gameState.isStarted());
+    }
+
+    /**
+     * Test case to verify that when -ONLY- an eight ball is potted
+     * when the Player has potted all of their balls, then
+     * the Player wins the game.
+     */
+    @Test
+    void testPotOnlyEightBallWin() {
+        constructBallsList(true, true, 0, 0);
+        Ball3D eightBall = balls.get(1);
+
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(eightBall);
+
+        Player expectedWinner = gameState.getActivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+        assertFalse(gameState.isStarted());
     }
 }
