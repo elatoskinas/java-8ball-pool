@@ -134,7 +134,7 @@ public class Scene3D {
                 if (Gdx.audio != null) {
                     Music tableSound = Gdx.audio.newMusic(
                             Gdx.files.internal("sounds/ballandtablecollision.mp3"));
-                    ball.playCollisionSound(tableSound);
+                    playSound(tableSound);
                 }
             }
 
@@ -144,7 +144,7 @@ public class Scene3D {
                 if (Gdx.audio != null) {
                     Music potSound = Gdx.audio.newMusic(
                             Gdx.files.internal("sounds/ballpot.mp3"));
-                    ball.playCollisionSound(potSound);
+
                 }
                 potted.add(ball);
             }
@@ -155,7 +155,7 @@ public class Scene3D {
                     if (Gdx.audio != null) {
                         Music ballSound = Gdx.audio.newMusic(
                                 Gdx.files.internal("sounds/ballandballcollision.mp3"));
-                        ball.playCollisionSound(ballSound);
+                        playSound(ballSound);
                     }
                 }
             }
@@ -174,5 +174,13 @@ public class Scene3D {
         return mousePosition;
     }
 
-
+    /**
+     * Plays a sound effect after collision, such as ball and ball collision or potting.
+     * @param sound sound effect, of type Music as music allows us to use the isPlaying() method.
+     */
+    public void playSound(Music sound) {
+        if (!sound.isPlaying()) {
+            sound.play();
+        }
+    }
 }

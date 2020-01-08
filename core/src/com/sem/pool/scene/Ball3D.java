@@ -226,13 +226,4 @@ public abstract class Ball3D {
         this.hitBox = hitBox;
     }
 
-    /**
-     * Plays a sound effect after collision, such as ball and ball collision or potting.
-     * @param sound sound effect, of type Music as music allows us to use the isPlaying() method.
-     */
-    public void playCollisionSound(Music sound) {
-        if (!sound.isPlaying()) {
-            sound.play();
-        }
-    }
 }

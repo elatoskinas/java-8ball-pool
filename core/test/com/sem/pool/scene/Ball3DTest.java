@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -499,22 +498,5 @@ abstract class Ball3DTest {
         assertEquals(ball.getSpeed(), 0);
         assertEquals(ball.getDirection(), new Vector3());
 
-    }
-
-    /**
-     * Test if sound is being played.
-     */
-    @Test
-    public void testSound() {
-        Music mockedMusic = Mockito.mock(Music.class);
-
-        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
-        Ball3D ball = getBall(0, mockModel);
-        ball.playCollisionSound(mockedMusic);
-        Mockito.when(mockedMusic.isPlaying()).thenReturn(false);
-        Mockito.verify(mockedMusic, Mockito.times(1)).play();
-
-        Mockito.when(mockedMusic.isPlaying()).thenReturn(true);
-        Mockito.verify(mockedMusic, Mockito.times(1)).play();
     }
 }

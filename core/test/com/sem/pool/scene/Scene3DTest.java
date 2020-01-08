@@ -2,9 +2,6 @@ package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -235,19 +232,23 @@ class Scene3DTest {
         Mockito.when(table.checkIfPot(ball)).thenReturn(true);
         Mockito.when(table.checkCollision(ball)).thenReturn(true);
         Mockito.when(ball.checkCollision(Mockito.any())).thenReturn(true);
-
-        Audio mockedAudio = Mockito.mock(Audio.class);
-        Files mockedFiles = Mockito.mock(Files.class);
-        Gdx.audio = mockedAudio;
-        Gdx.files = mockedFiles;
-        Music mockedMusic = Mockito.mock(Music.class);
-        Mockito.when(mockedAudio.newMusic(Mockito.any())).thenReturn(mockedMusic);
         // Get the potted balls after triggering collisions
         List<Ball3D> potted = scene.triggerCollisions();
-        Mockito.verify(ball, Mockito.times(2)).playCollisionSound(Mockito.any());
-
         // Ensure that no ball was potted
         assertEquals(1, potted.size());
+    }
 
+    /**
+     * Tests whether the playSound method calls the play() method when it should.
+     */
+    @Test
+    public void testPlaySound() {
+        Music mockedMusic = Mockito.mock(Music.class);
+        Mockito.when(mockedMusic.isPlaying()).thenReturn(true);
+        scene.playSound(mockedMusic);
+        Mockito.verify(mockedMusic, Mockito.times(0)).play();
+        Mockito.when(mockedMusic.isPlaying()).thenReturn(false);
+        scene.playSound(mockedMusic);
+        Mockito.verify(mockedMusic, Mockito.times(1)).play();
     }
 }

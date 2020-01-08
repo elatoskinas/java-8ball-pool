@@ -173,7 +173,8 @@ public class Game implements ObservableGame {
         scene.getCue().shoot(mousePosition, cueBall);
         if (Gdx.audio != null) {
             Music cueSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/cueshot.mp3"));
-            cueBall.playCollisionSound(cueSound);
+            getScene().playSound(cueSound);
+
         }
     }
 
@@ -211,4 +212,5 @@ public class Game implements ObservableGame {
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
     }
+
 }
