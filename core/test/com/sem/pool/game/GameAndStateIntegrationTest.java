@@ -78,6 +78,9 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     void testEndGameOnWin() {
         final float deltaTime = 1f;
 
+        // Start game
+        game.startGame();
+
         // Create observer to verify game end call
         GameObserver observer = Mockito.mock(GameObserver.class);
         game.addObserver(observer);

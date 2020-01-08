@@ -168,6 +168,8 @@ public class GameState implements GameObserver {
             // Not all balls potted; Other Player wins.
             winningPlayer = getNextInactivePlayer();
         }
+
+        System.out.println(getWinningPlayer().isPresent());
     }
 
     @Override
