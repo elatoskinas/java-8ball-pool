@@ -47,7 +47,10 @@ public class Player {
      * @param ball  Ball that the player has potted
      */
     public void potBall(RegularBall3D ball) {
-        pottedBalls.add(ball);
+        if (ball.getType() == ballType) {
+            pottedBalls.add(ball);
+            ballsLeft--;
+        }
     }
 
     /**

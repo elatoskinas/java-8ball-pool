@@ -35,9 +35,13 @@ class PlayerTest {
     @Test
     public void testPotBallSameType() {
         final int id = 0;
-        Player player = new Player(id);
+        final RegularBall3D.Type type = RegularBall3D.Type.STRIPED;
 
         RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+        Mockito.when(ball.getType()).thenReturn(type);
+
+        Player player = new Player(id);
+        player.assignBallType(type);
         player.potBall(ball);
 
         assertTrue(player.getPottedBalls().contains(ball));
