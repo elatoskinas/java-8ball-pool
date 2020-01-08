@@ -1,4 +1,4 @@
-package com.sem.pool;
+package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
