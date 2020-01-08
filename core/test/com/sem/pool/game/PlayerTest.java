@@ -7,11 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.RegularBall3D;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class PlayerTest {
     /**

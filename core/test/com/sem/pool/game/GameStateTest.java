@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 class GameStateTest {
@@ -432,7 +431,6 @@ class GameStateTest {
     @Test
     void testPotEightBallLossPotAll() {
         balls = constructBallsList(true, true, 2, 1);
-        Ball3D eightBall = balls.get(1);
 
         gameState = new GameState(players, balls);
 
@@ -442,7 +440,7 @@ class GameStateTest {
         // Pot balls for current Player
         gameState.onBallPotted(balls.get(2));
         gameState.onBallPotted(balls.get(3));
-        gameState.onBallPotted(eightBall);
+        gameState.onBallPotted(balls.get(1));
         gameState.handleBallPotting();
 
         Player expectedWinner = gameState.getNextInactivePlayer();
@@ -486,14 +484,13 @@ class GameStateTest {
     @Test
     void testPotEightBallAndOthersWin() {
         balls = constructBallsList(true, true, 0, 3);
-        Ball3D eightBall = balls.get(1);
 
         gameState = new GameState(players, balls);
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
         gameState.onBallPotted(balls.get(3));
-        gameState.onBallPotted(eightBall);
+        gameState.onBallPotted(balls.get(1));
         gameState.handleBallPotting();
 
         Player expectedWinner = gameState.getActivePlayer();

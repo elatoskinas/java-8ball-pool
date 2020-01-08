@@ -1,7 +1,6 @@
 package com.sem.pool;
 
 import com.sem.pool.screens.Pool;
-import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Sample test class. To be removed in the future.
