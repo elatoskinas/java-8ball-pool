@@ -1,6 +1,7 @@
 package com.sem.pool.game;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,5 +54,52 @@ class PlayerTest {
 
         player.assignBallType(RegularBall3D.Type.STRIPED);
         assertEquals(player.getBallType(), RegularBall3D.Type.STRIPED);
+    }
+
+    /**
+     * Test case to verify that when a Player is checked
+     * whether all of their balls are potted, and they have
+     * a count of 0, but have not a ball type assigned,
+     * then the result is false.
+     */
+    @Test
+    public void testCheckAllBallsPottedUnassignedType() {
+        final int id = 0;
+        Player player = new Player(id);
+
+        player.updateBallsLeft(0);
+        assertEquals(RegularBall3D.Type.UNASSIGNED, player.getBallType());
+        assertFalse(player.allBallsPotted());
+    }
+
+    /**
+     * Test case to verify that when a Player has potted all of
+     * their balls, and have a ball type assigned, then
+     * the result of checking if all balls are potted is true.
+     */
+    @Test
+    public void testCheckAllBallsPottedAssignedType() {
+        final int id = 0;
+        Player player = new Player(id);
+
+        player.assignBallType(RegularBall3D.Type.FULL);
+        player.updateBallsLeft(0);
+        assertTrue(player.allBallsPotted());
+    }
+
+    /**
+     * Test case to verify that when a check is performed
+     * on whether the Player has potted all their balls
+     * and they still have some balls remaining (while
+     * type is assigned), then false is returned.
+     */
+    @Test
+    public void testCheckAllBallsNotPotted() {
+        final int id = 0;
+        Player player = new Player(id);
+
+        player.assignBallType(RegularBall3D.Type.FULL);
+        player.updateBallsLeft(1);
+        assertFalse(player.allBallsPotted());
     }
 }

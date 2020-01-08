@@ -9,6 +9,7 @@ public class Player {
     private transient int id;
     private transient RegularBall3D.Type ballType;
     private transient Set<RegularBall3D> pottedBalls;
+    private transient int ballsLeft;
 
     /**
      * Creates a new Player with the specified id.
@@ -47,5 +48,22 @@ public class Player {
      */
     public void potBall(RegularBall3D ball) {
         pottedBalls.add(ball);
+    }
+
+    /**
+     * Updates the number of balls potted by the Player.
+     * @param newCount  New count of potted balls.
+     */
+    public void updateBallsLeft(int newCount) {
+        this.ballsLeft = newCount;
+    }
+
+    /**
+     * Returns true if the Player has a ball type assigned
+     * and has potted all of their balls.
+     * @return  True iff Player potted all of their balls
+     */
+    public boolean allBallsPotted() {
+        return false;
     }
 }
