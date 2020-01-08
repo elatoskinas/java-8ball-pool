@@ -60,6 +60,8 @@ public class Player {
      * @param unpotted - Set of unpotted balls
      * @return  True iff Player has ball type assigned & all balls were potted.
      */
+    // UR anomaly false positive triggered by foreach loop (ball variable)
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public boolean allBallsPotted(Set<Ball3D> unpotted) {
         if (ballType == RegularBall3D.Type.UNASSIGNED) {
             return false;
