@@ -4,6 +4,7 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.RegularBall3D;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.Set;
 public class GameState {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
+    private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
 
     private transient int playerTurn;
     private transient int turnCount;
@@ -43,6 +45,7 @@ public class GameState {
         this.players = players;
         this.remainingBalls = new HashSet<>();
         this.observers = new HashSet<>();
+        this.currentPottedBalls = new ArrayList<>();
 
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
@@ -62,6 +65,10 @@ public class GameState {
 
     public Set<Ball3D> getRemainingBalls() {
         return remainingBalls;
+    }
+
+    public List<Ball3D> getCurrentPottedBalls() {
+        return currentPottedBalls;
     }
 
     public Set<GameStateObserver> getObservers() {
@@ -143,6 +150,8 @@ public class GameState {
      * turn and starting the subsequent Player's turn.
      */
     public void advanceTurn() {
+        handleBallPotting();
+
         // Increment player turn and wrap turn ID around
         // players size to keep it within bounds
         playerTurn = (playerTurn + 1) % players.size();
@@ -174,45 +183,41 @@ public class GameState {
     }
 
     /**
-     * Handles ball potting of the specified ball, including
-     * special cases on potting the cue and 8-ball, which might
-     * result in the victory or loss of the game.
+     * Pots the specified ball for the current turn of the Game State.
      * @param ball  Ball to pot
      */
     public void onBallPotted(Ball3D ball) {
+        // Pot ball in current turn
+        currentPottedBalls.add(ball);
+    }
 
+    /**
+     * Handles ball potting logic of all balls in the current turn,
+     * including special cases on potting the cue and 8-ball, which might
+     * result in the victory or loss of the game.
+     */
+    // UR anomaly false positive triggered by foreach loop (ball variable)
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    protected void handleBallPotting() {
         // TODO: Do action based on type of ball potted; Maybe this should
         //       be handled in the Player class and an event propagated back somehow?
         // TODO: Should handle dispatching events back to Game
         // TODO: Special eight ball & cue ball handling
 
-        if (ball instanceof RegularBall3D) {
-            potRegularBall((RegularBall3D) ball);
+        for (Ball3D ball : currentPottedBalls) {
+            if (ball instanceof RegularBall3D) {
+                potRegularBall((RegularBall3D) ball);
+            }
+            //        else if (ball instanceof CueBall3D) {
+            //            // TODO: Logic for cue ball potted
+            //            // TODO: reset Cueball after turn and make the turn invalid
+            //        } else {
+            //            // Eight ball potted
+            //            // TODO: Handle ball pottingg logic for 8-ball
+            //        }
         }
-        //        else if (ball instanceof CueBall3D) {
-        //            // TODO: Logic for cue ball potted
-        //            // TODO: reset Cueball after turn and make the turn invalid
-        //        } else {
-        //            // Eight ball potted
-        //            eightBallPotted();
-        //        }
-    }
 
-    /**
-     * Eight ball is potted. Either the active or the other player wins the game.
-     */
-    public void eightBallPotted() {
-    //        Player activePlayer = players.get(playerTurn);
-
-    //        // Active player pots the eight ball after all his regular type balls.
-    //        if (activePlayer.getPottedBalls().size() == GameConstants.REGULAR_BALL_COUNT) {
-    //            // TODO: Current player wins the game if the move is valid
-    //            // TODO: Wait until there are no balls in motion
-    //        } else {
-    //            // Not a valid eight ball pot. Active player loses the game.
-    //            // TODO: Active player loses the game
-    //            // TODO: Other player wins the game
-    //        }
+        currentPottedBalls.clear();
     }
 
     /**
@@ -221,7 +226,6 @@ public class GameState {
      * @param ball regular ball
      */
     public void potRegularBall(RegularBall3D ball) {
-
         Player activePlayer = getActivePlayer();
 
         if (activePlayer.getBallType() == RegularBall3D.Type.UNASSIGNED) {

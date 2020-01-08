@@ -271,6 +271,7 @@ class GameStateTest {
 
         // Pot the ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         // Assert ball is no longer contained in remaining ball set
         assertFalse(gameState.getRemainingBalls().contains(ball));
@@ -294,6 +295,7 @@ class GameStateTest {
 
         // Pot a full regular ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         // Verify the active player (which is the first Player by default
         // after constructing GameState object) pots the ball
@@ -330,6 +332,7 @@ class GameStateTest {
 
         // Pot a full regular ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         Mockito.verify(player1).assignBallType(RegularBall3D.Type.FULL);
         Mockito.verify(player2).assignBallType(RegularBall3D.Type.STRIPED);
@@ -360,6 +363,7 @@ class GameStateTest {
 
         // Pot a full regular ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         Mockito.verify(player1).assignBallType(RegularBall3D.Type.STRIPED);
         Mockito.verify(player2).assignBallType(RegularBall3D.Type.FULL);
@@ -404,5 +408,104 @@ class GameStateTest {
         Player inactivePlayer = gameState.getNextInactivePlayer();
         gameState.advanceTurn();
         assertEquals(gameState.getActivePlayer(), inactivePlayer);
+    }
+
+    /**
+     * Test case to verify that the current potted balls
+     * List is initialized to empty List initially (after constructcion).
+     */
+    @Test
+    void testGetCurrentPottedBalls() {
+        List<Ball3D> currentPotted = gameState.getCurrentPottedBalls();
+
+        assertNotNull(currentPotted);
+        assertEquals(0, currentPotted.size());
+    }
+
+    /**
+     * Test case to verify that advancing the turn in Game State
+     * clears the potted balls.
+     */
+    @Test
+    void testAdvanceTurnClearPottedBalls() {
+        final int potCount = 4;
+
+        // Pot balls
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            gameState.onBallPotted(ball);
+        }
+
+        assertEquals(potCount, gameState.getCurrentPottedBalls().size());
+
+        gameState.advanceTurn();
+        assertEquals(0, gameState.getCurrentPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that upon potting ball in Game State, the
+     * current potted balls List is updated accordingly.
+     */
+    @Test
+    void testPotBallsAddToPotted() {
+        assertEquals(0, gameState.getCurrentPottedBalls().size());
+
+        final int potCount = 2;
+
+        // Pot balls
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            gameState.onBallPotted(ball);
+        }
+
+        assertEquals(potCount, gameState.getCurrentPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that potting multiple balls of
+     * the same type as the active player's assigned type
+     * properly pots the balls for that Player.
+     */
+    @Test
+    void testHandleBallPottingMultipleSame() {
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+        final int potCount = 3;
+
+        Player player = gameState.getActivePlayer();
+        player.assignBallType(type);
+
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            Mockito.when(ball.getType()).thenReturn(type);
+            gameState.onBallPotted(ball);
+        }
+
+        gameState.advanceTurn();
+
+        assertEquals(potCount, player.getPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that potting multiple balls of
+     * the same type as the active player's assigned type
+     * properly pots the balls for that Player.
+     */
+    @Test
+    void testHandleBallPottingMultipleSDiffering() {
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+        Player player = gameState.getActivePlayer();
+        player.assignBallType(type);
+
+        RegularBall3D ball1 = Mockito.mock(RegularBall3D.class);
+        RegularBall3D ball2 = Mockito.mock(RegularBall3D.class);
+
+        Mockito.when(ball1.getType()).thenReturn(RegularBall3D.Type.FULL);
+        Mockito.when(ball2.getType()).thenReturn(RegularBall3D.Type.STRIPED);
+
+        gameState.onBallPotted(ball1);
+        gameState.onBallPotted(ball2);
+
+        gameState.advanceTurn();
+        assertEquals(1, player.getPottedBalls().size());
     }
 }
