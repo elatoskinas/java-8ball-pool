@@ -11,7 +11,10 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,7 +42,8 @@ public class GameTest extends GameBaseTest {
         assertEquals(gameState, game2.getState());
 
         // Verify that game is added as an observer
-        Mockito.verify(gameState).addObserver(game2);
+        //Mockito.verify(gameState).addObserver(game2);
+        // TODO: Verify game state is added as an observer
     }
 
     /**
@@ -163,7 +167,7 @@ public class GameTest extends GameBaseTest {
 
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
-        Mockito.verify(gameState).advanceTurn();
+        Mockito.verify(gameState).onMotionStop();
     }
 
     /**
@@ -255,5 +259,175 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball potted in Game State
         Mockito.verify(gameState).onBallPotted(ball);
+    }
+
+    /**
+     * Test case to verify that the game state is an observer of the Game
+     * class after constructing the Game class.
+     */
+    @Test
+    public void testGameStateIsObserver() {
+        assertTrue(game.getObservers().contains(gameState));
+    }
+
+    /**
+     * Test case to verify that retrieving the observers of the
+     * instantiated Game object returns a non-empty Set
+     * containing the Game State, thus verifying that the Game
+     * State is added as an observer, and that the proper collection is returned.
+     */
+    @Test
+    public void testGameGetObservers() {
+        final Set<GameObserver> expected = new HashSet<>();
+        expected.add(gameState);
+
+        assertEquals(expected, game.getObservers());
+    }
+
+    /**
+     * Test case to verify that adding an observer to the Game object
+     * properly adds it to the underlying collection.
+     */
+    @Test
+    public void testGameAddObserver() {
+        GameObserver observer = Mockito.mock(GameObserver.class);
+        assertFalse(game.getObservers().contains(observer));
+
+        game.addObserver(observer);
+        assertTrue(game.getObservers().contains(observer));
+    }
+
+    /**
+     * Test case to verify that removing an observer from the Game
+     * object will properly remove it from the underlying collection
+     * in the case that it exists.
+     */
+    @Test
+    public void testGameRemoveObserver() {
+        GameObserver observer = Mockito.mock(GameObserver.class);
+
+        game.addObserver(observer);
+        assertTrue(game.getObservers().contains(observer));
+
+        game.removeObserver(observer);
+        assertFalse(game.getObservers().contains(observer));
+    }
+
+    /**
+     * Test case to verify that removing an observer which does not
+     * exist in the Game's observers does not remove anything.
+     */
+    @Test
+    public void testGameRemoveObserverNonExistent() {
+        int size = game.getObservers().size();
+
+        GameObserver observer = Mockito.mock(GameObserver.class);
+        assertFalse(game.getObservers().contains(observer));
+
+        game.removeObserver(observer);
+        assertEquals(size, game.getObservers().size());
+    }
+
+    /**
+     * Test case to verify that upon starting the game, all observers
+     * are notified of the start of the game.
+     */
+    @Test
+    public void testGameStartObservers() {
+        final int observerCount = 5;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        game.startGame();
+
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
+            Mockito.verify(o).onGameStarted();
+        }
+    }
+
+    /**
+     * Test case to verify that upon ending the game, all observers
+     * are notified of the end of the game.
+     */
+    @Test
+    public void testGameEndObservers() {
+        final int observerCount = 3;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        game.endGame();
+
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
+            Mockito.verify(o).onGameEnded();
+        }
+    }
+
+    /**
+     * Test case to verify that upon stopping the motion of the game,
+     * all the observers are notified of the change.
+     */
+    @Test
+    public void testGameMotionStopObservers() {
+        final int observerCount = 4;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        game.stopMotion();
+
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
+            Mockito.verify(o).onMotionStop();
+        }
+    }
+
+    /**
+     * Test case to verify that upon starting the motion of the game,
+     * all the observers are notified of the change.
+     */
+    @Test
+    public void testGameMotionStartObservers() {
+        final int observerCount = 4;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        game.startMotion();
+
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
+            Mockito.verify(o).onMotion();
+        }
+    }
+
+    /**
+     * Test case to verify that upon potting a ball in the Game object,
+     * all observers are notified of the pot.
+     */
+    @Test
+    public void testGamePotObservers() {
+        final int observerCount = 5;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        game.potBall(ball);
+
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
+            Mockito.verify(o).onBallPotted(ball);
+        }
+    }
+
+    /**
+     * Helper method to set up the specified number of mock observers.
+     * @param count  Number of observers to create
+     * @return       List of mock observers
+     */
+    private List<GameObserver> setUpObservers(int count) {
+        List<GameObserver> result = new ArrayList<>();
+
+        for (int i = 0; i < count; ++i) {
+            GameObserver observer = Mockito.mock(GameObserver.class);
+            game.addObserver(observer);
+            result.add(observer);
+        }
+
+        return result;
     }
 }

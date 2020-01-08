@@ -15,7 +15,7 @@ import java.util.Set;
  * The methods that update observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-public class GameState {
+public class GameState implements GameObserver {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
     private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
@@ -23,17 +23,13 @@ public class GameState {
     private transient int playerTurn;
     private transient int turnCount;
 
-    private transient boolean started;
-
-    enum State {
+    public enum State {
         Stopped,
         Idle,
-        InMotion,
-        Ended
+        InMotion
     }
 
     private transient State state;
-    private transient Set<GameStateObserver> observers;
 
     /**
      * Creates a new game state with the specified Players and
@@ -42,6 +38,7 @@ public class GameState {
      * @param poolBalls   List of pool balls to use for the game
      */
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
+        this.state = State.Stopped;
         this.players = players;
         this.remainingBalls = new HashSet<>();
         this.observers = new HashSet<>();
@@ -56,7 +53,7 @@ public class GameState {
     }
 
     public boolean isStarted() {
-        return started;
+        return state != State.Stopped;
     }
 
     public List<Player> getPlayers() {
@@ -99,16 +96,20 @@ public class GameState {
         return state == State.Idle;
     }
 
-    public void setToIdle() {
-        state = State.Idle;
-    }
-
-    public void setToStopped() {
-        this.state = State.Stopped;
-    }
-
     public boolean isStopped() {
         return state == State.Stopped;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Set<Ball3D> getRemainingBalls() {
+        return remainingBalls;
+    }
+
+    public int getPlayerTurn() {
+        return playerTurn;
     }
 
     /**
@@ -131,10 +132,9 @@ public class GameState {
      * Starts the pool game by picking a random Player
      * for the break shot.
      */
-    public void startGame() {
+    public void onGameStarted() {
         initStartingPlayer();
 
-        this.started = true;
         this.state = State.Idle;
     }
 
@@ -170,16 +170,30 @@ public class GameState {
     // loop in the method. Also false positive for the winningPlayer.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void winGame(int winnerId) {
+        // Get winning Player
         Player winningPlayer = players.get(winnerId);
 
-        // Notify the observers of the victory
-        for (GameStateObserver observer : observers) {
-            observer.endGame(winningPlayer);
-        }
+        // Notify observers
+        //endGame(winningPlayer);
 
         // Stop the game
-        state = State.Ended;
-        started = false;
+        state = State.Stopped;
+    }
+
+    @Override
+    public void onMotion() {
+        this.state = State.InMotion;
+    }
+
+    @Override
+    public void onMotionStop() {
+        advanceTurn();
+        this.state = State.Idle;
+    }
+
+    @Override
+    public void onGameEnded() {
+        // TODO: ?
     }
 
     /**

@@ -29,7 +29,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         setupScenePoolBallsHelper(false, false, false);
         game.startGame();
         assertFalse(game.determineIsInMotion());
-        gameState.setInMotion();
+        gameState.onMotion();
 
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
@@ -65,8 +65,8 @@ class GameAndStateIntegrationTest extends GameBaseTest {
 
         setupScenePoolBallsHelper(true, false);
 
-        gameState.startGame();
-        gameState.setInMotion();
+        gameState.onGameStarted();
+        gameState.onMotion();
 
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
