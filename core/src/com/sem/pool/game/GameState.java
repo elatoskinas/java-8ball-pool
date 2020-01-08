@@ -31,7 +31,6 @@ public class GameState implements GameObserver {
         Stopped,
         Idle,
         InMotion,
-        Won,
         Ended
     }
 
@@ -83,10 +82,6 @@ public class GameState implements GameObserver {
 
     public boolean isIdle() {
         return state == State.Idle;
-    }
-
-    public boolean isWon() {
-        return state == State.Won;
     }
 
     public boolean isStopped() {
@@ -173,8 +168,6 @@ public class GameState implements GameObserver {
             // Not all balls potted; Other Player wins.
             winningPlayer = getNextInactivePlayer();
         }
-
-        state = State.Won;
     }
 
     @Override
@@ -184,9 +177,7 @@ public class GameState implements GameObserver {
 
     @Override
     public void onMotionStop() {
-        if (this.state != State.Won) {
-            advanceTurn();
-        }
+        advanceTurn();
     }
 
     @Override

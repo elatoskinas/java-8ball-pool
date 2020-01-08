@@ -421,7 +421,6 @@ class GameStateTest {
 
         assertTrue(winner.isPresent());
         assertEquals(expectedWinner, winner.get());
-        assertTrue(gameState.isWon());
     }
 
     /**
@@ -451,7 +450,6 @@ class GameStateTest {
 
         assertTrue(winner.isPresent());
         assertEquals(expectedWinner, winner.get());
-        assertTrue(gameState.isWon());
     }
 
 
@@ -477,7 +475,6 @@ class GameStateTest {
 
         assertTrue(winner.isPresent());
         assertEquals(expectedWinner, winner.get());
-        assertTrue(gameState.isWon());
     }
 
     /**
@@ -504,7 +501,6 @@ class GameStateTest {
 
         assertTrue(winner.isPresent());
         assertEquals(expectedWinner, winner.get());
-        assertTrue(gameState.isWon());
     }
 
     /**
