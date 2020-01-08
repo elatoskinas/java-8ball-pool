@@ -2,6 +2,7 @@ package com.sem.pool.game;
 
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
 
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ public class GameState implements GameObserver {
     public enum State {
         Stopped,
         Idle,
-        InMotion
+        InMotion,
+        Ended
     }
 
     private transient State state;
@@ -55,7 +57,7 @@ public class GameState implements GameObserver {
     }
 
     public boolean isStarted() {
-        return state != State.Stopped;
+        return state != State.Stopped && state != State.Ended;
     }
 
     public List<Player> getPlayers() {
@@ -138,24 +140,35 @@ public class GameState implements GameObserver {
         turnCount += 1;
     }
 
+    //    /**
+    //     * Ends the game with the specified Player ID to be marked
+    //     * as the winner.
+    //     * Notifies the observers of the won game.
+    //     * @param winner  Winning Player object
+    //     */
+    //    // False positive on Dataflow Anomaly for the observer
+    //    // loop in the method. Also false positive for the winningPlayer.
+    //    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    //    public void winGame(Player winner) {
+    //        // Stop the game
+    //        state = State.Stopped;
+    //    }
+
     /**
-     * Ends the game with the specified Player ID to be marked
-     * as the winner.
-     * Notifies the observers of the won game.
-     * @param winnerId  ID of the winning player (0-baseed)
+     * Ends the game by determining the winner & stopping the game.
+     *
+     * @param allPotted  True if the current Player had all of their balls potted.
      */
-    // False positive on Dataflow Anomaly for the observer
-    // loop in the method. Also false positive for the winningPlayer.
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void winGame(int winnerId) {
-        // Get winning Player
-        Player winningPlayer = players.get(winnerId);
+    public void endGame(boolean allPotted) {
+        if (allPotted) {
+            // All balls + 8-ball potted; Active player wins.
+            winningPlayer = getActivePlayer();
+        } else {
+            // Not all balls potted; Other Player wins.
+            winningPlayer = getNextInactivePlayer();
+        }
 
-        // Notify observers
-        //endGame(winningPlayer);
-
-        // Stop the game
-        state = State.Stopped;
+        state = State.Ended;
     }
 
     @Override
@@ -191,24 +204,34 @@ public class GameState implements GameObserver {
     // UR anomaly false positive triggered by foreach loop (ball variable)
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     protected void handleBallPotting() {
-        // TODO: Do action based on type of ball potted; Maybe this should
-        //       be handled in the Player class and an event propagated back somehow?
-        // TODO: Should handle dispatching events back to Game
-        // TODO: Special eight ball & cue ball handling
+        // TODO: Special cue ball handling
+
+        // Check if Player has potted all of their assigned ball
+        // type balls. We check for this before potting all balls
+        // because a Player might pot the 8-ball and then all of
+        // their balls after, which would result in a win when
+        // it should be a loss.
+        boolean allPotted = getActivePlayer().allBallsPotted();
+        boolean eightPotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
             if (ball instanceof RegularBall3D) {
                 potRegularBall((RegularBall3D) ball);
+            } else if (ball instanceof EightBall3D) {
+                eightPotted = true;
             }
             //        else if (ball instanceof CueBall3D) {
             //            // TODO: Logic for cue ball potted
             //            // TODO: reset Cueball after turn and make the turn invalid
-            //        } else {
-            //            // Eight ball potted
-            //            // TODO: Handle ball pottingg logic for 8-ball
             //        }
         }
 
+        // 8-ball potted
+        if (eightPotted) {
+            endGame(allPotted);
+        }
+
+        // Reset potted balls for next turn
         currentPottedBalls.clear();
     }
 

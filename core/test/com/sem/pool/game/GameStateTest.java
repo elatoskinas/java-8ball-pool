@@ -409,6 +409,7 @@ class GameStateTest {
 
         // Pot eight ball for current Player
         gameState.onBallPotted(eightBall);
+        gameState.handleBallPotting();
 
         Player expectedWinner = gameState.getNextInactivePlayer();
         Optional<Player> winner = gameState.getWinningPlayer();
@@ -432,6 +433,7 @@ class GameStateTest {
 
         // Pot eight ball for current Player
         gameState.onBallPotted(eightBall);
+        gameState.handleBallPotting();
 
         Player expectedWinner = gameState.getActivePlayer();
         Optional<Player> winner = gameState.getWinningPlayer();
