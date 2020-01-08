@@ -79,7 +79,6 @@ public class Pool implements Screen {
         // assetLoader update event is received in current iteration,
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
-
             float width = Gdx.graphics.getWidth();
             float height = Gdx.graphics.getHeight();
             CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);
@@ -113,16 +112,8 @@ public class Pool implements Screen {
      * Initializes the Game instance for the current Pool Game.
      */
     private void initializeGame() {
-        // Create players with IDs 0 and 1
-        List<Player> players = new ArrayList<>();
-        players.add(new Player(0));
-        players.add(new Player(1));
-
-        // Create game state with the scene's pool balls and created players
-        GameState gameState = new GameState(players, scene.getPoolBalls());
-
-        // Create game instance with GDX input, the scene and the created game state
-        game = new Game(scene, Gdx.input, gameState);
+        // Create new game with local scene & GDX input
+        game = Game.createNewGame(scene, Gdx.input);
 
         // Start the game
         game.startGame();

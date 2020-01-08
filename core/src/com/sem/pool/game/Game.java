@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +32,27 @@ public class Game implements GameStateObserver {
 
         // Add game as an observer to the GameState
         state.addObserver(this);
+    }
+
+    /**
+     * Creates a new Game instance with the given scene and input objects.
+     * @param scene  Scene to use for the Game
+     * @param input  Input handler to use for the Game
+     * @return       New Game instance
+     */
+    public static Game createNewGame(Scene3D scene, Input input) {
+        // Create 2 players with differing IDs
+        Player player1 = new Player(0);
+        Player player2 = new Player(1);
+        List<Player> players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
+
+        // Create game state with the scene's pool balls & the two players
+        GameState gameState = new GameState(players, scene.getPoolBalls());
+
+        // Create a Game object from the parameters
+        return new Game(scene, input, gameState);
     }
 
     public Scene3D getScene() {
