@@ -31,6 +31,7 @@ public class GameState implements GameObserver {
         Stopped,
         Idle,
         InMotion,
+        Won,
         Ended
     }
 
@@ -82,6 +83,10 @@ public class GameState implements GameObserver {
 
     public boolean isIdle() {
         return state == State.Idle;
+    }
+
+    public boolean isWon() {
+        return state == State.Won;
     }
 
     public boolean isStopped() {
@@ -155,11 +160,12 @@ public class GameState implements GameObserver {
     //    }
 
     /**
-     * Ends the game by determining the winner & stopping the game.
+     * Determines the winner of the game & updates the internal
+     * state to "Won".
      *
      * @param allPotted  True if the current Player had all of their balls potted.
      */
-    public void endGame(boolean allPotted) {
+    public void winGame(boolean allPotted) {
         if (allPotted) {
             // All balls + 8-ball potted; Active player wins.
             winningPlayer = getActivePlayer();
@@ -168,7 +174,7 @@ public class GameState implements GameObserver {
             winningPlayer = getNextInactivePlayer();
         }
 
-        state = State.Ended;
+        state = State.Won;
     }
 
     @Override
@@ -228,7 +234,7 @@ public class GameState implements GameObserver {
 
         // 8-ball potted
         if (eightPotted) {
-            endGame(allPotted);
+            winGame(allPotted);
         }
 
         // Reset potted balls for next turn

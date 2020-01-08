@@ -215,7 +215,7 @@ public class Pool implements Screen, GameObserver {
 
     @Override
     public void onMotionStop() {
-        
+
     }
 
     @Override
