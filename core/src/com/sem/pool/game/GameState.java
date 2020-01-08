@@ -185,7 +185,6 @@ public class GameState implements GameObserver {
     @Override
     public void onMotionStop() {
         advanceTurn();
-        this.state = State.Idle;
     }
 
     @Override
