@@ -15,7 +15,7 @@ import java.util.Objects;
  * associating the specific Ball with a specified ID.
  */
 public abstract class Ball3D {
-    protected transient ModelInstance model;
+    private transient ModelInstance model;
     private int id;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
