@@ -227,13 +227,11 @@ public class Cue3D {
 
         // TODO: Different calculation for the distance/force of the cue
         // TODO: Now it just takes the distance to the first left-clicked point
+        
         // The distance from the current mouse position and the first left-click mouse position.
-        float distance = mousePosition.dst(dragOriginMouse);
-
-        // Maximum distance that the cue can be dragged
-        if (distance > FORCE_CAP) {
-            distance = FORCE_CAP;
-        }
+        // capMaxForce prevents cue from going over max force
+        // Force : distance ratio is 1 to 1
+        float distance = capMaxForce(mousePosition.dst(dragOriginMouse));
 
         // Scale the direction with the distance
         direction.scl(distance);
@@ -250,7 +248,6 @@ public class Cue3D {
 
     /**
      * Rotates the cue so that it points towards the center of the cue ball.
-     *
      * @param cueBall cue ball
      */
     public void rotateCue(Ball3D cueBall) {
@@ -267,18 +264,26 @@ public class Cue3D {
      */
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
         // Calculates the force based on the distance
-        float force = mousePosition.dst(dragOriginMouse);
+        float force = capMaxForce(mousePosition.dst(dragOriginMouse));
         Vector3 direction = getCueShotDirection(dragOriginMouse, cueBall);
-
-        // Caps the force
-        if (force > FORCE_CAP) {
-            force = FORCE_CAP;
-        }
+        
 
         // Apply the force in the shoot direction
         cueBall.setDirection(direction);
         cueBall.setSpeed(force);
     }
 
+    /**
+     * Prevents the cue from going over the max force/distance.
+     * @param force float frorce
+     * @return capped float force
+     */
+    float capMaxForce(float force) {
+        // Maximum distance that the cue can be dragged
+        if (force > FORCE_CAP) {
+            force = FORCE_CAP;
+        }
+        return force;
+    }
 
 }

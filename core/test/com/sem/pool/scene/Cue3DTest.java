@@ -247,6 +247,20 @@ public class Cue3DTest {
     }
 
     /**
+     * Test case to verify that the cue rotates when it is set to a new position.
+     */
+    @Test
+    public void testRotateCueIsCalledInDrag() {
+
+        CueBall3D ball = makeCueBall();
+        Cue3D cueSpy = Mockito.spy(cue);
+        Mockito.doNothing().when(cueSpy).rotateCue(ball);
+        cueSpy.toDragPosition(new Vector3(1, 0, 0), ball);
+
+        Mockito.verify(cueSpy, Mockito.times(1)).rotateCue(ball);
+    }
+
+    /**
      * Test case to verify that the cue processes the input when it goes from Hidden to Rotating.
      */
     @Test
@@ -307,6 +321,30 @@ public class Cue3DTest {
                 .toDragPosition(any(Vector3.class), any(CueBall3D.class));
         Mockito.verify(cueSpy, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
     }
+
+    /**
+     * Test case to verify that the cue doesn't go over the capped force.
+     */
+    @Test
+    public void testMaxForce() {
+        float overCap = Cue3D.FORCE_CAP + 1;
+        assertEquals(Cue3D.FORCE_CAP, cue.capMaxForce(overCap));
+
+        float underCap = Cue3D.FORCE_CAP - 0.1f;
+        assertEquals(underCap, cue.capMaxForce(underCap));
+    }
+
+    /**
+     * Test case to verify that the cue rotates when rotateCue is called.
+     */
+    @Test
+    public void testRotateCue() {
+        CueBall3D cueball = makeCueBall();
+        Mockito.when(cue.getCoordinates()).thenReturn(new Vector3(0, 0,0));
+        cue.rotateCue(cueball);
+        Mockito.verify(cue.getModel().transform).rotateRad(any(Vector3.class), any(float.class));
+    }
+
 
     /**
      * Helper method that makes a cue ball.
