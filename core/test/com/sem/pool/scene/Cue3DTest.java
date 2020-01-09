@@ -284,14 +284,27 @@ public class Cue3DTest {
      */
     @Test
     public void testProcessInputOnLeftClick() {
+        ArrayList<Ball3D> poolBalls = new ArrayList<>();
+        poolBalls.add(makeCueBall());
+
+        Scene3D scene = Mockito.mock(Scene3D.class);
+        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0, 0,0));
+
+        Input input = Mockito.mock(Input.class);
+        Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
+        GameState gameState = Mockito.mock(GameState.class);
+
+
         Cue3D cueSpy = Mockito.spy(cue);
-        Mockito.doNothing().when(cueSpy).toPosition(any(Vector3.class), any(CueBall3D.class));
+        Mockito.doNothing().when(cueSpy).toDragPosition(any(Vector3.class), any(CueBall3D.class));
 
-        cueSpy.setState(Cue3D.State.Dragging);
-        callProcessInput(cueSpy);
-        assertEquals(Cue3D.State.Hidden, cueSpy.getState());
+        cueSpy.setState(Cue3D.State.Rotating);
+        cueSpy.processInput(input, scene, gameState);
+        assertEquals(Cue3D.State.Dragging, cueSpy.getState());
 
-        Mockito.verify(cueSpy, Mockito.times(1)).shoot(any(Vector3.class), any(CueBall3D.class));
+        Mockito.verify(cueSpy, Mockito.times(1))
+                .toDragPosition(any(Vector3.class), any(CueBall3D.class));
         Mockito.verify(cueSpy, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
     }
 
@@ -299,7 +312,7 @@ public class Cue3DTest {
      * Helper method that makes a cue ball.
      * @return CueBall3D cue ball.
      */
-    public CueBall3D makeCueBall(){
+    public CueBall3D makeCueBall() {
         ModelInstance ballModel = Mockito.mock(ModelInstance.class);
         ballModel.transform = new Matrix4();
 
@@ -319,7 +332,7 @@ public class Cue3DTest {
      * Helper method that calls processInput on a cue.
      * @param cue Cue3D object
      */
-    public void callProcessInput(Cue3D cue){
+    public void callProcessInput(Cue3D cue) {
         ArrayList<Ball3D> poolBalls = new ArrayList<>();
         poolBalls.add(makeCueBall());
 
