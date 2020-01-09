@@ -18,4 +18,8 @@ public final class GameConstants {
     public static final float DRAG_COEFFICIENT = 0.03f;
     // Minimal speed for a ball before its speed it set to 0.
     public static final float MIN_SPEED = 0.0001f;
+
+    // Cue max shooting force
+    public static final float CUE_FORCE_CAP = 0.3f;
+
 }

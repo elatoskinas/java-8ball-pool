@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.game.GameConstants;
 import com.sem.pool.game.GameState;
 
 /**
@@ -20,18 +21,18 @@ public class Cue3D {
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
 
-    // The max force that can be applied
-    protected static final float FORCE_CAP = 0.3f;
-
     private transient ModelInstance model;
-    private transient BlendingAttribute blendingAttribute;
+
+    // Add blending attribute to hide the cue
+    public transient BlendingAttribute blendingAttribute;
     private transient State state;
 
     // Used for the dragging animation and force calculation
     private transient Vector3 dragOriginCue;
     private transient Vector3 dragOriginMouse;
+    private transient float currentForce;
 
-    enum State {
+    public enum State {
         Rotating,
         Dragging,
         Hidden
@@ -46,10 +47,14 @@ public class Cue3D {
         this.state = State.Hidden;
         this.dragOriginCue = new Vector3();
         this.dragOriginMouse = new Vector3();
-
+        this.currentForce = 0;
         blendingAttribute = new BlendingAttribute(GL20.GL_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         model.getMaterial("CueMaterial").set(blendingAttribute);
         blendingAttribute.opacity = 0;
+    }
+
+    public void setCurrentForce(float currentForce) {
+        this.currentForce = currentForce;
     }
 
     public State getState() {
@@ -166,42 +171,6 @@ public class Cue3D {
         rotateCue(cueBall);
     }
 
-
-    /**
-     * TODO: Move this to a input processor.
-     * Process the input mouse input for the cue
-     *
-     * @param scene the scene object, to get the camera and cueballs.
-     */
-    public void processInput(Input input, Scene3D scene, GameState gameState) {
-        Vector3 mousePosition = scene.getUnprojectedMousePosition();
-        Ball3D cueBall = scene.getPoolBalls().get(0);
-
-        if (state == State.Hidden) {
-            setState(State.Rotating);
-            blendingAttribute.opacity = 1;
-        }
-
-        // Enter dragging
-        if (input.isButtonPressed(Input.Buttons.LEFT)) {
-            // Enter dragging
-            if (state == State.Rotating) {
-                setState(State.Dragging);
-                setDragOriginCue(getCoordinates());
-                setDragOriginMouse(mousePosition);
-            }
-            toDragPosition(mousePosition, cueBall);
-
-        } else if (state == State.Dragging) {
-            gameState.setInMotion();
-            shoot(mousePosition, cueBall);
-            hideCue();
-
-        } else {
-            toPosition(mousePosition, cueBall);
-        }
-    }
-
     /*
      * Hides the cue
      */
@@ -231,7 +200,8 @@ public class Cue3D {
         // The distance from the current mouse position and the first left-click mouse position.
         // capMaxForce prevents cue from going over max force
         // Force : distance ratio is 1 to 1
-        float distance = capMaxForce(mousePosition.dst(dragOriginMouse));
+        float distance = Math.min(GameConstants.CUE_FORCE_CAP, mousePosition.dst(dragOriginMouse));
+        currentForce = distance;
 
         // Scale the direction with the distance
         direction.scl(distance);
@@ -263,27 +233,12 @@ public class Cue3D {
      * @param cueBall       the cueball
      */
     public void shoot(Vector3 mousePosition, Ball3D cueBall) {
-        // Calculates the force based on the distance
-        float force = capMaxForce(mousePosition.dst(dragOriginMouse));
+        // Calculates the direction
         Vector3 direction = getCueShotDirection(dragOriginMouse, cueBall);
-        
 
         // Apply the force in the shoot direction
         cueBall.setDirection(direction);
-        cueBall.setSpeed(force);
-    }
-
-    /**
-     * Prevents the cue from going over the max force/distance.
-     * @param force float frorce
-     * @return capped float force
-     */
-    float capMaxForce(float force) {
-        // Maximum distance that the cue can be dragged
-        if (force > FORCE_CAP) {
-            force = FORCE_CAP;
-        }
-        return force;
+        cueBall.setSpeed(currentForce);
     }
 
 }

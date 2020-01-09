@@ -3,7 +3,6 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -11,8 +10,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 import com.sem.pool.game.GameConstants;
-import com.sem.pool.game.GameState;
-import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,7 +22,6 @@ public class Cue3DTest {
 
     transient Cue3D cue;
 
-
     /**
      * Handles setting up the test fixture by
      * creating mocks of all the required dependencies
@@ -33,8 +29,9 @@ public class Cue3DTest {
      */
     @BeforeEach
     public void setUp() {
+
         ModelInstance model = Mockito.mock(ModelInstance.class);
-        model.transform = Mockito.mock(Matrix4.class);
+        model.transform = new Matrix4();
         Material mat = new Material();
         Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
 
@@ -173,14 +170,15 @@ public class Cue3DTest {
     @Test
     public void testCueForce() {
 
-        CueBall3D cueBall = makeCueBall();
         Matrix4 matrix = Mockito.mock(Matrix4.class);
-        cueBall.getModel().transform = matrix;
-
+        cue.getModel().transform = matrix;
         Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
 
+        CueBall3D cueBall = makeCueBall();
         Vector3 mouseposition = new Vector3(1, 0, 0);
+
         cue.setDragOriginMouse(new Vector3(0.8f, 0, 0));
+        cue.toDragPosition(mouseposition, cueBall);
         cue.shoot(mouseposition, cueBall);
         assertEquals(0.2f, cueBall.getSpeed(), 0.0001f);
     }
@@ -201,9 +199,10 @@ public class Cue3DTest {
 
         Vector3 mouseposition = new Vector3(1000000, 0, 0);
         cue.setDragOriginMouse(new Vector3(0, 0, 0));
+        cue.toDragPosition(mouseposition, cueBall);
         cue.shoot(mouseposition, cueBall);
 
-        assertEquals(Cue3D.FORCE_CAP, cueBall.getSpeed(), 0.0001f);
+        assertEquals(GameConstants.CUE_FORCE_CAP, cueBall.getSpeed(), 0.0001f);
     }
 
     /**
@@ -230,159 +229,6 @@ public class Cue3DTest {
         assertEquals(new Vector3(-1, 0, 0), mousePosition);
     }
 
-
-    /**
-     * Test case to verify that the cue rotates when it is set to a new position.
-     */
-    @Test
-    public void testRotateCueIsCalled() {
-
-        CueBall3D ball = makeCueBall();
-        Cue3D cueSpy = Mockito.spy(cue);
-        Mockito.doNothing().when(cueSpy).rotateCue(ball);
-        cueSpy.toPosition(new Vector3(1, 0, 0), ball);
-
-        Mockito.verify(cueSpy, Mockito.times(1)).rotateCue(ball);
-
-    }
-
-    /**
-     * Test case to verify that the cue rotates when it is set to a new position.
-     */
-    @Test
-    public void testRotateCueIsCalledInDrag() {
-
-        CueBall3D ball = makeCueBall();
-        Cue3D cueSpy = Mockito.spy(cue);
-        Mockito.doNothing().when(cueSpy).rotateCue(ball);
-        cueSpy.toDragPosition(new Vector3(1, 0, 0), ball);
-
-        Mockito.verify(cueSpy, Mockito.times(1)).rotateCue(ball);
-    }
-
-    /**
-     * Test case to verify that the cue processes the input when it goes from Hidden to Rotating.
-     */
-    @Test
-    public void testProcessInputWhenHidden() {
-
-        Cue3D cueSpy = Mockito.spy(cue);
-        Mockito.doNothing().when(cueSpy).toPosition(any(Vector3.class), any(CueBall3D.class));
-
-        cueSpy.setState(Cue3D.State.Hidden);
-        callProcessInput(cueSpy);
-        assertEquals(Cue3D.State.Rotating, cueSpy.getState());
-
-        Mockito.verify(cueSpy, Mockito.times(1)).toPosition(any(Vector3.class), any(Ball3D.class));
-    }
-
-    /**
-     * Test case to verify that the cue processes the input when it goes from Dragging to Hidden.
-     */
-    @Test
-    public void testProcessInputWhenDragging() {
-
-        Cue3D cueSpy = Mockito.spy(cue);
-        Mockito.doNothing().when(cueSpy).toPosition(any(Vector3.class), any(CueBall3D.class));
-
-        cueSpy.setState(Cue3D.State.Dragging);
-        callProcessInput(cueSpy);
-        assertEquals(Cue3D.State.Hidden, cueSpy.getState());
-
-        Mockito.verify(cueSpy, Mockito.times(1)).shoot(any(Vector3.class), any(CueBall3D.class));
-        Mockito.verify(cueSpy, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
-    }
-
-    /**
-     * Test case to verify that the cue processes the input when it goes from Dragging to Hidden.
-     */
-    @Test
-    public void testProcessInputOnLeftClick() {
-        ArrayList<Ball3D> poolBalls = new ArrayList<>();
-        poolBalls.add(makeCueBall());
-
-        Scene3D scene = Mockito.mock(Scene3D.class);
-        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
-        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0, 0,0));
-
-        Input input = Mockito.mock(Input.class);
-        Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
-        GameState gameState = Mockito.mock(GameState.class);
-
-
-        Cue3D cueSpy = Mockito.spy(cue);
-        Mockito.doNothing().when(cueSpy).toDragPosition(any(Vector3.class), any(CueBall3D.class));
-
-        cueSpy.setState(Cue3D.State.Rotating);
-        cueSpy.processInput(input, scene, gameState);
-        assertEquals(Cue3D.State.Dragging, cueSpy.getState());
-
-        Mockito.verify(cueSpy, Mockito.times(1))
-                .toDragPosition(any(Vector3.class), any(CueBall3D.class));
-        Mockito.verify(cueSpy, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
-    }
-
-    /**
-     * Test case to verify that the cue doesn't go over the capped force.
-     */
-    @Test
-    public void testMaxForce() {
-        float overCap = Cue3D.FORCE_CAP + 1;
-        assertEquals(Cue3D.FORCE_CAP, cue.capMaxForce(overCap));
-
-        float underCap = Cue3D.FORCE_CAP - 0.1f;
-        assertEquals(underCap, cue.capMaxForce(underCap));
-    }
-
-    /**
-     * Test case to verify that the cue rotates when rotateCue is called.
-     */
-    @Test
-    public void testRotateCue() {
-        CueBall3D cueball = makeCueBall();
-        Mockito.when(cue.getCoordinates()).thenReturn(new Vector3(0, 0,0));
-        cue.rotateCue(cueball);
-        Mockito.verify(cue.getModel().transform).rotateRad(any(Vector3.class), any(float.class));
-    }
-
-
-    /**
-     * Helper method that makes a cue ball.
-     * @return CueBall3D cue ball.
-     */
-    public CueBall3D makeCueBall() {
-        ModelInstance ballModel = Mockito.mock(ModelInstance.class);
-        ballModel.transform = new Matrix4();
-
-        // Setup expected bounding box of size 4 in each axis
-        BoundingBox box = new BoundingBox();
-        box.ext(4, 4, 4);
-
-        // Make the mock model's calculate bounding box method return
-        // the constructed box
-        Mockito.when(ballModel.calculateBoundingBox(any(BoundingBox.class)))
-                .thenReturn(box);
-
-        return new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
-    }
-
-    /**
-     * Helper method that calls processInput on a cue.
-     * @param cue Cue3D object
-     */
-    public void callProcessInput(Cue3D cue) {
-        ArrayList<Ball3D> poolBalls = new ArrayList<>();
-        poolBalls.add(makeCueBall());
-
-        Scene3D scene = Mockito.mock(Scene3D.class);
-        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
-        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0, 0,0));
-
-        Input input = Mockito.mock(Input.class);
-        GameState gameState = Mockito.mock(GameState.class);
-
-        cue.processInput(input, scene, gameState);
-    }
 
     /**
      * Helper method for testing Cue Shot direction given the
@@ -415,4 +261,25 @@ public class Cue3DTest {
         // Assert expected direction equal to actual direction
         assertEquals(expectedDirection, direction);
     }
+
+    /**
+     * Helper method that makes a cue ball.
+     * @return CueBall3D cue ball.
+     */
+    public CueBall3D makeCueBall() {
+        ModelInstance ballModel = Mockito.mock(ModelInstance.class);
+        ballModel.transform = new Matrix4();
+
+        // Setup expected bounding box of size 4 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(4, 4, 4);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(ballModel.calculateBoundingBox(any(BoundingBox.class)))
+                .thenReturn(box);
+
+        return new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
+    }
+
 }

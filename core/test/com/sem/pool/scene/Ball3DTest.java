@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 /**
  * Test class containing unit tests for the Ball3D class.
  */
-abstract class  Ball3DTest {
+abstract class Ball3DTest {
 
     /**
      * Returns an instance of Ball3D.
