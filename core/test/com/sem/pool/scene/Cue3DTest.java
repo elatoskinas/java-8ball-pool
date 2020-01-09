@@ -33,7 +33,7 @@ public class Cue3DTest {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
         Material mat = new Material();
-        Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
+        Mockito.when(model.getMaterial(Cue3D.MATERIAL_NAME)).thenReturn(mat);
 
         cue = new Cue3D(model);
     }

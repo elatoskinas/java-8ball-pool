@@ -21,6 +21,9 @@ public class Cue3D {
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
 
+    protected static final String MATERIAL_NAME = "CueMaterial";
+
+
     private transient ModelInstance model;
 
     // Add blending attribute to hide the cue
@@ -49,7 +52,7 @@ public class Cue3D {
         this.dragOriginMouse = new Vector3();
         this.currentForce = 0;
         blendingAttribute = new BlendingAttribute(GL20.GL_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        model.getMaterial("CueMaterial").set(blendingAttribute);
+        model.getMaterial(MATERIAL_NAME).set(blendingAttribute);
         blendingAttribute.opacity = 0;
     }
 
@@ -221,8 +224,11 @@ public class Cue3D {
      * @param cueBall cue ball
      */
     public void rotateCue(Ball3D cueBall) {
-        Vector3 cuePosition = getCoordinates().sub(cueBall.getCoordinates());
-        double angle = MathUtils.atan2(cuePosition.z, cuePosition.x * -1);
+        // Calculate the direction of the cue
+        Vector3 cuePositionOrigin = getCoordinates().sub(cueBall.getCoordinates());
+
+        // Calculate the angle the cue has to rotate
+        double angle = MathUtils.atan2(cuePositionOrigin.z, cuePositionOrigin.x * -1);
         model.transform.rotateRad(Vector3.Y, (float) angle);
     }
 
