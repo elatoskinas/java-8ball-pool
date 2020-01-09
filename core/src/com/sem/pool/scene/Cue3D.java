@@ -52,6 +52,14 @@ public class Cue3D {
         blendingAttribute.opacity = 0;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     public ModelInstance getModel() {
         return model;
     }
@@ -114,19 +122,28 @@ public class Cue3D {
     }
 
     /**
+     * Sets the mouseposition to the left of the cueball
+     * when the mouseposition and ballposition are the same.
+     * @param mousePosition Vector3 mouse position
+     * @param ballPosition Vector3 ball position
+     */
+    void verifyMousePosition(Vector3 mousePosition, Vector3 ballPosition) {
+        // If the mouseposition and cue ball position are the same -> set the cue to the left.
+        if (mousePosition.x == ballPosition.x && mousePosition.z == ballPosition.z) {
+            mousePosition.x -= 1;
+        }
+    }
+
+    /**
      * Set the cue to its position and rotation.
      *
      * @param mousePosition mouse coordinates
      * @param cueBall       cue ball
      */
     public void toPosition(Vector3 mousePosition, Ball3D cueBall) {
-
         Vector3 ballPosition = cueBall.getCoordinates();
 
-        // If the mouseposition and cue ball position are the same -> set the cue to the left.
-        if (mousePosition.x == ballPosition.x && mousePosition.z == ballPosition.z) {
-            mousePosition.x -= cueBall.getRadius();
-        }
+        verifyMousePosition(mousePosition, ballPosition);
 
         // Get the mouse direction with respect to the ball
         Vector3 direction = new Vector3();
@@ -149,6 +166,7 @@ public class Cue3D {
         rotateCue(cueBall);
     }
 
+
     /**
      * TODO: Move this to a input processor.
      * Process the input mouse input for the cue
@@ -160,15 +178,15 @@ public class Cue3D {
         Ball3D cueBall = scene.getPoolBalls().get(0);
 
         if (state == State.Hidden) {
-            state = State.Rotating;
+            setState(State.Rotating);
             blendingAttribute.opacity = 1;
         }
 
         // Enter dragging
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             // Enter dragging
-            if (state != State.Dragging) {
-                state = State.Dragging;
+            if (state == State.Rotating) {
+                setState(State.Dragging);
                 setDragOriginCue(getCoordinates());
                 setDragOriginMouse(mousePosition);
             }
@@ -188,7 +206,7 @@ public class Cue3D {
      * Hides the cue
      */
     public void hideCue() {
-        state = State.Hidden;
+        setState(State.Hidden);
         blendingAttribute.opacity = 0;
     }
 

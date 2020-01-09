@@ -152,16 +152,6 @@ public class Game implements GameStateObserver {
         state.onBallPotted(ball);
     }
 
-    /**
-     * Performs the cue shot by firing the cue ball with the
-     * cue's current power and rotation.
-     */
-    private void performCueShot() {
-        // TODO: Integrate power & rotation
-        Vector3 mousePosition = scene.getUnprojectedMousePosition();
-        Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
-        scene.getCue().shoot(mousePosition, cueBall);
-    }
 
     @Override
     public void endGame(Player winner) {

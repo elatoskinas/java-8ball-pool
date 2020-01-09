@@ -3,6 +3,7 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 import com.sem.pool.game.GameConstants;
+import com.sem.pool.game.GameState;
+import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,10 +34,10 @@ public class Cue3DTest {
     @BeforeEach
     public void setUp() {
         ModelInstance model = Mockito.mock(ModelInstance.class);
-        model.transform = new Matrix4();
+        model.transform = Mockito.mock(Matrix4.class);
         Material mat = new Material();
-
         Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
+
         cue = new Cue3D(model);
     }
 
@@ -51,44 +54,6 @@ public class Cue3DTest {
 
         Cue3D cue = new Cue3D(model);
         assertEquals(model, cue.getModel());
-    }
-
-    /**
-     * Test case to verify that cue is set to the right begin position
-     * when there is no mouse input yet.
-     */
-    @Test
-    public void testCueToBeginPosition() {
-
-        final float expectedRadius = 2.f;
-
-        ModelInstance ballModel = Mockito.mock(ModelInstance.class);
-        ballModel.transform = new Matrix4();
-
-        // Setup expected bounding box of size 4 in each axis
-        BoundingBox box = new BoundingBox();
-        box.ext(4, 4, 4);
-
-        // Make the mock model's calculate bounding box method return
-        // the constructed box
-        Mockito.when(ballModel.calculateBoundingBox(any(BoundingBox.class)))
-                .thenReturn(box);
-
-        Ball3D ball = new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
-
-        ModelInstance cueModel = Mockito.mock(ModelInstance.class);
-
-        Material mat = new Material();
-        Mockito.when(cueModel.getMaterial("CueMaterial")).thenReturn(mat);
-
-        Matrix4 ballMockMatrix = Mockito.mock(Matrix4.class);
-        cueModel.transform = ballMockMatrix;
-        Cue3D cue = new Cue3D(cueModel);
-
-        cue.toBeginPosition(ball);
-
-        Mockito.verify(ballMockMatrix, Mockito.times(1))
-                .translate(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
     }
 
     /**
@@ -163,35 +128,21 @@ public class Cue3DTest {
     }
 
     /**
-     * Helper method for testing Cue Shot direction given the
-     * specified setup for the ball and the mouse position,
-     * and the expected direction. The method handles assertions
-     * for the specified setup.
-     * @param ballPosition       Position of the ball
-     * @param mousePosition      Passed in position of the mouse
-     * @param expectedDirection  Expected direction of the cue shot
+     * Test case to verify that cue is set to the right begin position
+     * when there is no mouse input yet.
      */
-    private void testCueShotDirectionHelper(Vector3 ballPosition,
-                                            Vector3 mousePosition, Vector3 expectedDirection) {
-        // Create mock Ball3D instance
-        final int id = 0;
-        final ModelInstance model = Mockito.mock(ModelInstance.class);
-        final Matrix4 matrix = Mockito.mock(Matrix4.class);
+    @Test
+    public void testCueToBeginPosition() {
 
-        // When we get the position of the model (by getting the translation of
-        // a zero vector), then the ball position should be returned.
-        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(ballPosition);
+        final float expectedRadius = 2.f;
 
-        // Set the mock matrix to the model
-        model.transform = matrix;
+        Matrix4 cueMockMatrix = Mockito.mock(Matrix4.class);
+        cue.getModel().transform = cueMockMatrix;
 
-        Ball3D ball = new CueBall3D(id, model);
+        cue.toBeginPosition(makeCueBall());
 
-        // Get the direction given the mouse position
-        Vector3 direction = cue.getCueShotDirection(mousePosition, ball);
-
-        // Assert expected direction equal to actual direction
-        assertEquals(expectedDirection, direction);
+        Mockito.verify(cueMockMatrix, Mockito.times(1))
+                .translate(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
     }
 
     /**
@@ -222,12 +173,10 @@ public class Cue3DTest {
     @Test
     public void testCueForce() {
 
-        final int id = 0;
-        final ModelInstance cueBallModel = Mockito.mock(ModelInstance.class);
-        final Matrix4 matrix = Mockito.mock(Matrix4.class);
-        cueBallModel.transform = matrix;
+        CueBall3D cueBall = makeCueBall();
+        Matrix4 matrix = Mockito.mock(Matrix4.class);
+        cueBall.getModel().transform = matrix;
 
-        CueBall3D cueBall = new CueBall3D(id, cueBallModel);
         Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
 
         Vector3 mouseposition = new Vector3(1, 0, 0);
@@ -237,17 +186,17 @@ public class Cue3DTest {
     }
 
     /**
-     * Test case to verify that the cue shoots the cueball in the right direction.
+     * Test case to verify that the cue shoots the cue ball
+     * with the max cue force when the actual force
+     * is higher than the max cue force.
      */
     @Test
     public void testMaxCueForce() {
 
-        final int id = 0;
-        final ModelInstance cueBallModel = Mockito.mock(ModelInstance.class);
-        final Matrix4 matrix = Mockito.mock(Matrix4.class);
-        cueBallModel.transform = matrix;
+        CueBall3D cueBall = makeCueBall();
+        Matrix4 matrix = Mockito.mock(Matrix4.class);
+        cueBall.getModel().transform = matrix;
 
-        CueBall3D cueBall = new CueBall3D(id, cueBallModel);
         Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
 
         Vector3 mouseposition = new Vector3(1000000, 0, 0);
@@ -258,14 +207,161 @@ public class Cue3DTest {
     }
 
     /**
-     * Test case to verify that the cue shoots the cueball in the right direction.
-     * TODO: Test that the opacity is 1 first
+     * Test case to verify that the cue opacity is set to zero when hideCue is called.
      */
     @Test
     public void testHideCue() {
-//        assertEquals(1, cue.getBlendingAttribute().opacity);
+        cue.getBlendingAttribute().opacity = 1;
+        assertEquals(1, cue.getBlendingAttribute().opacity);
         cue.hideCue();
         assertEquals(0, cue.getBlendingAttribute().opacity);
     }
-    
+
+    /**
+     * Test case to verify that the cue position is set to the left of the
+     * cueball when the mouseposition is at the center of the cueball.
+     */
+    @Test
+    public void testVerifyMousePosition() {
+        Vector3 mousePosition = new Vector3(0, 0, 0);
+        Vector3 ballPosition = new Vector3(0, 0, 0);
+        cue.verifyMousePosition(mousePosition, ballPosition);
+
+        assertEquals(new Vector3(-1, 0, 0), mousePosition);
+    }
+
+
+    /**
+     * Test case to verify that the cue rotates when it is set to a new position.
+     */
+    @Test
+    public void testRotateCueIsCalled() {
+
+        CueBall3D ball = makeCueBall();
+        Cue3D cueSpy = Mockito.spy(cue);
+        Mockito.doNothing().when(cueSpy).rotateCue(ball);
+        cueSpy.toPosition(new Vector3(1, 0, 0), ball);
+
+        Mockito.verify(cueSpy, Mockito.times(1)).rotateCue(ball);
+
+    }
+
+    /**
+     * Test case to verify that the cue processes the input when it goes from Hidden to Rotating.
+     */
+    @Test
+    public void testProcessInputWhenHidden() {
+
+        Cue3D cueSpy = Mockito.spy(cue);
+        Mockito.doNothing().when(cueSpy).toPosition(any(Vector3.class), any(CueBall3D.class));
+
+        cueSpy.setState(Cue3D.State.Hidden);
+        callProcessInput(cueSpy);
+        assertEquals(Cue3D.State.Rotating, cueSpy.getState());
+
+        Mockito.verify(cueSpy, Mockito.times(1)).toPosition(any(Vector3.class), any(Ball3D.class));
+    }
+
+    /**
+     * Test case to verify that the cue processes the input when it goes from Dragging to Hidden.
+     */
+    @Test
+    public void testProcessInputWhenDragging() {
+
+        Cue3D cueSpy = Mockito.spy(cue);
+        Mockito.doNothing().when(cueSpy).toPosition(any(Vector3.class), any(CueBall3D.class));
+
+        cueSpy.setState(Cue3D.State.Dragging);
+        callProcessInput(cueSpy);
+        assertEquals(Cue3D.State.Hidden, cueSpy.getState());
+
+        Mockito.verify(cueSpy, Mockito.times(1)).shoot(any(Vector3.class), any(CueBall3D.class));
+        Mockito.verify(cueSpy, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
+    }
+
+    /**
+     * Test case to verify that the cue processes the input when it goes from Dragging to Hidden.
+     */
+    @Test
+    public void testProcessInputOnLeftClick() {
+        Cue3D cueSpy = Mockito.spy(cue);
+        Mockito.doNothing().when(cueSpy).toPosition(any(Vector3.class), any(CueBall3D.class));
+
+        cueSpy.setState(Cue3D.State.Dragging);
+        callProcessInput(cueSpy);
+        assertEquals(Cue3D.State.Hidden, cueSpy.getState());
+
+        Mockito.verify(cueSpy, Mockito.times(1)).shoot(any(Vector3.class), any(CueBall3D.class));
+        Mockito.verify(cueSpy, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
+    }
+
+    /**
+     * Helper method that makes a cue ball.
+     * @return CueBall3D cue ball.
+     */
+    public CueBall3D makeCueBall(){
+        ModelInstance ballModel = Mockito.mock(ModelInstance.class);
+        ballModel.transform = new Matrix4();
+
+        // Setup expected bounding box of size 4 in each axis
+        BoundingBox box = new BoundingBox();
+        box.ext(4, 4, 4);
+
+        // Make the mock model's calculate bounding box method return
+        // the constructed box
+        Mockito.when(ballModel.calculateBoundingBox(any(BoundingBox.class)))
+                .thenReturn(box);
+
+        return new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
+    }
+
+    /**
+     * Helper method that calls processInput on a cue.
+     * @param cue Cue3D object
+     */
+    public void callProcessInput(Cue3D cue){
+        ArrayList<Ball3D> poolBalls = new ArrayList<>();
+        poolBalls.add(makeCueBall());
+
+        Scene3D scene = Mockito.mock(Scene3D.class);
+        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0, 0,0));
+
+        Input input = Mockito.mock(Input.class);
+        GameState gameState = Mockito.mock(GameState.class);
+
+        cue.processInput(input, scene, gameState);
+    }
+
+    /**
+     * Helper method for testing Cue Shot direction given the
+     * specified setup for the ball and the mouse position,
+     * and the expected direction. The method handles assertions
+     * for the specified setup.
+     * @param ballPosition       Position of the ball
+     * @param mousePosition      Passed in position of the mouse
+     * @param expectedDirection  Expected direction of the cue shot
+     */
+    private void testCueShotDirectionHelper(Vector3 ballPosition,
+                                            Vector3 mousePosition, Vector3 expectedDirection) {
+        // Create mock Ball3D instance
+        final int id = 0;
+        final ModelInstance model = Mockito.mock(ModelInstance.class);
+        final Matrix4 matrix = Mockito.mock(Matrix4.class);
+
+        // When we get the position of the model (by getting the translation of
+        // a zero vector), then the ball position should be returned.
+        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(ballPosition);
+
+        // Set the mock matrix to the model
+        model.transform = matrix;
+
+        Ball3D ball = new CueBall3D(id, model);
+
+        // Get the direction given the mouse position
+        Vector3 direction = cue.getCueShotDirection(mousePosition, ball);
+
+        // Assert expected direction equal to actual direction
+        assertEquals(expectedDirection, direction);
+    }
 }
