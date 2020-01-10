@@ -113,33 +113,26 @@ public class Game implements GameStateObserver {
      * Process the input mouse input for the cue.
      */
     public void processCueInput() {
-        Ball3D cueBall = scene.getPoolBalls().get(0);
+        Ball3D cueBall = scene.getCueBall();
         Cue3D cue = scene.getCue();
 
         if (cue.getState() == Cue3D.State.Hidden) {
             cue.showCue();
         }
 
-        // Enter dragging
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
 
             // Enter dragging
             if (cue.getState() == Cue3D.State.Rotating) {
-                cue.setState(Cue3D.State.Dragging);
-                cue.setDragOriginCue(cue.getCoordinates());
-                cue.setDragOriginMouse(mousePosition);
+                cue.setToRotating(mousePosition);
             }
             cue.toDragPosition(mousePosition, cueBall);
 
         } else if (cue.getState() == Cue3D.State.Dragging) {
-            state.setInMotion();
             cue.shoot(cueBall);
-            cue.hideCue();
-
         } else {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
-
             cue.toPosition(mousePosition, cueBall);
         }
     }

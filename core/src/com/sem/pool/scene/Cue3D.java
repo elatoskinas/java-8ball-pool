@@ -185,8 +185,20 @@ public class Cue3D {
     }
 
     /**
+     * Sets the cue to the rotating state
+     * and stores the point of the click which
+     * is needed for the drag calculation
+     * @param mousePosition Vector3 mouse position
+     */
+    public void setToRotating(Vector3 mousePosition) {
+        setState(Cue3D.State.Dragging);
+        setDragOriginCue(getCoordinates());
+        setDragOriginMouse(mousePosition);
+    }
+
+    /**
      * Sets the cue to the position in the drag phase.
-     *
+
      * @param mousePosition mouse coordinates
      * @param cueBall       cue ball
      */
@@ -250,6 +262,8 @@ public class Cue3D {
         // Apply the force in the shoot direction
         cueBall.setDirection(direction);
         cueBall.setSpeed(currentForce);
+
+        hideCue();
     }
 
 }
