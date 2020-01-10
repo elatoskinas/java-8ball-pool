@@ -139,7 +139,7 @@ public class Cue3DTest {
         cue.toBeginPosition(makeCueBall());
 
         Mockito.verify(cueMockMatrix, Mockito.times(1))
-                .translate(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
+                .translate(-expectedRadius - GameConstants.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
     }
 
     /**
@@ -157,9 +157,8 @@ public class Cue3DTest {
         CueBall3D cueBall = new CueBall3D(id, cueBallModel);
         Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
 
-        Vector3 mouseposition = new Vector3(1, 0, 0);
         cue.setDragOriginMouse(new Vector3(0.5f, 0, 0));
-        cue.shoot(mouseposition, cueBall);
+        cue.shoot(cueBall);
         assertEquals(new Vector3(-1, 0, 0), cueBall.getDirection());
 
     }
@@ -179,8 +178,8 @@ public class Cue3DTest {
 
         cue.setDragOriginMouse(new Vector3(0.8f, 0, 0));
         cue.toDragPosition(mouseposition, cueBall);
-        cue.shoot(mouseposition, cueBall);
-        assertEquals(0.2f, cueBall.getSpeed(), 0.0001f);
+        cue.shoot(cueBall);
+        assertEquals(0.2f * GameConstants.MAX_CUE_FORCE, cueBall.getSpeed(), 0.0001f);
     }
 
     /**
@@ -200,9 +199,9 @@ public class Cue3DTest {
         Vector3 mouseposition = new Vector3(1000000, 0, 0);
         cue.setDragOriginMouse(new Vector3(0, 0, 0));
         cue.toDragPosition(mouseposition, cueBall);
-        cue.shoot(mouseposition, cueBall);
+        cue.shoot(cueBall);
 
-        assertEquals(GameConstants.CUE_FORCE_CAP, cueBall.getSpeed(), 0.0001f);
+        assertEquals(GameConstants.MAX_CUE_FORCE, cueBall.getSpeed(), 0.0001f);
     }
 
     /**

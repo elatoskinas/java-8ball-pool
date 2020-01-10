@@ -19,7 +19,16 @@ public final class GameConstants {
     // Minimal speed for a ball before its speed it set to 0.
     public static final float MIN_SPEED = 0.0001f;
 
+
+    // CUE
     // Cue max shooting force
-    public static final float CUE_FORCE_CAP = 0.3f;
+    public static final float MAX_CUE_FORCE = 0.3f;
+
+    // Cue max distance when dragging
+    public static final float MAX_DRAG_DISTANCE = 1f;
+
+    // The distance between the cueBall and the tip of the cue.
+    public static final float CUE_OFFSET = 0.05f;
+
 
 }

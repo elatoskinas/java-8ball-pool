@@ -106,7 +106,7 @@ class GameInputTest extends GameBaseTest {
         game.processCueInput();
         assertEquals(Cue3D.State.Hidden, cue.getState());
 
-        Mockito.verify(cue, Mockito.times(1)).shoot(any(Vector3.class), any(CueBall3D.class));
+        Mockito.verify(cue, Mockito.times(1)).shoot(any(CueBall3D.class));
         Mockito.verify(cue, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
     }
 

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
-import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.List;
@@ -111,20 +110,20 @@ public class Game implements GameStateObserver {
     }
 
     /**
-     * Process the input mouse input for the cue
+     * Process the input mouse input for the cue.
      */
     public void processCueInput() {
-        Vector3 mousePosition = scene.getUnprojectedMousePosition();
         Ball3D cueBall = scene.getPoolBalls().get(0);
         Cue3D cue = scene.getCue();
 
         if (cue.getState() == Cue3D.State.Hidden) {
-            cue.setState(Cue3D.State.Rotating);
-            cue.blendingAttribute.opacity = 1;
+            cue.showCue();
         }
 
         // Enter dragging
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
+
             // Enter dragging
             if (cue.getState() == Cue3D.State.Rotating) {
                 cue.setState(Cue3D.State.Dragging);
@@ -135,11 +134,12 @@ public class Game implements GameStateObserver {
 
         } else if (cue.getState() == Cue3D.State.Dragging) {
             state.setInMotion();
-            cue.shoot(mousePosition, cueBall);
-            cue.setCurrentForce(0);
+            cue.shoot(cueBall);
             cue.hideCue();
 
         } else {
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
+
             cue.toPosition(mousePosition, cueBall);
         }
     }

@@ -1,28 +1,21 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.game.GameConstants;
-import com.sem.pool.game.GameState;
 
 /**
  * Class representing a 3D Cue.
- * TODO: Set position according to the force.
  */
 public class Cue3D {
-
-    // The distance between the cueBall and the tip of the cue.
-    protected static final float CUE_OFFSET = 0.05f;
 
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
 
     protected static final String MATERIAL_NAME = "CueMaterial";
-
 
     private transient ModelInstance model;
 
@@ -116,7 +109,7 @@ public class Cue3D {
         Vector3 position = cueBall.getCoordinates();
 
         // Sets the cue left from the cue ball
-        float x = position.x - CUE_OFFSET - cueBall.getRadius();
+        float x = position.x - GameConstants.CUE_OFFSET - cueBall.getRadius();
         model.transform.translate(x, Y_COORDINATE, position.z);
     }
 
@@ -163,7 +156,7 @@ public class Cue3D {
 
         // Positioning
         // Distance from the center of the cue ball
-        float dist = cueBall.getRadius() + CUE_OFFSET;
+        float dist = cueBall.getRadius() + GameConstants.CUE_OFFSET;
 
         // Scale the direction with the radius of the circle where the cue needs to be
         Vector3 onRadius = new Vector3(direction.scl(dist));
@@ -174,12 +167,21 @@ public class Cue3D {
         rotateCue(cueBall);
     }
 
-    /*
-     * Hides the cue
+    /**
+     * Hides the cue and set force parameter to default.
      */
     public void hideCue() {
         setState(State.Hidden);
+        setCurrentForce(0);
         blendingAttribute.opacity = 0;
+    }
+
+    /**
+     * Shows the cue.
+     */
+    public void showCue() {
+        setState(State.Rotating);
+        blendingAttribute.opacity = 1;
     }
 
     /**
@@ -202,9 +204,12 @@ public class Cue3D {
         
         // The distance from the current mouse position and the first left-click mouse position.
         // capMaxForce prevents cue from going over max force
-        // Force : distance ratio is 1 to 1
-        float distance = Math.min(GameConstants.CUE_FORCE_CAP, mousePosition.dst(dragOriginMouse));
-        currentForce = distance;
+        // Calculate force based on the ratio of the
+        // distance and the max distance that is allowed
+        float tempDistance = mousePosition.dst(dragOriginMouse);
+        float distance = Math.min(GameConstants.MAX_DRAG_DISTANCE, tempDistance);
+        float distanceRatio = distance / GameConstants.MAX_DRAG_DISTANCE;
+        currentForce = distanceRatio * GameConstants.MAX_CUE_FORCE;
 
         // Scale the direction with the distance
         direction.scl(distance);
@@ -233,12 +238,12 @@ public class Cue3D {
     }
 
     /**
-     * Shoots the cueball based on the mouse-postion and the mouse-position when the drag started.
+     * Shoots the cue-ball based on the cue-ball-position
+     * and the mouse-position when the drag started.
      *
-     * @param mousePosition the current mouse position
-     * @param cueBall       the cueball
+     * @param cueBall the cue ball
      */
-    public void shoot(Vector3 mousePosition, Ball3D cueBall) {
+    public void shoot(Ball3D cueBall) {
         // Calculates the direction
         Vector3 direction = getCueShotDirection(dragOriginMouse, cueBall);
 
