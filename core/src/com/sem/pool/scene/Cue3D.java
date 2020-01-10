@@ -185,13 +185,13 @@ public class Cue3D {
     }
 
     /**
-     * Sets the cue to the rotating state
+     * Sets the cue to the dragging state
      * and stores the point of the click which
-     * is needed for the drag calculation
+     * is needed for the drag calculation.
      * @param mousePosition Vector3 mouse position
      */
-    public void setToRotating(Vector3 mousePosition) {
-        setState(Cue3D.State.Dragging);
+    public void setToDragging(Vector3 mousePosition) {
+        setState(State.Dragging);
         setDragOriginCue(getCoordinates());
         setDragOriginMouse(mousePosition);
     }

@@ -33,9 +33,8 @@ class GameInputTest extends GameBaseTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        ArrayList<Ball3D> poolBalls = new ArrayList<>();
-        poolBalls.add(makeCueBall());
-        Mockito.when(scene.getPoolBalls()).thenReturn(poolBalls);
+        CueBall3D ball = makeCueBall();
+        Mockito.when(scene.getCueBall()).thenReturn(ball);
 
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = Mockito.mock(Matrix4.class);
@@ -106,7 +105,7 @@ class GameInputTest extends GameBaseTest {
         game.processCueInput();
         assertEquals(Cue3D.State.Hidden, cue.getState());
 
-        Mockito.verify(cue, Mockito.times(1)).shoot(any(CueBall3D.class));
+        Mockito.verify(cue, Mockito.times(1)).shoot(any(Ball3D.class));
         Mockito.verify(cue, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
     }
 
