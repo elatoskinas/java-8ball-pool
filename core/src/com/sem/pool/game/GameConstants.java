@@ -15,7 +15,7 @@ public final class GameConstants {
     public static final int EIGHTBALL_ID = 8;
 
     // Set to 0.03f after experimenting, should be increased if ball stops too slowly.
-    public static final float DRAG_COEFFICIENT = 0.03f;
+    public static final float DRAG_COEFFICIENT = 0.04f;
     // Minimal speed for a ball before its speed it set to 0.
     public static final float MIN_SPEED = 0.0001f;
 }

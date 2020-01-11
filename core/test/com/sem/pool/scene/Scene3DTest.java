@@ -1,8 +1,8 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -221,10 +221,10 @@ class Scene3DTest {
     }
 
     /**
-     * Tests if the sounds are played when collisions are triggered.
+     * Tests that when a ball is potted it is added to the list of potted balls.
      */
     @Test
-    public void testTriggerCollisionsSounds() {
+    public void testTriggerCollisionsOneBallPotted() {
         Ball3D ball = Mockito.mock(Ball3D.class);
         scene.getPoolBalls().add(ball);
         ball.setSpeed(GameConstants.MIN_SPEED + 1);
@@ -236,19 +236,7 @@ class Scene3DTest {
         List<Ball3D> potted = scene.triggerCollisions();
         // Ensure that no ball was potted
         assertEquals(1, potted.size());
+        assertTrue(potted.contains(ball));
     }
 
-    /**
-     * Tests whether the playSound method calls the play() method when it should.
-     */
-    @Test
-    public void testPlaySound() {
-        Music mockedMusic = Mockito.mock(Music.class);
-        Mockito.when(mockedMusic.isPlaying()).thenReturn(true);
-        scene.playSound(mockedMusic);
-        Mockito.verify(mockedMusic, Mockito.times(0)).play();
-        Mockito.when(mockedMusic.isPlaying()).thenReturn(false);
-        scene.playSound(mockedMusic);
-        Mockito.verify(mockedMusic, Mockito.times(1)).play();
-    }
 }

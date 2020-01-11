@@ -1,11 +1,10 @@
 package com.sem.pool.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SoundPlayer;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,6 +22,11 @@ public class Game implements ObservableGame {
     private transient Input input;
     private transient GameState state;
     private transient Set<GameObserver> observers;
+    private transient SoundPlayer soundPlayer;
+
+    public SoundPlayer getSoundPlayer() {
+        return soundPlayer;
+    }
 
     /**
      * Constructs a new Game object with the given scene, input, and state.
@@ -35,7 +39,7 @@ public class Game implements ObservableGame {
         this.input = input;
         this.state = state;
         this.observers = new HashSet<>();
-
+        this.soundPlayer = new SoundPlayer();
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
@@ -171,11 +175,7 @@ public class Game implements ObservableGame {
         Vector3 mousePosition = scene.getUnprojectedMousePosition();
         Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
         scene.getCue().shoot(mousePosition, cueBall);
-        if (Gdx.audio != null) {
-            Music cueSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/cueshot.mp3"));
-            getScene().playSound(cueSound);
-
-        }
+        soundPlayer.playCueSound();
     }
 
     @Override

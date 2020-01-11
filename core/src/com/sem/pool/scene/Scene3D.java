@@ -1,7 +1,6 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -27,6 +26,7 @@ public class Scene3D {
     private final transient List<Ball3D> poolBalls;
     private final transient Table3D table;
     private final transient Cue3D cue;
+    private transient SoundPlayer soundPlayer;
 
     /**
      * Creates an instance of a 3D Pool Game scene from the specified
@@ -47,7 +47,7 @@ public class Scene3D {
         this.table = table;
         this.cue = cue;
         this.modelBatch = batch;
-
+        this.soundPlayer = new SoundPlayer();
         // For all the pool balls and the table, add the models
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
@@ -131,19 +131,14 @@ public class Scene3D {
             // Check collisions between the board and
             // every ball in the scene
             if (table.checkCollision(ball)) {
-                if (Gdx.audio != null) {
-                    Music tableSound = Gdx.audio.newMusic(
-                            Gdx.files.internal("sounds/ballandtablecollision.mp3"));
-                    playSound(tableSound);
-                }
+                soundPlayer.playTableCollisionSound();
             }
 
             // Check if ball is potted
             boolean potResult = table.checkIfPot(ball);
             if (potResult) {
                 if (Gdx.audio != null) {
-                    Music potSound = Gdx.audio.newMusic(
-                            Gdx.files.internal("sounds/ballpot.mp3"));
+                    soundPlayer.playPotSound();
 
                 }
                 potted.add(ball);
@@ -152,11 +147,7 @@ public class Scene3D {
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
                 if (ball.checkCollision(other)) {
-                    if (Gdx.audio != null) {
-                        Music ballSound = Gdx.audio.newMusic(
-                                Gdx.files.internal("sounds/ballandballcollision.mp3"));
-                        playSound(ballSound);
-                    }
+                    soundPlayer.playBallCollisionSound();
                 }
             }
         }
@@ -172,15 +163,5 @@ public class Scene3D {
         Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mousePosition);
         return mousePosition;
-    }
-
-    /**
-     * Plays a sound effect after collision, such as ball and ball collision or potting.
-     * @param sound sound effect, of type Music as music allows us to use the isPlaying() method.
-     */
-    public void playSound(Music sound) {
-        if (!sound.isPlaying()) {
-            sound.play();
-        }
     }
 }

@@ -46,7 +46,6 @@ public class Pool implements Screen {
      */
     public Pool() {
         initializeAssetLoader();
-
         // Initialize model batch for rendering
         modelBatch = new ModelBatch();
 
