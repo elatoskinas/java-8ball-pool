@@ -21,9 +21,11 @@ public class GameState implements GameObserver {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
     private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
+    private transient List<Ball3D> allPottedBalls; // All Balls potted in any turn.
 
     private transient int playerTurn;
     private transient int turnCount;
+    private transient boolean typesAssigned; // if ball types have been assigned yet
 
     private transient Player winningPlayer;
 
@@ -47,7 +49,8 @@ public class GameState implements GameObserver {
         this.players = players;
         this.remainingBalls = new HashSet<>();
         this.currentPottedBalls = new ArrayList<>();
-
+        this.allPottedBalls = new ArrayList<>();
+        this.typesAssigned = false;
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
             if (!(ball instanceof CueBall3D)) {
@@ -187,13 +190,73 @@ public class GameState implements GameObserver {
         this.state = State.Ended;
     }
 
+    public boolean getTypesAssigned() {
+        return typesAssigned;
+    }
+
+    public List<Ball3D> getAllPottedBalls() {
+        return allPottedBalls;
+    }
+
     /**
      * Pots the specified ball for the current turn of the Game State.
      * @param ball  Ball to pot
      */
+    // Since the issue is raised due to a bug in PMD, it is suppressed.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void onBallPotted(Ball3D ball) {
         // Pot ball in current turn
         currentPottedBalls.add(ball);
+        if (!(ball instanceof CueBall3D)) {
+            allPottedBalls.add(ball);
+        }
+        // if turncount == 0, this is the first turn (breakshot)
+        // so types should not be assigned
+        if (turnCount > 0 && !typesAssigned) {
+            // find the first potted ball that is not a cue ball.
+            for (Ball3D b: currentPottedBalls) {
+                if (b instanceof RegularBall3D) {
+                    if (((RegularBall3D) b).getType().equals(RegularBall3D.Type.STRIPED)) {
+                        players.get(playerTurn).assignBallType(RegularBall3D.Type.STRIPED);
+                        players.get((playerTurn + 1) % players.size())
+                                .assignBallType(RegularBall3D.Type.FULL);
+                    } else {
+                        players.get(playerTurn).assignBallType(RegularBall3D.Type.FULL);
+                        players.get((playerTurn + 1) % players.size())
+                                .assignBallType(RegularBall3D.Type.STRIPED);
+                    }
+                    addPottedBalls();
+                    typesAssigned = true;
+                    // set to null to save memory
+                    break;
+                }
+            }
+        }
+    }
+
+    // Since the issue is raised due to a bug in PMD, it is suppressed.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    private void addPottedBalls() {
+        for (Ball3D pottedBall: allPottedBalls) {
+            if (pottedBall instanceof RegularBall3D) {
+                if (players.get(0).getBallType() == RegularBall3D.Type.FULL) {
+                    if (((RegularBall3D) pottedBall).getType()
+                            == RegularBall3D.Type.FULL) {
+                        players.get(0).getPottedBalls().add((RegularBall3D) pottedBall);
+                        continue;
+                    }
+                    players.get(1).getPottedBalls().add((RegularBall3D) pottedBall);
+                    continue;
+                }
+                // In case somehow the ball type is unassigned
+                if (((RegularBall3D) pottedBall).getType() == RegularBall3D.Type.FULL) {
+                    players.get(1).getPottedBalls().add((RegularBall3D) pottedBall);
+                    continue;
+                }
+                players.get(0).getPottedBalls().add((RegularBall3D) pottedBall);
+                continue;
+            }
+        }
     }
 
     /**
