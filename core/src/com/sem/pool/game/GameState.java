@@ -2,11 +2,13 @@ package com.sem.pool.game;
 
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -15,7 +17,7 @@ import java.util.Set;
  * The methods that update observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-public class GameState {
+public class GameState implements GameObserver {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
     private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
@@ -23,9 +25,9 @@ public class GameState {
     private transient int playerTurn;
     private transient int turnCount;
 
-    private transient boolean started;
+    private transient Player winningPlayer;
 
-    enum State {
+    public enum State {
         Stopped,
         Idle,
         InMotion,
@@ -33,7 +35,6 @@ public class GameState {
     }
 
     private transient State state;
-    private transient Set<GameStateObserver> observers;
 
     /**
      * Creates a new game state with the specified Players and
@@ -42,9 +43,9 @@ public class GameState {
      * @param poolBalls   List of pool balls to use for the game
      */
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
+        this.state = State.Stopped;
         this.players = players;
         this.remainingBalls = new HashSet<>();
-        this.observers = new HashSet<>();
         this.currentPottedBalls = new ArrayList<>();
 
         // Add all pool balls except cue ball to remaining balls set
@@ -56,7 +57,7 @@ public class GameState {
     }
 
     public boolean isStarted() {
-        return started;
+        return state != State.Stopped && state != State.Ended;
     }
 
     public List<Player> getPlayers() {
@@ -71,22 +72,6 @@ public class GameState {
         return currentPottedBalls;
     }
 
-    public Set<GameStateObserver> getObservers() {
-        return observers;
-    }
-
-    public int getPlayerTurn() {
-        return playerTurn;
-    }
-
-    public void addObserver(GameStateObserver observer) {
-        observers.add(observer);
-    }
-
-    public void removeObserver(GameStateObserver observer) {
-        observers.remove(observer);
-    }
-
     public void setInMotion() {
         this.state = State.InMotion;
     }
@@ -99,16 +84,12 @@ public class GameState {
         return state == State.Idle;
     }
 
-    public void setToIdle() {
-        state = State.Idle;
-    }
-
-    public void setToStopped() {
-        this.state = State.Stopped;
-    }
-
     public boolean isStopped() {
-        return state == State.Stopped;
+        return !isStarted();
+    }
+
+    public int getPlayerTurn() {
+        return playerTurn;
     }
 
     /**
@@ -131,10 +112,9 @@ public class GameState {
      * Starts the pool game by picking a random Player
      * for the break shot.
      */
-    public void startGame() {
+    public void onGameStarted() {
         initStartingPlayer();
 
-        this.started = true;
         this.state = State.Idle;
     }
 
@@ -160,26 +140,51 @@ public class GameState {
         turnCount += 1;
     }
 
-    /**
-     * Ends the game with the specified Player ID to be marked
-     * as the winner.
-     * Notifies the observers of the won game.
-     * @param winnerId  ID of the winning player (0-baseed)
-     */
-    // False positive on Dataflow Anomaly for the observer
-    // loop in the method. Also false positive for the winningPlayer.
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void winGame(int winnerId) {
-        Player winningPlayer = players.get(winnerId);
+    //    /**
+    //     * Ends the game with the specified Player ID to be marked
+    //     * as the winner.
+    //     * Notifies the observers of the won game.
+    //     * @param winner  Winning Player object
+    //     */
+    //    // False positive on Dataflow Anomaly for the observer
+    //    // loop in the method. Also false positive for the winningPlayer.
+    //    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    //    public void winGame(Player winner) {
+    //        // Stop the game
+    //        state = State.Stopped;
+    //    }
 
-        // Notify the observers of the victory
-        for (GameStateObserver observer : observers) {
-            observer.endGame(winningPlayer);
+    /**
+     * Determines the winner of the game & updates the internal
+     * state to "Won".
+     *
+     * @param allPotted  True if the current Player had all of their balls potted.
+     */
+    public void winGame(boolean allPotted) {
+        if (allPotted) {
+            // All balls + 8-ball potted; Active player wins.
+            winningPlayer = getActivePlayer();
+        } else {
+            // Not all balls potted; Other Player wins.
+            winningPlayer = getNextInactivePlayer();
         }
 
-        // Stop the game
-        state = State.Ended;
-        started = false;
+        System.out.println(getWinningPlayer().isPresent());
+    }
+
+    @Override
+    public void onMotion() {
+        this.state = State.InMotion;
+    }
+
+    @Override
+    public void onMotionStop() {
+        advanceTurn();
+    }
+
+    @Override
+    public void onGameEnded() {
+        this.state = State.Ended;
     }
 
     /**
@@ -199,24 +204,37 @@ public class GameState {
     // UR anomaly false positive triggered by foreach loop (ball variable)
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     protected void handleBallPotting() {
-        // TODO: Do action based on type of ball potted; Maybe this should
-        //       be handled in the Player class and an event propagated back somehow?
-        // TODO: Should handle dispatching events back to Game
-        // TODO: Special eight ball & cue ball handling
+        // TODO: Special cue ball handling
+
+        // Check if Player has potted all of their assigned ball
+        // type balls. We check for this before potting all balls
+        // because a Player might pot the 8-ball and then all of
+        // their balls after, which would result in a win when
+        // it should be a loss.
+        boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
+        boolean eightPotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
             if (ball instanceof RegularBall3D) {
                 potRegularBall((RegularBall3D) ball);
+            } else if (ball instanceof EightBall3D) {
+                eightPotted = true;
             }
             //        else if (ball instanceof CueBall3D) {
             //            // TODO: Logic for cue ball potted
             //            // TODO: reset Cueball after turn and make the turn invalid
-            //        } else {
-            //            // Eight ball potted
-            //            // TODO: Handle ball pottingg logic for 8-ball
             //        }
+
+            // Remove the ball from the remaining balls set
+            remainingBalls.remove(ball);
         }
 
+        // 8-ball potted
+        if (eightPotted) {
+            winGame(allPotted);
+        }
+
+        // Reset potted balls for next turn
         currentPottedBalls.clear();
     }
 
@@ -235,10 +253,6 @@ public class GameState {
         // Valid pot
         if (activePlayer.getBallType() == ball.getType()) {
             activePlayer.potBall(ball);
-
-            // Remove the ball from the remaining balls set
-            remainingBalls.remove(ball);
-
         }
         // TODO: Logic for an invalid move
     }
@@ -258,12 +272,45 @@ public class GameState {
         // TODO: Do not assign ball type when cue ball is potted
 
         activePlayer.assignBallType(ball.getType());
+        RegularBall3D.Type otherType;
 
         // Assign the other ball type to the other player
         if (ball.getType() == RegularBall3D.Type.STRIPED) {
-            otherPlayer.assignBallType(RegularBall3D.Type.FULL);
+            otherType = RegularBall3D.Type.FULL;
         } else {
-            otherPlayer.assignBallType(RegularBall3D.Type.STRIPED);
+            otherType = RegularBall3D.Type.STRIPED;
         }
+
+        otherPlayer.assignBallType(otherType);
     }
+
+    /**
+     * Returns an object representing the winning Player.
+     * If there is no winner yet, the returned Optional object
+     * is empty.
+     * @return  Optional object holding the winner.
+     */
+    public Optional<Player> getWinningPlayer() {
+        return Optional.ofNullable(winningPlayer);
+    }
+
+    // Might come useful at some point; Determines count for specified
+    // Ball type.
+    //    /**
+    //     * Returns the remaining number of balls of the specified type.
+    //     * @param type  Type of ball to get count for
+    //     * @return  Number of balls remaining in Game of specified type.
+    //     */
+    //    public int getRemainingBallCount(RegularBall3D.Type type) {
+    //        int count = 0;
+    //
+    //        for (Ball3D ball : remainingBalls) {
+    //            if (ball instanceof RegularBall3D
+    //                    && ((RegularBall3D)ball).getType() == type) {
+    //                count++;
+    //            }
+    //        }
+    //
+    //        return count;
+    //    }
 }
