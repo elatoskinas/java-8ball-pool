@@ -661,6 +661,9 @@ class GameStateTest {
         assertTrue(players.get(0).getPottedBalls().contains(balls.get(5)));
     }
 
+    /**
+     * Test case to assert that the 8-Ball is not added to a players potted balls.
+     */
     @Test
     void testAddPottedBallsWithEightBall() {
         balls = constructBallsList(true, true, 3, 3);
