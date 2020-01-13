@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 
 /**
  * Test class for the SoundPlayer class.
+ * Sounds were taken from https://freesound.org/home/.
  */
 public class SoundPlayerTest {
 
