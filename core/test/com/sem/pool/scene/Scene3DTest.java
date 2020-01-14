@@ -1,6 +1,8 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -215,5 +217,82 @@ class Scene3DTest {
 
         // Ensure that no ball was potted
         assertEquals(0, potted.size());
+    }
+
+    /**
+     * Test case to verify that upon triggering collisions
+     * with the cue ball not colliding with anything,
+     * the first touched ball is null.
+     */
+    @Test
+    public void testTriggerCollisionsOtherBallsTouch() {
+        // Create 2 mock pool balls, and add them to the scene
+        Ball3D ball1 = Mockito.mock(Ball3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+
+        scene.getPoolBalls().add(ball1);
+        scene.getPoolBalls().add(ball2);
+
+        // Make the two balls collide
+        Mockito.when(ball1.checkCollision(ball2)).thenReturn(true);
+
+        // Trigger collisions for the scene
+        scene.triggerCollisions();
+
+        // Assert that cue ball did not touch any ball
+        assertNull(scene.getFirstTouched());
+    }
+
+    /**
+     * Test case to verify that upon triggering collisions
+     * with the cue ball colliding with another ball,
+     * the last touched ball is updated to that ball.
+     */
+    @Test
+    public void testTriggerCollisionsCueTouch() {
+        assertNull(scene.getFirstTouched());
+
+        // Create 2 mock pool balls, and add them to the scene
+        Ball3D ball1 = Mockito.mock(CueBall3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+
+        scene.getPoolBalls().add(ball1);
+        scene.getPoolBalls().add(ball2);
+
+        // Make the two balls collide
+        Mockito.when(ball1.checkCollision(ball2)).thenReturn(true);
+
+        // Trigger collisions for the scene
+        scene.triggerCollisions();
+
+        // Assert that cue ball touched the ball it collided with
+        assertEquals(ball2, scene.getFirstTouched());
+    }
+
+    /**
+     * Test case to verify that upon triggering collisions
+     * with the cue ball colliding with another ball,
+     * the last touched ball is updated to that ball.
+     */
+    @Test
+    public void testTriggerCollisionsCueTouchMultiple() {
+        // Create 3 mock pool balls, and add them to the scene
+        Ball3D ball1 = Mockito.mock(CueBall3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+        Ball3D ball3 = Mockito.mock(Ball3D.class);
+
+        scene.getPoolBalls().add(ball1);
+        scene.getPoolBalls().add(ball2);
+        scene.getPoolBalls().add(ball3);
+
+        // Make the two balls collide
+        Mockito.when(ball1.checkCollision(ball2)).thenReturn(true);
+        Mockito.when(ball1.checkCollision(ball3)).thenReturn(true);
+
+        // Trigger collisions for the scene
+        scene.triggerCollisions();
+
+        // Assert that cue ball touched the ball it collided with
+        assertEquals(ball2, scene.getFirstTouched());
     }
 }
