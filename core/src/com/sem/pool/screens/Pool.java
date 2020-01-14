@@ -4,28 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.factories.AssetLoader;
-import com.sem.pool.factories.BallFactory;
 
-import com.sem.pool.factories.CameraFactory;
-import com.sem.pool.factories.CueFactory;
 import com.sem.pool.factories.GameInitializer;
-import com.sem.pool.factories.SceneFactory;
-import com.sem.pool.factories.TableFactory;
 import com.sem.pool.game.Game;
 import com.sem.pool.game.GameObserver;
-import com.sem.pool.game.GameState;
-import com.sem.pool.game.Player;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main Pool Game application class that handles

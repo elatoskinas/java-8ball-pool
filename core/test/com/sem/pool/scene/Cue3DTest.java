@@ -75,7 +75,7 @@ public class Cue3DTest {
         cue.toBeginPosition(ball);
 
         Mockito.verify(ballMockMatrix, Mockito.times(1))
-                .translate(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
+                .trn(-expectedRadius - Cue3D.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
     }
 
     /**
