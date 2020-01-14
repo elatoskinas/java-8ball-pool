@@ -21,6 +21,8 @@ public class AssetLoader {
     protected static final String TABLE_MODEL_PATH = "models/table.obj";
     protected static final String CUE_MODEL_PATH = "models/cue.obj";
     protected static final String BALL_TEXTURE_PATH = "models/Textures/ball%d.jpg";
+    protected static final String CUE_TEXTURE_PATH = "models/Textures/cue.jpg";
+    protected static final String TABLE_TEXTURE_PATH = "models/Textures/table.jpg";
 
     // Parameters for loading 3D models
     private transient ObjLoader.ObjLoaderParameters objectLoaderParameters;
@@ -115,6 +117,28 @@ public class AssetLoader {
     }
 
     /**
+     * Returns the currently loaded cue texture, if present, and null otherwise.
+     * @return  Cue texture object
+     */
+    public Texture getCueTexture() {
+        // TODO: Currently, this method is not of much use, as textures are not used for cue/table.
+        //       However, this was created with the idea in mind that the Game could be extended
+        //       to allow different cue/table textures in the future, making this method very easily
+        //       extendible and applicable. Moreover, we can make it so that the AssetLoader handles
+        //       holding the textures with the current approach.
+        return loadTexture(CUE_TEXTURE_PATH);
+    }
+
+    /**
+     * Returns the currently loaded table texture, if present, and null otherwise.
+     * @return  Board texture object
+     */
+    public Texture getTableTexture() {
+        // TODO: @see getCueTexture() TODO. Same situation.
+        return loadTexture(TABLE_TEXTURE_PATH);
+    }
+
+    /**
      * Returns the texture path for the ball of the specified id.
      * @param id  Id of the ball
      * @return    Texture path (String) for the ball
@@ -122,6 +146,19 @@ public class AssetLoader {
     private String getBallTexturePath(int id) {
         // Get the texture path for the i-th texture (replace %d placeholder with i)
         return String.format(BALL_TEXTURE_PATH, id);
+    }
+
+    /**
+     * Loads the texture from the specified path.
+     * @param path  Path of texture to load from
+     * @return      Loaded texture if present, and null otherwise.
+     */
+    private Texture loadTexture(String path) {
+        if (assetManager.contains(path)) {
+            return assetManager.get(path, Texture.class);
+        }
+
+        return null;
     }
 
     /**
