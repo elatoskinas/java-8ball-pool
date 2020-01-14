@@ -16,13 +16,15 @@ import com.sem.pool.scene.RegularBall3D;
 
 import java.util.List;
 
+import static com.sem.pool.factories.AssetLoader.*;
+
 /**
  * Factory class which allows the instantiation
  * of Ball3D objects from the specified texture set.
  */
 public class BallFactory extends Base3DFactory {
-    // Fixed constant path to use for the ball model asset
-    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
+    
+    
 
     // Name of the ball model material (defined in model itself)
     protected static final String BALL_MATERIAL_NAME = "ball";
@@ -40,6 +42,9 @@ public class BallFactory extends Base3DFactory {
     public BallFactory(List<Texture> textures, AssetLoader assetLoader) {
         super(assetLoader);
         this.textures = textures;
+
+        // Fixed constant path to use for the ball model asset
+        MODEL_TYPE = ModelType.BALL;
     }
 
     public List<Texture> getTextures() {
