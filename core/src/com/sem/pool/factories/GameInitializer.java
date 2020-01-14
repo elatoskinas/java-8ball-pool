@@ -1,8 +1,11 @@
 package com.sem.pool.factories;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.game.Game;
+import com.sem.pool.scene.Scene3D;
 
 /**
  * Class that abstracts the functionality of initializing the
@@ -11,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 public class GameInitializer {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
+    private transient Input input;
     private transient Vector2 resolution;
     private transient Vector3 cameraPosition;
 
@@ -23,9 +27,10 @@ public class GameInitializer {
      * @param cameraPosition  Position of the camera as a 3D vector
      */
     public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch,
-                           Vector2 resolution, Vector3 cameraPosition) {
+                           Input input, Vector2 resolution, Vector3 cameraPosition) {
         this.assetLoader = assetLoader;
         this.modelBatch = modelBatch;
+        this.input = input;
         this.resolution = resolution;
         this.cameraPosition = cameraPosition;
     }
@@ -72,5 +77,17 @@ public class GameInitializer {
     public SceneFactory createSceneFactory() {
         return new SceneFactory(createTableFactory(), createBallFactory(),
                                 createCameraFactory(), createCueFactory(), this.modelBatch);
+    }
+
+    /**
+     * Creates a new Game with its own Scene.
+     * @return  object of new Game.
+     */
+    public Game createGame() {
+        // Creates new scene
+        Scene3D scene = createSceneFactory().createScene();
+
+        // Create & return new game
+        return Game.createNewGame(scene, input);
     }
 }
