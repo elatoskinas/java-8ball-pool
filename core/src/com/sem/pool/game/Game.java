@@ -5,12 +5,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
 import java.util.Collection;
 import java.util.HashSet;
->>>>>>> develop
 import java.util.List;
 import java.util.Set;
 
