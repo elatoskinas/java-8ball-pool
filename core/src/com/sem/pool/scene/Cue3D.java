@@ -10,7 +10,7 @@ import com.sem.pool.game.GameConstants;
 /**
  * Class representing a 3D Cue.
  */
-public class Cue3D {
+public class Cue3D extends Object3D {
 
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
@@ -34,11 +34,12 @@ public class Cue3D {
         Hidden
     }
 
+
     /**
      * Constructs a new 3D Cue instance.
      */
     public Cue3D(ModelInstance model) {
-        this.model = model;
+        super(model);
 
         this.state = State.Hidden;
         this.dragOriginCue = new Vector3();
@@ -59,10 +60,6 @@ public class Cue3D {
 
     public void setState(State state) {
         this.state = state;
-    }
-
-    public ModelInstance getModel() {
-        return model;
     }
 
     public void setDragOriginMouse(Vector3 dragOriginMouse) {
@@ -112,16 +109,7 @@ public class Cue3D {
         float x = position.x - GameConstants.CUE_OFFSET - cueBall.getRadius();
         model.transform.translate(x, Y_COORDINATE, position.z);
     }
-
-    /**
-     * Returns the current coordinates of the cue.
-     *
-     * @return The coordinates of the cue.
-     */
-    public Vector3 getCoordinates() {
-        return this.model.transform.getTranslation(new Vector3());
-    }
-
+    
     /**
      * Sets the mouseposition to the left of the cueball
      * when the mouseposition and ballposition are the same.
