@@ -184,6 +184,7 @@ public class GameState implements GameObserver {
 
     @Override
     public void onMotionStop(Ball3D touched) {
+        this.firstBallTouched = touched;
         advanceTurn();
     }
 
