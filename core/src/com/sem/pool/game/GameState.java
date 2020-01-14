@@ -285,7 +285,7 @@ public class GameState implements GameObserver {
         if (activePlayer.getBallType() == ball.getType()) {
             activePlayer.potBall(ball);
         } else { // else pot for other player.
-            players.get((playerTurn + 1) % players.size()).getPottedBalls().add(ball);
+            players.get((playerTurn + 1) % players.size()).potBall(ball);
         }
     }
 
