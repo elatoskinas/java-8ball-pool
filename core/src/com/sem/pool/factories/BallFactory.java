@@ -23,9 +23,10 @@ import java.util.List;
  * of Ball3D objects from the specified texture set.
  */
 public class BallFactory extends Base3DFactory {
-    private transient int id;
+    private int id;
 
-    protected static AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
+    // Fixed constant path to use for the ball model asset
+    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
     
     // Name of the ball model material (defined in model itself)
     protected static final String BALL_MATERIAL_NAME = "ball";
@@ -43,9 +44,6 @@ public class BallFactory extends Base3DFactory {
     public BallFactory(List<Texture> textures, AssetLoader assetLoader) {
         super(assetLoader);
         this.textures = textures;
-
-        // Fixed constant path to use for the ball model asset
-        
     }
 
     public List<Texture> getTextures() {
@@ -54,6 +52,10 @@ public class BallFactory extends Base3DFactory {
 
     public void setTextures(List<Texture> textures) {
         this.textures = textures;
+    }
+    
+    public int getId() {
+        return id;
     }
     
     public void setId(int id) {

@@ -84,14 +84,6 @@ public abstract class Ball3D extends Object3D {
     }
 
     /**
-     * Returns the current coordinates of the ball.
-     * @return The coordinates of the ball.
-     */
-    public Vector3 getCoordinates() {
-        return this.model.transform.getTranslation(new Vector3());
-    }
-
-    /**
      * Returns true if the ball is in motion, and false otherwise.
      * @return  True if the ball is in motion.
      */

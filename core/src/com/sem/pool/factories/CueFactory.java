@@ -6,7 +6,7 @@ import com.sem.pool.scene.Cue3D;
 
 public class CueFactory extends Base3DFactory {
 
-    protected static AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.CUE;
+    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.CUE;
     
     private Texture texture;
 

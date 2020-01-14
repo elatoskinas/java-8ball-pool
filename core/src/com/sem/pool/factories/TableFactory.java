@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * of Table3D objects from the specified texture.
  */
 public class TableFactory extends Base3DFactory {
-    protected static AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.TABLE;
+    protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.TABLE;
     
     protected static final Vector3 POT_BOX_DIMENSION = new Vector3(0.175f,10f,0.175f);
 
