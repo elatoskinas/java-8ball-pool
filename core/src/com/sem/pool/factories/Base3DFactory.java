@@ -7,8 +7,6 @@ import com.sem.pool.scene.Object3D;
  * 3D objects of the Pool game.
  */
 public abstract class Base3DFactory {
-    
-    protected static AssetLoader.ModelType MODEL_TYPE = null;
 
     protected final transient AssetLoader assetLoader;
 

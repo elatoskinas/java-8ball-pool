@@ -16,7 +16,7 @@ import com.sem.pool.scene.RegularBall3D;
 
 import java.util.List;
 
-import static com.sem.pool.factories.AssetLoader.*;
+
 
 /**
  * Factory class which allows the instantiation
@@ -25,7 +25,7 @@ import static com.sem.pool.factories.AssetLoader.*;
 public class BallFactory extends Base3DFactory {
     private transient int id;
 
-    AssetLoader.ModelType MODEL_TYPE = ModelType.BALL;
+    protected static AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.BALL;
     
     // Name of the ball model material (defined in model itself)
     protected static final String BALL_MATERIAL_NAME = "ball";

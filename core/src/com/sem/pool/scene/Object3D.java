@@ -3,7 +3,7 @@ package com.sem.pool.scene;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 /**
- * Abstract class used to generalize all 3D Objects used in the game
+ * Abstract class used to generalize all 3D Objects used in the game.
  */
 public abstract class Object3D {
     
@@ -17,7 +17,7 @@ public abstract class Object3D {
         this.model = model;
     }
     
-    public ModelInstance getModel(){
+    public ModelInstance getModel() {
         return model;
     }
 }
