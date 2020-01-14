@@ -214,8 +214,9 @@ public class GameState implements GameObserver {
     private void addPottedBalls() {
         for (Ball3D pottedBall: allPottedBalls) {
             if (pottedBall instanceof RegularBall3D) {
-                players.get(playerTurn).potBall((RegularBall3D) pottedBall);
-                players.get((playerTurn + 1 ) % players.size()).potBall((RegularBall3D) pottedBall);
+                for (Player player: players) {
+                    player.potBall((RegularBall3D) pottedBall);
+                }
             }
         }
     }
