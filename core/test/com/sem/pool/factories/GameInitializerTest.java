@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -82,7 +83,7 @@ class GameInitializerTest {
 
         assertNotNull(factory);
         assertEquals(assetLoader.getBallTextures(), factory.getTextures());
-        assertNotNull(factory.createBall(0));
+        assertNotNull(factory.createObject());
     }
 
     /**
@@ -91,15 +92,12 @@ class GameInitializerTest {
      */
     @Test
     void testCreateCueFactory() {
+        setupMockModelInstantiation();
         CueFactory factory = gameInitializer.createCueFactory();
-
-        // Load mock model instance upon loading cue
-        Mockito.when(assetLoader.loadModel(AssetLoader.ModelType.CUE))
-                .thenReturn(Mockito.mock(ModelInstance.class));
 
         assertNotNull(factory);
         assertEquals(assetLoader.getCueTexture(), factory.getTexture());
-        assertNotNull(factory.createCue());
+        assertNotNull(factory.createObject());
     }
 
     /**
@@ -116,7 +114,7 @@ class GameInitializerTest {
 
         assertNotNull(factory);
         assertEquals(assetLoader.getTableTexture(), factory.getTexture());
-        assertNotNull(factory.createTable());
+        assertNotNull(factory.createObject());
     }
 
     /**
@@ -178,6 +176,8 @@ class GameInitializerTest {
         // Mock calculation of bounding box to allow tests to pass
         Mockito.when(mockModel.calculateBoundingBox(Mockito.any(BoundingBox.class)))
                 .thenReturn(new BoundingBox());
+
+        Mockito.when(mockModel.getMaterial(Mockito.anyString())).thenReturn(new Material());
 
         // Load mock model instance upon loading any model.
         Mockito.when(assetLoader.loadModel(Mockito.any()))

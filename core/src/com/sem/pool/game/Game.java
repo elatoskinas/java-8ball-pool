@@ -3,6 +3,8 @@ package com.sem.pool.game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
@@ -129,10 +131,36 @@ public class Game implements ObservableGame {
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
     protected void respondToInput() {
-        // input relevant for cue and shot
+        processCueInput();
+    }
+
+    /**
+     * Process the input mouse input for the cue.
+     */
+    protected void processCueInput() {
+        CueBall3D cueBall = scene.getCueBall();
+        Cue3D cue = scene.getCue();
+
+        if (cue.getState() == Cue3D.State.Hidden) {
+            cue.showCue();
+        }
+
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
-            performCueShot();
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
+
+            // Enter dragging
+            if (cue.getState() == Cue3D.State.Rotating) {
+                cue.setToDragging(mousePosition);
+            }
+            cue.toDragPosition(mousePosition, cueBall);
+
+        } else if (cue.getState() == Cue3D.State.Dragging) {
             startMotion();
+            cue.shoot(cueBall);
+        } else {
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
+
+            cue.toPosition(mousePosition, cueBall);
         }
     }
 
@@ -185,16 +213,6 @@ public class Game implements ObservableGame {
         }
     }
 
-    /**
-     * Performs the cue shot by firing the cue ball with the
-     * cue's current power and rotation.
-     */
-    private void performCueShot() {
-        // TODO: Integrate power & rotation
-        Vector3 mousePosition = scene.getUnprojectedMousePosition();
-        Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
-        scene.getCue().shoot(mousePosition, cueBall);
-    }
 
     @Override
     public void addObserver(GameObserver observer) {

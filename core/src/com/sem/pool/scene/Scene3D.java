@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,5 +158,11 @@ public class Scene3D {
         return mousePosition;
     }
 
-
+    /**
+     * Returns the cue-ball.
+     * @return  CueBall3D cue-ball
+     */
+    public CueBall3D getCueBall() {
+        return (CueBall3D) getPoolBalls().get(GameConstants.CUEBALL_ID);
+    }
 }

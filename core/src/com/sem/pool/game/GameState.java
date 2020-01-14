@@ -14,16 +14,19 @@ import java.util.Set;
 /**
  * Class to keep track of the current state of the game with regards to the rules.
  * GameState can be observed by implementing the GameStateObserver interface.
- * The methods that update observers are WinGame.
+ * The methods that u
+ * pdate observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
 public class GameState implements GameObserver {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
     private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
+    private transient List<Ball3D> allPottedBalls; // All Balls potted in any turn.
 
     private transient int playerTurn;
     private transient int turnCount;
+    private transient boolean typesAssigned; // if ball types have been assigned yet
 
     private transient Player winningPlayer;
 
@@ -47,7 +50,8 @@ public class GameState implements GameObserver {
         this.players = players;
         this.remainingBalls = new HashSet<>();
         this.currentPottedBalls = new ArrayList<>();
-
+        this.allPottedBalls = new ArrayList<>();
+        this.typesAssigned = false;
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
             if (!(ball instanceof CueBall3D)) {
@@ -168,8 +172,6 @@ public class GameState implements GameObserver {
             // Not all balls potted; Other Player wins.
             winningPlayer = getNextInactivePlayer();
         }
-
-        System.out.println(getWinningPlayer().isPresent());
     }
 
     @Override
@@ -187,6 +189,14 @@ public class GameState implements GameObserver {
         this.state = State.Ended;
     }
 
+    public boolean getTypesAssigned() {
+        return typesAssigned;
+    }
+
+    public List<Ball3D> getAllPottedBalls() {
+        return allPottedBalls;
+    }
+
     /**
      * Pots the specified ball for the current turn of the Game State.
      * @param ball  Ball to pot
@@ -194,6 +204,23 @@ public class GameState implements GameObserver {
     public void onBallPotted(Ball3D ball) {
         // Pot ball in current turn
         currentPottedBalls.add(ball);
+    }
+
+    /**
+     * Adds all the balls that were potted before types were
+     * assigned to the proper player.
+     */
+    // Since the issue is raised due to a bug in PMD, it is suppressed.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    private void postPotBalls() {
+        for (Ball3D pottedBall: allPottedBalls) {
+            if (pottedBall instanceof RegularBall3D) {
+                for (Player player: players) {
+                    player.potBall((RegularBall3D) pottedBall);
+                }
+            }
+        }
+        allPottedBalls.clear();
     }
 
     /**
@@ -215,6 +242,10 @@ public class GameState implements GameObserver {
         boolean eightPotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
+            if (!typesAssigned && !(ball instanceof CueBall3D)) {
+                allPottedBalls.add(ball); // until types are assigned
+                // keep track of balls potted
+            }
             if (ball instanceof RegularBall3D) {
                 potRegularBall((RegularBall3D) ball);
             } else if (ball instanceof EightBall3D) {
@@ -238,23 +269,35 @@ public class GameState implements GameObserver {
         currentPottedBalls.clear();
     }
 
+    public void setTypesAssigned(boolean typesAssigned) {
+        this.typesAssigned = typesAssigned;
+    }
+
     /**
      * Logic for a regular ball pot.
      * If the players don't have a ball type -> assign ball types to players.
      * @param ball regular ball
      */
+    // PMD calls a warning because a change is made to an object and not always used.
+    // This warning is incorrect and therefore ignored.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void potRegularBall(RegularBall3D ball) {
         Player activePlayer = getActivePlayer();
 
-        if (activePlayer.getBallType() == RegularBall3D.Type.UNASSIGNED) {
+        // if turncount == 0, this is the first turn (breakshot)
+        // so types should not be assigned
+        if (turnCount > 0 && !typesAssigned) {
             assignBallTypesToPlayers(ball);
         }
 
         // Valid pot
-        if (activePlayer.getBallType() == ball.getType()) {
-            activePlayer.potBall(ball);
+        if (typesAssigned) {
+            if (activePlayer.getBallType() == ball.getType()) {
+                activePlayer.potBall(ball);
+            } else { // else pot for other player.
+                getNextInactivePlayer().potBall(ball);
+            }
         }
-        // TODO: Logic for an invalid move
     }
 
     /**
@@ -263,14 +306,8 @@ public class GameState implements GameObserver {
      * @param ball first regular ball that is potted in a valid way
      */
     public void assignBallTypesToPlayers(RegularBall3D ball) {
-
         Player activePlayer = getActivePlayer();
         Player otherPlayer = getNextInactivePlayer();
-
-        // TODO: Take into account that the ball type should not
-        //       be assigned during the break shot
-        // TODO: Do not assign ball type when cue ball is potted
-
         activePlayer.assignBallType(ball.getType());
         RegularBall3D.Type otherType;
 
@@ -280,8 +317,10 @@ public class GameState implements GameObserver {
         } else {
             otherType = RegularBall3D.Type.STRIPED;
         }
-
         otherPlayer.assignBallType(otherType);
+        postPotBalls(); // adds balls that were potted
+        // before assignment to the proper player.
+        typesAssigned = true;
     }
 
     /**

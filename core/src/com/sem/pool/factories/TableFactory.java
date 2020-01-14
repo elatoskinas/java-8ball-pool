@@ -24,6 +24,7 @@ import java.util.ArrayList;
  */
 public class TableFactory extends Base3DFactory {
     protected static final AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.TABLE;
+    
     protected static final Vector3 POT_BOX_DIMENSION = new Vector3(0.175f,10f,0.175f);
 
     public static final ArrayList<Vector3> POT_LOCATIONS;
@@ -65,7 +66,8 @@ public class TableFactory extends Base3DFactory {
      * internal texture of the TableFactory class.
      * @return  New Table3D object instance corresponding to the specified id
      */
-    public Table3D createTable() {
+    @Override
+    public Table3D createObject() {
         ModelInstance boardInstance = assetLoader.loadModel(MODEL_TYPE);
 
         // TODO: Set texture accordingly

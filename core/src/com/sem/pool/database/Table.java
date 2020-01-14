@@ -53,7 +53,6 @@ public abstract class Table {
             boolean createTable = tables.isAfterLast();
 
             if (createTable) {
-                System.out.println("Creating table for " + this.tableName + "..");
                 this.createTable();
                 tables.close();
             }
