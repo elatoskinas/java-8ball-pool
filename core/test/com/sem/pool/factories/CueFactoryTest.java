@@ -3,6 +3,7 @@ package com.sem.pool.factories;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.sem.pool.scene.Cue3D;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,6 +63,8 @@ public class CueFactoryTest {
         final ModelInstance model = Mockito.mock(ModelInstance.class);
 
         Mockito.when(assetLoader.loadModel(CueFactory.MODEL_TYPE)).thenReturn(model);
+        Material mat = new Material();
+        Mockito.when(model.getMaterial(Cue3D.MATERIAL_NAME)).thenReturn(mat);
 
         Cue3D cue = factory.createObject();
 

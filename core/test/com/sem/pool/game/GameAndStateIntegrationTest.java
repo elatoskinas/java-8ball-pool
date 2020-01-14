@@ -3,6 +3,7 @@ package com.sem.pool.game;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.scene.Cue3D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,6 +28,10 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     @Test
     void testAdvanceGameLoopCallRunningState() {
         setupScenePoolBallsHelper(false, false, false);
+        Cue3D cue = Mockito.mock(Cue3D.class);
+        Mockito.when(scene.getCue()).thenReturn(cue);
+
+        game = new Game(scene, input, gameState);
         game.startGame();
         assertFalse(game.determineIsInMotion());
         gameState.onMotion();
@@ -37,7 +42,6 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         assertTrue(gameState.isStarted());
         assertFalse(gameState.isInMotion());
         assertTrue(gameState.isIdle());
-
     }
 
     /**

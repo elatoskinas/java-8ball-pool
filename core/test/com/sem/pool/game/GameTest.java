@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
-import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -133,20 +131,6 @@ public class GameTest extends GameBaseTest {
 
         Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
-    }
-
-    /**
-     * Test case to verify that shoot is called when the left mouse button is clicked.
-     */
-    @Test
-    void testLeftClickShot() {
-        Cue3D cue = Mockito.mock(Cue3D.class);
-        Mockito.when(scene.getCue()).thenReturn(cue);
-        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0,0,0));
-        Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
-        setupScenePoolBallsHelper(false);
-        game.respondToInput();
-        Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
     }
 
     /**
