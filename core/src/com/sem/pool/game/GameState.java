@@ -164,7 +164,7 @@ public class GameState implements GameObserver {
      *
      * @param allPotted  True if the current Player had all of their balls potted.
      */
-    public void winGame(boolean allPotted) {
+    public void winGame(boolean allPotted, boolean cuePotted) {
         if (allPotted) {
             // All balls + 8-ball potted; Active player wins.
             winningPlayer = getActivePlayer();
@@ -240,6 +240,7 @@ public class GameState implements GameObserver {
         // it should be a loss.
         boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
         boolean eightPotted = false;
+        boolean cuePotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
             if (!typesAssigned && !(ball instanceof CueBall3D)) {
@@ -262,7 +263,7 @@ public class GameState implements GameObserver {
 
         // 8-ball potted
         if (eightPotted) {
-            winGame(allPotted);
+            winGame(allPotted, cuePotted);
         }
 
         // Reset potted balls for next turn
