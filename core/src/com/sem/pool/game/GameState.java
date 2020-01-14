@@ -275,9 +275,6 @@ public class GameState implements GameObserver {
     public void potRegularBall(RegularBall3D ball) {
         Player activePlayer = getActivePlayer();
 
-        if (activePlayer.getBallType() == RegularBall3D.Type.UNASSIGNED) {
-            assignBallTypesToPlayers(ball);
-        }
         // if turncount == 0, this is the first turn (breakshot)
         // so types should not be assigned
         if (turnCount > 0 && !typesAssigned) {
@@ -288,7 +285,6 @@ public class GameState implements GameObserver {
         if (activePlayer.getBallType() == ball.getType()) {
             activePlayer.potBall(ball);
         } else { // else pot for other player.
-            System.out.println("a: " + ball.getType());
             players.get((playerTurn + 1) % players.size()).getPottedBalls().add(ball);
         }
     }
