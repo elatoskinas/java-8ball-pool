@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector3;
  * TODO: Rotation of the cue.
  * TODO: Set position according to the force.
  */
-public class Cue3D {
+public class Cue3D extends Object3D {
 
     // The distance between the cueBall and the tip of the cue.
     protected static final float CUE_OFFSET = 0.05f;
@@ -16,17 +16,11 @@ public class Cue3D {
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
 
-    private transient ModelInstance model;
-
     /**
      * Constructs a new 3D Cue instance.
      */
     public Cue3D(ModelInstance model) {
-        this.model = model;
-    }
-
-    public ModelInstance getModel() {
-        return model;
+        super(model);
     }
 
     /**

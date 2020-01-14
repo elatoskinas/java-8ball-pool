@@ -63,7 +63,7 @@ public class CueFactoryTest {
 
         Mockito.when(assetLoader.loadModel(CueFactory.MODEL_TYPE)).thenReturn(model);
 
-        Cue3D cue = factory.createCue();
+        Cue3D cue = factory.createObject();
 
         Cue3D expectedCue = new Cue3D(model);
         assertEquals(expectedCue.getModel(), cue.getModel());
