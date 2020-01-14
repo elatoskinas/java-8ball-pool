@@ -685,4 +685,30 @@ class GameStateTest {
         assertFalse(players.get(1).getPottedBalls().contains(balls.get(1)));
         assertFalse(players.get(0).getPottedBalls().contains(balls.get(1)));
     }
+
+
+    /**
+     * Test case to assert that a ball is added to the right player.
+     */
+    @Test
+    void testAddPottedBallToRightPlayer() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        // pot a two balls during breakshot
+        gameState.onBallPotted(balls.get(5));
+        gameState.onBallPotted(balls.get(3));
+        gameState.onBallPotted(balls.get(1)); // should not be added,
+        // if this happens the game should immediately end.
+        gameState.advanceTurn();
+        // Player 2 pots full ball
+        gameState.onBallPotted(balls.get(2));
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        gameState.advanceTurn();
+        // Player 1 pots a full ball, should be added to player 2's potted balls
+        gameState.onBallPotted(balls.get(3));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
+    }
+
 }

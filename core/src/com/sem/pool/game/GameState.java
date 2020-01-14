@@ -210,6 +210,10 @@ public class GameState implements GameObserver {
         if (!(ball instanceof CueBall3D)) {
             allPottedBalls.add(ball);
         }
+        // if types are assigned, pot the ball to the player with that type.
+        if (ball instanceof RegularBall3D && typesAssigned) {
+            potAssignedBall((RegularBall3D) ball);
+        }
         // if turncount == 0, this is the first turn (breakshot)
         // so types should not be assigned
         if (turnCount > 0 && !typesAssigned) {
@@ -232,6 +236,14 @@ public class GameState implements GameObserver {
                 }
             }
         }
+    }
+
+    private void potAssignedBall(RegularBall3D ball) {
+        if (players.get(playerTurn).getBallType() == ball.getType()) {
+            players.get(playerTurn).getPottedBalls().add(ball);
+            return;
+        }
+        players.get((playerTurn + 1) % players.size()).getPottedBalls().add(ball);
     }
 
     // Since the issue is raised due to a bug in PMD, it is suppressed.
