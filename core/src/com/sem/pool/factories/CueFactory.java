@@ -6,6 +6,8 @@ import com.sem.pool.scene.Cue3D;
 
 public class CueFactory extends Base3DFactory {
 
+    AssetLoader.ModelType MODEL_TYPE = AssetLoader.ModelType.CUE;
+    
     private Texture texture;
 
     /**
@@ -17,7 +19,7 @@ public class CueFactory extends Base3DFactory {
     public CueFactory(Texture texture, AssetLoader assetLoader) {
         super(assetLoader);
         this.texture = texture;
-        MODEL_TYPE = AssetLoader.ModelType.CUE;
+        
     }
 
     public Texture getTexture() {
@@ -32,7 +34,8 @@ public class CueFactory extends Base3DFactory {
      * Creates a Cue3D object instance.
      * @return  New Cue3D object instance
      */
-    public Cue3D createCue() {
+    @Override
+    public Cue3D createObject() {
 
         // TODO: Set texture for personalization
 

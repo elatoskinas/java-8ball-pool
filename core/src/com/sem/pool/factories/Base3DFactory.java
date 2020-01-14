@@ -1,5 +1,7 @@
 package com.sem.pool.factories;
 
+import com.sem.pool.scene.Object3D;
+
 /**
  * Factory class intended for instantiation of
  * 3D objects of the Pool game.
@@ -18,4 +20,10 @@ public abstract class Base3DFactory {
     protected Base3DFactory(AssetLoader assetLoader) {
         this.assetLoader = assetLoader;
     }
+
+    /**
+     * Abstract factory method that is to implemented by child classes.
+     * @return The crated Object3D.
+     */
+    public abstract Object3D createObject();
 }

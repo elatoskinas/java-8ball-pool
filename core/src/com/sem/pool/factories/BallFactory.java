@@ -23,9 +23,10 @@ import static com.sem.pool.factories.AssetLoader.*;
  * of Ball3D objects from the specified texture set.
  */
 public class BallFactory extends Base3DFactory {
-    
-    
+    private transient int id;
 
+    AssetLoader.ModelType MODEL_TYPE = ModelType.BALL;
+    
     // Name of the ball model material (defined in model itself)
     protected static final String BALL_MATERIAL_NAME = "ball";
 
@@ -44,7 +45,7 @@ public class BallFactory extends Base3DFactory {
         this.textures = textures;
 
         // Fixed constant path to use for the ball model asset
-        MODEL_TYPE = ModelType.BALL;
+        
     }
 
     public List<Texture> getTextures() {
@@ -54,15 +55,20 @@ public class BallFactory extends Base3DFactory {
     public void setTextures(List<Texture> textures) {
         this.textures = textures;
     }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      * Creates a 3D Pool Ball object instance with the specified id.
      * The appearance of the ball is set accordingly to the id and
      * the internal textures parameter of the BallFactory.
-     * @param id  Id of the ball to instantiate
+     * The id of the ball needs to first be set, as it is an internal parameter.
      * @return  New Ball3D object instance corresponding to the specified id
      */
-    public Ball3D createBall(int id) {
+    @Override
+    public Ball3D createObject() {
         // we assert ID is a valid ID.
         assert (id >= GameConstants.CUEBALL_ID && id < GameConstants.BALL_COUNT);
         ModelInstance ballInstance = assetLoader.loadModel(MODEL_TYPE);
