@@ -621,6 +621,7 @@ class GameStateTest {
 
         // stillAtBreakShot
         gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn();
         assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
         assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
     }
@@ -637,6 +638,7 @@ class GameStateTest {
         gameState.advanceTurn();
         // not at breakshot but since cue ball is potted no type should be assigned
         gameState.onBallPotted(balls.get(0));
+        gameState.advanceTurn();
         assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
         assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
     }
@@ -716,4 +718,20 @@ class GameStateTest {
         assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
     }
 
+    /**
+     * Test case to assert that a ball is not in any player's list if
+     * players have not been assigned a type yet.
+     */
+    @Test
+    void testAddPottedBallToNoPlayer() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        // pot a ball during breakshot
+        gameState.onBallPotted(balls.get(5));
+        // if this happens the game should immediately end.
+        gameState.advanceTurn();
+        assertFalse(players.get(0).getPottedBalls().contains(balls.get(5)));
+        assertFalse(players.get(1).getPottedBalls().contains(balls.get(5)));
+    }
 }

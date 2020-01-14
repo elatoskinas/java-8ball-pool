@@ -14,7 +14,8 @@ import java.util.Set;
 /**
  * Class to keep track of the current state of the game with regards to the rules.
  * GameState can be observed by implementing the GameStateObserver interface.
- * The methods that update observers are WinGame.
+ * The methods that u
+ * pdate observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
 public class GameState implements GameObserver {
@@ -202,16 +203,18 @@ public class GameState implements GameObserver {
      * Pots the specified ball for the current turn of the Game State.
      * @param ball  Ball to pot
      */
-    // Since the issue is raised due to a bug in PMD, it is suppressed.
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void onBallPotted(Ball3D ball) {
         // Pot ball in current turn
         currentPottedBalls.add(ball);
     }
 
+    /**
+     * Adds all the balls that were potted before types were
+     * assigned to the proper player.
+     */
     // Since the issue is raised due to a bug in PMD, it is suppressed.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private void addPottedBalls() {
+    private void postPotBalls() {
         for (Ball3D pottedBall: allPottedBalls) {
             if (pottedBall instanceof RegularBall3D) {
                 for (Player player: players) {
@@ -219,6 +222,7 @@ public class GameState implements GameObserver {
                 }
             }
         }
+        allPottedBalls.clear();
     }
 
     /**
@@ -282,10 +286,12 @@ public class GameState implements GameObserver {
         }
 
         // Valid pot
-        if (activePlayer.getBallType() == ball.getType()) {
-            activePlayer.potBall(ball);
-        } else { // else pot for other player.
-            players.get((playerTurn + 1) % players.size()).potBall(ball);
+        if (typesAssigned) {
+            if (activePlayer.getBallType() == ball.getType()) {
+                activePlayer.potBall(ball);
+            } else { // else pot for other player.
+                getNextInactivePlayer().potBall(ball);
+            }
         }
     }
 
@@ -307,8 +313,9 @@ public class GameState implements GameObserver {
             otherType = RegularBall3D.Type.STRIPED;
         }
         otherPlayer.assignBallType(otherType);
-        addPottedBalls(); // adds balls that were potted
+        postPotBalls(); // adds balls that were potted
         // before assignment to the proper player.
+        typesAssigned = true;
     }
 
     /**
