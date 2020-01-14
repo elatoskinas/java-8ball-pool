@@ -133,7 +133,7 @@ public class Game implements ObservableGame {
             cue.toDragPosition(mousePosition, cueBall);
 
         } else if (cue.getState() == Cue3D.State.Dragging) {
-            state.setInMotion();
+            startMotion();
             cue.shoot(cueBall);
         } else {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
