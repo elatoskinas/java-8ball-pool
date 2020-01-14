@@ -17,6 +17,7 @@ public class GameInitializer {
     private transient Input input;
     private transient Vector2 resolution;
     private transient Vector3 cameraPosition;
+    private transient CameraCreator cameraCreator;
 
     /**
      * Creates a new Game Initializer object with the specified
@@ -33,13 +34,21 @@ public class GameInitializer {
         this.input = input;
         this.resolution = resolution;
         this.cameraPosition = cameraPosition;
+        this.cameraCreator = new CameraCreator();
+    }
+
+    public void setCameraCreator(CameraCreator creator) {
+        this.cameraCreator = creator;
     }
 
     /**
      * Creates a new Camera Factory instance.
      */
     public CameraFactory createCameraFactory() {
-        return new CameraFactory(this.resolution.x, this.resolution.y, this.cameraPosition);
+        CameraFactory cameraFactory = new CameraFactory(this.resolution.x,
+                this.resolution.y, this.cameraPosition);
+        cameraFactory.setCameraCreator(cameraCreator);
+        return cameraFactory;
     }
 
     /**

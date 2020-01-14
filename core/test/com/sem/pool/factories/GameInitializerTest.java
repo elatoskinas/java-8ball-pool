@@ -18,6 +18,12 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * Test case that tests the creation of factories and
+ * games presented in the Game Initializer class. This
+ * class also acts as an integration test between all the
+ * factories, namely the Scene Factory.
+ */
 class GameInitializerTest {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
@@ -54,12 +60,12 @@ class GameInitializerTest {
      */
     @Test
     void testCreateCameraFactory() {
+        Camera injected = injectCameraCreator();
         CameraFactory factory = gameInitializer.createCameraFactory();
-
-        injectCameraCreator(factory);
 
         assertNotNull(factory);
         assertNotNull(factory.createCamera());
+        assertEquals(injected, factory.createCamera());
     }
 
     /**
@@ -119,22 +125,10 @@ class GameInitializerTest {
      */
     @Test
     void testCreateSceneFactory() {
+        injectCameraCreator();
+        setupMockModelInstantiation();
+
         SceneFactory factory = gameInitializer.createSceneFactory();
-
-        // Set up mock model & transform to avoid NPE errors
-        // related to model instances & libGDX transforming.
-        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
-        mockModel.transform = new Matrix4();
-
-        // Mock calculation of bounding box to allow tests to pass
-        Mockito.when(mockModel.calculateBoundingBox(Mockito.any(BoundingBox.class)))
-            .thenReturn(new BoundingBox());
-
-        // Load mock model instance upon loading any model.
-        Mockito.when(assetLoader.loadModel(Mockito.any()))
-                .thenReturn(mockModel);
-
-        injectCameraCreator(factory.getCameraFactory());
 
         assertNotNull(factory);
         Scene3D scene = factory.createScene();
@@ -142,17 +136,51 @@ class GameInitializerTest {
     }
 
     /**
+     * Test case to verify that a Game is created successfully
+     * upon using the create game method.
+     */
+    @Test
+    void testCreateGame() {
+        injectCameraCreator();
+        setupMockModelInstantiation();
+
+        Game game = gameInitializer.createGame();
+
+        assertNotNull(game);
+        assertNotNull(game.getScene());
+        assertEquals(input, game.getInput());
+    }
+
+    /**
      * Helper method to inject mock Camera Creator to make
      * camera creation related tests pass.
-     * @param factory  Camera factory to inject creator in
      * @return  injected mock Camera
      */
-    private Camera injectCameraCreator(CameraFactory factory) {
+    private Camera injectCameraCreator() {
         CameraCreator creator = Mockito.mock(CameraCreator.class);
         Camera camera = Mockito.mock(Camera.class);
         Mockito.when(creator.createCamera(Mockito.eq(resolution),
                 Mockito.anyFloat())).thenReturn(camera);
-        factory.setCameraCreator(creator);
+        gameInitializer.setCameraCreator(creator);
         return camera;
+    }
+
+    /**
+     * Sets up mocked model instantiation for the Asset Loader
+     * to avoid NPE on model interactions.
+     */
+    private void setupMockModelInstantiation() {
+        // Set up mock model & transform to avoid NPE errors
+        // related to model instances & libGDX transforming.
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        mockModel.transform = new Matrix4();
+
+        // Mock calculation of bounding box to allow tests to pass
+        Mockito.when(mockModel.calculateBoundingBox(Mockito.any(BoundingBox.class)))
+                .thenReturn(new BoundingBox());
+
+        // Load mock model instance upon loading any model.
+        Mockito.when(assetLoader.loadModel(Mockito.any()))
+                .thenReturn(mockModel);
     }
 }
