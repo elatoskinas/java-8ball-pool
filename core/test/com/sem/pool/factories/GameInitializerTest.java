@@ -1,6 +1,7 @@
 package com.sem.pool.factories;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -21,8 +22,10 @@ class GameInitializerTest {
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Input input;
+
     private transient Vector2 resolution;
     private transient Vector3 cameraPosition;
+
     private transient GameInitializer gameInitializer;
 
     @BeforeEach
@@ -52,6 +55,8 @@ class GameInitializerTest {
     @Test
     void testCreateCameraFactory() {
         CameraFactory factory = gameInitializer.createCameraFactory();
+
+        injectCameraCreator(factory);
 
         assertNotNull(factory);
         assertNotNull(factory.createCamera());
@@ -129,35 +134,25 @@ class GameInitializerTest {
         Mockito.when(assetLoader.loadModel(Mockito.any()))
                 .thenReturn(mockModel);
 
+        injectCameraCreator(factory.getCameraFactory());
+
         assertNotNull(factory);
         Scene3D scene = factory.createScene();
         assertNotNull(scene);
     }
 
     /**
-     * Test case to verify that a Game is created successfully upon
-     * calling the create Game method.
+     * Helper method to inject mock Camera Creator to make
+     * camera creation related tests pass.
+     * @param factory  Camera factory to inject creator in
+     * @return  injected mock Camera
      */
-    @Test
-    void testCreateGame() {
-        // Set up mock model & transform to avoid NPE errors
-        // related to model instances & libGDX transforming.
-        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
-        mockModel.transform = new Matrix4();
-
-        // Mock calculation of bounding box to allow tests to pass
-        Mockito.when(mockModel.calculateBoundingBox(Mockito.any(BoundingBox.class)))
-                .thenReturn(new BoundingBox());
-
-        // Load mock model instance upon loading any model.
-        Mockito.when(assetLoader.loadModel(Mockito.any()))
-                .thenReturn(mockModel);
-
-        // Initialize game
-        Game game = gameInitializer.createGame();
-
-        assertNotNull(game);
-        assertNotNull(game.getScene());
-        assertEquals(input, game.getInput());
+    private Camera injectCameraCreator(CameraFactory factory) {
+        CameraCreator creator = Mockito.mock(CameraCreator.class);
+        Camera camera = Mockito.mock(Camera.class);
+        Mockito.when(creator.createCamera(Mockito.eq(resolution),
+                Mockito.anyFloat())).thenReturn(camera);
+        factory.setCameraCreator(creator);
+        return camera;
     }
 }

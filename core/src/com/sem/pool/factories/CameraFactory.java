@@ -2,6 +2,7 @@ package com.sem.pool.factories;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -19,6 +20,10 @@ public class CameraFactory {
     private transient float viewportHeight;
     private final transient Vector3 position;
 
+    // Wrapper to create LibGDX camera; Used to increase
+    // code testability {@see CameraCreator}
+    private transient CameraCreator cameraCreator;
+
     /**
      * Creates a new Camera Factory instance.
      *
@@ -33,12 +38,25 @@ public class CameraFactory {
     }
 
     /**
+     * Sets the internal Camera Creator used to create Cameras.
+     * @param creator  Camera Creator object.
+     */
+    public void setCameraCreator(CameraCreator creator) {
+        this.cameraCreator = creator;
+    }
+
+    /**
      * Creates a Camera object.
      * @return New Camera object
      */
     public Camera createCamera() {
-        Camera camera = new OrthographicCamera(viewportWidth / ZOOM, viewportHeight / ZOOM);
-        camera.position.set(position);
+        Vector2 viewport = new Vector2(viewportWidth, viewportHeight);
+        Camera camera = cameraCreator.createCamera(viewport, ZOOM);
+
+        if (camera.position != null) {
+            camera.position.set(position);
+        }
+
         camera.lookAt(LOOK_AT);
         return camera;
     }
