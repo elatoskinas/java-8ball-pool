@@ -113,7 +113,7 @@ public class Game implements GameStateObserver {
     /**
      * Process the input mouse input for the cue.
      */
-    public void processCueInput() {
+    protected void processCueInput() {
         CueBall3D cueBall = scene.getCueBall();
         Cue3D cue = scene.getCue();
 

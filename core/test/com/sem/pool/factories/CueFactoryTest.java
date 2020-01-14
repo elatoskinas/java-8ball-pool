@@ -64,7 +64,7 @@ public class CueFactoryTest {
 
         Mockito.when(assetLoader.loadModel(CueFactory.MODEL_TYPE)).thenReturn(model);
         Material mat = new Material();
-        Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
+        Mockito.when(model.getMaterial(Cue3D.MATERIAL_NAME)).thenReturn(mat);
         
         Cue3D cue = factory.createCue();
 

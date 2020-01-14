@@ -24,7 +24,7 @@ public final class GameConstants {
     // Cue max shooting force
     public static final float MAX_CUE_FORCE = 0.3f;
 
-    // Cue max distance when dragging
+    // Cue max scalar when dragging
     public static final float MAX_DRAG_DISTANCE = 1f;
 
     // The distance between the cueBall and the tip of the cue.

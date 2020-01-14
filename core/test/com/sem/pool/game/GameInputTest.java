@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
-import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -72,7 +71,10 @@ class GameInputTest extends GameBaseTest {
 
         CueBall3D ball = makeCueBall();
         Cue3D cueSpy = Mockito.spy(cue);
+
         Mockito.doNothing().when(cueSpy).rotateCue(ball);
+        Mockito.when(cueSpy.getCoordinates()).thenReturn(new Vector3(0, 0, 0));
+
         cueSpy.toDragPosition(new Vector3(1, 0, 0), ball);
 
         Mockito.verify(cueSpy, Mockito.times(1)).rotateCue(ball);

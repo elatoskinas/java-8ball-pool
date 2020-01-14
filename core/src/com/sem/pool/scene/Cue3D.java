@@ -15,7 +15,7 @@ public class Cue3D {
     // The Y of the cue can't be 0 because it will end up in the bumpers.
     protected static final float Y_COORDINATE = 1f;
 
-    protected static final String MATERIAL_NAME = "CueMaterial";
+    public static final String MATERIAL_NAME = "CueMaterial";
 
     private transient ModelInstance model;
 
@@ -125,10 +125,12 @@ public class Cue3D {
     /**
      * Sets the mouseposition to the left of the cueball
      * when the mouseposition and ballposition are the same.
+     * Handles the case when the mouse position is right
+     * at the center of the cueball.
      * @param mousePosition Vector3 mouse position
      * @param ballPosition Vector3 ball position
      */
-    void verifyMousePosition(Vector3 mousePosition, Vector3 ballPosition) {
+    void validateMousePosition(Vector3 mousePosition, Vector3 ballPosition) {
         // If the mouseposition and cue ball position are the same -> set the cue to the left.
         if (mousePosition.x == ballPosition.x && mousePosition.z == ballPosition.z) {
             mousePosition.x -= 1;
@@ -144,7 +146,7 @@ public class Cue3D {
     public void toPosition(Vector3 mousePosition, Ball3D cueBall) {
         Vector3 ballPosition = cueBall.getCoordinates();
 
-        verifyMousePosition(mousePosition, ballPosition);
+        validateMousePosition(mousePosition, ballPosition);
 
         // Get the mouse direction with respect to the ball
         Vector3 direction = new Vector3();
@@ -203,28 +205,34 @@ public class Cue3D {
      * @param cueBall       cue ball
      */
     public void toDragPosition(Vector3 mousePosition, Ball3D cueBall) {
-
-        // Get the direction of the cue drag
-        Vector3 direction = new Vector3(dragOriginMouse).sub(cueBall.getCoordinates());
-
-        // Normalize vector because it is the direction
-        direction.y = 0;
-        direction.nor();
-
         // TODO: Different calculation for the distance/force of the cue
         // TODO: Now it just takes the distance to the first left-clicked point
-        
+
+        // Get the direction of the cue drag
+        Vector3 directionClicked = new Vector3(mousePosition).sub(dragOriginMouse);
+        directionClicked.y = 0;
+
+        // Get the direction the cue is pointing
+        Vector3 directionCue = new Vector3(getCoordinates().sub(cueBall.getCoordinates()));
+        directionCue.nor();
+        directionCue.y = 0;
+
+        // Mouse-position projection on cue direction
+        float up = new Vector3(directionClicked).dot(new Vector3(directionCue));
+        float down = new Vector3(directionCue).dot(new Vector3(directionCue));
+        float distance = Math.min(Math.max(0, up / down), GameConstants.MAX_DRAG_DISTANCE);
+
+        Vector3 direction = directionCue.scl(distance);
+        // Normalize vector because it is the direction
+        direction.y = 0;
+
         // The distance from the current mouse position and the first left-click mouse position.
         // capMaxForce prevents cue from going over max force
         // Calculate force based on the ratio of the
         // distance and the max distance that is allowed
-        float tempDistance = mousePosition.dst(dragOriginMouse);
-        float distance = Math.min(GameConstants.MAX_DRAG_DISTANCE, tempDistance);
+
         float distanceRatio = distance / GameConstants.MAX_DRAG_DISTANCE;
         currentForce = distanceRatio * GameConstants.MAX_CUE_FORCE;
-
-        // Scale the direction with the distance
-        direction.scl(distance);
 
         // Add the direction to the cue position of the first left-click
         direction.add(dragOriginCue);

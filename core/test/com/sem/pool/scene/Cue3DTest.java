@@ -47,7 +47,7 @@ public class Cue3DTest {
 
         ModelInstance model = Mockito.mock(ModelInstance.class);
         Material mat = new Material();
-        Mockito.when(model.getMaterial("CueMaterial")).thenReturn(mat);
+        Mockito.when(model.getMaterial(Cue3D.MATERIAL_NAME)).thenReturn(mat);
 
         Cue3D cue = new Cue3D(model);
         assertEquals(model, cue.getModel());
@@ -171,7 +171,7 @@ public class Cue3DTest {
 
         Matrix4 matrix = Mockito.mock(Matrix4.class);
         cue.getModel().transform = matrix;
-        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
+        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0.5f, 0, 0));
 
         CueBall3D cueBall = makeCueBall();
         Vector3 mouseposition = new Vector3(1, 0, 0);
@@ -190,13 +190,13 @@ public class Cue3DTest {
     @Test
     public void testMaxCueForce() {
 
-        CueBall3D cueBall = makeCueBall();
         Matrix4 matrix = Mockito.mock(Matrix4.class);
-        cueBall.getModel().transform = matrix;
-
-        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0, 0, 0));
+        cue.getModel().transform = matrix;
+        Mockito.when(matrix.getTranslation(Vector3.Zero)).thenReturn(new Vector3(0.5f, 0, 0));
 
         Vector3 mouseposition = new Vector3(1000000, 0, 0);
+        CueBall3D cueBall = makeCueBall();
+
         cue.setDragOriginMouse(new Vector3(0, 0, 0));
         cue.toDragPosition(mouseposition, cueBall);
         cue.shoot(cueBall);
@@ -223,7 +223,7 @@ public class Cue3DTest {
     public void testVerifyMousePosition() {
         Vector3 mousePosition = new Vector3(0, 0, 0);
         Vector3 ballPosition = new Vector3(0, 0, 0);
-        cue.verifyMousePosition(mousePosition, ballPosition);
+        cue.validateMousePosition(mousePosition, ballPosition);
 
         assertEquals(new Vector3(-1, 0, 0), mousePosition);
     }

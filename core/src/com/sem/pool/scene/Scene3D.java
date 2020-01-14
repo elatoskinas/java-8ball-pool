@@ -158,6 +158,10 @@ public class Scene3D {
         return mousePosition;
     }
 
+    /**
+     * Returns the cue-ball.
+     * @return  CueBall3D cue-ball
+     */
     public CueBall3D getCueBall() {
         return (CueBall3D) getPoolBalls().get(GameConstants.CUEBALL_ID);
     }
