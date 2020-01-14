@@ -34,7 +34,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         game = new Game(scene, input, gameState);
         game.startGame();
         assertFalse(game.determineIsInMotion());
-        gameState.setInMotion();
+        gameState.onMotion();
 
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
@@ -69,12 +69,33 @@ class GameAndStateIntegrationTest extends GameBaseTest {
 
         setupScenePoolBallsHelper(true, false);
 
-        gameState.startGame();
-        gameState.setInMotion();
+        gameState.onGameStarted();
+        gameState.onMotion();
 
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
 
         Mockito.verify(scene).triggerCollisions();
+    }
+
+    @Test
+    void testEndGameOnWin() {
+        final float deltaTime = 1f;
+
+        // Start game
+        game.startGame();
+
+        // Create observer to verify game end call
+        GameObserver observer = Mockito.mock(GameObserver.class);
+        game.addObserver(observer);
+
+        // Win game & advance to next game loop iteration
+        gameState.winGame(false);
+        game.advanceGameLoop(deltaTime);
+
+        // Ensure end game event is sent
+        Mockito.verify(observer).onGameEnded();
+
+        assertTrue(gameState.isStopped());
     }
 }
