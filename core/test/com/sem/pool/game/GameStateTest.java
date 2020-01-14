@@ -360,6 +360,7 @@ class GameStateTest {
 
         Player player = gameState.getActivePlayer();
         player.assignBallType(type);
+        gameState.setTypesAssigned(true);
 
         for (int i = 0; i < potCount; ++i) {
             RegularBall3D ball = Mockito.mock(RegularBall3D.class);
@@ -381,6 +382,7 @@ class GameStateTest {
     void testHandleBallPottingMultipleSDiffering() {
         final RegularBall3D.Type type = RegularBall3D.Type.FULL;
         Player player = gameState.getActivePlayer();
+        gameState.setTypesAssigned(true);
         player.assignBallType(type);
 
         RegularBall3D ball1 = Mockito.mock(RegularBall3D.class);
@@ -389,8 +391,8 @@ class GameStateTest {
         Mockito.when(ball1.getType()).thenReturn(RegularBall3D.Type.FULL);
         Mockito.when(ball2.getType()).thenReturn(RegularBall3D.Type.STRIPED);
 
-        gameState.onBallPotted(ball1);
-        gameState.onBallPotted(ball2);
+        gameState.potRegularBall(ball1);
+        gameState.potRegularBall(ball2);
 
         gameState.advanceTurn();
         assertEquals(1, player.getPottedBalls().size());

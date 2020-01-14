@@ -271,11 +271,18 @@ public class GameState implements GameObserver {
         currentPottedBalls.clear();
     }
 
+    public void setTypesAssigned(boolean typesAssigned) {
+        this.typesAssigned = typesAssigned;
+    }
+
     /**
      * Logic for a regular ball pot.
      * If the players don't have a ball type -> assign ball types to players.
      * @param ball regular ball
      */
+    // PMD calls a warning because a change is made to an object and not always used.
+    // This warning is incorrect and therefore ignored.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void potRegularBall(RegularBall3D ball) {
         Player activePlayer = getActivePlayer();
 
