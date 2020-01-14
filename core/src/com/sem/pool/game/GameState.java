@@ -207,43 +207,6 @@ public class GameState implements GameObserver {
     public void onBallPotted(Ball3D ball) {
         // Pot ball in current turn
         currentPottedBalls.add(ball);
-        if (!(ball instanceof CueBall3D)) {
-            allPottedBalls.add(ball);
-        }
-        // if types are assigned, pot the ball to the player with that type.
-        if (ball instanceof RegularBall3D && typesAssigned) {
-            potAssignedBall((RegularBall3D) ball);
-        }
-        // if turncount == 0, this is the first turn (breakshot)
-        // so types should not be assigned
-        if (turnCount > 0 && !typesAssigned) {
-            // find the first potted ball that is not a cue ball.
-            for (Ball3D b: currentPottedBalls) {
-                if (b instanceof RegularBall3D) {
-                    if (((RegularBall3D) b).getType().equals(RegularBall3D.Type.STRIPED)) {
-                        players.get(playerTurn).assignBallType(RegularBall3D.Type.STRIPED);
-                        players.get((playerTurn + 1) % players.size())
-                                .assignBallType(RegularBall3D.Type.FULL);
-                    } else {
-                        players.get(playerTurn).assignBallType(RegularBall3D.Type.FULL);
-                        players.get((playerTurn + 1) % players.size())
-                                .assignBallType(RegularBall3D.Type.STRIPED);
-                    }
-                    addPottedBalls();
-                    typesAssigned = true;
-                    // set to null to save memory
-                    break;
-                }
-            }
-        }
-    }
-
-    private void potAssignedBall(RegularBall3D ball) {
-        if (players.get(playerTurn).getBallType() == ball.getType()) {
-            players.get(playerTurn).getPottedBalls().add(ball);
-            return;
-        }
-        players.get((playerTurn + 1) % players.size()).getPottedBalls().add(ball);
     }
 
     // Since the issue is raised due to a bug in PMD, it is suppressed.
@@ -251,22 +214,12 @@ public class GameState implements GameObserver {
     private void addPottedBalls() {
         for (Ball3D pottedBall: allPottedBalls) {
             if (pottedBall instanceof RegularBall3D) {
-                if (players.get(0).getBallType() == RegularBall3D.Type.FULL) {
-                    if (((RegularBall3D) pottedBall).getType()
-                            == RegularBall3D.Type.FULL) {
-                        players.get(0).getPottedBalls().add((RegularBall3D) pottedBall);
-                        continue;
-                    }
-                    players.get(1).getPottedBalls().add((RegularBall3D) pottedBall);
-                    continue;
+                if (players.get(0).getBallType() == ((RegularBall3D) pottedBall).getType()) {
+                    players.get(0).getPottedBalls().add((RegularBall3D) pottedBall);
                 }
-                // In case somehow the ball type is unassigned
-                if (((RegularBall3D) pottedBall).getType() == RegularBall3D.Type.FULL) {
+                else {
                     players.get(1).getPottedBalls().add((RegularBall3D) pottedBall);
-                    continue;
                 }
-                players.get(0).getPottedBalls().add((RegularBall3D) pottedBall);
-                continue;
             }
         }
     }
@@ -290,6 +243,10 @@ public class GameState implements GameObserver {
         boolean eightPotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
+            if (!typesAssigned && !(ball instanceof CueBall3D)) {
+                allPottedBalls.add(ball); // until types are assigned
+                // keep track of balls potted
+            }
             if (ball instanceof RegularBall3D) {
                 potRegularBall((RegularBall3D) ball);
             } else if (ball instanceof EightBall3D) {
@@ -324,12 +281,19 @@ public class GameState implements GameObserver {
         if (activePlayer.getBallType() == RegularBall3D.Type.UNASSIGNED) {
             assignBallTypesToPlayers(ball);
         }
+        // if turncount == 0, this is the first turn (breakshot)
+        // so types should not be assigned
+        if (turnCount > 0 && !typesAssigned) {
+            assignBallTypesToPlayers(ball);
+        }
 
         // Valid pot
         if (activePlayer.getBallType() == ball.getType()) {
             activePlayer.potBall(ball);
+        } else { // else pot for other player.
+            System.out.println("a: " + ball.getType());
+            players.get((playerTurn + 1) % players.size()).getPottedBalls().add(ball);
         }
-        // TODO: Logic for an invalid move
     }
 
     /**
@@ -338,14 +302,8 @@ public class GameState implements GameObserver {
      * @param ball first regular ball that is potted in a valid way
      */
     public void assignBallTypesToPlayers(RegularBall3D ball) {
-
         Player activePlayer = getActivePlayer();
         Player otherPlayer = getNextInactivePlayer();
-
-        // TODO: Take into account that the ball type should not
-        //       be assigned during the break shot
-        // TODO: Do not assign ball type when cue ball is potted
-
         activePlayer.assignBallType(ball.getType());
         RegularBall3D.Type otherType;
 
@@ -355,8 +313,9 @@ public class GameState implements GameObserver {
         } else {
             otherType = RegularBall3D.Type.STRIPED;
         }
-
         otherPlayer.assignBallType(otherType);
+        addPottedBalls(); // adds balls that were potted
+        // before assignment to the proper player.
     }
 
     /**

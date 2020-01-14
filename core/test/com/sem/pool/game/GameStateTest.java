@@ -568,6 +568,7 @@ class GameStateTest {
         gameState.advanceTurn();
         // Now it's player 2's turn
         gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn();
         assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
         assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
     }
@@ -584,6 +585,7 @@ class GameStateTest {
         gameState.advanceTurn();
         // Now it's player 2's turn
         gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn(); // handle turn events
         assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
         assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
         gameState.advanceTurn();
@@ -603,6 +605,7 @@ class GameStateTest {
         gameState = new GameState(players, balls);
         gameState.onBallPotted(balls.get(2));
         gameState.onBallPotted(balls.get(0));
+        gameState.advanceTurn(); // handle turn events
         assertTrue(gameState.getAllPottedBalls().contains(balls.get(2)));
         assertFalse(gameState.getAllPottedBalls().contains(balls.get(0)));
     }
@@ -651,9 +654,10 @@ class GameStateTest {
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
         gameState.onBallPotted(balls.get(3));
-        gameState.advanceTurn();
+        gameState.advanceTurn(); // handle turn
         // Player 1 pots full ball
         gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn(); // handle turn
         assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
         assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
         assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
@@ -677,6 +681,7 @@ class GameStateTest {
         gameState.advanceTurn();
         // Player 1 pots full ball
         gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn();
         assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
         assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
         assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
