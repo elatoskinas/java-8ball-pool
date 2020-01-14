@@ -89,13 +89,13 @@ public class Pool implements Screen, GameObserver {
             float height = Gdx.graphics.getHeight();
             CameraFactory cameraFactory = new CameraFactory(width, height, cameraPosition);
 
-            Texture cueTexture = null;
+            Texture cueTexture = assetLoader.getCueTexture();
             CueFactory cueFactory = new CueFactory(cueTexture, assetLoader);
 
             List<Texture> ballTextures = assetLoader.getBallTextures();
             BallFactory ballFactory = new BallFactory(ballTextures, assetLoader);
 
-            Texture tableTexture = null;
+            Texture tableTexture = assetLoader.getTableTexture();
             TableFactory tableFactory = new TableFactory(tableTexture, assetLoader);
 
             SceneFactory sceneFactory = new SceneFactory(tableFactory,
