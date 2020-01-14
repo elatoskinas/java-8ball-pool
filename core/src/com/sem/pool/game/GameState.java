@@ -30,6 +30,9 @@ public class GameState implements GameObserver {
 
     private transient Player winningPlayer;
 
+    // First ball touched in current turn
+    private transient Ball3D firstBallTouched;
+
     public enum State {
         Stopped,
         Idle,
@@ -180,7 +183,7 @@ public class GameState implements GameObserver {
     }
 
     @Override
-    public void onMotionStop() {
+    public void onMotionStop(Ball3D touched) {
         advanceTurn();
     }
 

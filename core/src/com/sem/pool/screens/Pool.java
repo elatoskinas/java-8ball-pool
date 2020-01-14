@@ -218,7 +218,7 @@ public class Pool implements Screen, GameObserver {
     }
 
     @Override
-    public void onMotionStop() {
+    public void onMotionStop(Ball3D lastTouched) {
 
     }
 
