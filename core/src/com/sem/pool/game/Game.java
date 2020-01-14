@@ -68,16 +68,19 @@ public class Game implements ObservableGame {
      */
     public void advanceGameLoop(float deltaTime) {
         if (state.isStarted()) {
+            // Check if Game has a winning Player
+            if (state.getWinningPlayer().isPresent()) {
+                endGame();
+            } else {
+                // Check if any ball is in motion
+                determineIsInMotion();
 
-            // Check if any ball is in motion
-            determineIsInMotion();
-
-            if (state.isInMotion()) {
-                moveBalls(deltaTime);
-            } else if (state.isIdle()) {
-                respondToInput();
+                if (state.isInMotion()) {
+                    moveBalls(deltaTime);
+                } else if (state.isIdle()) {
+                    respondToInput();
+                }
             }
-
         } // Do nothing if game is not started
     }
 
