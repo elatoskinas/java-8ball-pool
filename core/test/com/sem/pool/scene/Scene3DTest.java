@@ -295,4 +295,30 @@ class Scene3DTest {
         // Assert that cue ball touched the ball it collided with
         assertEquals(ball2, scene.getFirstTouched());
     }
+
+    /**
+     * Test case to verify that clearing touched ball
+     * successfully removes the ball that was stored
+     * as first touched.
+     */
+    @Test
+    public void testTriggerCollisionsClearTouched() {
+        // Call previous test to setup into Cue Ball having touched
+        // a ball
+        testTriggerCollisionsCueTouch();
+
+        // Clear pool balls of scene to prevent collision re-checking
+        scene.getPoolBalls().clear();
+
+        // Trigger collisions again
+        scene.triggerCollisions();
+
+        // Verify a touched ball still exists (i.e. not reset)
+        assertNotNull(scene.getFirstTouched());
+
+        // Clear the first touched ball & assert that it is now
+        // null when checked in the scnee.
+        scene.clearFirstTouched();
+        assertNull(scene.getFirstTouched());
+    }
 }

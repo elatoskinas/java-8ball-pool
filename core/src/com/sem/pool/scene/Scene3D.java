@@ -128,7 +128,6 @@ public class Scene3D {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public List<Ball3D> triggerCollisions() {
         List<Ball3D> potted = new ArrayList<>();
-        firstTouched = null;
 
         for (int i = 0; i < poolBalls.size(); i++) {
             Ball3D ball = poolBalls.get(i);
@@ -179,6 +178,14 @@ public class Scene3D {
      */
     public Ball3D getFirstTouched() {
         return firstTouched;
+    }
+
+    /**
+     * Cleares the first ball that is tracked as touched by the Cue Ball.
+     * To be called at the end of a turn.
+     */
+    public void clearFirstTouched() {
+        firstTouched = null;
     }
 
     /**
