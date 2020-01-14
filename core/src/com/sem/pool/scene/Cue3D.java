@@ -17,8 +17,6 @@ public class Cue3D extends Object3D {
 
     public static final String MATERIAL_NAME = "CueMaterial";
 
-    private transient ModelInstance model;
-
     // Add blending attribute to hide the cue
     public transient BlendingAttribute blendingAttribute;
     private transient State state;
@@ -109,7 +107,7 @@ public class Cue3D extends Object3D {
         float x = position.x - GameConstants.CUE_OFFSET - cueBall.getRadius();
         model.transform.translate(x, Y_COORDINATE, position.z);
     }
-    
+
     /**
      * Sets the mouseposition to the left of the cueball
      * when the mouseposition and ballposition are the same.
