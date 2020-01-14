@@ -185,53 +185,51 @@ public abstract class Ball3D {
             if(other.getDirection().equals(new Vector3(0, 0, 0))) {
                 other.setDirection(directionToOther);
             }
+            
+            // Calculate phi
+            
+            double phi = acos(directionToOther.nor().x);
+            
+            // Calculate theta1 and theta2
+            double theta1 = acos(this.getDirection().x);
+            
+            double theta2 = acos(other.getDirection().x);
+            if(other.getDirection().z < 0) {
+                theta2 = theta2 * -1;
+            }
+            // Whenever the z direction of the ball is negative, invert the angle, 
+            // as the domain of the acos function does not cover negative angles
+            if(directionToOther.nor().z < 0) {
+                phi = phi * -1;
+            }
+            if(this.getDirection().z < 0) {
+                theta1 = theta1 * -1;
+            }
+            if(this.getDirection().z < 0) {
+                theta1 = theta1 * -1;
+            }
+            
+            // Declaration of the speed of both balls before the collision for calculation purposes
+            double v1 = this.getSpeed();
+            double v2 = other.getSpeed();
 
+            // Calculate and set the speed and direction of ball 1
+            double v1x = v2*cos(theta2 - phi)*cos(phi) + v1*sin(theta1 - phi)*cos(phi + (PI/2));
+            double v1z = v2*cos(theta2 - phi)*sin(phi) + v1*sin(theta1 - phi)*sin(phi + (PI/2));
 
-//
-//            double phi = acos(directionToOther.nor().x);
-//            // Calculate theta1 and theta2
-//            double theta1 = acos(this.getDirection().x);
-//            double theta2 = acos(other.getDirection().x);
-//
-//            System.out.println("printing");
-//            System.out.println(getDirection());
-//            System.out.println(theta1);
-//
-//            // Declaration of the speed of both balls before the collision for calculation purposes
-//            double v1 = this.getSpeed();
-//            double v2 = other.getSpeed();
-//
-//            // Calculate and set the speed and direction of ball 1
-//            double v1x = v2*cos(theta2 - phi)*cos(phi) + v1*sin(theta1 - phi)*cos(phi + (PI/2));
-//            double v1z = v2*cos(theta2 - phi)*sin(phi) + v1*sin(theta1 - phi)*sin(phi + (PI/2));
-//
-//            this.setSpeed((float) Math.sqrt(v1x*v1x + v1z*v1z));
-//            this.setDirection(new Vector3((float) v1x, 0, (float) v1z));
-//
-//            // Calculate and set the speed and direction of ball 2
-//            double v2x = v1*cos(theta1 - phi)*cos(phi) + v2*sin(theta2 - phi)*cos(phi + (PI/2));
-//            double v2z = v1*cos(theta1 - phi)*sin(phi) + v2*sin(theta2 - phi)*sin(phi + (PI/2));
-//
-//            other.setSpeed((float) Math.sqrt(v2x*v2x + v2z*v2z));
-//            other.setDirection(new Vector3((float) v2x, 0, (float) v2z));
+            this.setSpeed((float) Math.sqrt(v1x*v1x + v1z*v1z));
+            this.setDirection(new Vector3((float) v1x, 0, (float) v1z));
 
+            // Calculate and set the speed and direction of ball 2
+            double v2x = v1*cos(theta1 - phi)*cos(phi) + v2*sin(theta2 - phi)*cos(phi + (PI/2));
+            double v2z = v1*cos(theta1 - phi)*sin(phi) + v2*sin(theta2 - phi)*sin(phi + (PI/2));
 
-//            move(0.0001f);
-//            other.move(0.0001f);
-            // Create vector from other to ball.
-            Vector3 directionToMe = new Vector3(getCoordinates())
-                    .sub(new Vector3(other.getCoordinates()));
-
-            // set directions of balls to opposite of their direction to the other.
-            setDirection(directionToOther.scl(-1));
-            other.setDirection(directionToMe.scl(-1));
-
-            // halve our speed on collision (implementation will be improved later)
-
-            // if we hit a ball that is not moving or has no direction, give it speed/direction.
-            float temp = getSpeed();
-            setSpeed(other.getSpeed());
-            other.setSpeed(temp);
+            other.setSpeed((float) Math.sqrt(v2x*v2x + v2z*v2z));
+            other.setDirection(new Vector3((float) v2x, 0, (float) v2z));
+            
+            // Move both balls a little bit to combat clipping
+            move(0.01f);
+            other.move(0.01f);
             return true;
         }
         return false;

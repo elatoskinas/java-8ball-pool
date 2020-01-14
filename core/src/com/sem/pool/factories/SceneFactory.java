@@ -148,7 +148,7 @@ public class SceneFactory {
         // closer together to each other.
         // TODO: Set 1.8 as a final float in the class
         float radius = poolBalls.get(0).getRadius();
-        float spacing = radius * 1.8f;
+        float spacing = radius * 2.1f;
 
         // Iterate through all non-cue balls
         for (int i = 1; i < poolBalls.size(); ++i) {
