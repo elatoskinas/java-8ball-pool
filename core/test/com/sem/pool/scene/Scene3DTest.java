@@ -3,6 +3,7 @@ package com.sem.pool.scene;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -240,7 +241,7 @@ class Scene3DTest {
         scene.triggerCollisions();
 
         // Assert that cue ball did not touch any ball
-        assertNull(scene.getFirstTouched());
+        assertTrue(scene.getFirstTouched() instanceof NullBall);
     }
 
     /**
@@ -250,7 +251,7 @@ class Scene3DTest {
      */
     @Test
     public void testTriggerCollisionsCueTouch() {
-        assertNull(scene.getFirstTouched());
+        assertTrue(scene.getFirstTouched() instanceof NullBall);
 
         // Create 2 mock pool balls, and add them to the scene
         Ball3D ball1 = Mockito.mock(CueBall3D.class);
@@ -319,6 +320,6 @@ class Scene3DTest {
         // Clear the first touched ball & assert that it is now
         // null when checked in the scnee.
         scene.clearFirstTouched();
-        assertNull(scene.getFirstTouched());
+        assertTrue(scene.getFirstTouched() instanceof NullBall);
     }
 }

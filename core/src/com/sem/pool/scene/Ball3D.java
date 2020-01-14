@@ -29,6 +29,10 @@ public abstract class Ball3D extends Object3D {
         this.collisionHandler = collisionHandler;
     }
 
+    protected Ball3D() {
+
+    }
+
     /**
      * Constructs a new 3D Pool Ball instance with
      * the specified id and model.

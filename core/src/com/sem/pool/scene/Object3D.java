@@ -10,6 +10,10 @@ public abstract class Object3D {
     
     protected transient ModelInstance model;
 
+    protected Object3D() {
+        
+    }
+
     /**
      * Constructs a new Object3D instance.
      * @param model The model that is to be used.
