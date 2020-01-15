@@ -323,6 +323,9 @@ class Scene3DTest {
         assertTrue(scene.getFirstTouched() instanceof NullBall);
     }
 
+    /**
+     * Test if getting the cue ball will actually return the cue ball.
+     */
     @Test
     public void testGetCueBall() {
         Scene3D scene = Mockito.mock(Scene3D.class);

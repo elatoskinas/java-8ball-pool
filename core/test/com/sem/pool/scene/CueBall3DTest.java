@@ -25,6 +25,9 @@ public class CueBall3DTest extends Ball3DTest {
         assertEquals(model, ball.getModel());
     }
 
+    /**
+     * Test the potting of the cue ball.
+     */
     @Test
     public void testPot() {
         float speed = 5.1f;
