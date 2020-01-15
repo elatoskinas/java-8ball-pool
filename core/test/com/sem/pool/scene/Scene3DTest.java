@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.math.Matrix4;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -336,19 +336,36 @@ class Scene3DTest {
         assertEquals(ball, scene.getCueBall());
     }
 
+    /**
+     * Test the resetting of the cue ball.
+     * The PMD error is ignored, as fixing it would decrease the readability of the test.
+     */
     @Test
+    @SuppressWarnings("checkstyle:variabledeclarationusagedistance")
     public void testResetCue() {
-        CueBall3D ball = Mockito.mock(CueBall3D.class);
+        CueBall3D cue = Mockito.mock(CueBall3D.class);
+        Ball3D ball = Mockito.mock(Ball3D.class);
         ModelInstance model = Mockito.mock(ModelInstance.class);
         Matrix4 transform = Mockito.mock(Matrix4.class);
         Matrix4 newTransform = Mockito.mock(Matrix4.class);
+        CollisionHandler collisionHandler = Mockito.mock(CollisionHandler.class);
         final HitBox hitBox = Mockito.mock(HitBox.class);
-        model.transform = transform;
-        Mockito.when(ball.getModel()).thenReturn(model);
-        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
-        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
-        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
 
-        this.scene.resetCue(ball);
+        model.transform = transform;
+        this.scene.getPoolBalls().add(cue);
+        this.scene.getPoolBalls().add(ball);
+
+        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
+        Mockito.when(cue.getModel()).thenReturn(model);
+        Mockito.when(cue.getHitBox()).thenReturn(hitBox);
+        Mockito.when(cue.getCollisionHandler()).thenReturn(collisionHandler);
+        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
+        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
+        Mockito
+                .when(collisionHandler.checkHitBoxCollision(hitBox, hitBox))
+                .thenReturn(true)
+                .thenReturn(false);
+
+        this.scene.resetCue(cue);
     }
 }
