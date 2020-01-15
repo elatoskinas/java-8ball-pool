@@ -207,7 +207,7 @@ abstract class Ball3DTest {
         Ball3D ball = getBall(0, mockModelInstance);
         Vector3 translation = new Vector3(1f, 0, 0);
         ball.translate(translation);
-        Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+        Mockito.verify(mockMatrix, Mockito.times(1)).trn(translation);
     }
 
 
@@ -291,7 +291,7 @@ abstract class Ball3DTest {
         // set our translation scaled to what we expect the ball to have
         translation.scl((ball.getSpeed() - GameConstants.DRAG_COEFFICIENT));
         ball.move(1);
-        Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+        Mockito.verify(mockMatrix, Mockito.times(1)).trn(translation);
     }
 
     /**

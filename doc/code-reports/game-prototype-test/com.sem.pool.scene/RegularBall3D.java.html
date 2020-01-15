@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegularBall3D.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.scene</a> &gt; <span class="el_source">RegularBall3D.java</span></div><h1>RegularBall3D.java</h1><pre class="source lang-java linenums">package com.sem.pool.scene;
+
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.sem.pool.game.GameConstants;
+
+/**
+ * Ball3D with id between 1 - 7 and 9 - 15 which represents either a full or striped ball.
+ */
+public class RegularBall3D extends Ball3D {
+<span class="fc" id="L10">    public enum Type {</span>
+<span class="fc" id="L11">        STRIPED,</span>
+<span class="fc" id="L12">        FULL,</span>
+<span class="fc" id="L13">        UNASSIGNED</span>
+    }
+
+    private final transient Type type;
+
+    /**
+     * Constructs a new 3D Pool Full Ball instance with
+     * the specified id and model.
+     *
+     * @param id    ID of the ball
+     * @param model Model object of the ball
+     */
+    public RegularBall3D(int id, ModelInstance model) {
+<span class="fc" id="L26">        super(id, model);</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (id &lt; GameConstants.EIGHTBALL_ID) {</span>
+<span class="fc" id="L28">            this.type = Type.FULL;</span>
+        } else {
+<span class="fc" id="L30">            this.type = Type.STRIPED;</span>
+        }
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Returns the type of the ball.
+     *
+     * @return Type, the type of the ball.
+     */
+    public Type getType() {
+<span class="fc" id="L40">        return this.type;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

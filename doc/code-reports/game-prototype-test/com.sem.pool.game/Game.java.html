@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Game.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.game</a> &gt; <span class="el_source">Game.java</span></div><h1>Game.java</h1><pre class="source lang-java linenums">package com.sem.pool.game;
+
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Scene3D;
+
+import java.util.List;
+
+/**
+ * Class that handles everything related to the pool game.
+ * TODO: This is currently only a template, no functionality has been implemented as of yet.
+ * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
+ */
+
+public class Game implements GameStateObserver {
+    private transient Scene3D scene;
+    private transient Input input;
+    private transient GameState state;
+
+    /**
+     * Constructs a new Game object with the given scene, input, and state.
+     * @param scene The scene of the game.
+     * @param input The input the game should listen to.
+     * @param state The state of the game.
+     */
+<span class="fc" id="L27">    public Game(Scene3D scene, Input input, GameState state) {</span>
+<span class="fc" id="L28">        this.scene = scene;</span>
+<span class="fc" id="L29">        this.input = input;</span>
+<span class="fc" id="L30">        this.state = state;</span>
+
+        // Add game as an observer to the GameState
+<span class="fc" id="L33">        state.addObserver(this);</span>
+<span class="fc" id="L34">    }</span>
+
+    public Scene3D getScene() {
+<span class="fc" id="L37">        return scene;</span>
+    }
+
+    public Input getInput() {
+<span class="fc" id="L41">        return input;</span>
+    }
+
+    public GameState getState() {
+<span class="fc" id="L45">        return state;</span>
+    }
+
+
+    /**
+     * Starts the game and takes care of starting the
+     * Game State as well.
+     */
+    public void startGame() {
+<span class="fc" id="L54">        state.startGame();</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Publicly accessible method call that handles all of the
+     * logic for the current game loop iteration, such as
+     * moving the balls, responding to input, and ending
+     * the current turn.
+     * @param deltaTime deltaTime, time between current and last frame.
+     */
+    public void advanceGameLoop(float deltaTime) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (state.isStarted()) {</span>
+
+            // Check if any ball is in motion
+<span class="fc" id="L68">            determineIsInMotion();</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            if (state.isInMotion()) {</span>
+<span class="fc" id="L71">                moveBalls(deltaTime);</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            } else if (state.isIdle()) {</span>
+<span class="fc" id="L73">                respondToInput();</span>
+            }
+
+        } // Do nothing if game is not started
+<span class="fc" id="L77">    }</span>
+
+    /**
+     * Moves the balls according to our physics implementation. This method will be called
+     * every frame in the render() method.
+     */
+    // Seems like there is a false positive with regards to UR anomalies that
+    // is caused by the loop.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    protected void moveBalls(float deltaTime) {
+        // Move all the balls in the scene, regardless of whether
+        // they are in motion or not. Here, we assume that the ball
+        // is simply not moved if it is not in motion (via internal logic of ball)
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (Ball3D ball : scene.getPoolBalls()) {</span>
+<span class="fc" id="L91">            ball.move(deltaTime);</span>
+<span class="fc" id="L92">        }</span>
+
+        // Check collisions for current game loop iteration
+<span class="fc" id="L95">        List&lt;Ball3D&gt; potted = scene.triggerCollisions();</span>
+
+        // Pot the ball for every ball that was determined to be potted
+        // by the scene
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (Ball3D ball : potted) {</span>
+<span class="fc" id="L100">            potBall(ball);</span>
+<span class="fc" id="L101">        }</span>
+<span class="fc" id="L102">    }</span>
+
+    /**
+     * Method to handle any input by the player(s), should ignore input if invalid.
+     */
+    protected void respondToInput() {
+        // input relevant for cue and shot
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (input.isButtonPressed(Input.Buttons.LEFT)) {</span>
+<span class="fc" id="L110">            performCueShot();</span>
+<span class="fc" id="L111">            state.setInMotion();</span>
+        }
+<span class="fc" id="L113">    }</span>
+
+    /**
+     * Determines if there is at least one ball that is currently
+     * in motion. To be used as a helper for the game loop in
+     * ending a movement loop iteration.
+     * @return  True if at least one ball is in motion, and false otherwise.
+     */
+    // Seems like there is a false positive with regards to UR anomalies that
+    // is caused by the loop.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    protected boolean determineIsInMotion() {
+        // Check all the balls currently in the scene
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        for (Ball3D ball : scene.getPoolBalls()) {</span>
+            // Found one that is in motion;
+            // Game should also be in motion.
+<span class="fc bfc" id="L129" title="All 2 branches covered.">            if (ball.isInMotion()) {</span>
+<span class="fc" id="L130">                return true;</span>
+            }
+<span class="fc" id="L132">        }</span>
+
+        // No ball in motion; Game should not be in motion either.
+        // If no balls are in motion, that means
+        // we are at the phase where we can respond to input.
+        // Otherwise, we need to move the balls.
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (state.isInMotion()) {</span>
+<span class="fc" id="L139">            state.advanceTurn();</span>
+        }
+<span class="fc" id="L141">        return false;</span>
+    }
+
+    /**
+     * Pots the specified ball in the Pool Game.
+     * This makes the specified ball disappear from the table,
+     * and updates the Game State to score the potting for the
+     * active Player.
+     * @param ball  Ball to be potted
+     */
+    public void potBall(Ball3D ball) {
+        // Pot the ball (handles potting the ball visually)
+<span class="fc" id="L153">        ball.pot();</span>
+
+        // Propagate to the Game State to handle the logical part of potting.
+<span class="fc" id="L156">        state.onBallPotted(ball);</span>
+<span class="fc" id="L157">    }</span>
+
+    /**
+     * Performs the cue shot by firing the cue ball with the
+     * cue's current power and rotation.
+     */
+    private void performCueShot() {
+        // TODO: Integrate power &amp; rotation
+<span class="fc" id="L165">        Vector3 mousePosition = scene.getUnprojectedMousePosition();</span>
+<span class="fc" id="L166">        Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);</span>
+<span class="fc" id="L167">        scene.getCue().shoot(mousePosition, cueBall);</span>
+<span class="fc" id="L168">    }</span>
+
+    @Override
+    public void endGame(Player winner) {
+        // TODO: Implement logic for ending game here.
+<span class="nc" id="L173">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

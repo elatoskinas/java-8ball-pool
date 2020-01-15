@@ -4,10 +4,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CollisionHandler;
+import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class that handles everything related to the pool game.
@@ -15,10 +20,11 @@ import java.util.List;
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
 
-public class Game implements GameStateObserver {
+public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
     private transient GameState state;
+    private transient Set<GameObserver> observers;
 
     /**
      * Constructs a new Game object with the given scene, input, and state.
@@ -30,9 +36,34 @@ public class Game implements GameStateObserver {
         this.scene = scene;
         this.input = input;
         this.state = state;
+        this.observers = new HashSet<>();
 
-        // Add game as an observer to the GameState
-        state.addObserver(this);
+        // Add State as an observer to the game
+        // NOTE: Since the Game State is an observer,
+        // it will react to al the required functionality for
+        // starting the game, potting balls and reacting to motion.
+        this.observers.add(state);
+    }
+
+    /**
+     * Creates a new Game instance with the given scene and input objects.
+     * @param scene  Scene to use for the Game
+     * @param input  Input handler to use for the Game
+     * @return       New Game instance
+     */
+    public static Game createNewGame(Scene3D scene, Input input) {
+        // Create 2 players with differing IDs
+        Player player1 = new Player(0);
+        Player player2 = new Player(1);
+        List<Player> players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
+
+        // Create game state with the scene's pool balls & the two players
+        GameState gameState = new GameState(players, scene.getPoolBalls());
+
+        // Create a Game object from the parameters
+        return new Game(scene, input, gameState);
     }
 
     public Scene3D getScene() {
@@ -47,15 +78,6 @@ public class Game implements GameStateObserver {
         return state;
     }
 
-
-    /**
-     * Starts the game and takes care of starting the
-     * Game State as well.
-     */
-    public void startGame() {
-        state.startGame();
-    }
-
     /**
      * Publicly accessible method call that handles all of the
      * logic for the current game loop iteration, such as
@@ -65,15 +87,19 @@ public class Game implements GameStateObserver {
      */
     public void advanceGameLoop(float deltaTime) {
         if (state.isStarted()) {
-            // Check if any ball is in motion
-            determineIsInMotion();
+            // Check if Game has a winning Player
+            if (state.getWinningPlayer().isPresent()) {
+                endGame();
+            } else {
+                // Check if any ball is in motion
+                determineIsInMotion();
 
-            if (state.isInMotion()) {
-                moveBalls(deltaTime);
-            } else if (state.isIdle()) {
-                respondToInput();
+                if (state.isInMotion()) {
+                    moveBalls(deltaTime);
+                } else if (state.isIdle()) {
+                    respondToInput();
+                }
             }
-
         } // Do nothing if game is not started
     }
 
@@ -100,21 +126,42 @@ public class Game implements GameStateObserver {
         for (Ball3D ball : potted) {
             potBall(ball);
         }
-
-        // TODO: Need to stop balls after some point so that inMotion becomes false
-        //       Otherwise we will end up in an infinite movement loop.
     }
 
     /**
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
     protected void respondToInput() {
-        // input relevant for cue and shot
+        processCueInput();
+    }
+
+    /**
+     * Process the input mouse input for the cue.
+     */
+    protected void processCueInput() {
+        CueBall3D cueBall = scene.getCueBall();
+        Cue3D cue = scene.getCue();
+
+        if (cue.getState() == Cue3D.State.Hidden) {
+            cue.showCue();
+        }
+
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
-            Ball3D cueBall = scene.getPoolBalls().get(GameConstants.CUEBALL_ID);
-            scene.getCue().shoot(mousePosition, cueBall);
-            state.setInMotion();
+
+            // Enter dragging
+            if (cue.getState() == Cue3D.State.Rotating) {
+                cue.setToDragging(mousePosition);
+            }
+            cue.toDragPosition(mousePosition, cueBall);
+
+        } else if (cue.getState() == Cue3D.State.Dragging) {
+            startMotion();
+            cue.shoot(cueBall);
+        } else {
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
+
+            cue.toPosition(mousePosition, cueBall);
         }
     }
 
@@ -142,8 +189,13 @@ public class Game implements GameStateObserver {
         // we are at the phase where we can respond to input.
         // Otherwise, we need to move the balls.
         if (state.isInMotion()) {
-            state.advanceTurn();
+            // Get the ball that was touched first
+            Ball3D touched = scene.getFirstTouched();
+            scene.clearFirstTouched();
+
+            stopMotion(touched);
         }
+
         return false;
     }
 
@@ -154,6 +206,8 @@ public class Game implements GameStateObserver {
      * active Player.
      * @param ball  Ball to be potted
      */
+    // False positive in the foreach loop with regards to variable 'o'.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void potBall(Ball3D ball) {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
@@ -161,8 +215,10 @@ public class Game implements GameStateObserver {
         if (ball instanceof CueBall3D) {
             this.resetCue((CueBall3D) ball);
         } else {
-            // Propagate to the Game State to handle the logical part of potting.
-            state.onBallPotted(ball);
+            // Notify all observers of the potted ball
+            for (GameObserver o : observers) {
+                o.onBallPotted(ball);
+            }
         }
     }
 
@@ -206,18 +262,39 @@ public class Game implements GameStateObserver {
         }
     }
 
-    /**
-     * Performs the cue shot by firing the cue ball with the
-     * cue's current power and rotation.
-     */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    private void performCueShot() {
-        // TODO: Perform cue shot
-        throw new UnsupportedOperationException("Not yet implemented!");
+
+    @Override
+    public void addObserver(GameObserver observer) {
+        observers.add(observer);
     }
 
     @Override
-    public void endGame(Player winner) {
-        // TODO: Implement logic for ending game here.
+    public void removeObserver(GameObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public Collection<GameObserver> getObservers() {
+        return observers;
+    }
+
+    @Override
+    public void startGame() {
+        observers.forEach(GameObserver::onGameStarted);
+    }
+
+    @Override
+    public void startMotion() {
+        observers.forEach(GameObserver::onMotion);
+    }
+
+    @Override
+    public void stopMotion(Ball3D touched) {
+        observers.forEach(x -> x.onMotionStop(touched));
+    }
+
+    @Override
+    public void endGame() {
+        observers.forEach(GameObserver::onGameEnded);
     }
 }

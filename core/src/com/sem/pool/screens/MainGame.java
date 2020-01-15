@@ -1,4 +1,4 @@
-package com.sem.pool;
+package com.sem.pool.screens;
 
 import com.badlogic.gdx.Game;
 
@@ -18,6 +18,6 @@ public class MainGame extends Game {
      * Start the pool game.
      */
     public void startPool() {
-        this.setScreen(new Pool());
+        this.setScreen(new Pool(this));
     }
 }

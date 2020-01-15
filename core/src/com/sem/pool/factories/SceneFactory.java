@@ -102,7 +102,8 @@ public class SceneFactory {
         List<Ball3D> poolBalls = new ArrayList<>();
 
         for (int i = 0; i < GameConstants.BALL_COUNT; ++i) {
-            Ball3D ball = ballFactory.createBall(i);
+            ballFactory.setId(i);
+            Ball3D ball = ballFactory.createObject();
             poolBalls.add(ball);
         }
 
@@ -110,12 +111,12 @@ public class SceneFactory {
         positionPoolBalls(poolBalls);
 
         // Create table
-        Table3D table = tableFactory.createTable();
+        Table3D table = tableFactory.createObject();
         tableFactory.setBoundingBoxes(table);
         tableFactory.setUpPotHitBoxes(table);
 
         // Create cue
-        Cue3D cue = cueFactory.createCue();
+        Cue3D cue = cueFactory.createObject();
 
         // Set cue to cueBall position
         cue.toBeginPosition(poolBalls.get(0));

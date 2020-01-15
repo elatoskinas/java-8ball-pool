@@ -13,8 +13,7 @@ import java.util.Objects;
  * Class representing a 3D Pool Ball while also
  * associating the specific Ball with a specified ID.
  */
-public abstract class Ball3D {
-    private transient ModelInstance model;
+public abstract class Ball3D extends Object3D {
     private int id;
     private transient BoundingBox boundingBox;
     private transient HitBox hitBox;
@@ -31,14 +30,23 @@ public abstract class Ball3D {
     }
 
     /**
+     * Creates a default Ball object with no internal parameters
+     * adjusted. To be used only in private/protected contexts
+     * for further extensions.
+     */
+    protected Ball3D() {
+
+    }
+
+    /**
      * Constructs a new 3D Pool Ball instance with
      * the specified id and model.
      * @param id  ID of the ball
      * @param model  Model object of the ball
      */
     public Ball3D(int id, ModelInstance model) {
+        super(model);
         this.id = id;
-        this.model = model;
         this.direction = new Vector3(0,0,0);
         boundingBox = new BoundingBox();
         boundingBox = model.calculateBoundingBox(boundingBox);
@@ -64,10 +72,6 @@ public abstract class Ball3D {
         this.id = id;
     }
 
-    public ModelInstance getModel() {
-        return model;
-    }
-
     public HitBox getHitBox() {
         return hitBox;
     }
@@ -86,14 +90,6 @@ public abstract class Ball3D {
 
     public void setSpeed(float speed) {
         this.speed = speed;
-    }
-
-    /**
-     * Returns the current coordinates of the ball.
-     * @return The coordinates of the ball.
-     */
-    public Vector3 getCoordinates() {
-        return this.model.transform.getTranslation(new Vector3());
     }
 
     /**
@@ -124,7 +120,7 @@ public abstract class Ball3D {
      */
     public void translate(Vector3 translation) {
         // move the visual model of the ball
-        this.model.transform.translate(translation);
+        this.model.transform.trn(translation);
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
         // TODO: refactor code to fix this issue with tests
