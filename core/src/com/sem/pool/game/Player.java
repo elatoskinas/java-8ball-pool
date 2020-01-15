@@ -48,13 +48,13 @@ public class Player {
         this.pottedCorrectBall = b;
     }
 
-   public boolean getPotteWrongBall() {
+    public boolean getPottedWrongBall() {
         return pottedWrongBall;
-   }
+    }
    
-   public void setPottedWrongBall(boolean b) {
+    public void setPottedWrongBall(boolean b) {
         this.pottedWrongBall = b;
-   }
+    }
 
     /**
      * Assigns the specified ball type to the Player.
@@ -75,7 +75,7 @@ public class Player {
             ballsLeft--;
             pottedCorrectBall = true;
         } else {
-            
+            pottedWrongBall = true;
         }
     }
 

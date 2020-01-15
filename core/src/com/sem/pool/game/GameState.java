@@ -334,11 +334,11 @@ public class GameState implements GameObserver {
         // - Did the player not pot the cue ball
         // - Did the player pot a ball of the wrong type
         // - Did the player pot a ball of the correct type
-        if(firstBallTouched instanceof RegularBall3D) {
+        if (firstBallTouched instanceof RegularBall3D) {
             RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
-            if(firstTouched.getType() != getActivePlayer().getBallType() 
+            if (firstTouched.getType() != getActivePlayer().getBallType() 
                     || cuePotted 
-                    || getActivePlayer().getPotteWrongBall()
+                    || getActivePlayer().getPottedWrongBall()
                     || !getActivePlayer().getPottedCorrectBall()) {
                 // Not all criteria were satisfied -> player loses the turn
                 // Increment player turn and wrap turn ID around
