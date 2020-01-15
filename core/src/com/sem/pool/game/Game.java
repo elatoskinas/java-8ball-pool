@@ -10,6 +10,7 @@ import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SoundPlayer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,27 @@ public class Game implements ObservableGame {
         // it will react to al the required functionality for
         // starting the game, potting balls and reacting to motion.
         this.observers.add(state);
+    }
+
+    /**
+     * Creates a new Game instance with the given scene and input objects.
+     * @param scene  Scene to use for the Game
+     * @param input  Input handler to use for the Game
+     * @return       New Game instance
+     */
+    public static Game createNewGame(Scene3D scene, Input input) {
+        // Create 2 players with differing IDs
+        Player player1 = new Player(0);
+        Player player2 = new Player(1);
+        List<Player> players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
+
+        // Create game state with the scene's pool balls & the two players
+        GameState gameState = new GameState(players, scene.getPoolBalls());
+
+        // Create a Game object from the parameters
+        return new Game(scene, input, gameState);
     }
 
     public Scene3D getScene() {
@@ -175,7 +197,11 @@ public class Game implements ObservableGame {
         // we are at the phase where we can respond to input.
         // Otherwise, we need to move the balls.
         if (state.isInMotion()) {
-            stopMotion();
+            // Get the ball that was touched first
+            Ball3D touched = scene.getFirstTouched();
+            scene.clearFirstTouched();
+
+            stopMotion(touched);
         }
 
         return false;
@@ -227,8 +253,8 @@ public class Game implements ObservableGame {
     }
 
     @Override
-    public void stopMotion() {
-        observers.forEach(GameObserver::onMotionStop);
+    public void stopMotion(Ball3D touched) {
+        observers.forEach(x -> x.onMotionStop(touched));
     }
 
     @Override

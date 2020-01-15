@@ -11,6 +11,15 @@ public abstract class Object3D {
     protected transient ModelInstance model;
 
     /**
+     * Creates a default 3D Object with no internal parameters
+     * adjusted. To be used only in private/protected contexts
+     * for further extensions.
+     */
+    protected Object3D() {
+        
+    }
+
+    /**
      * Constructs a new Object3D instance.
      * @param model The model that is to be used.
      */

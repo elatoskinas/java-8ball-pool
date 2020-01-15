@@ -139,7 +139,7 @@ public class Cue3DTest {
         cue.toBeginPosition(makeCueBall());
 
         Mockito.verify(cueMockMatrix, Mockito.times(1))
-                .translate(-expectedRadius - GameConstants.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
+                .trn(-expectedRadius - GameConstants.CUE_OFFSET, Cue3D.Y_COORDINATE, 0);
     }
 
     /**

@@ -741,4 +741,56 @@ class GameStateTest {
         assertFalse(players.get(0).getPottedBalls().contains(balls.get(5)));
         assertFalse(players.get(1).getPottedBalls().contains(balls.get(5)));
     }
+
+    /**
+     * Test case to verify that potting both the cue ball and the
+     * 8-ball for a Player who has already potted all of their balls
+     * results in a loss. The scenario is tested when the Player
+     * pots the 8-ball, and then the cue ball after.
+     */
+    @Test
+    void testPotCueAndEightBallEightFirst() {
+        balls = constructBallsList(true, true, 0, 3);
+
+        gameState = new GameState(players, balls);
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(balls.get(1));
+        gameState.onBallPotted(balls.get(0));
+        gameState.handleBallPotting();
+
+        // Next Player is the winner
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
+
+    /**
+     * Test case to verify that potting both the cue ball and the
+     * 8-ball for a Player who has already potted all of their balls
+     * results in a loss. The scenario is tested where the Player
+     * pots the 8-ball, and then the cue ball right after.
+     */
+    @Test
+    void testPotCueAndEightBallCueBallFirst() {
+        balls = constructBallsList(true, true, 4, 0);
+
+        gameState = new GameState(players, balls);
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.STRIPED);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(balls.get(0));
+        gameState.onBallPotted(balls.get(1));
+        gameState.handleBallPotting();
+
+        // Next Player is the winner
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
 }
