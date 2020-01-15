@@ -469,13 +469,6 @@ abstract class Ball3DTest {
         Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
                 Mockito.any())).thenReturn(true);
         ball.setCollisionHandler(mockedHandler);
-
-        // assert that even if the handler returns true, the checkCollision method returns false
-        // because the ball is not moving.
-        assertFalse(ball.checkCollision(other));
-        ball.setSpeed(GameConstants.MIN_SPEED + 1);
-        // assert that balls can not collide with itself
-        assertFalse(ball.checkCollision(ball));
     }
 
     /**

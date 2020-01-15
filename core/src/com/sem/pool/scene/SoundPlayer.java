@@ -1,19 +1,33 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.sem.pool.factories.AssetLoader;
 
 /**
- * Class used to play sounds
- * Later fields could be added for things such as volume.
+ * Class used to play sounds.
  */
 public class SoundPlayer {
+    private transient AssetLoader assetLoader;
+    private transient Music ballSound;
+    private transient Music cueSound;
+    private transient Music potSound;
+    private transient Music tableSound;
+
 
     /**
-     * Constructor for a SoundPlayer, with currently no fields.
+     * Constructor for a SoundPlayer.
      */
-    public SoundPlayer() {
-
+    public SoundPlayer(AssetLoader assetLoader) {
+        this.assetLoader = assetLoader;
+        assetLoader.initializeAssets();
+       // assetLoader.getAssetManager().finishLoading();
+        // load sound files.
+        if (assetLoader.getAssetManager().update()) {
+            potSound = assetLoader.getPotSound();
+            cueSound = assetLoader.getCueSound();
+            tableSound = assetLoader.getTableSound();
+            ballSound = assetLoader.getBallSound();
+        }
     }
 
     /**
@@ -21,7 +35,7 @@ public class SoundPlayer {
      * @param sound Music object which will be played if the sound is not already being played.
      */
     private void playSound(Music sound) {
-        if (!sound.isPlaying()) {
+        if (sound != null) {
             sound.play();
         }
     }
@@ -30,41 +44,28 @@ public class SoundPlayer {
      * Method used to play the sound of a cue hitting the ball.
      */
     public void playCueSound() {
-        if (Gdx.audio != null) {
-            Music cueSound = Gdx.audio.newMusic(
-                    Gdx.files.internal("sounds/cueshot.mp3"));
-            playSound(cueSound);
-        }
+        playSound(cueSound);
     }
 
     /**
      * Method used to play the sound of two balls colliding.
      */
     public void playBallCollisionSound() {
-        if (Gdx.audio != null) {
-            Music ballSound = Gdx.audio.newMusic(
-                    Gdx.files.internal("sounds/ballandballcollision.mp3"));
-            playSound(ballSound);
-        }
+        playSound(ballSound);
+
     }
 
     /**
      * Method used to play the sound of a table hitting the ball.
      */
     public void playTableCollisionSound() {
-        if (Gdx.audio != null) {
-            Music ballSound = Gdx.audio.newMusic(
-                    Gdx.files.internal("sounds/ballandtablecollision.mp3"));
-            playSound(ballSound);
-        }
+        playSound(tableSound);
     }
 
     /**
      * Method used to play the sound of the ball being potted.
      */
     public void playPotSound() {
-        Music potSound = Gdx.audio.newMusic(
-                Gdx.files.internal("sounds/ballpot.mp3"));
         playSound(potSound);
     }
 }

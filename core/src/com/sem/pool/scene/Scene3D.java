@@ -1,11 +1,14 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.factories.AssetLoader;
+import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,8 @@ public class Scene3D {
         this.table = table;
         this.cue = cue;
         this.modelBatch = batch;
-        this.soundPlayer = new SoundPlayer();
+        AssetManager assetManager = new AssetManager();
+        this.soundPlayer = new SoundPlayer(new AssetLoader(assetManager));
         // For all the pool balls and the table, add the models
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
@@ -137,10 +141,7 @@ public class Scene3D {
             // Check if ball is potted
             boolean potResult = table.checkIfPot(ball);
             if (potResult) {
-                if (Gdx.audio != null) {
-                    soundPlayer.playPotSound();
-
-                }
+                soundPlayer.playPotSound();
                 potted.add(ball);
             }
 
@@ -163,5 +164,13 @@ public class Scene3D {
         Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mousePosition);
         return mousePosition;
+    }
+
+    /**
+     * Returns the cue-ball.
+     * @return  CueBall3D cue-ball
+     */
+    public CueBall3D getCueBall() {
+        return (CueBall3D) getPoolBalls().get(GameConstants.CUEBALL_ID);
     }
 }

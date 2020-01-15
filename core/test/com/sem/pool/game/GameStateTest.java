@@ -183,17 +183,20 @@ class GameStateTest {
         assertEquals(ball.getType(), RegularBall3D.Type.FULL);
 
         // Pot a full regular ball
-        gameState.potRegularBall(ball);
+        gameState.onBallPotted(ball);
         gameState.advanceTurn();
 
         // Verify the active player (which is the first Player by default
         // after constructing GameState object) pots the ball
-        assertEquals(players.get(0).getPottedBalls().size(), 1);
+        // but does not have the ball in its list
+        assertEquals(players.get(0).getPottedBalls().size(), 0);
+        assertFalse(gameState.getTypesAssigned());
+        assertTrue(gameState.getAllPottedBalls().contains(ball));
 
         // Ensure that both player types are updated
         // from unassigned to the right regular ball type
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
     }
 
     /**
@@ -220,11 +223,11 @@ class GameStateTest {
         assertEquals(ball.getType(), RegularBall3D.Type.FULL);
 
         // Pot a full regular ball
+        gameState.advanceTurn();
         gameState.onBallPotted(ball);
         gameState.advanceTurn();
-
-        Mockito.verify(player1).assignBallType(RegularBall3D.Type.FULL);
-        Mockito.verify(player2).assignBallType(RegularBall3D.Type.STRIPED);
+        Mockito.verify(player1).assignBallType(RegularBall3D.Type.STRIPED);
+        Mockito.verify(player2).assignBallType(RegularBall3D.Type.FULL);
     }
 
     /**

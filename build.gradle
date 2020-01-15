@@ -117,7 +117,7 @@ allprojects {
                 // Ignore root com.sem.pool, as it contains GUI & 3d rendering
                 // functionality that requires full on system testing.
                 // Also exclude the database main class, as this is not really testable
-                excludes = ['com.sem.pool', 'com.sem.pool.database']
+                excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.screens']
 
                 limit {
                     counter = 'BRANCH'
