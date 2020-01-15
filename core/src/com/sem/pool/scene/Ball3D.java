@@ -196,10 +196,6 @@ public abstract class Ball3D extends Object3D {
                 other.setDirection(new Vector3(getDirection()));
             }
 
-            // if we hit a ball that is not moving or has no direction, give it speed/direction.
-            float temp = getSpeed();
-            setSpeed(other.getSpeed());
-            other.setSpeed(temp);
             return true;
         }
         return false;
