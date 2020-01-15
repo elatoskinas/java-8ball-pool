@@ -4,10 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.factories.AssetLoader;
 
 import com.sem.pool.factories.GameInitializer;
@@ -30,6 +35,9 @@ public class Pool implements Screen, GameObserver {
     private static final Vector3 CAMERA_POSITION = new Vector3(0f, 100f, 0f);
     private transient Game game;
 
+    private transient Stage stage;
+    private transient Label playerTurnLabel;
+
     // State flag to keep track of whether asset loading
     // has finished.
     private transient boolean loaded;
@@ -49,7 +57,7 @@ public class Pool implements Screen, GameObserver {
 
         // Initialize viewport to the relevant width & height
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        
+
         // Initialize the Bullet wrapper used for collisions
         Bullet.init();
     }
@@ -120,7 +128,7 @@ public class Pool implements Screen, GameObserver {
     }
 
     /**
-     * Render the scene.
+     * Render the scene and loads UI elements.
      * @param delta Time in seconds between last render.
      */
     @Override
@@ -137,7 +145,39 @@ public class Pool implements Screen, GameObserver {
 
         // Update the scene & game for the current iteration
         update(delta);
+
+        loadUI();
     }
+
+    /**
+     * Load the UI elements like the playerturn.
+     */
+    public void loadUI() {
+        if (loaded) {
+            playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn());
+        }
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+    }
+
+    /**
+     * Shows the UI.
+     */
+    public void showUI() {
+        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        TextureAtlas atlas = new TextureAtlas("uiskin.atlas");
+        Skin skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), atlas);
+
+        playerTurnLabel = new Label("", skin);
+        playerTurnLabel.setSize(200,50);
+        playerTurnLabel.setPosition(80,Gdx.graphics.getHeight() - 100);
+
+        stage.addActor(playerTurnLabel);
+        stage.act();
+        stage.draw();
+    }
+
 
     @Override
     public void dispose() {
@@ -152,6 +192,7 @@ public class Pool implements Screen, GameObserver {
 
     @Override
     public void show() {
+        showUI();
     }
 
     @Override
