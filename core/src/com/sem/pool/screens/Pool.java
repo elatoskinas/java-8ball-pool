@@ -128,7 +128,7 @@ public class Pool implements Screen, GameObserver {
     }
 
     /**
-     * Render the scene.
+     * Render the scene and loads UI elements.
      * @param delta Time in seconds between last render.
      */
     @Override
