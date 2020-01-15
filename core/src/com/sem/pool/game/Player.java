@@ -12,9 +12,8 @@ public class Player {
     private transient Set<RegularBall3D> pottedBalls;
     private transient int ballsLeft;
     
-    // Parameters to help make turn advancement easy
+    // Attribute to help make turn advancement easy
     private boolean pottedCorrectBall;
-    private boolean pottedWrongBall;
 
     /**
      * Creates a new Player with the specified id.
@@ -25,7 +24,6 @@ public class Player {
         pottedBalls = new HashSet<>();
         this.ballType = RegularBall3D.Type.UNASSIGNED;
         this.pottedCorrectBall = false;
-        this.pottedWrongBall = false;
     }
 
     public int getId() {
@@ -48,14 +46,6 @@ public class Player {
         this.pottedCorrectBall = b;
     }
 
-    public boolean getPottedWrongBall() {
-        return pottedWrongBall;
-    }
-   
-    public void setPottedWrongBall(boolean b) {
-        this.pottedWrongBall = b;
-    }
-
     /**
      * Assigns the specified ball type to the Player.
      * @param ballType  Ball Type to assign to the Player.
@@ -74,8 +64,6 @@ public class Player {
             pottedBalls.add(ball);
             ballsLeft--;
             pottedCorrectBall = true;
-        } else {
-            pottedWrongBall = true;
         }
     }
 
