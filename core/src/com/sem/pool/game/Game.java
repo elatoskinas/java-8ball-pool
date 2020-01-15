@@ -44,6 +44,7 @@ public class Game implements ObservableGame {
         this.observers.add(state);
     }
 
+
     /**
      * Creates a new Game instance with the given scene and input objects.
      * @param scene  Scene to use for the Game

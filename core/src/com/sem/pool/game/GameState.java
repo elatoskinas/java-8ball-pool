@@ -4,6 +4,7 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
+import com.sem.pool.screens.Pool;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -142,7 +143,6 @@ public class GameState implements GameObserver {
         // Increment player turn and wrap turn ID around
         // players size to keep it within bounds
         playerTurn = (playerTurn + 1) % players.size();
-
         state = State.Idle;
         turnCount += 1;
     }
