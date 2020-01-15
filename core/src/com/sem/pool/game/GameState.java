@@ -329,22 +329,29 @@ public class GameState implements GameObserver {
     public void handleTurnAdvancement() {
         state = State.Idle;
         
+        boolean correctFirstTouch;
+        if (firstBallTouched == null) {
+            correctFirstTouch = true;
+        } else if (firstBallTouched instanceof RegularBall3D) {
+            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
+            correctFirstTouch = firstTouched.getType() == getActivePlayer().getBallType();
+        } else {
+            correctFirstTouch = false;
+        }
+        
         // Check for four criteria:
         // - Did the player touch the right type of ball first
         // - Did the player not pot the cue ball
         // - Did the player pot a ball of the wrong type
         // - Did the player pot a ball of the correct type
-        if (firstBallTouched instanceof RegularBall3D) {
-            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
-            if (firstTouched.getType() != getActivePlayer().getBallType() 
-                    || cuePotted 
-                    || getActivePlayer().getPottedWrongBall()
-                    || !getActivePlayer().getPottedCorrectBall()) {
-                // Not all criteria were satisfied -> player loses the turn
-                // Increment player turn and wrap turn ID around
-                // players size to keep it within bounds
-                playerTurn = (playerTurn + 1) % players.size();
-            }
+        if (!correctFirstTouch
+                || cuePotted
+                || getActivePlayer().getPottedWrongBall()
+                || !getActivePlayer().getPottedCorrectBall()) {
+            // Not all criteria were satisfied -> player loses the turn
+            // Increment player turn and wrap turn ID around
+            // players size to keep it within bounds
+            playerTurn = (playerTurn + 1) % players.size();
         }
         
         // Reset all temporary variables
