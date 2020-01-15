@@ -3,7 +3,6 @@ package com.sem.pool.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -37,7 +36,7 @@ public class Pool implements Screen, GameObserver {
     private transient Game game;
 
     private transient Stage stage;
-    Label playerTurnLabel;
+    private transient Label playerTurnLabel;
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -150,23 +149,29 @@ public class Pool implements Screen, GameObserver {
         loadUI();
     }
 
+    /**
+     * Load the UI elements like the playerturn.
+     */
     public void loadUI() {
         if (loaded) {
-            playerTurnLabel.setText(game.getState().getPlayerTurn());
+            playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn());
         }
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 
-    public void showUI () {
+    /**
+     * Shows the UI.
+     */
+    public void showUI() {
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         TextureAtlas atlas = new TextureAtlas("uiskin.atlas");
         Skin skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), atlas);
 
-        playerTurnLabel = new Label("Hello", skin);
-        playerTurnLabel.setSize(200,100);
-        playerTurnLabel.setPosition(0,100);
+        playerTurnLabel = new Label("", skin);
+        playerTurnLabel.setSize(200,50);
+        playerTurnLabel.setPosition(80,Gdx.graphics.getHeight() - 100);
 
         stage.addActor(playerTurnLabel);
         stage.act();
