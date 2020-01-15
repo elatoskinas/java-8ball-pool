@@ -52,6 +52,10 @@ public class Cue3D extends Object3D {
         this.currentForce = currentForce;
     }
 
+    public float getCurrentForce() {
+        return currentForce;
+    }
+
     public State getState() {
         return state;
     }
@@ -185,14 +189,20 @@ public class Cue3D extends Object3D {
     }
 
     /**
+     * Sets the cue to the rotating state.
+     */
+    public void setToRotating() {
+        setState(State.Rotating);
+    }
+
+
+    /**
      * Sets the cue to the position in the drag phase.
 
      * @param mousePosition mouse coordinates
      * @param cueBall       cue ball
      */
     public void toDragPosition(Vector3 mousePosition, Ball3D cueBall) {
-        // TODO: Different calculation for the distance/force of the cue
-        // TODO: Now it just takes the distance to the first left-clicked point
 
         // Get the direction of the cue drag
         Vector3 directionClicked = new Vector3(mousePosition).sub(dragOriginMouse);
