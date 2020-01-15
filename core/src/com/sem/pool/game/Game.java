@@ -65,7 +65,6 @@ public class Game implements GameStateObserver {
      */
     public void advanceGameLoop(float deltaTime) {
         if (state.isStarted()) {
-
             // Check if any ball is in motion
             determineIsInMotion();
 
@@ -161,10 +160,10 @@ public class Game implements GameStateObserver {
 
         if (ball instanceof CueBall3D) {
             this.resetCue((CueBall3D) ball);
+        } else {
+            // Propagate to the Game State to handle the logical part of potting.
+            state.onBallPotted(ball);
         }
-
-        // Propagate to the Game State to handle the logical part of potting.
-        state.onBallPotted(ball);
     }
 
     /**
@@ -174,8 +173,6 @@ public class Game implements GameStateObserver {
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void resetCue(CueBall3D ball) {
-        ball.pot();
-
         float magnitude = 0f;
 
         while (true) {

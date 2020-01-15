@@ -6,10 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.HitBox;
 import com.sem.pool.scene.Scene3D;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -255,5 +260,28 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball potted in Game State
         Mockito.verify(gameState).onBallPotted(ball);
+    }
+
+    /**
+     * Test if the resetCue method is called when potting the cue ball.
+     */
+    @Test
+    void testPotCue() {
+        Ball3D ball = Mockito.mock(CueBall3D.class);
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        Matrix4 transform = Mockito.mock(Matrix4.class);
+        Matrix4 newTransform = Mockito.mock(Matrix4.class);
+        final HitBox hitBox = Mockito.mock(HitBox.class);
+        model.transform = transform;
+        Mockito.when(ball.getModel()).thenReturn(model);
+        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
+        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
+        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
+
+        game.startGame();
+        game.potBall(ball);
+
+        // Verify ball is potted
+        Mockito.verify(ball).pot();
     }
 }
