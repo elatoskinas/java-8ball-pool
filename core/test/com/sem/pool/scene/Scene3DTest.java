@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Matrix4;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -320,5 +321,21 @@ class Scene3DTest {
         // null when checked in the scnee.
         scene.clearFirstTouched();
         assertTrue(scene.getFirstTouched() instanceof NullBall);
+    }
+
+    @Test
+    public void testResetCue() {
+        CueBall3D ball = Mockito.mock(CueBall3D.class);
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        Matrix4 transform = Mockito.mock(Matrix4.class);
+        Matrix4 newTransform = Mockito.mock(Matrix4.class);
+        final HitBox hitBox = Mockito.mock(HitBox.class);
+        model.transform = transform;
+        Mockito.when(ball.getModel()).thenReturn(model);
+        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
+        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
+        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
+
+        this.scene.resetCue(ball);
     }
 }
