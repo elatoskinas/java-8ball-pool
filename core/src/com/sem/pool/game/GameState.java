@@ -27,6 +27,7 @@ public class GameState implements GameObserver {
     private transient int playerTurn;
     private transient int turnCount;
     private transient boolean typesAssigned; // if ball types have been assigned yet
+    private transient boolean cuePotted;
 
     private transient Player winningPlayer;
 
@@ -139,13 +140,6 @@ public class GameState implements GameObserver {
     public void advanceTurn() {
         handleBallPotting();
         handleTurnAdvancement();
-        
-        // Increment player turn and wrap turn ID around
-        // players size to keep it within bounds
-        playerTurn = (playerTurn + 1) % players.size();
-
-        state = State.Idle;
-        turnCount += 1;
     }
 
     //    /**
@@ -245,7 +239,7 @@ public class GameState implements GameObserver {
         // it should be a loss.
         boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
         boolean eightPotted = false;
-        boolean cuePotted = false;
+        cuePotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
             if (!typesAssigned && !(ball instanceof CueBall3D)) {
@@ -301,6 +295,7 @@ public class GameState implements GameObserver {
                 activePlayer.potBall(ball);
             } else { // else pot for other player.
                 getNextInactivePlayer().potBall(ball);
+                getActivePlayer().setPottedWrongBall(true);
             }
         }
     }
@@ -328,8 +323,37 @@ public class GameState implements GameObserver {
         typesAssigned = true;
     }
 
+    /**
+     * Method to handle all logic with regards to gaining an extra turn.
+     */
     public void handleTurnAdvancement() {
+        state = State.Idle;
         
+        // Check for four criteria:
+        // - Did the player touch the right type of ball first
+        // - Did the player not pot the cue ball
+        // - Did the player pot a ball of the wrong type
+        // - Did the player pot a ball of the correct type
+        if(firstBallTouched instanceof RegularBall3D) {
+            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
+            if(firstTouched.getType() != getActivePlayer().getBallType() 
+                    || cuePotted 
+                    || getActivePlayer().getPotteWrongBall()
+                    || !getActivePlayer().getPottedCorrectBall()) {
+                // Not all criteria were satisfied -> player loses the turn
+                // Increment player turn and wrap turn ID around
+                // players size to keep it within bounds
+                playerTurn = (playerTurn + 1) % players.size();
+            }
+        }
+        
+        // Reset all temporary variables
+        getActivePlayer().setPottedWrongBall(false);
+        getActivePlayer().setPottedCorrectBall(false);
+        cuePotted = false;
+        
+        // Increment the turn counter
+        turnCount += 1;
     }
     
     /**
