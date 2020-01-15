@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Database.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.database</a> &gt; <span class="el_source">Database.java</span></div><h1>Database.java</h1><pre class="source lang-java linenums">package com.sem.pool.database;
+
+import com.sem.pool.database.tables.UserTable;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
+
+/**
+ * Handle the database.
+ */
+public class Database {
+    /**
+     * The database object singleton.
+     */
+    private static Database db;
+    /**
+     * The tables of the database.
+     */
+    private final transient HashMap&lt;String, Table&gt; tables;
+
+    /**
+     * Create the database.
+     * Private to prevent multiple instances with a singleton.
+     * CloseResource suppressed as the connection should never be closed.
+     * DoNotCallSystemExit suppressed as this is a fatal error.
+         *
+     * @param inmemory True if the database should be in memory,
+     *                 false if it should be written to a file.
+     */
+    @SuppressWarnings({&quot;PMD.CloseResource&quot;, &quot;PMD.DoNotCallSystemExit&quot;})
+<span class="fc" id="L33">    private Database(boolean inmemory) {</span>
+<span class="fc" id="L34">        this.tables = new HashMap&lt;&gt;();</span>
+
+        try {
+<span class="fc" id="L37">            Class.forName(&quot;org.sqlite.JDBC&quot;);</span>
+            Connection conn;
+
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">            if (inmemory) {</span>
+<span class="fc" id="L41">                conn = DriverManager.getConnection(&quot;jdbc:sqlite::memory:&quot;);</span>
+            } else {
+<span class="nc" id="L43">                conn = DriverManager.getConnection(&quot;jdbc:sqlite:database.db&quot;);</span>
+            }
+
+            // Add all tables.
+<span class="fc" id="L47">            this.tables.put(&quot;User&quot;, new UserTable(conn));</span>
+<span class="nc" id="L48">        } catch (SQLException e) {</span>
+<span class="nc" id="L49">            System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L50">            System.exit(1);</span>
+<span class="nc" id="L51">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L52">            System.err.println(&quot;SQLite driver not found, do you have it installed?&quot;);</span>
+<span class="nc" id="L53">            System.exit(1);</span>
+<span class="pc" id="L54">        }</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Get the database.
+     *
+     * @return The database instance.
+     */
+    public static Database getInstance() {
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (Database.db == null) {</span>
+<span class="nc" id="L64">            Database.db = new Database(false);</span>
+        }
+
+<span class="fc" id="L67">        return db;</span>
+    }
+
+    /**
+     * Set the database in test mode.
+     * This means the data is stored in memory, not in a file.
+     */
+    public static void setTestMode() {
+<span class="fc" id="L75">        Database.db = new Database(true);</span>
+<span class="fc" id="L76">    }</span>
+
+    /**
+     * Get a table.
+     *
+     * @param table The table to get.
+     * @return The table requested.
+     */
+    public Table table(String table) {
+<span class="fc" id="L85">        return this.tables.get(table);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

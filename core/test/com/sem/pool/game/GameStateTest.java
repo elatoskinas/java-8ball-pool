@@ -10,8 +10,10 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,11 +39,11 @@ class GameStateTest {
     /**
      * Helper method to construct a List of Ball3D objects from the specified configuraion.
      *
-     * @param cueBall     True to add the cue ball to resulting list
-     * @param eightBall   True to add he eight ball to resulting list
-     * @param solid       Number of solid balls to add to list
-     * @param striped     Number of striped balls to add to list
-     * @return            Resulting list of balls
+     * @param cueBall   True to add the cue ball to resulting list
+     * @param eightBall True to add he eight ball to resulting list
+     * @param solid     Number of solid balls to add to list
+     * @param striped   Number of striped balls to add to list
+     * @return Resulting list of balls
      */
     private List<Ball3D> constructBallsList(boolean cueBall, boolean eightBall,
                                             int solid, int striped) {
@@ -90,8 +92,6 @@ class GameStateTest {
 
         assertEquals(players, gameState2.getPlayers());
         assertEquals(expectedBalls, gameState2.getRemainingBalls().size());
-        assertNotNull(gameState2.getObservers());
-        assertTrue(gameState2.getObservers().isEmpty());
     }
 
 
@@ -134,122 +134,9 @@ class GameStateTest {
     void testStartGame() {
         assertFalse(gameState.isStarted());
 
-        gameState.startGame();
+        gameState.onGameStarted();
 
         assertTrue(gameState.isStarted());
-    }
-
-    /**
-     * Test case to verify that adding an observer to the observers of the
-     * GameState adds the observer successfully.
-     */
-    @Test
-    void testAddObserver() {
-        assertTrue(gameState.getObservers().isEmpty());
-
-        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
-        gameState.addObserver(observer);
-
-        assertTrue(gameState.getObservers().contains(observer));
-    }
-
-    /**
-     * Test case to verify that removing an observer from the observers
-     * of the GameState successfully removes it from the observers.
-     */
-    @Test
-    void testRemoveObserver() {
-        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
-
-        gameState.addObserver(observer);
-        assertFalse(gameState.getObservers().isEmpty());
-
-        gameState.removeObserver(observer);
-        assertTrue(gameState.getObservers().isEmpty());
-    }
-
-    /**
-     * Test case to verify that removing an observer from the GameState
-     * that does not exist does not affect the observers collection
-     * of the Game State.
-     */
-    @Test
-    void testRemoveObserverNonExistent() {
-        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
-        GameStateObserver observer2 = Mockito.mock(GameStateObserver.class);
-
-        gameState.addObserver(observer);
-        assertFalse(gameState.getObservers().isEmpty());
-
-        gameState.removeObserver(observer2);
-        assertFalse(gameState.getObservers().isEmpty());
-    }
-
-    /**
-     * Test case to verify that adding multiple observers to the
-     * GameState successfully adds them all.
-     */
-    @Test
-    void testAddMultipleObservers() {
-        final int observers = 5;
-
-        for (int i = 0; i < observers; ++i) {
-            GameStateObserver observer = Mockito.mock(GameStateObserver.class);
-            gameState.addObserver(observer);
-        }
-
-        assertEquals(observers, gameState.getObservers().size());
-    }
-
-    /**
-     * Test case to verify that when the Player wins,
-     * the Game is stopped and the single attached
-     * observer is notified of the victory.
-     */
-    @Test
-    void testPlayerWinOneObserver() {
-        final int winnerId = 1;
-        final Player winner = gameState.getPlayers().get(winnerId);
-
-        // Add observer to the GameState
-        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
-        gameState.addObserver(observer);
-
-        // Make the winnerId-th player win the game
-        gameState.winGame(winnerId);
-
-        // Verify that the observer is notified of the winner
-        Mockito.verify(observer).endGame(winner);
-
-        // Assert that game is stopped
-        assertFalse(gameState.isStarted());
-    }
-
-    /**
-     * Test case to verify that when the Player wins,
-     * the Game is stopped and the two attached
-     * observers are notified of the victory.
-     */
-    @Test
-    void testPlayerWinTwoObservers() {
-        final int winnerId = 0;
-        final Player winner = gameState.getPlayers().get(winnerId);
-
-        // Add observers to the GameState
-        GameStateObserver observer = Mockito.mock(GameStateObserver.class);
-        GameStateObserver observer2 = Mockito.mock(GameStateObserver.class);
-        gameState.addObserver(observer);
-        gameState.addObserver(observer2);
-
-        // Make the winnerId-th player win the game
-        gameState.winGame(winnerId);
-
-        // Verify that the observers are notified of the winner
-        Mockito.verify(observer).endGame(winner);
-        Mockito.verify(observer2).endGame(winner);
-
-        // Assert that game is stopped
-        assertFalse(gameState.isStarted());
     }
 
     /**
@@ -271,6 +158,7 @@ class GameStateTest {
 
         // Pot the ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         // Assert ball is no longer contained in remaining ball set
         assertFalse(gameState.getRemainingBalls().contains(ball));
@@ -294,15 +182,16 @@ class GameStateTest {
 
         // Pot a full regular ball
         gameState.onBallPotted(ball);
+        gameState.advanceTurn();
 
         // Verify the active player (which is the first Player by default
         // after constructing GameState object) pots the ball
-        assertEquals(players.get(0).getPottedBalls().size(), 1);
+        assertTrue(gameState.getAllPottedBalls().contains(ball));
 
-        // Ensure that both player types are updated
-        // from unassigned to the right regular ball type
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
+        // Ensure that both player types are not updated
+        // since the ball was potted in the first turn (break shot)
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
     }
 
     /**
@@ -329,10 +218,11 @@ class GameStateTest {
         assertEquals(ball.getType(), RegularBall3D.Type.FULL);
 
         // Pot a full regular ball
+        gameState.advanceTurn();
         gameState.onBallPotted(ball);
-
-        Mockito.verify(player1).assignBallType(RegularBall3D.Type.FULL);
-        Mockito.verify(player2).assignBallType(RegularBall3D.Type.STRIPED);
+        gameState.advanceTurn();
+        Mockito.verify(player1).assignBallType(RegularBall3D.Type.STRIPED);
+        Mockito.verify(player2).assignBallType(RegularBall3D.Type.FULL);
     }
 
     /**
@@ -359,10 +249,11 @@ class GameStateTest {
         assertEquals(ball.getType(), RegularBall3D.Type.STRIPED);
 
         // Pot a full regular ball
+        gameState.advanceTurn();
         gameState.onBallPotted(ball);
-
-        Mockito.verify(player1).assignBallType(RegularBall3D.Type.STRIPED);
-        Mockito.verify(player2).assignBallType(RegularBall3D.Type.FULL);
+        gameState.advanceTurn();
+        Mockito.verify(player1).assignBallType(RegularBall3D.Type.FULL);
+        Mockito.verify(player2).assignBallType(RegularBall3D.Type.STRIPED);
     }
 
 
@@ -372,7 +263,7 @@ class GameStateTest {
     @Test
     void testGameStateIsRunning() {
         assertFalse(gameState.isInMotion());
-        gameState.setInMotion();
+        gameState.onMotion();
         assertTrue(gameState.isInMotion());
     }
 
@@ -404,5 +295,581 @@ class GameStateTest {
         Player inactivePlayer = gameState.getNextInactivePlayer();
         gameState.advanceTurn();
         assertEquals(gameState.getActivePlayer(), inactivePlayer);
+    }
+
+    /**
+     * Test case to verify that the current potted balls
+     * List is initialized to empty List initially (after constructcion).
+     */
+    @Test
+    void testGetCurrentPottedBalls() {
+        List<Ball3D> currentPotted = gameState.getCurrentPottedBalls();
+
+        assertNotNull(currentPotted);
+        assertEquals(0, currentPotted.size());
+    }
+
+    /**
+     * Test case to verify that advancing the turn in Game State
+     * clears the potted balls.
+     */
+    @Test
+    void testAdvanceTurnClearPottedBalls() {
+        final int potCount = 4;
+
+        // Pot balls
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            gameState.onBallPotted(ball);
+        }
+
+        assertEquals(potCount, gameState.getCurrentPottedBalls().size());
+
+        gameState.advanceTurn();
+        assertEquals(0, gameState.getCurrentPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that upon potting ball in Game State, the
+     * current potted balls List is updated accordingly.
+     */
+    @Test
+    void testPotBallsAddToPotted() {
+        assertEquals(0, gameState.getCurrentPottedBalls().size());
+
+        final int potCount = 2;
+
+        // Pot balls
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            gameState.onBallPotted(ball);
+        }
+
+        assertEquals(potCount, gameState.getCurrentPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that potting multiple balls of
+     * the same type as the active player's assigned type
+     * properly pots the balls for that Player.
+     */
+    @Test
+    void testHandleBallPottingMultipleSame() {
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+        final int potCount = 3;
+
+        Player player = gameState.getActivePlayer();
+        player.assignBallType(type);
+        gameState.setTypesAssigned(true);
+
+        for (int i = 0; i < potCount; ++i) {
+            RegularBall3D ball = Mockito.mock(RegularBall3D.class);
+            Mockito.when(ball.getType()).thenReturn(type);
+            gameState.onBallPotted(ball);
+        }
+
+        gameState.advanceTurn();
+
+        assertEquals(potCount, player.getPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that potting multiple balls of
+     * the same type as the active player's assigned type
+     * properly pots the balls for that Player.
+     */
+    @Test
+    void testHandleBallPottingMultipleSDiffering() {
+        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+        Player player = gameState.getActivePlayer();
+        gameState.setTypesAssigned(true);
+        player.assignBallType(type);
+
+        RegularBall3D ball1 = Mockito.mock(RegularBall3D.class);
+        RegularBall3D ball2 = Mockito.mock(RegularBall3D.class);
+
+        Mockito.when(ball1.getType()).thenReturn(RegularBall3D.Type.FULL);
+        Mockito.when(ball2.getType()).thenReturn(RegularBall3D.Type.STRIPED);
+
+        gameState.potRegularBall(ball1);
+        gameState.potRegularBall(ball2);
+
+        gameState.advanceTurn();
+        assertEquals(1, player.getPottedBalls().size());
+    }
+
+    /**
+     * Test case to verify that when an eight ball is potted
+     * when the Player has not yet potted all of their balls,
+     * then the Player loses the game.
+     */
+    @Test
+    void testPotEightBallLossNotAllPotted() {
+        balls = constructBallsList(true, true, 2, 2);
+        Ball3D eightBall = balls.get(1);
+
+        gameState = new GameState(players, balls);
+
+        // Assign ball type to Player
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(eightBall);
+        gameState.handleBallPotting();
+
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
+
+    /**
+     * Test case to verify that when all the balls
+     * of the Player's assigned type are potted
+     * during the current turn together with the 8-ball,
+     * a loss occurs.
+     */
+    @Test
+    void testPotEightBallLossPotAll() {
+        balls = constructBallsList(true, true, 2, 1);
+
+        gameState = new GameState(players, balls);
+
+        // Assign ball type to Player
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot balls for current Player
+        gameState.onBallPotted(balls.get(2));
+        gameState.onBallPotted(balls.get(3));
+        gameState.onBallPotted(balls.get(1));
+        gameState.handleBallPotting();
+
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
+
+
+    /**
+     * Test case to verify that when -ONLY- an eight ball is potted
+     * when the Player has potted all of their balls, then
+     * the Player wins the game.
+     */
+    @Test
+    void testPotOnlyEightBallWin() {
+        balls = constructBallsList(true, true, 0, 0);
+        Ball3D eightBall = balls.get(1);
+
+        gameState = new GameState(players, balls);
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(eightBall);
+        gameState.handleBallPotting();
+
+        Player expectedWinner = gameState.getActivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
+
+    /**
+     * Test case to verify that when the active Player
+     * has already potted all of their balls, and they
+     * pot the 8-ball, but accidentally pot balls which
+     * are not of their type, they still win the game.
+     */
+    @Test
+    void testPotEightBallAndOthersWin() {
+        balls = constructBallsList(true, true, 0, 3);
+
+        gameState = new GameState(players, balls);
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(balls.get(3));
+        gameState.onBallPotted(balls.get(1));
+        gameState.handleBallPotting();
+
+        Player expectedWinner = gameState.getActivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
+
+    /**
+     * Test case to verify that triggering the end game event
+     * causes the inner Game State to be tracked as stopped.
+     */
+    @Test
+    void testEndGame() {
+        gameState.onGameEnded();
+        assertTrue(gameState.isStopped());
+    }
+
+    //    /**
+    //     * Test case to verify that when retrieving a winner
+    //     * when a winner is not yet determined returns an
+    //     * empty optional object.
+    //     */
+    //    @Test
+    //    void testGetWinnerNoWinner() {
+    //        Optional<Player> winner = gameState.getWinningPlayer();
+    //        assertFalse(winner.isPresent());
+    //    }
+    //
+    //    /**
+    //     * Test case to verify that retrieving the ball count
+    //     * for solid balls returns the appropriate count.
+    //     */
+    //    @Test
+    //    void testGetCountSolid() {
+    //        final int solid = 4;
+    //        final int striped = 5;
+    //        final RegularBall3D.Type type = RegularBall3D.Type.FULL;
+    //
+    //        balls = constructBallsList(true, true, solid, striped);
+    //        gameState = new GameState(players, balls);
+    //
+    //        int result = gameState.getRemainingBallCount(type);
+    //
+    //        assertEquals(result, solid);
+    //    }
+    //
+    //    /**
+    //     * Test case to verify that retrieving the ball count
+    //     * for striped balls returns the appropriate count.
+    //     */
+    //    @Test
+    //    void testGetCountStriped() {
+    //        final int solid = 6;
+    //        final int striped = 7;
+    //        final RegularBall3D.Type type = RegularBall3D.Type.STRIPED;
+    //
+    //        balls = constructBallsList(true, true, solid, striped);
+    //        gameState = new GameState(players, balls);
+    //
+    //        int result = gameState.getRemainingBallCount(type);
+    //
+    //        assertEquals(striped, result);
+    //    }
+
+    /**
+     * Simple test case to test that at the second turn ball types are assigned as they should.
+     */
+    @Test
+    void testAssignmentSimple() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        gameState.advanceTurn();
+        // Now it's player 2's turn
+        gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn();
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
+    }
+
+    /**
+     * Test case to test that after assignment of types,
+     * the assignment does not change.
+     */
+    @Test
+    void testAssignmentDouble() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        gameState.advanceTurn();
+        // Now it's player 2's turn
+        gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn(); // handle turn events
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
+        gameState.advanceTurn();
+        gameState.onBallPotted(balls.get(7));
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
+    }
+
+
+    /**
+     * Test case to test that after assignment of types,
+     * the list of all potted balls is set to null.
+     */
+    @Test
+    void testAllPottedBalls() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+        gameState.onBallPotted(balls.get(2));
+        gameState.onBallPotted(balls.get(0));
+        gameState.advanceTurn(); // handle turn events
+        assertTrue(gameState.getAllPottedBalls().contains(balls.get(2)));
+        assertFalse(gameState.getAllPottedBalls().contains(balls.get(0)));
+    }
+
+    /**
+     * Test case to test that balls potted during
+     * the break shot do not impact the ball assignment.
+     */
+    @Test
+    void testAssignmentBreakShot() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        // stillAtBreakShot
+        gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn();
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
+    }
+
+    /**
+     * Test case to test that when the cue ball
+     * is potted, no ball types are assigned.
+     */
+    @Test
+    void testAssignmentCuePot() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        gameState.advanceTurn();
+        // not at breakshot but since cue ball is potted no type should be assigned
+        gameState.onBallPotted(balls.get(0));
+        gameState.advanceTurn();
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
+    }
+
+    /**
+     * Test case to test that balls potted during
+     * the break shot are added to a players potted balls,
+     * if the player gets assigned a ball type.
+     */
+    @Test
+    void testAssignmentBreakShotPot() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        // pot a two balls during breakshot
+        gameState.onBallPotted(balls.get(5));
+        gameState.onBallPotted(balls.get(3));
+        gameState.advanceTurn(); // handle turn
+        // Player 1 pots full ball
+        gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn(); // handle turn
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(5)));
+    }
+
+    /**
+     * Test case to assert that the 8-Ball is not added to a players potted balls.
+     */
+    @Test
+    void testAddPottedBallsWithEightBall() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        // pot a two balls during breakshot
+        gameState.onBallPotted(balls.get(5));
+        gameState.onBallPotted(balls.get(3));
+        gameState.onBallPotted(balls.get(1)); // should not be added,
+        // if this happens the game should immediately end.
+        gameState.advanceTurn();
+        // Player 1 pots full ball
+        gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn();
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(5)));
+        assertFalse(players.get(1).getPottedBalls().contains(balls.get(1)));
+        assertFalse(players.get(0).getPottedBalls().contains(balls.get(1)));
+    }
+
+
+    /**
+     * Test case to assert that a ball is added to the right player.
+     */
+    @Test
+    void testAddPottedBallToRightPlayer() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        // pot a two balls during breakshot
+        gameState.onBallPotted(balls.get(5));
+        gameState.onBallPotted(balls.get(3));
+        gameState.onBallPotted(balls.get(1)); // should not be added,
+        // if this happens the game should immediately end.
+        gameState.advanceTurn();
+        // Player 2 pots full ball
+        gameState.onBallPotted(balls.get(2));
+        gameState.advanceTurn();
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        // Player 1 pots a full ball, should be added to player 2's potted balls
+        gameState.onBallPotted(balls.get(3));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
+    }
+
+    /**
+     * Test case to assert that a ball is not in any player's list if
+     * players have not been assigned a type yet.
+     */
+    @Test
+    void testAddPottedBallToNoPlayer() {
+        balls = constructBallsList(true, true, 3, 3);
+        gameState = new GameState(players, balls);
+
+        // pot a ball during breakshot
+        gameState.onBallPotted(balls.get(5));
+        // if this happens the game should immediately end.
+        gameState.advanceTurn();
+        assertFalse(players.get(0).getPottedBalls().contains(balls.get(5)));
+        assertFalse(players.get(1).getPottedBalls().contains(balls.get(5)));
+    }
+
+    /**
+     * Test case to verify that potting both the cue ball and the
+     * 8-ball for a Player who has already potted all of their balls
+     * results in a loss. The scenario is tested when the Player
+     * pots the 8-ball, and then the cue ball after.
+     */
+    @Test
+    void testPotCueAndEightBallEightFirst() {
+        balls = constructBallsList(true, true, 0, 3);
+
+        gameState = new GameState(players, balls);
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(balls.get(1));
+        gameState.onBallPotted(balls.get(0));
+        gameState.handleBallPotting();
+
+        // Next Player is the winner
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
+
+    /**
+     * Test case to verify that potting both the cue ball and the
+     * 8-ball for a Player who has already potted all of their balls
+     * results in a loss. The scenario is tested where the Player
+     * pots the 8-ball, and then the cue ball right after.
+     */
+    @Test
+    void testPotCueAndEightBallCueBallFirst() {
+        balls = constructBallsList(true, true, 4, 0);
+
+        gameState = new GameState(players, balls);
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.STRIPED);
+
+        // Pot eight ball for current Player
+        gameState.onBallPotted(balls.get(0));
+        gameState.onBallPotted(balls.get(1));
+        gameState.handleBallPotting();
+
+        // Next Player is the winner
+        Player expectedWinner = gameState.getNextInactivePlayer();
+        Optional<Player> winner = gameState.getWinningPlayer();
+
+        assertTrue(winner.isPresent());
+        assertEquals(expectedWinner, winner.get());
+    }
+
+    /**
+     * Test case to verify that a player keeps their turn if they pot a correct ball.
+     */
+    @Test
+    void testKeepTurnAfterBallPot() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+        
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a ball
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+        
+        assertEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses their turn if they pot a correct ball, 
+     * but touch a wrong ball first.
+     */
+    @Test
+    void loseTurnAfterWrongFirstTouch() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a ball
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+        // However, first touch the 8 ball.
+        gameState.onMotionStop(balls.get(0));
+
+        assertNotEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses their turn if they pot a correct ball,
+     * but pot the cue ball as well.
+     */
+    @Test
+    void loseTurnWhenCueBallPotted() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a ball
+        gameState.onBallPotted(balls.get(2));
+        // Pot the cue ball
+        gameState.onBallPotted(balls.get(1));
+        Player current = gameState.getActivePlayer();
+        
+        gameState.onMotionStop(balls.get(1));
+        
+        assertNotEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses their turn when 
+     * they only pot a ball of the wrong type.
+     */
+    @Test
+    void loseTurnWhenOnlyWrongBallPotted() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a wrong ball
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.STRIPED);
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+
+        gameState.onMotionStop(balls.get(5));
+
+        assertNotEquals(current, gameState.getActivePlayer());
     }
 }

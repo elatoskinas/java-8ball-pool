@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cue3D.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.scene</a> &gt; <span class="el_source">Cue3D.java</span></div><h1>Cue3D.java</h1><pre class="source lang-java linenums">package com.sem.pool.scene;
+
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.game.GameConstants;
+
+/**
+ * Class representing a 3D Cue.
+ */
+public class Cue3D extends Object3D {
+
+    // The Y of the cue can't be 0 because it will end up in the bumpers.
+    protected static final float Y_COORDINATE = 1f;
+
+    public static final String MATERIAL_NAME = &quot;CueMaterial&quot;;
+
+    // Add blending attribute to hide the cue
+    public transient BlendingAttribute blendingAttribute;
+    private transient State state;
+
+    // Used for the dragging animation and force calculation
+    private transient Vector3 dragOriginCue;
+    private transient Vector3 dragOriginMouse;
+    private transient float currentForce;
+
+<span class="fc" id="L29">    public enum State {</span>
+<span class="fc" id="L30">        Rotating,</span>
+<span class="fc" id="L31">        Dragging,</span>
+<span class="fc" id="L32">        Hidden</span>
+    }
+
+
+    /**
+     * Constructs a new 3D Cue instance.
+     */
+    public Cue3D(ModelInstance model) {
+<span class="fc" id="L40">        super(model);</span>
+
+<span class="fc" id="L42">        this.state = State.Hidden;</span>
+<span class="fc" id="L43">        this.dragOriginCue = new Vector3();</span>
+<span class="fc" id="L44">        this.dragOriginMouse = new Vector3();</span>
+<span class="fc" id="L45">        this.currentForce = 0;</span>
+<span class="fc" id="L46">        blendingAttribute = new BlendingAttribute(GL20.GL_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);</span>
+<span class="fc" id="L47">        model.getMaterial(MATERIAL_NAME).set(blendingAttribute);</span>
+<span class="fc" id="L48">        blendingAttribute.opacity = 0;</span>
+<span class="fc" id="L49">    }</span>
+
+    public void setCurrentForce(float currentForce) {
+<span class="fc" id="L52">        this.currentForce = currentForce;</span>
+<span class="fc" id="L53">    }</span>
+
+    public State getState() {
+<span class="fc" id="L56">        return state;</span>
+    }
+
+    public void setState(State state) {
+<span class="fc" id="L60">        this.state = state;</span>
+<span class="fc" id="L61">    }</span>
+
+    public void setDragOriginMouse(Vector3 dragOriginMouse) {
+<span class="fc" id="L64">        this.dragOriginMouse = dragOriginMouse;</span>
+<span class="fc" id="L65">    }</span>
+
+    public void setDragOriginCue(Vector3 dragOriginCue) {
+<span class="fc" id="L68">        this.dragOriginCue = dragOriginCue;</span>
+<span class="fc" id="L69">    }</span>
+
+    public BlendingAttribute getBlendingAttribute() {
+<span class="fc" id="L72">        return blendingAttribute;</span>
+    }
+
+    /**
+     * Given the mouse position, determines the direction of the cue
+     * shot for the cueball.
+     *
+     * @param mousePosition Position of the mouse as a 3D Vector
+     * @param cueBall       Ball3D to get the position of the cueBall
+     * @return Direction of the cue shot
+     */
+    public Vector3 getCueShotDirection(Vector3 mousePosition, Ball3D cueBall) {
+<span class="fc" id="L84">        Vector3 ballPosition = cueBall.getCoordinates();</span>
+
+        // The direction is the center of the ball (ball position)
+        // from which the mouse position is subtracted.
+        // We normalize this vector to reduce ambiguity with direction,
+        // and work on unit length vectors.
+<span class="fc" id="L90">        Vector3 direction = new Vector3();</span>
+<span class="fc" id="L91">        direction.add(ballPosition).sub(mousePosition);</span>
+<span class="fc" id="L92">        direction.y = 0; // Set y direction 0 because we never move up</span>
+<span class="fc" id="L93">        direction.nor();</span>
+<span class="fc" id="L94">        return direction;</span>
+    }
+
+    /**
+     * Set the cue to the begin position when there is no mouse input yet.
+     *
+     * @param cueBall cue ball to determine cue position.
+     */
+    public void toBeginPosition(Ball3D cueBall) {
+
+<span class="fc" id="L104">        Vector3 position = cueBall.getCoordinates();</span>
+
+        // Sets the cue left from the cue ball
+<span class="fc" id="L107">        float x = position.x - GameConstants.CUE_OFFSET - cueBall.getRadius();</span>
+<span class="fc" id="L108">        model.transform.trn(x,  Y_COORDINATE, position.z);</span>
+<span class="fc" id="L109">    }</span>
+
+    /**
+     * Sets the mouseposition to the left of the cueball
+     * when the mouseposition and ballposition are the same.
+     * Handles the case when the mouse position is right
+     * at the center of the cueball.
+     * @param mousePosition Vector3 mouse position
+     * @param ballPosition Vector3 ball position
+     */
+    void validateMousePosition(Vector3 mousePosition, Vector3 ballPosition) {
+        // If the mouseposition and cue ball position are the same -&gt; set the cue to the left.
+<span class="pc bpc" id="L121" title="1 of 4 branches missed.">        if (mousePosition.x == ballPosition.x &amp;&amp; mousePosition.z == ballPosition.z) {</span>
+<span class="fc" id="L122">            mousePosition.x -= 1;</span>
+        }
+<span class="fc" id="L124">    }</span>
+
+    /**
+     * Set the cue to its position and rotation.
+     *
+     * @param mousePosition mouse coordinates
+     * @param cueBall       cue ball
+     */
+    public void toPosition(Vector3 mousePosition, Ball3D cueBall) {
+<span class="fc" id="L133">        Vector3 ballPosition = cueBall.getCoordinates();</span>
+
+<span class="fc" id="L135">        validateMousePosition(mousePosition, ballPosition);</span>
+
+        // Get the mouse direction with respect to the ball
+<span class="fc" id="L138">        Vector3 direction = new Vector3();</span>
+<span class="fc" id="L139">        direction.add(mousePosition).sub(ballPosition);</span>
+
+        // Set y direction 0 because we never move up
+<span class="fc" id="L142">        direction.y = 0;</span>
+<span class="fc" id="L143">        direction.nor();</span>
+
+        // Positioning
+        // Distance from the center of the cue ball
+<span class="fc" id="L147">        float dist = cueBall.getRadius() + GameConstants.CUE_OFFSET;</span>
+
+        // Scale the direction with the radius of the circle where the cue needs to be
+<span class="fc" id="L150">        Vector3 onRadius = new Vector3(direction.scl(dist));</span>
+<span class="fc" id="L151">        Vector3 res = onRadius.add(ballPosition);</span>
+<span class="fc" id="L152">        model.transform.setToTranslation(res.x, Y_COORDINATE, res.z);</span>
+
+        // Rotation
+<span class="fc" id="L155">        rotateCue(cueBall);</span>
+<span class="fc" id="L156">    }</span>
+
+    /**
+     * Hides the cue and set force parameter to default.
+     */
+    public void hideCue() {
+<span class="fc" id="L162">        setState(State.Hidden);</span>
+<span class="fc" id="L163">        setCurrentForce(0);</span>
+<span class="fc" id="L164">        blendingAttribute.opacity = 0;</span>
+<span class="fc" id="L165">    }</span>
+
+    /**
+     * Shows the cue.
+     */
+    public void showCue() {
+<span class="fc" id="L171">        setState(State.Rotating);</span>
+<span class="fc" id="L172">        blendingAttribute.opacity = 1;</span>
+<span class="fc" id="L173">    }</span>
+
+    /**
+     * Sets the cue to the dragging state
+     * and stores the point of the click which
+     * is needed for the drag calculation.
+     * @param mousePosition Vector3 mouse position
+     */
+    public void setToDragging(Vector3 mousePosition) {
+<span class="fc" id="L182">        setState(State.Dragging);</span>
+<span class="fc" id="L183">        setDragOriginCue(getCoordinates());</span>
+<span class="fc" id="L184">        setDragOriginMouse(mousePosition);</span>
+<span class="fc" id="L185">    }</span>
+
+    /**
+     * Sets the cue to the position in the drag phase.
+
+     * @param mousePosition mouse coordinates
+     * @param cueBall       cue ball
+     */
+    public void toDragPosition(Vector3 mousePosition, Ball3D cueBall) {
+        // TODO: Different calculation for the distance/force of the cue
+        // TODO: Now it just takes the distance to the first left-clicked point
+
+        // Get the direction of the cue drag
+<span class="fc" id="L198">        Vector3 directionClicked = new Vector3(mousePosition).sub(dragOriginMouse);</span>
+<span class="fc" id="L199">        directionClicked.y = 0;</span>
+
+        // Get the direction the cue is pointing
+<span class="fc" id="L202">        Vector3 directionCue = new Vector3(getCoordinates().sub(cueBall.getCoordinates()));</span>
+<span class="fc" id="L203">        directionCue.nor();</span>
+<span class="fc" id="L204">        directionCue.y = 0;</span>
+
+        // Mouse-position projection on cue direction
+<span class="fc" id="L207">        float up = new Vector3(directionClicked).dot(new Vector3(directionCue));</span>
+<span class="fc" id="L208">        float down = new Vector3(directionCue).dot(new Vector3(directionCue));</span>
+<span class="fc" id="L209">        float distance = Math.min(Math.max(0, up / down), GameConstants.MAX_DRAG_DISTANCE);</span>
+
+<span class="fc" id="L211">        Vector3 direction = directionCue.scl(distance);</span>
+        // Normalize vector because it is the direction
+<span class="fc" id="L213">        direction.y = 0;</span>
+
+        // The distance from the current mouse position and the first left-click mouse position.
+        // capMaxForce prevents cue from going over max force
+        // Calculate force based on the ratio of the
+        // distance and the max distance that is allowed
+
+<span class="fc" id="L220">        float distanceRatio = distance / GameConstants.MAX_DRAG_DISTANCE;</span>
+<span class="fc" id="L221">        currentForce = distanceRatio * GameConstants.MAX_CUE_FORCE;</span>
+
+        // Add the direction to the cue position of the first left-click
+<span class="fc" id="L224">        direction.add(dragOriginCue);</span>
+
+        // Do the translation
+<span class="fc" id="L227">        model.transform.setToTranslation(direction.x, Y_COORDINATE, direction.z);</span>
+
+        // Calculate and set the rotation of the cue (setToTranslation resets the rotation matrix)
+<span class="fc" id="L230">        rotateCue(cueBall);</span>
+<span class="fc" id="L231">    }</span>
+
+    /**
+     * Rotates the cue so that it points towards the center of the cue ball.
+     * @param cueBall cue ball
+     */
+    public void rotateCue(Ball3D cueBall) {
+        // Calculate the direction of the cue
+<span class="fc" id="L239">        Vector3 cuePositionOrigin = getCoordinates().sub(cueBall.getCoordinates());</span>
+
+        // Calculate the angle the cue has to rotate
+<span class="fc" id="L242">        double angle = MathUtils.atan2(cuePositionOrigin.z, cuePositionOrigin.x * -1);</span>
+<span class="fc" id="L243">        model.transform.rotateRad(Vector3.Y, (float) angle);</span>
+<span class="fc" id="L244">    }</span>
+
+    /**
+     * Shoots the cue-ball based on the cue-ball-position
+     * and the mouse-position when the drag started.
+     *
+     * @param cueBall the cue ball
+     */
+    public void shoot(Ball3D cueBall) {
+        // Calculates the direction
+<span class="fc" id="L254">        Vector3 direction = getCueShotDirection(dragOriginMouse, cueBall);</span>
+
+        // Apply the force in the shoot direction
+<span class="fc" id="L257">        cueBall.setDirection(direction);</span>
+<span class="fc" id="L258">        cueBall.setSpeed(currentForce);</span>
+
+<span class="fc" id="L260">        hideCue();</span>
+<span class="fc" id="L261">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

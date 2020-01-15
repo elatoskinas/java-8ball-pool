@@ -68,7 +68,7 @@ class TableFactoryTest {
 
         Mockito.when(assetLoader.loadModel(TableFactory.MODEL_TYPE)).thenReturn(model);
 
-        Table3D board = factory.createTable();
+        Table3D board = factory.createObject();
 
         Table3D expectedBoard = new Table3D(model);
         assertEquals(expectedBoard.getModel(), board.getModel());
@@ -84,7 +84,7 @@ class TableFactoryTest {
         Matrix4 matrixSpy = Mockito.spy(mockedMatrix);
         Mockito.when(matrixSpy.translate(Mockito.any())).thenReturn(null);
         factory.setUpBox(Mockito.mock(Vector3.class), mockedMatrix,
-                factory.createTable(), mockedCollisionObject, new Vector3(0,0,1));
+                factory.createObject(), mockedCollisionObject, new Vector3(0,0,1));
         Mockito.verify(mockedCollisionObject).setWorldTransform(Mockito.any());
     }
 }

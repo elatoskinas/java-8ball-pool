@@ -2,7 +2,7 @@ package com.sem.pool.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.sem.pool.MainGame;
+import com.sem.pool.screens.MainGame;
 
 /**
  * Launcher to launch the Game application on a Desktop platform.
