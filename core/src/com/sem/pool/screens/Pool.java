@@ -17,6 +17,7 @@ import com.sem.pool.factories.AssetLoader;
 
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
+import com.sem.pool.game.GameConstants;
 import com.sem.pool.game.GameObserver;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
@@ -37,6 +38,8 @@ public class Pool implements Screen, GameObserver {
 
     private transient Stage stage;
     private transient Label playerTurnLabel;
+    private transient Label cueForceLabel;
+
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -155,6 +158,10 @@ public class Pool implements Screen, GameObserver {
     public void loadUI() {
         if (loaded) {
             playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn());
+
+            float relativeForce = scene.getCue().getCurrentForce() / GameConstants.MAX_CUE_FORCE;
+            int floatPercentage = (int) (100 * relativeForce);
+            cueForceLabel.setText("Force: " + floatPercentage + "%");
         }
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
@@ -173,7 +180,12 @@ public class Pool implements Screen, GameObserver {
         playerTurnLabel.setSize(200,50);
         playerTurnLabel.setPosition(80,Gdx.graphics.getHeight() - 100);
 
+        cueForceLabel = new Label("", skin);
+        cueForceLabel.setSize(200,50);
+        cueForceLabel.setPosition(Gdx.graphics.getWidth() - 200,Gdx.graphics.getHeight() - 100);
+
         stage.addActor(playerTurnLabel);
+        stage.addActor(cueForceLabel);
         stage.act();
         stage.draw();
     }

@@ -164,7 +164,6 @@ public class Cue3D extends Object3D {
      */
     public void hideCue() {
         setState(State.Hidden);
-        setCurrentForce(0);
         blendingAttribute.opacity = 0;
     }
 
@@ -172,7 +171,7 @@ public class Cue3D extends Object3D {
      * Shows the cue.
      */
     public void showCue() {
-        setState(State.Rotating);
+        setToRotating();
         blendingAttribute.opacity = 1;
     }
 
@@ -192,6 +191,7 @@ public class Cue3D extends Object3D {
      * Sets the cue to the rotating state.
      */
     public void setToRotating() {
+        setCurrentForce(0);
         setState(State.Rotating);
     }
 
