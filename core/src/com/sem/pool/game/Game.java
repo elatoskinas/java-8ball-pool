@@ -188,7 +188,11 @@ public class Game implements ObservableGame {
         // we are at the phase where we can respond to input.
         // Otherwise, we need to move the balls.
         if (state.isInMotion()) {
-            stopMotion();
+            // Get the ball that was touched first
+            Ball3D touched = scene.getFirstTouched();
+            scene.clearFirstTouched();
+
+            stopMotion(touched);
         }
 
         return false;
@@ -240,8 +244,8 @@ public class Game implements ObservableGame {
     }
 
     @Override
-    public void stopMotion() {
-        observers.forEach(GameObserver::onMotionStop);
+    public void stopMotion(Ball3D touched) {
+        observers.forEach(x -> x.onMotionStop(touched));
     }
 
     @Override

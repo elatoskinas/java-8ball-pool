@@ -30,6 +30,15 @@ public abstract class Ball3D extends Object3D {
     }
 
     /**
+     * Creates a default Ball object with no internal parameters
+     * adjusted. To be used only in private/protected contexts
+     * for further extensions.
+     */
+    protected Ball3D() {
+
+    }
+
+    /**
      * Constructs a new 3D Pool Ball instance with
      * the specified id and model.
      * @param id  ID of the ball

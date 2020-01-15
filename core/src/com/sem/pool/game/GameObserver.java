@@ -29,8 +29,11 @@ public interface GameObserver {
     /**
      * Event that is triggered when the observed Game
      * stops being in motion.
+     *
+     * @param firstTouched  Fist ball that was touched by the Cue Ball
+     *                      in current loop interval that was just stopped.
      */
-    public void onMotionStop();
+    public void onMotionStop(Ball3D firstTouched);
 
     /**
      * Event that is triggered when the observed Game ends.
