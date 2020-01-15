@@ -105,7 +105,7 @@ public class Cue3D extends Object3D {
 
         // Sets the cue left from the cue ball
         float x = position.x - GameConstants.CUE_OFFSET - cueBall.getRadius();
-        model.transform.translate(x, Y_COORDINATE, position.z);
+        model.transform.trn(x,  Y_COORDINATE, position.z);
     }
 
     /**

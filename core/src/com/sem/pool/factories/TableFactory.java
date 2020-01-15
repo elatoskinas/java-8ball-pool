@@ -110,19 +110,19 @@ public class TableFactory extends Base3DFactory {
      */
     protected void setBoundingBoxes(Table3D table) {
         // set up bounding borders
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,1.45f)),
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().trn(new Vector3(0,0,1.45f)),
                 table, new btCollisionObject(), new Vector3(0,0,1));
 
-        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().translate(new Vector3(0,0,-1.45f)),
+        setUpBox(new Vector3(10f, 10f, 0.1f), new Matrix4().trn(new Vector3(0,0,-1.45f)),
                 table, new btCollisionObject(), new Vector3(0,0, -1));
 
-        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(3.05f,0,0)),
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().trn(new Vector3(3.05f,0,0)),
                 table, new btCollisionObject(), new Vector3(1, 0, 0));
 
-        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().translate(new Vector3(-3.05f,0,0)),
+        setUpBox(new Vector3(.1f, 10f, 10f), new Matrix4().trn(new Vector3(-3.05f,0,0)),
                 table, new btCollisionObject(), new Vector3(-1,0,0));
     }
-    
+
     /**
      * Sets up a single bounding box for the table.
      * @param shape btCollisionShape for the box, should in this case always be a cube.
@@ -150,7 +150,7 @@ public class TableFactory extends Base3DFactory {
     // Checking for UR anomalies has been removed in updated versions of PMD: https://pmd.github.io/2019/10/31/PMD-6.19.0/
     protected void setUpPotHitBoxes(Table3D table) {
         for (Vector3 position: TableFactory.POT_LOCATIONS) {
-            setUpPotBox(new Matrix4().translate(position), table, new btCollisionObject());
+            setUpPotBox(new Matrix4().trn(position), table, new btCollisionObject());
         }
     }
 

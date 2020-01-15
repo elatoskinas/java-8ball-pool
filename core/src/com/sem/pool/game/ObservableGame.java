@@ -1,5 +1,7 @@
 package com.sem.pool.game;
 
+import com.sem.pool.scene.Ball3D;
+
 import java.util.Collection;
 
 /**
@@ -37,9 +39,14 @@ public interface ObservableGame {
     public void startMotion();
 
     /**
-     * Stops the motion of the game.
+     * Stops the motion of the game with the specified
+     * ball as the ball that was touched first in
+     * the current loop interval that was just stopped.
+     *
+     * @param firstTouched  Ball that was touched first by a cue ball
+     *                      in current loop interval.
      */
-    public void stopMotion();
+    public void stopMotion(Ball3D firstTouched);
 
     /**
      * Ends the game.

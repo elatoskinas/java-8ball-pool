@@ -151,7 +151,7 @@ public class GameTest extends GameBaseTest {
 
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
-        Mockito.verify(gameState).onMotionStop();
+        Mockito.verify(gameState).onMotionStop(null);
     }
 
     /**
@@ -355,11 +355,12 @@ public class GameTest extends GameBaseTest {
         final int observerCount = 4;
         final List<GameObserver> observers = setUpObservers(observerCount);
 
-        game.stopMotion();
+        Ball3D touched = Mockito.mock(Ball3D.class);
+        game.stopMotion(touched);
 
         for (int i = 0; i < observers.size(); ++i) {
             GameObserver o = observers.get(i);
-            Mockito.verify(o).onMotionStop();
+            Mockito.verify(o).onMotionStop(touched);
         }
     }
 
@@ -398,6 +399,35 @@ public class GameTest extends GameBaseTest {
         }
     }
     
+    /**
+     * Test case to verify that when the game is determined to
+     * be no longer in motion, the observers are notified with
+     * the scene's touched ball that the motion stopped.
+     */
+    @Test
+    public void testDetermineNotInMotionTouchedBall() {
+        final int observerCount = 4;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        Ball3D touched = Mockito.mock(Ball3D.class);
+        Mockito.when(scene.getFirstTouched()).thenReturn(touched);
+
+        // Set in motion & determine new in motion state
+        Mockito.when(gameState.isInMotion()).thenReturn(true);
+        boolean motion = game.determineIsInMotion();
+
+        // Verify interraction on observers
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
+            Mockito.verify(o).onMotionStop(touched);
+        }
+
+        // Assert that game is no longer in motion, and that the
+        // first touched ball is cleared from the scene.
+        assertFalse(motion);
+        Mockito.verify(scene).clearFirstTouched();
+    }
+
     /**
      * Helper method to set up the specified number of mock observers.
      * @param count  Number of observers to create

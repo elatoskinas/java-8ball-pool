@@ -30,6 +30,15 @@ public abstract class Ball3D extends Object3D {
     }
 
     /**
+     * Creates a default Ball object with no internal parameters
+     * adjusted. To be used only in private/protected contexts
+     * for further extensions.
+     */
+    protected Ball3D() {
+
+    }
+
+    /**
      * Constructs a new 3D Pool Ball instance with
      * the specified id and model.
      * @param id  ID of the ball
@@ -112,7 +121,7 @@ public abstract class Ball3D extends Object3D {
      */
     public void translate(Vector3 translation) {
         // move the visual model of the ball
-        this.model.transform.translate(translation);
+        this.model.transform.trn(translation);
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
         // TODO: refactor code to fix this issue with tests
