@@ -277,6 +277,9 @@ public class GameTest extends GameBaseTest {
         Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
         Mockito.when(ball.getHitBox()).thenReturn(hitBox);
         Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
+        ArrayList<Ball3D> balls = new ArrayList<>();
+        balls.add(ball);
+        Mockito.when(this.scene.getPoolBalls()).thenReturn(balls);
 
         game.startGame();
         game.potBall(ball);
