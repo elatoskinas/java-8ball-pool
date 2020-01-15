@@ -99,7 +99,6 @@ public abstract class Ball3D extends Object3D {
         setSpeed(getSpeed() - (deltaTime * GameConstants.DRAG_COEFFICIENT));
         if (getSpeed() <= GameConstants.MIN_SPEED) {
             setSpeed(0);
-            setDirection(new Vector3());
         }
         Vector3 translation = new Vector3(getDirection()).scl(speed);
         translate(translation);
@@ -166,22 +165,31 @@ public abstract class Ball3D extends Object3D {
             // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
                     .sub(new Vector3(getCoordinates()));
-            if (other.getDirection().equals(new Vector3(0, 0, 0))) {
-                other.setDirection(directionToOther);
-            }
             Vector3 directionToMe = new Vector3(getCoordinates())
                     .sub(new Vector3(other.getCoordinates()));
 
-            // set directions of balls to opposite of their direction to the other.
-            setDirection(directionToOther.scl(-1));
-            other.setDirection(directionToMe.scl(-1));
+            // halve our speed on collision (implementation will be improved later)
+            setSpeed(getSpeed() / 2);
 
             // if we hit a ball that is not moving or has no direction, give it speed/direction.
-            float temp = getSpeed();
-            setSpeed(other.getSpeed());
-            other.setSpeed(temp);
-            return true;
-        }
+            if (other.getSpeed() <= 0) {
+                // set directions of balls to opposite of their direction to the other.
+                other.setSpeed(getSpeed());
+            } else { // else, give it more speed if the similar direction, slow down if not.
+                other.setSpeed(other.getSpeed() - getDirection()
+                        .dot(other.getDirection()) / 100);
+            }
+            if (other.getDirection().equals(new Vector3())) {
+                other.setDirection(new Vector3(getDirection()));
+            }
+
+
+            // if we hit a ball that is not moving or has no direction, give it speed/direction.
+                float temp = getSpeed();
+                setSpeed(other.getSpeed());
+                other.setSpeed(temp);
+                return true;
+            }
         return false;
     }
 
@@ -197,10 +205,6 @@ public abstract class Ball3D extends Object3D {
         translate(new Vector3(0, -100, 0));
         setSpeed(0);
         setDirection(new Vector3());
-    }
-
-    public void setHitBox(HitBox hitBox) {
-        this.hitBox = hitBox;
     }
 
 }
