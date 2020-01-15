@@ -1,6 +1,9 @@
 package com.sem.pool.game;
 
-import com.sem.pool.scene.*;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
+import com.sem.pool.scene.RegularBall3D;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -353,7 +356,10 @@ public class GameState implements GameObserver {
         // Increment the turn counter
         turnCount += 1;
     }
-    
+
+    /**
+     * Handles the game logic when a player loses its turn.
+     */
     protected void loseTurn() {
         // Increment player turn and wrap turn ID around
         // players size to keep it within bounds
