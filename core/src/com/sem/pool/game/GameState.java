@@ -138,7 +138,8 @@ public class GameState implements GameObserver {
      */
     public void advanceTurn() {
         handleBallPotting();
-
+        handleTurnAdvancement();
+        
         // Increment player turn and wrap turn ID around
         // players size to keep it within bounds
         playerTurn = (playerTurn + 1) % players.size();
@@ -272,7 +273,7 @@ public class GameState implements GameObserver {
         // Reset potted balls for next turn
         currentPottedBalls.clear();
     }
-
+    
     public void setTypesAssigned(boolean typesAssigned) {
         this.typesAssigned = typesAssigned;
     }
@@ -327,6 +328,10 @@ public class GameState implements GameObserver {
         typesAssigned = true;
     }
 
+    public void handleTurnAdvancement() {
+        
+    }
+    
     /**
      * Returns an object representing the winning Player.
      * If there is no winner yet, the returned Optional object
