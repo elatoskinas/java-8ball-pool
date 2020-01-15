@@ -6,11 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Matrix4;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
-import com.sem.pool.scene.HitBox;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;

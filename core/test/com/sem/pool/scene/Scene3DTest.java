@@ -324,6 +324,19 @@ class Scene3DTest {
     }
 
     @Test
+    public void testGetCueBall() {
+        Scene3D scene = Mockito.mock(Scene3D.class);
+        Ball3D ball = Mockito.mock(CueBall3D.class);
+        ArrayList<Ball3D> balls = new ArrayList<>();
+        balls.add(ball);
+
+        Mockito.when(scene.getPoolBalls()).thenReturn(balls);
+        Mockito.when(scene.getCueBall()).thenCallRealMethod();
+
+        assertEquals(ball, scene.getCueBall());
+    }
+
+    @Test
     public void testResetCue() {
         CueBall3D ball = Mockito.mock(CueBall3D.class);
         ModelInstance model = Mockito.mock(ModelInstance.class);

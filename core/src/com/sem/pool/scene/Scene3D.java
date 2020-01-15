@@ -200,6 +200,9 @@ public class Scene3D {
     public void resetCue(CueBall3D ball) {
         float magnitude = 0f;
 
+        // This will not result in an endless loop,
+        // unless there is no possible location for the ball.
+        // As this is not possible an endless loop also is not possible.
         while (true) {
             ball.getModel().transform.set(ball.getModel().transform.idt());
 
