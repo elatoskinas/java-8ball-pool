@@ -255,19 +255,7 @@ public class GameTest extends GameBaseTest {
      */
     @Test
     void testPotCue() {
-        Ball3D ball = Mockito.mock(CueBall3D.class);
-        ModelInstance model = Mockito.mock(ModelInstance.class);
-        Matrix4 transform = Mockito.mock(Matrix4.class);
-        Matrix4 newTransform = Mockito.mock(Matrix4.class);
-        final HitBox hitBox = Mockito.mock(HitBox.class);
-        model.transform = transform;
-        Mockito.when(ball.getModel()).thenReturn(model);
-        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
-        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
-        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
-        ArrayList<Ball3D> balls = new ArrayList<>();
-        balls.add(ball);
-        Mockito.when(this.scene.getPoolBalls()).thenReturn(balls);
+        CueBall3D ball = Mockito.mock(CueBall3D.class);
 
         game.startGame();
         game.potBall(ball);
