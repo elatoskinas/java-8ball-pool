@@ -15,11 +15,9 @@ import java.util.Set;
 
 /**
  * Class that handles everything related to the pool game.
- * String literals suppressed, as PMD is complaining about PMD.
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
@@ -213,7 +211,7 @@ public class Game implements ObservableGame {
         ball.pot();
 
         if (ball instanceof CueBall3D) {
-            this.scene.resetCue((CueBall3D) ball);
+            this.scene.recenterCue((CueBall3D) ball);
         }
 
         // Notify all observers of the potted ball

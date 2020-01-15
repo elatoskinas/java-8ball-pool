@@ -342,7 +342,7 @@ class Scene3DTest {
      */
     @Test
     @SuppressWarnings("checkstyle:variabledeclarationusagedistance")
-    public void testResetCue() {
+    public void testRecenterCue() {
         CueBall3D cue = Mockito.mock(CueBall3D.class);
         Ball3D ball = Mockito.mock(Ball3D.class);
         ModelInstance model = Mockito.mock(ModelInstance.class);
@@ -366,6 +366,6 @@ class Scene3DTest {
                 .thenReturn(true)
                 .thenReturn(false);
 
-        this.scene.resetCue(cue);
+        this.scene.recenterCue(cue);
     }
 }

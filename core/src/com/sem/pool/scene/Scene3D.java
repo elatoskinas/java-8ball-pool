@@ -194,10 +194,12 @@ public class Scene3D {
     /**
      * Resets the cue ball to the default position, after being potted.
      * PMD errors are ignored, as this is a bug within PMD.
+     * It gives an error of an undefined variable in the foreach,
+     * but it's defined in the block.
      * @param ball The cue ball.
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void resetCue(CueBall3D ball) {
+    public void recenterCue(CueBall3D ball) {
         float magnitude = 0f;
 
         // This will not result in an endless loop,

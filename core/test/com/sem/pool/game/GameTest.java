@@ -248,7 +248,7 @@ public class GameTest extends GameBaseTest {
     }
 
     /**
-     * Test if the resetCue method is called when potting the cue ball.
+     * Test if the recenterCue method is called when potting the cue ball.
      */
     @Test
     void testPotCue() {
