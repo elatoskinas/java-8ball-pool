@@ -26,6 +26,5 @@ public class CueBall3D extends Ball3D {
     public void pot() {
         this.setSpeed(0);
         this.setDirection(new Vector3());
-        this.getModel().transform.setTranslation(-1.75f, 0.28f, 0f);
     }
 }
