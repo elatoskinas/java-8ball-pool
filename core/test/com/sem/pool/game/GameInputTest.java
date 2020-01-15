@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.SoundPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -45,7 +46,8 @@ class GameInputTest extends GameBaseTest {
         Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0, 0,0));
 
         gameState = new GameState(players, poolBalls);
-        game = new Game(scene, input, gameState);
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        game = new Game(scene, input, gameState, soundPlayer);
     }
 
     /**

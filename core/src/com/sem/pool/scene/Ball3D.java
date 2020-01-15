@@ -177,6 +177,10 @@ public abstract class Ball3D extends Object3D {
             Vector3 directionToMe = new Vector3(getCoordinates())
                     .sub(new Vector3(other.getCoordinates()));
 
+            // set directions of balls to opposite of their direction to the other.
+            setDirection(directionToOther.scl(-1));
+            other.setDirection(directionToMe.scl(-1));
+
             // halve our speed on collision (implementation will be improved later)
             setSpeed(getSpeed() / 2);
 
@@ -192,13 +196,12 @@ public abstract class Ball3D extends Object3D {
                 other.setDirection(new Vector3(getDirection()));
             }
 
-
             // if we hit a ball that is not moving or has no direction, give it speed/direction.
-                float temp = getSpeed();
-                setSpeed(other.getSpeed());
-                other.setSpeed(temp);
-                return true;
-            }
+            float temp = getSpeed();
+            setSpeed(other.getSpeed());
+            other.setSpeed(temp);
+            return true;
+        }
         return false;
     }
 

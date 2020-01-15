@@ -8,6 +8,8 @@ import static org.mockito.Mockito.never;
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SoundPlayer;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.mockito.Mockito;
 
 
@@ -23,7 +26,9 @@ public class GameTest extends GameBaseTest {
     void setUp() {
         super.setUp();
         gameState = Mockito.mock(GameState.class);
-        game = new Game(scene, input, gameState);
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        game = new Game(scene, input, gameState, soundPlayer);
+
     }
 
     /**
@@ -33,7 +38,8 @@ public class GameTest extends GameBaseTest {
     @Test
     void testConstructor() {
         gameState = Mockito.mock(GameState.class);
-        Game game2 = new Game(scene, input, gameState);
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        Game game2 = new Game(scene, input, gameState, soundPlayer);
 
         assertEquals(scene, game2.getScene());
         assertEquals(input, game2.getInput());
@@ -143,7 +149,8 @@ public class GameTest extends GameBaseTest {
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
-        game = new Game(scene, input, gameState);
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        game = new Game(scene, input, gameState, soundPlayer);
         setupScenePoolBallsHelper(false, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -164,7 +171,8 @@ public class GameTest extends GameBaseTest {
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
-        game = new Game(scene, input, gameState);
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        game = new Game(scene, input, gameState, soundPlayer);
         setupScenePoolBallsHelper(true, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);

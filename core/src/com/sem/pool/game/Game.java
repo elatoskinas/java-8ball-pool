@@ -2,6 +2,7 @@ package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.scene.Ball3D;
@@ -39,13 +40,12 @@ public class Game implements ObservableGame {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(Scene3D scene, Input input, GameState state) {
+    public Game(Scene3D scene, Input input, GameState state, SoundPlayer soundPlayer) {
         this.scene = scene;
         this.input = input;
         this.state = state;
         this.observers = new HashSet<>();
-        AssetManager assetManager = new AssetManager();
-        this.soundPlayer = new SoundPlayer(new AssetLoader(assetManager));
+        this.soundPlayer = soundPlayer;
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
@@ -69,9 +69,12 @@ public class Game implements ObservableGame {
 
         // Create game state with the scene's pool balls & the two players
         GameState gameState = new GameState(players, scene.getPoolBalls());
+        AssetManager assetManager = new AssetManager();
+        AssetLoader assetLoader = new AssetLoader(assetManager);
+        SoundPlayer soundPlayer = new SoundPlayer(assetLoader);
 
         // Create a Game object from the parameters
-        return new Game(scene, input, gameState);
+        return new Game(scene, input, gameState, soundPlayer);
     }
 
     public Scene3D getScene() {

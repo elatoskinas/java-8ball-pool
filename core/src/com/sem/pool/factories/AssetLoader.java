@@ -102,8 +102,6 @@ public class AssetLoader {
         assetManager.load(BALL_SOUND_PATH, Music.class);
         assetManager.load(TABLE_SOUND_PATH, Music.class);
         assetManager.load(CUE_SOUND_PATH, Music.class);
-//        assetManager.finishLoading(); // calling this method ensures files are loaded
-//        // before proceeding, increases startup time but avoids bugs.
     }
 
     /**

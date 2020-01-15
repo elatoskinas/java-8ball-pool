@@ -14,13 +14,16 @@ public class SoundPlayer {
     private transient Music tableSound;
 
 
+    public AssetLoader getAssetLoader() {
+        return assetLoader;
+    }
+
     /**
      * Constructor for a SoundPlayer.
      */
     public SoundPlayer(AssetLoader assetLoader) {
         this.assetLoader = assetLoader;
         assetLoader.initializeAssets();
-       // assetLoader.getAssetManager().finishLoading();
         // load sound files.
         if (assetLoader.getAssetManager().update()) {
             potSound = assetLoader.getPotSound();

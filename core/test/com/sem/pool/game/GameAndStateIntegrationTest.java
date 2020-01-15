@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.SoundPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,7 +18,8 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     void setUp() {
         super.setUp();
         gameState = new GameState(players, poolBalls);
-        game = new Game(scene, input, gameState);
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        game = new Game(scene, input, gameState, soundPlayer);
     }
 
     /**
@@ -30,8 +32,8 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         setupScenePoolBallsHelper(false, false, false);
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
-
-        game = new Game(scene, input, gameState);
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        game = new Game(scene, input, gameState, soundPlayer);
         game.startGame();
         assertFalse(game.determineIsInMotion());
         gameState.onMotion();
