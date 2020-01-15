@@ -3,7 +3,6 @@ package com.sem.pool.game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
-import com.sem.pool.scene.CollisionHandler;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
@@ -214,55 +213,14 @@ public class Game implements ObservableGame {
         ball.pot();
 
         if (ball instanceof CueBall3D) {
-            this.resetCue((CueBall3D) ball);
-        } else {
-            // Notify all observers of the potted ball
-            for (GameObserver o : observers) {
-                o.onBallPotted(ball);
-            }
+            this.scene.resetCue((CueBall3D) ball);
+        }
+
+        // Notify all observers of the potted ball
+        for (GameObserver o : observers) {
+            o.onBallPotted(ball);
         }
     }
-
-    /**
-     * Resets the cue ball to the default position, after being potted.
-     * PMD errors are ignored, as this is a bug within PMD.
-     * @param ball The cue ball.
-     */
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private void resetCue(CueBall3D ball) {
-        float magnitude = 0f;
-
-        while (true) {
-            ball.getModel().transform.set(ball.getModel().transform.idt());
-
-            float x = -1.75f  + ((float) Math.random() - 0.5f) * magnitude;
-            float y = 0.28f;
-            float z = ((float) Math.random() - 0.5f) * magnitude;
-            ball.getModel().transform.setTranslation(new Vector3(x, y, z));
-            ball.getHitBox().updateLocation(ball.getModel().transform);
-
-            boolean doesCollide = false;
-
-            for (Ball3D other : this.scene.getPoolBalls()) {
-                if (ball.equals(other)) {
-                    continue;
-                }
-
-                CollisionHandler handler = ball.getCollisionHandler();
-                if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
-                    doesCollide = true;
-                    break;
-                }
-            }
-
-            if (!doesCollide) {
-                break;
-            }
-
-            magnitude += 0.1;
-        }
-    }
-
 
     @Override
     public void addObserver(GameObserver observer) {
