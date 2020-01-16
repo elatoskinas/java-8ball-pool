@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameConstants.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.game</a> &gt; <span class="el_source">GameConstants.java</span></div><h1>GameConstants.java</h1><pre class="source lang-java linenums">package com.sem.pool.game;
+
+/**
+ * Stateless class that holds global game constants
+ * for Pool games.
+ */
+<span class="nc" id="L7">public final class GameConstants {</span>
+    // Fixed count of pool balls in one Pool game:
+    // Cue ball + 8-ball + 7 striped + 7 solid balls
+    public static final int BALL_COUNT = 16;
+
+    // Regular ball count per type is 7 -&gt; 7 striped and 7 solid balls
+    public static final int REGULAR_BALL_COUNT = 7;
+    public static final int CUEBALL_ID = 0;
+    public static final int EIGHTBALL_ID = 8;
+
+    // Set to 0.03f after experimenting, should be increased if ball stops too slowly.
+    public static final float DRAG_COEFFICIENT = 0.03f;
+    // Minimal speed for a ball before its speed it set to 0.
+    public static final float MIN_SPEED = 0.0001f;
+
+
+    // CUE
+    // Cue max shooting force
+    public static final float MAX_CUE_FORCE = 0.3f;
+
+    // Cue max scalar when dragging
+    public static final float MAX_DRAG_DISTANCE = 1f;
+
+    // The distance between the cueBall and the tip of the cue.
+    public static final float CUE_OFFSET = 0.05f;
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

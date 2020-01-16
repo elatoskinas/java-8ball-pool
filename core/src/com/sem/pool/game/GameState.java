@@ -137,14 +137,8 @@ public class GameState implements GameObserver {
      * turn and starting the subsequent Player's turn.
      */
     public void advanceTurn() {
-        handleBallPotting();
-
-        // Increment player turn and wrap turn ID around
-        // players size to keep it within bounds
-        playerTurn = (playerTurn + 1) % players.size();
-
-        state = State.Idle;
-        turnCount += 1;
+        boolean cuePotted = handleBallPotting();
+        handleTurnAdvancement(cuePotted);
     }
 
     //    /**
@@ -231,10 +225,11 @@ public class GameState implements GameObserver {
      * Handles ball potting logic of all balls in the current turn,
      * including special cases on potting the cue and 8-ball, which might
      * result in the victory or loss of the game.
+     * @return Whether or not the cue ball was potted.
      */
     // UR anomaly false positive triggered by foreach loop (ball variable)
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    protected void handleBallPotting() {
+    protected boolean handleBallPotting() {
         // TODO: Special cue ball handling
 
         // Check if Player has potted all of their assigned ball
@@ -271,8 +266,10 @@ public class GameState implements GameObserver {
 
         // Reset potted balls for next turn
         currentPottedBalls.clear();
+        
+        return cuePotted;
     }
-
+    
     public void setTypesAssigned(boolean typesAssigned) {
         this.typesAssigned = typesAssigned;
     }
@@ -327,6 +324,49 @@ public class GameState implements GameObserver {
         typesAssigned = true;
     }
 
+    /**
+     * Method to handle all logic with regards to gaining an extra turn.
+     */
+    public void handleTurnAdvancement(boolean cuePotted) {
+        state = State.Idle;
+        Player activePlayer = getActivePlayer();
+        
+        boolean correctFirstTouch;
+        if (firstBallTouched instanceof RegularBall3D) {
+            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
+            correctFirstTouch = firstTouched.getType() == activePlayer.getBallType();
+        } else {
+            correctFirstTouch = false;
+        }
+        
+        // Check for four criteria:
+        // - Did the player touch the right type of ball first
+        // - Did the player not pot the cue ball
+        // - Did the player pot a ball of the wrong type
+        // - Did the player pot a ball of the correct type
+        if (!correctFirstTouch
+                || cuePotted
+                || !getActivePlayer().getPottedCorrectBall()) {
+            // Not all criteria were satisfied -> player loses the turn
+            loseTurn();
+        }
+
+        // Reset temporary variable
+        activePlayer.setPottedCorrectBall(false);
+        
+        // Increment the turn counter
+        turnCount += 1;
+    }
+
+    /**
+     * Handles the game logic when a player loses its turn.
+     */
+    protected void loseTurn() {
+        // Increment player turn and wrap turn ID around
+        // players size to keep it within bounds
+        playerTurn = (playerTurn + 1) % players.size();
+    }
+    
     /**
      * Returns an object representing the winning Player.
      * If there is no winner yet, the returned Optional object

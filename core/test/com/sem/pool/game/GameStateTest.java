@@ -162,8 +162,6 @@ class GameStateTest {
 
         // Assert ball is no longer contained in remaining ball set
         assertFalse(gameState.getRemainingBalls().contains(ball));
-        // Assert ball2 is contained in remaining ball set
-        assertTrue(gameState.getRemainingBalls().contains(balls.get(3)));
     }
 
     /**
@@ -188,13 +186,10 @@ class GameStateTest {
 
         // Verify the active player (which is the first Player by default
         // after constructing GameState object) pots the ball
-        // but does not have the ball in its list
-        assertEquals(players.get(0).getPottedBalls().size(), 0);
-        assertFalse(gameState.getTypesAssigned());
         assertTrue(gameState.getAllPottedBalls().contains(ball));
 
-        // Ensure that both player types are updated
-        // from unassigned to the right regular ball type
+        // Ensure that both player types are not updated
+        // since the ball was potted in the first turn (break shot)
         assertEquals(players.get(0).getBallType(), RegularBall3D.Type.UNASSIGNED);
         assertEquals(players.get(1).getBallType(), RegularBall3D.Type.UNASSIGNED);
     }
@@ -792,5 +787,89 @@ class GameStateTest {
 
         assertTrue(winner.isPresent());
         assertEquals(expectedWinner, winner.get());
+    }
+
+    /**
+     * Test case to verify that a player keeps their turn if they pot a correct ball.
+     */
+    @Test
+    void testKeepTurnAfterBallPot() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a ball
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+
+        assertEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses their turn if they pot a correct ball,
+     * but touch a wrong ball first.
+     */
+    @Test
+    void loseTurnAfterWrongFirstTouch() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a ball
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+        // However, first touch the 8 ball.
+        gameState.onMotionStop(balls.get(0));
+
+        assertNotEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses their turn if they pot a correct ball,
+     * but pot the cue ball as well.
+     */
+    @Test
+    void loseTurnWhenCueBallPotted() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a ball
+        gameState.onBallPotted(balls.get(2));
+        // Pot the cue ball
+        gameState.onBallPotted(balls.get(1));
+        Player current = gameState.getActivePlayer();
+
+        gameState.onMotionStop(balls.get(1));
+
+        assertNotEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses their turn when
+     * they only pot a ball of the wrong type.
+     */
+    @Test
+    void loseTurnWhenOnlyWrongBallPotted() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // Keep track of current player and pot a wrong ball
+        gameState.getActivePlayer().assignBallType(RegularBall3D.Type.STRIPED);
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+
+        gameState.onMotionStop(balls.get(5));
+
+        assertNotEquals(current, gameState.getActivePlayer());
     }
 }
