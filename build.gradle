@@ -118,7 +118,6 @@ allprojects {
                 // functionality that requires full on system testing.
                 // Also exclude the database main class, as this is not really testable
                 excludes = ['com.sem.pool.screens', 'com.sem.pool.database']
-
                 limit {
                     counter = 'BRANCH'
                     value = 'COVEREDRATIO'

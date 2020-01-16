@@ -797,18 +797,18 @@ class GameStateTest {
         balls = constructBallsList(true, true, 2, 2);
 
         gameState = new GameState(players, balls);
-        
+
         // Break shot
         gameState.advanceTurn();
         // Keep track of current player and pot a ball
         Player current = gameState.getActivePlayer();
         gameState.onBallPotted(balls.get(2));
-        
+
         assertEquals(current, gameState.getActivePlayer());
     }
 
     /**
-     * Test case to verify that a player loses their turn if they pot a correct ball, 
+     * Test case to verify that a player loses their turn if they pot a correct ball,
      * but touch a wrong ball first.
      */
     @Test
@@ -845,14 +845,14 @@ class GameStateTest {
         // Pot the cue ball
         gameState.onBallPotted(balls.get(1));
         Player current = gameState.getActivePlayer();
-        
+
         gameState.onMotionStop(balls.get(1));
-        
+
         assertNotEquals(current, gameState.getActivePlayer());
     }
 
     /**
-     * Test case to verify that a player loses their turn when 
+     * Test case to verify that a player loses their turn when
      * they only pot a ball of the wrong type.
      */
     @Test

@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
+
+import com.sem.pool.scene.SoundPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -101,9 +103,15 @@ class GameInputTest extends GameBaseTest {
     @Test
     public void testProcessInputWhenDragging() {
 
+        // to avoid nullptr
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        Mockito.doNothing().when(soundPlayer).playCueSound();
+        Mockito.when(scene.getSoundPlayer()).thenReturn(soundPlayer);
+
         Mockito.doNothing().when(cue).toDragPosition(any(Vector3.class), any(CueBall3D.class));
 
         cue.setState(Cue3D.State.Dragging);
+
         game.processCueInput();
         assertEquals(Cue3D.State.Hidden, cue.getState());
 

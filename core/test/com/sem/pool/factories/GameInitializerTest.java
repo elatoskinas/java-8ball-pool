@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -126,6 +127,12 @@ class GameInitializerTest {
         injectCameraCreator();
         setupMockModelInstantiation();
 
+        // needed to avoid nullptr
+        AssetManager assetManager = Mockito.mock(AssetManager.class);
+        Mockito.when(assetManager.update()).thenReturn(true);
+        Mockito.when(assetLoader.getAssetManager()).thenReturn(assetManager);
+
+
         SceneFactory factory = gameInitializer.createSceneFactory();
 
         assertNotNull(factory);
@@ -141,6 +148,10 @@ class GameInitializerTest {
     void testCreateGame() {
         injectCameraCreator();
         setupMockModelInstantiation();
+        // needed to avoid nullptr
+        AssetManager assetManager = Mockito.mock(AssetManager.class);
+        Mockito.when(assetManager.update()).thenReturn(true);
+        Mockito.when(assetLoader.getAssetManager()).thenReturn(assetManager);
 
         Game game = gameInitializer.createGame();
 

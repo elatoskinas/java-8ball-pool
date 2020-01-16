@@ -27,6 +27,7 @@ public class Scene3D {
     private final transient List<Ball3D> poolBalls;
     private final transient Table3D table;
     private final transient Cue3D cue;
+    private transient SoundPlayer soundPlayer;
 
     // Represents the first ball touched on the last
     // check of trigger collisions.
@@ -44,14 +45,14 @@ public class Scene3D {
      * @param batch       Model Batch to use for rendering
      */
     public Scene3D(Environment environment, Camera camera, List<Ball3D> poolBalls,
-                   Table3D table, Cue3D cue, ModelBatch batch) {
+                   Table3D table, Cue3D cue, ModelBatch batch, SoundPlayer soundPlayer) {
         this.environment = environment;
         this.camera = camera;
         this.poolBalls = poolBalls;
         this.table = table;
         this.cue = cue;
         this.modelBatch = batch;
-
+        this.soundPlayer = soundPlayer;
         // For all the pool balls and the table, add the models
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
@@ -134,18 +135,23 @@ public class Scene3D {
 
             // Check collisions between the board and
             // every ball in the scene
-            table.checkCollision(ball);
+            if (table.checkCollision(ball)) {
+                soundPlayer.playTableCollisionSound();
+            }
 
             // Check if ball is potted
             boolean potResult = table.checkIfPot(ball);
-
             if (potResult) {
+                soundPlayer.playPotSound();
                 potted.add(ball);
             }
 
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
                 boolean collided = ball.checkCollision(other);
+                if (collided) {
+                    soundPlayer.playBallCollisionSound();
+                }
                 updateFirstTouched(ball, other, collided);
             }
         }
@@ -272,5 +278,13 @@ public class Scene3D {
         } else {
             return new NullBall();
         }
+    }
+
+    public SoundPlayer getSoundPlayer() {
+        return this.soundPlayer;
+    }
+
+    public void setSoundPlayer(SoundPlayer soundPlayer) {
+        this.soundPlayer = soundPlayer;
     }
 }

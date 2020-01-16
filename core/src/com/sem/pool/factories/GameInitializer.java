@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.game.Game;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SoundPlayer;
 
 /**
  * Class that abstracts the functionality of initializing the
@@ -85,7 +86,8 @@ public class GameInitializer {
      */
     public SceneFactory createSceneFactory() {
         return new SceneFactory(createTableFactory(), createBallFactory(),
-                                createCameraFactory(), createCueFactory(), this.modelBatch);
+                                createCameraFactory(), createCueFactory(), this.modelBatch,
+                                new SoundPlayer(assetLoader));
     }
 
     /**
