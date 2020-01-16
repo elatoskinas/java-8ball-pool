@@ -251,7 +251,7 @@ public class GameTest extends GameBaseTest {
      * Test if the recenterCue method is called when potting the cue ball.
      */
     @Test
-    void testPotCue() {
+    void testPotCueBall() {
         CueBall3D ball = Mockito.mock(CueBall3D.class);
 
         game.startGame();

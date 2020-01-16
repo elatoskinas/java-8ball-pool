@@ -211,7 +211,7 @@ public class Game implements ObservableGame {
         ball.pot();
 
         if (ball instanceof CueBall3D) {
-            this.scene.recenterCue((CueBall3D) ball);
+            this.scene.recenterCueBall((CueBall3D) ball);
         }
 
         // Notify all observers of the potted ball
