@@ -1,5 +1,7 @@
 package com.sem.pool.game;
 
+import java.util.List;
+
 /**
  * Interface for observing GameState classes.
  * Contains functionality necessary to respond to
@@ -11,5 +13,5 @@ public interface GameStateObserver {
      * Ends the game with the specified Player as the winner.
      * @param winner  The player that won
      */
-    void endGame(Player winner);
+    void endGame(Player winner, List<Player> players);
 }

@@ -24,6 +24,10 @@ public class ResultTableTest {
         this.resultTable = (ResultTable) Database.getInstance().table("Result");
     }
 
+    /**
+     * Test the saving of a result gives the correct result.
+     * @throws SQLException Throws an error if not successfully.
+     */
     @Test
     public void testSave() throws SQLException {
         User user = new User(69, "user", "pass");
@@ -31,6 +35,10 @@ public class ResultTableTest {
         assertTrue(this.resultTable.save(result));
     }
 
+    /**
+     * Test if you can insert the same result twice.
+     * @throws SQLException Throws an error if not successfully.
+     */
     @Test
     public void testDoubleInsert() throws SQLException {
         User user = new User(69, "user", "pass");

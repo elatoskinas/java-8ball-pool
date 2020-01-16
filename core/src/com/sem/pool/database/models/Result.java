@@ -20,6 +20,16 @@ public class Result {
         this.loser = loser;
     }
 
+    /**
+     * Create a new result without the id.
+     * @param winner The winner of the game.
+     * @param loser The loser of the game.
+     */
+    public Result(User winner, User loser) {
+        this.winner = winner;
+        this.loser = loser;
+    }
+
     public int getGameID() {
         return this.gameId;
     }

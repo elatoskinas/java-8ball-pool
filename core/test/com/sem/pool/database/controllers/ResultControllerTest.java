@@ -15,6 +15,10 @@ public class ResultControllerTest {
         this.resultController = new ResultController(Database.getInstance());
     }
 
+    /**
+     * Smoke test so the controller exists.
+     * TODO: remove this once an actual function is in the controller.
+     */
     @Test
     public void exists() {
         assertEquals(this.resultController, this.resultController);

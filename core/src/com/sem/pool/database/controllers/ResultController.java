@@ -1,7 +1,11 @@
 package com.sem.pool.database.controllers;
 
 import com.sem.pool.database.Database;
+import com.sem.pool.database.models.Result;
+import com.sem.pool.database.models.User;
 import com.sem.pool.database.tables.ResultTable;
+
+import java.sql.SQLException;
 
 /**
  * Controller of the Result table.
@@ -16,5 +20,22 @@ public class ResultController {
      */
     public ResultController(Database db) {
         this.table = (ResultTable) db.table("Result");
+    }
+
+    /**
+     * Save a result.
+     * @param winner Winner of the game.
+     * @param loser Loser of the game.
+     * @return If the storing of the result succeeded.
+     */
+    public boolean createResult(User winner, User loser) {
+        Result result = new Result(winner, loser);
+
+        try {
+            return this.table.save(result);
+        } catch (SQLException stack) {
+            stack.printStackTrace();
+            return false;
+        }
     }
 }

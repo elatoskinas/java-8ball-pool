@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class ResultTest {
+    /**
+     * Test a simple result for correctness.
+     */
     @Test
     void simple() {
         User user = new User("testPassword", "test");

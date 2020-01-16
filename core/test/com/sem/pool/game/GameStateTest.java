@@ -218,7 +218,7 @@ class GameStateTest {
         gameState.winGame(winnerId);
 
         // Verify that the observer is notified of the winner
-        Mockito.verify(observer).endGame(winner);
+        Mockito.verify(observer).endGame(winner, gameState.getPlayers());
 
         // Assert that game is stopped
         assertFalse(gameState.isStarted());
@@ -244,8 +244,8 @@ class GameStateTest {
         gameState.winGame(winnerId);
 
         // Verify that the observers are notified of the winner
-        Mockito.verify(observer).endGame(winner);
-        Mockito.verify(observer2).endGame(winner);
+        Mockito.verify(observer).endGame(winner, gameState.getPlayers());
+        Mockito.verify(observer2).endGame(winner, gameState.getPlayers());
 
         // Assert that game is stopped
         assertFalse(gameState.isStarted());

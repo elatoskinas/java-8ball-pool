@@ -152,7 +152,7 @@ public class GameState {
 
         // Notify the observers of the victory
         for (GameStateObserver observer : observers) {
-            observer.endGame(winningPlayer);
+            observer.endGame(winningPlayer, players);
         }
 
         // Stop the game

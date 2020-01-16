@@ -2,6 +2,10 @@ package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.database.Database;
+import com.sem.pool.database.controllers.ResultController;
+import com.sem.pool.database.controllers.UserController;
+import com.sem.pool.database.models.User;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 
@@ -171,8 +175,27 @@ public class Game implements GameStateObserver {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
+    /**
+     * End the game and save the score.
+     * @param winner The player that won.
+     * @param players All players participating, including the winner.
+     */
     @Override
-    public void endGame(Player winner) {
-        // TODO: Implement logic for ending game here.
+    public void endGame(Player winner, List<Player> players) {
+        // Should never be more than one, as the code is not able to handle it right now.
+        assert (players.size() == 2);
+
+        Player loser = players.get(winner.getId() == 0 ? 1 : 0);
+        UserController userController = new UserController(Database.getInstance());
+
+        User winnerUser = userController.getUser(winner.getId());
+        User loserUser = userController.getUser(loser.getId());
+
+        // Make sure the loser is found.
+        assert (winnerUser != null);
+        assert (loserUser != null);
+
+        ResultController resultController = new ResultController(Database.getInstance());
+        resultController.createResult(winnerUser, loserUser);
     }
 }
