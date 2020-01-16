@@ -2,7 +2,6 @@ package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.ResultController;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.User;
@@ -21,6 +20,8 @@ public class Game implements GameStateObserver {
     private transient Scene3D scene;
     private transient Input input;
     private transient GameState state;
+    private transient UserController userController;
+    private transient ResultController resultController;
 
     /**
      * Constructs a new Game object with the given scene, input, and state.
@@ -28,10 +29,12 @@ public class Game implements GameStateObserver {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(Scene3D scene, Input input, GameState state) {
+    public Game(Scene3D scene, Input input, GameState state, UserController userController, ResultController resultController) {
         this.scene = scene;
         this.input = input;
         this.state = state;
+        this.userController = userController;
+        this.resultController = resultController;
 
         // Add game as an observer to the GameState
         state.addObserver(this);
@@ -186,16 +189,14 @@ public class Game implements GameStateObserver {
         assert (players.size() == 2);
 
         Player loser = players.get(winner.getId() == 0 ? 1 : 0);
-        UserController userController = new UserController(Database.getInstance());
 
-        User winnerUser = userController.getUser(winner.getId());
-        User loserUser = userController.getUser(loser.getId());
+        User winnerUser = this.userController.getUser(winner.getId());
+        User loserUser = this.userController.getUser(loser.getId());
 
         // Make sure the loser is found.
         assert (winnerUser != null);
         assert (loserUser != null);
 
-        ResultController resultController = new ResultController(Database.getInstance());
-        resultController.createResult(winnerUser, loserUser);
+        this.resultController.createResult(winnerUser, loserUser);
     }
 }

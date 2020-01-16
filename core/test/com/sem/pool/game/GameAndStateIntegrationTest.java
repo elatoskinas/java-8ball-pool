@@ -3,6 +3,9 @@ package com.sem.pool.game;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.database.Database;
+import com.sem.pool.database.controllers.ResultController;
+import com.sem.pool.database.controllers.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,8 +18,13 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-        gameState = new GameState(players, poolBalls);
-        game = new Game(scene, input, gameState);
+        this.gameState = new GameState(players, poolBalls);
+
+        Database.setTestMode();
+        this.userController = new UserController(Database.getInstance());
+        this.resultController = new ResultController(Database.getInstance());
+
+        game = new Game(scene, input, gameState, userController, resultController);
     }
 
     /**
@@ -37,7 +45,6 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         assertTrue(gameState.isStarted());
         assertFalse(gameState.isInMotion());
         assertTrue(gameState.isIdle());
-
     }
 
     /**

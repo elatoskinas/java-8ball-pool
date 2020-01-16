@@ -100,8 +100,6 @@ public class Login implements Screen {
     public void pause() {
     }
 
-    ;
-
     /**
      * Resuming of the paused screen.
      * It's currently not possible to pause, so you can't resume either.
@@ -109,8 +107,6 @@ public class Login implements Screen {
     @Override
     public void resume() {
     }
-
-    ;
 
     /**
      * Hide the screen.
@@ -120,8 +116,6 @@ public class Login implements Screen {
     public void hide() {
         this.dispose();
     }
-
-    ;
 
     /**
      * Dispose of the screen.
@@ -133,8 +127,6 @@ public class Login implements Screen {
         this.skin.dispose();
         this.atlas.dispose();
     }
-
-    ;
 
     /**
      * Show the username field.

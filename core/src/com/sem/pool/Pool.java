@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.sem.pool.database.Database;
+import com.sem.pool.database.controllers.ResultController;
+import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.BallFactory;
 
@@ -121,8 +124,11 @@ public class Pool implements Screen {
         // Create game state with the scene's pool balls and created players
         GameState gameState = new GameState(players, scene.getPoolBalls());
 
+        UserController userController = new UserController(Database.getInstance());
+        ResultController resultController = new ResultController(Database.getInstance());
+
         // Create game instance with GDX input, the scene and the created game state
-        game = new Game(scene, Gdx.input, gameState);
+        game = new Game(scene, Gdx.input, gameState, userController, resultController);
 
         // Start the game
         game.startGame();

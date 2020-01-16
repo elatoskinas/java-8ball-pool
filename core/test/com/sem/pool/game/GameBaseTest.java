@@ -1,6 +1,8 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
+import com.sem.pool.database.controllers.ResultController;
+import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ abstract class GameBaseTest {
     protected transient Game game;
     protected transient List<Player> players;
     protected transient List<Ball3D> poolBalls;
+    protected transient UserController userController;
+    protected transient ResultController resultController;
 
     @BeforeEach
     void setUp() {
