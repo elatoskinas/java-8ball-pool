@@ -177,15 +177,6 @@ public class Pool implements Screen, GameObserver {
         stage.draw();
     }
 
-
-    /**
-     * Resets the instance of the pool scene to a clean version.
-     */
-    public void restartGame() {
-        game.endGame();
-        this.mainGame.setScreen(new Pool(mainGame));
-    }
-
     @Override
     public void dispose() {
         scene.dispose();
