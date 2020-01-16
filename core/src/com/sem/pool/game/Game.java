@@ -188,17 +188,10 @@ public class Game implements GameStateObserver {
      */
     @Override
     public void endGame(Player winner, List<Player> players) {
-        // Should never be more than one, as the code is not able to handle it right now.
-        assert (players.size() == 2);
-
         Player loser = players.get(winner.getId() == 0 ? 1 : 0);
 
         User winnerUser = this.userController.getUser(winner.getId());
         User loserUser = this.userController.getUser(loser.getId());
-
-        // Make sure the loser is found.
-        assert (winnerUser != null);
-        assert (loserUser != null);
 
         this.resultController.createResult(winnerUser, loserUser);
     }

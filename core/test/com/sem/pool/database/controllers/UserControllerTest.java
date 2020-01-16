@@ -1,14 +1,16 @@
 package com.sem.pool.database.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.sem.pool.database.Database;
+import com.sem.pool.database.models.Result;
 import com.sem.pool.database.models.User;
+import com.sem.pool.database.tables.ResultTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserControllerTest {
@@ -66,5 +68,17 @@ public class UserControllerTest {
         User user = this.userController.register("user", "pass");
         User user2 = this.userController.getUser(user.getUserID());
         assertEquals(user, user2);
+    }
+
+    @Test
+    public void getUserFailed() throws SQLException {
+        Database db = Mockito.mock(Database.class);
+        ResultTable table = Mockito.mock(ResultTable.class);
+        UserController userController = new UserController(db);
+
+        Mockito.when(db.table(Mockito.anyString())).thenReturn(table);
+        Mockito.when(table.save(Mockito.any(Result.class))).thenThrow(SQLException.class);
+
+        assertNull(userController.getUser(0));
     }
 }

@@ -94,7 +94,7 @@ public class UserController {
     public User getUser(int id) {
         try {
             return this.table.getUser(id);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             return null;
         }
     }
