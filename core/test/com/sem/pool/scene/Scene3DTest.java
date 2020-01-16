@@ -8,11 +8,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-<<<<<<< HEAD
-import com.sem.pool.game.GameConstants;
-=======
 import com.badlogic.gdx.math.Matrix4;
->>>>>>> 19ab28862cbcf2ec4b462b43e71c8769e6739f10
+import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
