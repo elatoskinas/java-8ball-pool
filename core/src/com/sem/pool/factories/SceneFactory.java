@@ -1,6 +1,5 @@
 package com.sem.pool.factories;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -24,6 +23,7 @@ public class SceneFactory {
     private transient BallFactory ballFactory;
     private transient CameraFactory cameraFactory;
     private transient CueFactory cueFactory;
+    private transient SoundPlayer soundPlayer;
 
     private final transient ModelBatch modelBatch;
 
@@ -41,12 +41,14 @@ public class SceneFactory {
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
-                        CameraFactory cameraFactory, CueFactory cueFactory, ModelBatch modelBatch) {
+                        CameraFactory cameraFactory, CueFactory cueFactory, ModelBatch modelBatch,
+                        SoundPlayer soundPlayer) {
         this.tableFactory = tableFactory;
         this.ballFactory = ballFactory;
         this.cameraFactory = cameraFactory;
         this.cueFactory = cueFactory;
         this.modelBatch = modelBatch;
+        this.soundPlayer = soundPlayer;
     }
 
     public TableFactory getTableFactory() {
@@ -126,11 +128,6 @@ public class SceneFactory {
         // Create camera
         Camera camera = cameraFactory.createCamera();
         // Create scene with the constructed objects
-
-        // Create sound player for the scene.
-        AssetManager assetManager = new AssetManager();
-        AssetLoader assetLoader = new AssetLoader(assetManager);
-        SoundPlayer soundPlayer = new SoundPlayer(assetLoader);
 
         return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch, soundPlayer);
     }

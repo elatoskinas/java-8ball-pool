@@ -8,7 +8,6 @@ import static org.mockito.Mockito.never;
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
-import com.sem.pool.scene.SoundPlayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,8 +25,7 @@ public class GameTest extends GameBaseTest {
     void setUp() {
         super.setUp();
         gameState = Mockito.mock(GameState.class);
-        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState);
 
     }
 
@@ -38,8 +36,7 @@ public class GameTest extends GameBaseTest {
     @Test
     void testConstructor() {
         gameState = Mockito.mock(GameState.class);
-        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        Game game2 = new Game(scene, input, gameState, soundPlayer);
+        Game game2 = new Game(scene, input, gameState);
 
         assertEquals(scene, game2.getScene());
         assertEquals(input, game2.getInput());
@@ -149,8 +146,7 @@ public class GameTest extends GameBaseTest {
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
-        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState);
         setupScenePoolBallsHelper(false, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -171,8 +167,7 @@ public class GameTest extends GameBaseTest {
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
-        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState);
         setupScenePoolBallsHelper(true, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);

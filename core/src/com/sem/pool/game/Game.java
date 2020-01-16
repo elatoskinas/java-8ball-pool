@@ -1,14 +1,11 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
-import com.sem.pool.scene.SoundPlayer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Class that handles everything related to the pool game.
+ * Class that handlesn everything related to the pool game.
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
@@ -27,11 +24,6 @@ public class Game implements ObservableGame {
     private transient Input input;
     private transient GameState state;
     private transient Set<GameObserver> observers;
-    private transient SoundPlayer soundPlayer;
-
-    public SoundPlayer getSoundPlayer() {
-        return soundPlayer;
-    }
 
     /**
      * Constructs a new Game object with the given scene, input, and state.
@@ -39,12 +31,11 @@ public class Game implements ObservableGame {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(Scene3D scene, Input input, GameState state, SoundPlayer soundPlayer) {
+    public Game(Scene3D scene, Input input, GameState state) {
         this.scene = scene;
         this.input = input;
         this.state = state;
         this.observers = new HashSet<>();
-        this.soundPlayer = soundPlayer;
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
@@ -68,12 +59,9 @@ public class Game implements ObservableGame {
 
         // Create game state with the scene's pool balls & the two players
         GameState gameState = new GameState(players, scene.getPoolBalls());
-        AssetManager assetManager = new AssetManager();
-        AssetLoader assetLoader = new AssetLoader(assetManager);
-        SoundPlayer soundPlayer = new SoundPlayer(assetLoader);
 
         // Create a Game object from the parameters
-        return new Game(scene, input, gameState, soundPlayer);
+        return new Game(scene, input, gameState);
     }
 
     public Scene3D getScene() {
@@ -168,6 +156,7 @@ public class Game implements ObservableGame {
         } else if (cue.getState() == Cue3D.State.Dragging) {
             startMotion();
             cue.shoot(cueBall);
+            scene.getSoundPlayer().playCueSound();
         } else {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
 
@@ -263,4 +252,5 @@ public class Game implements ObservableGame {
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
     }
+
 }

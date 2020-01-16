@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -28,7 +29,6 @@ import com.sem.pool.scene.Scene3D;
  */
 public class Pool implements Screen, GameObserver {
     private transient MainGame mainGame;
-
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
@@ -37,6 +37,7 @@ public class Pool implements Screen, GameObserver {
 
     private transient Stage stage;
     private transient Label playerTurnLabel;
+    private transient Button restartButton;
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -49,7 +50,6 @@ public class Pool implements Screen, GameObserver {
      */
     public Pool(MainGame game) {
         this.mainGame = game;
-
         initializeAssetLoader();
         // Initialize model batch for rendering
         modelBatch = new ModelBatch();
@@ -177,6 +177,14 @@ public class Pool implements Screen, GameObserver {
         stage.draw();
     }
 
+
+    /**
+     * Resets the instance of the pool scene to a clean version.
+     */
+    public void restartGame() {
+        game.endGame();
+        this.mainGame.setScreen(new Pool(mainGame));
+    }
 
     @Override
     public void dispose() {

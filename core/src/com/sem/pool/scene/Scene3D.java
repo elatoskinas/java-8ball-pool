@@ -136,6 +136,7 @@ public class Scene3D {
             // Check collisions between the board and
             // every ball in the scene
             if (table.checkCollision(ball)) {
+                System.out.println("b");
                 soundPlayer.playTableCollisionSound();
             }
 
@@ -143,12 +144,16 @@ public class Scene3D {
             boolean potResult = table.checkIfPot(ball);
             if (potResult) {
                 soundPlayer.playPotSound();
+                System.out.println("a");
                 potted.add(ball);
             }
 
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
                 boolean collided = ball.checkCollision(other);
+                if (collided) {
+                    soundPlayer.playBallCollisionSound();
+                }
                 updateFirstTouched(ball, other, collided);
             }
         }
@@ -230,5 +235,13 @@ public class Scene3D {
         } else {
             return new NullBall();
         }
+    }
+
+    public SoundPlayer getSoundPlayer() {
+        return this.soundPlayer;
+    }
+
+    public void setSoundPlayer(SoundPlayer soundPlayer) {
+        this.soundPlayer = soundPlayer;
     }
 }
