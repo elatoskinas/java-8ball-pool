@@ -29,6 +29,8 @@
         <property name="eachLine" value="true"/>
     </module>
 
+    <module name="SuppressWarningsFilter" />
+
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
         <property name="max" value="100"/>
@@ -36,6 +38,7 @@
     </module>
 
     <module name="TreeWalker">
+        <module name="SuppressWarningsHolder" />
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
             <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>

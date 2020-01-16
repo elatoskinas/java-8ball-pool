@@ -22,7 +22,6 @@ import java.util.Set;
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-
 public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
@@ -235,12 +234,15 @@ public class Game implements ObservableGame {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
 
+        if (ball instanceof CueBall3D) {
+            this.scene.recenterCueBall((CueBall3D) ball);
+        }
+
         // Notify all observers of the potted ball
         for (GameObserver o : observers) {
             o.onBallPotted(ball);
         }
     }
-
 
     @Override
     public void addObserver(GameObserver observer) {

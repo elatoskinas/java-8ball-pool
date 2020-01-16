@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SoundPlayer;
 import com.sem.pool.screens.MainGame;
@@ -253,6 +254,21 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball potted in Game State
         Mockito.verify(gameState).onBallPotted(ball);
+    }
+
+    /**
+     * Test if the recenterCue method is called when potting the cue ball.
+     */
+    @Test
+    void testPotCueBall() {
+        CueBall3D ball = Mockito.mock(CueBall3D.class);
+
+        game.startGame();
+        game.potBall(ball);
+
+        // Verify ball is potted
+        Mockito.verify(ball).pot();
+        Mockito.verify(this.scene).recenterCueBall(ball);
     }
 
     /**
