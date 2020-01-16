@@ -81,9 +81,8 @@ public class GameUI {
      * @param scene the scene to get the force of the cue.
      */
     public void updateForceLabel(Scene3D scene) {
-        float relativeForce = scene.getCue().getCurrentForce() / GameConstants.MAX_CUE_FORCE;
-        int floatPercentage = (int) (100 * relativeForce);
-        cueForceLabel.setText("Force: " + floatPercentage + "%");
+        float forcePercentage = scene.getCue().getRelativeForcePercentage();
+        cueForceLabel.setText("Force: " + forcePercentage + "%");
     }
 
     /**

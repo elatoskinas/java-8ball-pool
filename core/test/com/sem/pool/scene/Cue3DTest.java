@@ -228,16 +228,30 @@ public class Cue3DTest {
         assertEquals(new Vector3(-1, 0, 0), mousePosition);
     }
 
-
     /**
-     * Helper method for testing Cue Shot direction given the
-     * specified setup for the ball and the mouse position,
-     * and the expected direction. The method handles assertions
-     * for the specified setup.
-     * @param ballPosition       Position of the ball
-     * @param mousePosition      Passed in position of the mouse
-     * @param expectedDirection  Expected direction of the cue shot
+     * Test case to verify that the correct force percentage is returned.
      */
+    @Test
+    public void testGetRelativeForcePercentage() {
+        cue.setCurrentForce(0);
+        assertEquals(0, cue.getRelativeForcePercentage());
+
+        cue.setCurrentForce(0.5f * GameConstants.MAX_CUE_FORCE);
+        assertEquals(50, cue.getRelativeForcePercentage());
+
+        cue.setCurrentForce(GameConstants.MAX_CUE_FORCE);
+        assertEquals(100, cue.getRelativeForcePercentage());
+    }
+
+        /**
+         * Helper method for testing Cue Shot direction given the
+         * specified setup for the ball and the mouse position,
+         * and the expected direction. The method handles assertions
+         * for the specified setup.
+         * @param ballPosition       Position of the ball
+         * @param mousePosition      Passed in position of the mouse
+         * @param expectedDirection  Expected direction of the cue shot
+         */
     private void testCueShotDirectionHelper(Vector3 ballPosition,
                                             Vector3 mousePosition, Vector3 expectedDirection) {
         // Create mock Ball3D instance
@@ -280,5 +294,7 @@ public class Cue3DTest {
 
         return new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
     }
+
+
 
 }
