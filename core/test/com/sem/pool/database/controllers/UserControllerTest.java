@@ -47,7 +47,7 @@ public class UserControllerTest {
     @Test
     public void registerExists() {
         this.userController.register("other", "foobar");
-        this.userController.register("other", "foobar");
+        assertNull(this.userController.register("other", "foobar"));
     }
 
     @Test
