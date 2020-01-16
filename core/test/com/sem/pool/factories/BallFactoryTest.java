@@ -52,7 +52,8 @@ class BallFactoryTest {
                 .thenReturn(mockModelInstance);
         
         for (int i = 0; i < GameConstants.BALL_COUNT; i++) {
-            Ball3D ball = factory.createBall(i);
+            factory.setId(i);
+            Ball3D ball = factory.createObject();
             if (i == GameConstants.CUEBALL_ID) {
                 assertTrue(ball instanceof CueBall3D);
             } else if (i == GameConstants.EIGHTBALL_ID) {
@@ -87,7 +88,8 @@ class BallFactoryTest {
         // We must also verify that the appropriate call is made in the asset loader.
         Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
 
-        Ball3D ball = factory.createBall(id);
+        factory.setId(id);
+        Ball3D ball = factory.createObject();
 
         Ball3D expectedBall = new CueBall3D(id, model);
         assertEquals(expectedBall, ball);
@@ -203,7 +205,8 @@ class BallFactoryTest {
 
         // Finally, create the Ball model using the factory and
         // ensure that the texture attribute has been set correctly.
-        Ball3D ball = factory.createBall(ballId);
+        factory.setId(ballId);
+        Ball3D ball = factory.createObject();
 
         // Get the attribute set to the material of the created ball model
         Attribute resultingAttribute = ball.getModel()
@@ -222,10 +225,12 @@ class BallFactoryTest {
         Mockito.when(assetLoader.loadModel(BallFactory.MODEL_TYPE)).thenReturn(model);
 
         assertThrows(AssertionError.class, () ->  {
-            factory.createBall(-1);
+            factory.setId(-1);
+            factory.createObject();
         });
         assertThrows(AssertionError.class, () ->  {
-            factory.createBall(16);
+            factory.setId(16);
+            factory.createObject();
         });
     }
 }

@@ -1,6 +1,6 @@
 package com.sem.pool;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.sem.pool.screens.Pool;
 
 /**
  * Sample test class. To be removed in the future.
@@ -13,10 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 class PoolTest {
     transient Pool pool;
 
-    @BeforeEach
+    /*@BeforeEach
     public void setUp() {
         pool = new Pool();
-    }
+    }*/
 
     /*@Test
     public void testCreate() {

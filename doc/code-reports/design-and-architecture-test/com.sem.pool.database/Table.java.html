@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Table.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.database</a> &gt; <span class="el_source">Table.java</span></div><h1>Table.java</h1><pre class="source lang-java linenums">package com.sem.pool.database;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+/**
+ * Abstract class, to be implemented by database tables implementations.
+ * Look at `./models` for examples.
+ */
+public abstract class Table {
+    /**
+     * Connection to use for queries.
+     */
+    protected final transient Connection conn;
+    /**
+     * Name of the table.
+     */
+    protected final transient String tableName;
+
+    /**
+     * Create the table instance.
+     *
+     * @param conn The connection to use.
+     */
+<span class="fc" id="L27">    public Table(Connection conn, String tableName) throws SQLException {</span>
+<span class="fc" id="L28">        this.conn = conn;</span>
+<span class="fc" id="L29">        this.tableName = tableName;</span>
+
+<span class="fc" id="L31">        this.ensureTable();</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Create the table.
+     * Should be implemented by the extenders.
+     */
+    protected abstract void createTable() throws SQLException;
+
+    /**
+     * Ensure that the table exists.
+     * If not call createTable().
+     * Warning suppressed as it's a false positive.
+     *
+     * @throws SQLException Throws on SQL error.
+     */
+    @SuppressWarnings(&quot;PMD.CloseResource&quot;)
+    private void ensureTable() throws SQLException {
+<span class="fc" id="L49">        DatabaseMetaData dbm = this.conn.getMetaData();</span>
+<span class="fc" id="L50">        ResultSet tables = dbm.getTables(null, null, this.tableName, null);</span>
+
+        try {
+<span class="fc" id="L53">            boolean createTable = tables.isAfterLast();</span>
+
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (createTable) {</span>
+<span class="fc" id="L56">                this.createTable();</span>
+<span class="fc" id="L57">                tables.close();</span>
+            }
+<span class="nc" id="L59">        } catch (SQLException e) {</span>
+<span class="nc" id="L60">            tables.close();</span>
+<span class="fc" id="L61">        }</span>
+<span class="fc" id="L62">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SceneFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.factories</a> &gt; <span class="el_source">SceneFactory.java</span></div><h1>SceneFactory.java</h1><pre class="source lang-java linenums">package com.sem.pool.factories;
+
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.game.GameConstants;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.Table3D;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SceneFactory {
+
+    // Factories used to create Tables &amp; Pool Balls &amp; Camera &amp; Cue
+    private transient TableFactory tableFactory;
+    private transient BallFactory ballFactory;
+    private transient CameraFactory cameraFactory;
+    private transient CueFactory cueFactory;
+
+    private final transient ModelBatch modelBatch;
+
+    // Initial offsets for the pool balls to set up for break shot
+<span class="fc" id="L29">    private static final Vector3 BALL_OFFSET = new Vector3(1f, 0.28f, 0f);</span>
+<span class="fc" id="L30">    private static final Vector3 CUE_BALL_OFFSET = new Vector3(-1.75f, 0.28f, 0f);</span>
+
+    /**
+     * Creates a new Scene Factory instance with the
+     * specified parameters to be used for scene instantiation.
+     * @param tableFactory  Table Factory to use for Table instantiation
+     * @param ballFactory   Ball Factory to use for Pool Ball instantiation
+     * @param cameraFactory  Camera Factory to use for Camera instantiation
+     * @param cueFactory  Cue Factory to use for Cue instantiation
+     * @param modelBatch    Model Batch to use for scene rendering
+     */
+    public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
+<span class="fc" id="L42">                        CameraFactory cameraFactory, CueFactory cueFactory, ModelBatch modelBatch) {</span>
+<span class="fc" id="L43">        this.tableFactory = tableFactory;</span>
+<span class="fc" id="L44">        this.ballFactory = ballFactory;</span>
+<span class="fc" id="L45">        this.cameraFactory = cameraFactory;</span>
+<span class="fc" id="L46">        this.cueFactory = cueFactory;</span>
+<span class="fc" id="L47">        this.modelBatch = modelBatch;</span>
+<span class="fc" id="L48">    }</span>
+
+    public TableFactory getTableFactory() {
+<span class="fc" id="L51">        return tableFactory;</span>
+    }
+
+    public void setTableFactory(TableFactory tableFactory) {
+<span class="fc" id="L55">        this.tableFactory = tableFactory;</span>
+<span class="fc" id="L56">    }</span>
+
+    public BallFactory getBallFactory() {
+<span class="fc" id="L59">        return ballFactory;</span>
+    }
+
+    public void setBallFactory(BallFactory ballFactory) {
+<span class="fc" id="L63">        this.ballFactory = ballFactory;</span>
+<span class="fc" id="L64">    }</span>
+
+    public CameraFactory getCameraFactory() {
+<span class="fc" id="L67">        return cameraFactory;</span>
+    }
+
+    public void setCameraFactory(CameraFactory cameraFactory) {
+<span class="fc" id="L71">        this.cameraFactory = cameraFactory;</span>
+<span class="fc" id="L72">    }</span>
+
+    public CueFactory getCueFactory() {
+<span class="nc" id="L75">        return cueFactory;</span>
+    }
+
+    public void setCueFactory(CueFactory cueFactory) {
+<span class="nc" id="L79">        this.cueFactory = cueFactory;</span>
+<span class="nc" id="L80">    }</span>
+
+
+    /**
+     * Instantiates the 3D scene by setting up the environment, camera
+     * and models. The method instantiates all the necessary models,
+     * positions them in the necessary locations and sets the camera
+     * in its right location.
+     */
+    // ballFactory variable gets tagged as a DU anomaly, even
+    // though it is initialized and used to create the pool
+    // balls properly. Seems like a false positive here.
+    //@SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    public Scene3D createScene() {
+        // TODO: Move this to it's own Environment factory or method.
+        // Instantiate environment for the Scene
+<span class="fc" id="L96">        Environment environment = new Environment();</span>
+<span class="fc" id="L97">        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));</span>
+<span class="fc" id="L98">        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0f, -1f, 0f));</span>
+
+
+        // Create pool balls
+<span class="fc" id="L102">        List&lt;Ball3D&gt; poolBalls = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        for (int i = 0; i &lt; GameConstants.BALL_COUNT; ++i) {</span>
+<span class="fc" id="L105">            ballFactory.setId(i);</span>
+<span class="fc" id="L106">            Ball3D ball = ballFactory.createObject();</span>
+<span class="fc" id="L107">            poolBalls.add(ball);</span>
+        }
+
+        // Position pool balls in the right places on the board
+<span class="fc" id="L111">        positionPoolBalls(poolBalls);</span>
+
+        // Create table
+<span class="fc" id="L114">        Table3D table = tableFactory.createObject();</span>
+<span class="fc" id="L115">        tableFactory.setBoundingBoxes(table);</span>
+<span class="fc" id="L116">        tableFactory.setUpPotHitBoxes(table);</span>
+
+        // Create cue
+<span class="fc" id="L119">        Cue3D cue = cueFactory.createObject();</span>
+
+        // Set cue to cueBall position
+<span class="fc" id="L122">        cue.toBeginPosition(poolBalls.get(0));</span>
+
+        // Create camera
+<span class="fc" id="L125">        Camera camera = cameraFactory.createCamera();</span>
+        // Create scene with the constructed objects
+<span class="fc" id="L127">        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);</span>
+    }
+
+    /**
+     * Positions pool balls in the right setup for the break shot.
+     */
+    // The method seems to produce quite a lot of false positives
+    // for DU anomalies (for row and count), possibly due to the
+    // introduced loop.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    private void positionPoolBalls(List&lt;Ball3D&gt; poolBalls) {
+        // Position cue ball to it's right position
+<span class="fc" id="L139">        poolBalls.get(0).translate(CUE_BALL_OFFSET);</span>
+
+        // Keep track of the current row of balls and the
+        // current ball in the row
+<span class="fc" id="L143">        int row = 1;</span>
+<span class="fc" id="L144">        int count = 0;</span>
+        
+        // Calculate spacing between balls. The spacing should be 2r
+        // (distance from the center of one ball to the other), but
+        // we use a slightly smaller value (1.8) to make the balls
+        // closer together to each other.
+        // TODO: Set 1.8 as a final float in the class
+<span class="fc" id="L151">        float radius = poolBalls.get(0).getRadius();</span>
+<span class="fc" id="L152">        float spacing = radius * 1.8f;</span>
+
+        // Iterate through all non-cue balls
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        for (int i = 1; i &lt; poolBalls.size(); ++i) {</span>
+<span class="fc" id="L156">            Ball3D ball = poolBalls.get(i);</span>
+
+            // Move the pool balls by the calculated pyramid
+            // offset which is based on the current row
+            // and element count in the row for all
+            // the pool balls. Furthermore, move the ball
+            // by the predetermined offset to position it
+            // at one side of the board.
+<span class="fc" id="L164">            ball.translate(getPyramidOffset(spacing, row, count));</span>
+<span class="fc" id="L165">            ball.translate(BALL_OFFSET);</span>
+
+            // Increase row elemet count
+<span class="fc" id="L168">            count++;</span>
+
+            // Count is equal to row; Reset count,
+            // increment row (move on to next row
+            // of the pyramid)
+            // TODO: We can (maybe) replace this with an iterator/generator design
+            //       pattern for more cleaner code (?)
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (count == row) {</span>
+<span class="fc" id="L176">                row++;</span>
+<span class="fc" id="L177">                count = 0;</span>
+            }
+        }
+<span class="fc" id="L180">    }</span>
+
+    private Vector3 getPyramidOffset(float spacing, int row, int entry) {
+<span class="fc" id="L183">        float xspacing = spacing * row;</span>
+<span class="fc" id="L184">        float zspacing = spacing * (entry - 0.5f * row);</span>
+
+<span class="fc" id="L186">        return new Vector3(xspacing, 0, zspacing);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

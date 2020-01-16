@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Login.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.screens</a> &gt; <span class="el_source">Login.java</span></div><h1>Login.java</h1><pre class="source lang-java linenums">package com.sem.pool.screens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.sem.pool.database.Database;
+import com.sem.pool.database.controllers.UserController;
+import com.sem.pool.database.models.User;
+
+/**
+ * This class implements the Login screen.
+ */
+public class Login implements Screen {
+    private transient MainGame game;
+    private transient Stage stage;
+    private transient Skin skin;
+    private transient TextureAtlas atlas;
+    private transient TextField userfield;
+    private transient TextField passfield;
+    private transient Label outLabel;
+    private transient UserController userController;
+
+<span class="nc" id="L34">    public Login(MainGame game) {</span>
+<span class="nc" id="L35">        this.game = game;</span>
+<span class="nc" id="L36">        this.userController = new UserController(Database.getInstance());</span>
+<span class="nc" id="L37">    }</span>
+
+    /**
+     * Show the screen.
+     * This actually renders the screen.
+     */
+    @Override
+    public void show() {
+        // Set up the screen.
+<span class="nc" id="L46">        this.stage = new Stage(new FitViewport(1000, 1000));</span>
+<span class="nc" id="L47">        Gdx.input.setInputProcessor(stage);</span>
+<span class="nc" id="L48">        Table table = new Table();</span>
+<span class="nc" id="L49">        table.setFillParent(true);</span>
+<span class="nc" id="L50">        this.atlas = new TextureAtlas(&quot;uiskin.atlas&quot;);</span>
+<span class="nc" id="L51">        this.skin = new Skin(Gdx.files.internal(&quot;config/skin/uiskin.json&quot;), this.atlas);</span>
+
+        // Render the elements.
+<span class="nc" id="L54">        table.setPosition(0, 0);</span>
+<span class="nc" id="L55">        table.defaults().spaceBottom(10);</span>
+<span class="nc" id="L56">        table.row().fill().expandX();</span>
+<span class="nc" id="L57">        this.outLabel = this.showOutput(table);</span>
+<span class="nc" id="L58">        this.userfield = this.showUsername(table);</span>
+<span class="nc" id="L59">        this.passfield = this.showPassword(table);</span>
+<span class="nc" id="L60">        this.showButtons(table);</span>
+
+        // Push it out.
+<span class="nc" id="L63">        table.pack();</span>
+<span class="nc" id="L64">        stage.addActor(table);</span>
+<span class="nc" id="L65">        stage.act();</span>
+<span class="nc" id="L66">        stage.draw();</span>
+<span class="nc" id="L67">    }</span>
+
+    /**
+     * Render the screen.
+     *
+     * @param delta Delta time in seconds between the last render
+     */
+    @Override
+    public void render(float delta) {
+<span class="nc" id="L76">        Gdx.gl.glClearColor(0.04f, 0.42f, 0.01f, 1);</span>
+<span class="nc" id="L77">        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);</span>
+<span class="nc" id="L78">        stage.act(Gdx.graphics.getDeltaTime());</span>
+<span class="nc" id="L79">        stage.draw();</span>
+<span class="nc" id="L80">    }</span>
+
+    /**
+     * Resize event of the screen.
+     *
+     * @param w The new width
+     * @param h The new height
+     */
+    @Override
+    public void resize(int w, int h) {
+<span class="nc" id="L90">        stage.getViewport().update(w, h);</span>
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * Pausing of the screen.
+     * This is currently not needed, so it is empty.
+     */
+    @Override
+    public void pause() {
+<span class="nc" id="L99">    }</span>
+
+    ;
+
+    /**
+     * Resuming of the paused screen.
+     * It's currently not possible to pause, so you can't resume either.
+     */
+    @Override
+    public void resume() {
+<span class="nc" id="L109">    }</span>
+
+    ;
+
+    /**
+     * Hide the screen.
+     * This is currently just killing the screen.
+     */
+    @Override
+    public void hide() {
+<span class="nc" id="L119">        this.dispose();</span>
+<span class="nc" id="L120">    }</span>
+
+    ;
+
+    /**
+     * Dispose of the screen.
+     * Cleaning up any old objects.
+     */
+    @Override
+    public void dispose() {
+<span class="nc" id="L130">        this.stage.dispose();</span>
+<span class="nc" id="L131">        this.skin.dispose();</span>
+<span class="nc" id="L132">        this.atlas.dispose();</span>
+<span class="nc" id="L133">    }</span>
+
+    ;
+
+    /**
+     * Show the username field.
+     *
+     * @param table The table to add the username to.
+     * @return The text field of the username.
+     */
+    private TextField showUsername(Table table) {
+<span class="nc" id="L144">        Label usernameLabel = new Label(&quot;Username: &quot;, this.skin);</span>
+<span class="nc" id="L145">        TextField username = new TextField(&quot;&quot;, this.skin);</span>
+<span class="nc" id="L146">        username.setMessageText(&quot;john.doe&quot;);</span>
+
+<span class="nc" id="L148">        table.add(usernameLabel).colspan(2);</span>
+<span class="nc" id="L149">        table.add(username).minWidth(100).expandX().fillX().colspan(2);</span>
+<span class="nc" id="L150">        table.row();</span>
+
+<span class="nc" id="L152">        return username;</span>
+    }
+
+    /**
+     * Show the password field.
+     *
+     * @param table The table to add the password to.
+     * @return The text field of the password
+     */
+    private TextField showPassword(Table table) {
+<span class="nc" id="L162">        TextField password = new TextField(&quot;&quot;, this.skin);</span>
+<span class="nc" id="L163">        password.setMessageText(&quot;P@ssWord&quot;);</span>
+<span class="nc" id="L164">        password.setPasswordCharacter('*');</span>
+<span class="nc" id="L165">        password.setPasswordMode(true);</span>
+<span class="nc" id="L166">        Label passwordLabel = new Label(&quot;Password: &quot;, this.skin);</span>
+
+<span class="nc" id="L168">        table.add(passwordLabel).colspan(2);</span>
+<span class="nc" id="L169">        table.add(password).minWidth(100).expandX().fillX().colspan(2);</span>
+<span class="nc" id="L170">        table.row();</span>
+
+<span class="nc" id="L172">        return password;</span>
+    }
+
+    /**
+     * Show the output label on the screen.
+     *
+     * @param table The table to add to.
+     * @return The label to change when there is a message.
+     */
+    private Label showOutput(Table table) {
+<span class="nc" id="L182">        Label out = new Label(&quot;&quot;, this.skin);</span>
+<span class="nc" id="L183">        table.add(out);</span>
+<span class="nc" id="L184">        table.row();</span>
+
+<span class="nc" id="L186">        return out;</span>
+    }
+
+    /**
+     * Show the login &amp; register buttons.
+     *
+     * @param table The table to add the buttons to.
+     */
+    private void showButtons(Table table) {
+<span class="nc" id="L195">        Login screen = this;</span>
+<span class="nc" id="L196">        Button login = new TextButton(&quot;Login&quot;, this.skin);</span>
+<span class="nc" id="L197">        Button register = new TextButton(&quot;Register&quot;, this.skin);</span>
+
+<span class="nc" id="L199">        login.addListener(new ClickListener() {</span>
+            public void clicked(InputEvent e, float x, float y) {
+<span class="nc" id="L201">                screen.handleLogin();</span>
+<span class="nc" id="L202">            }</span>
+        });
+
+<span class="nc" id="L205">        register.addListener(new ClickListener() {</span>
+            public void clicked(InputEvent e, float x, float y) {
+<span class="nc" id="L207">                screen.handleRegister();</span>
+<span class="nc" id="L208">            }</span>
+        });
+
+<span class="nc" id="L211">        table.add(login).colspan(2);</span>
+<span class="nc" id="L212">        table.add(register).colspan(2);</span>
+<span class="nc" id="L213">    }</span>
+
+    /**
+     * Handle login button press.
+     */
+    private void handleLogin() {
+<span class="nc" id="L219">        String username = this.userfield.getText();</span>
+<span class="nc" id="L220">        String password = this.passfield.getText();</span>
+
+<span class="nc bnc" id="L222" title="All 4 branches missed.">        if (username.length() &lt;= 0 || password.length() &lt;= 0) {</span>
+<span class="nc" id="L223">            this.outLabel.setText(&quot;Please fill in both username and password!&quot;);</span>
+<span class="nc" id="L224">            return;</span>
+        }
+
+<span class="nc" id="L227">        User user = this.userController.login(username, password);</span>
+
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L230">            this.outLabel.setText(&quot;Invalid username/password!&quot;);</span>
+<span class="nc" id="L231">            return;</span>
+        }
+
+<span class="nc" id="L234">        this.game.startPool();</span>
+<span class="nc" id="L235">    }</span>
+
+    /**
+     * Handle registration button press.
+     */
+    private void handleRegister() {
+<span class="nc" id="L241">        String username = this.userfield.getText();</span>
+<span class="nc" id="L242">        String password = this.passfield.getText();</span>
+
+<span class="nc bnc" id="L244" title="All 4 branches missed.">        if (username.length() &lt;= 0 || password.length() &lt;= 0) {</span>
+<span class="nc" id="L245">            this.outLabel.setText(&quot;Please fill in both username and password!&quot;);</span>
+<span class="nc" id="L246">            return;</span>
+        }
+
+<span class="nc" id="L249">        User user = this.userController.register(username, password);</span>
+
+<span class="nc bnc" id="L251" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L252">            this.outLabel.setText(&quot;User already exists!&quot;);</span>
+<span class="nc" id="L253">            return;</span>
+        }
+
+<span class="nc" id="L256">        this.game.startPool();</span>
+<span class="nc" id="L257">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

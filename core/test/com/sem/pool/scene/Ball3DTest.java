@@ -94,7 +94,7 @@ abstract class Ball3DTest {
         Ball3D ball2 = getBall(id, model);
 
         assertEquals(ball1, ball2);
-        assertNotEquals("test", ball1);
+        assertFalse(ball1.equals("test"));
     }
 
     /**
@@ -207,7 +207,7 @@ abstract class Ball3DTest {
         Ball3D ball = getBall(0, mockModelInstance);
         Vector3 translation = new Vector3(1f, 0, 0);
         ball.translate(translation);
-        Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+        Mockito.verify(mockMatrix, Mockito.times(1)).trn(translation);
     }
 
 
@@ -283,6 +283,9 @@ abstract class Ball3DTest {
         Mockito.when(model.calculateBoundingBox(Mockito.any(BoundingBox.class)))
                 .thenReturn(box);
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockMatrix.trn(Mockito.any())).thenReturn(mockMatrix);
         model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final Vector3 translation = new Vector3(1f, 0, 0);
@@ -291,7 +294,7 @@ abstract class Ball3DTest {
         // set our translation scaled to what we expect the ball to have
         translation.scl((ball.getSpeed() - GameConstants.DRAG_COEFFICIENT));
         ball.move(1);
-        Mockito.verify(mockMatrix, Mockito.times(1)).translate(translation);
+        Mockito.verify(mockMatrix, Mockito.times(1)).trn(translation);
     }
 
     /**
@@ -302,6 +305,9 @@ abstract class Ball3DTest {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockMatrix.trn(Mockito.any())).thenReturn(mockMatrix);
         model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         ball.setSpeed(-1);
@@ -329,6 +335,10 @@ abstract class Ball3DTest {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockMatrix.trn(Mockito.any())).thenReturn(mockMatrix);
+
         model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final float deltaTime = 1;
@@ -346,6 +356,9 @@ abstract class Ball3DTest {
         ModelInstance model = Mockito.mock(ModelInstance.class);
         model.transform = new Matrix4();
         Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockMatrix.trn(Mockito.any())).thenReturn(mockMatrix);
         model.transform = mockMatrix;
         Ball3D ball = getBall(0, model);
         final float deltaTime = 1;
@@ -427,10 +440,187 @@ abstract class Ball3DTest {
         Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
                 Mockito.any())).thenReturn(true);
         ball.setCollisionHandler(mockedHandler);
+        BoundingBox mockedBox = new BoundingBox();
+        ball.setBoundingBox(mockedBox);
+        other.setBoundingBox(mockedBox);
+        //return boundingBox.max.x - boundingBox.getCenterX();
+
         // assert that if the handler returns true, the checkCollision method returns true.
         assertTrue(ball.checkCollision(other));
         // verify that the handler is called once
         Mockito.verify(mockedHandler, Mockito.times(1))
                 .checkHitBoxCollision(Mockito.any(), Mockito.any());
+    }
+
+    /**
+     * Test if the handler is called by the ball on collision check.
+     */
+    @Test
+    public void testBallsClose() {
+        // mock matrix for ball transform
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockedMatrix.trn(Mockito.any())).thenReturn(mockedMatrix);
+        // Mock modelInstance for the ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        mockModel.transform = mockedMatrix;
+
+        // second matrix
+        Matrix4 mockedMatrix2 = Mockito.mock(Matrix4.class);
+        // move second ball to a point where distance > 0 (equal to 1) but within 2* the radius (1)
+        Vector3 position2 = new Vector3(0,0,1);
+        Mockito.when(mockedMatrix2.getTranslation(Mockito.any())).thenReturn(position2);
+        Mockito.when(mockedMatrix2.trn(Mockito.any())).thenReturn(mockedMatrix);
+        ModelInstance mockModel2 = Mockito.mock(ModelInstance.class);
+        mockModel2.transform = mockedMatrix2;
+
+        // mock handler, set handler to always return true and set handler for ball
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(true);
+
+        // set up balls.
+        Ball3D ball = getBall(0, mockModel);
+        ball.setCollisionHandler(mockedHandler);
+        BoundingBox mockedBox = new BoundingBox();
+        // we do this to make sure the radius of the balls are large enough.
+        mockedBox.set(new Vector3(1,1,1), new Vector3(3,3,3));
+        Ball3D other = getBall(0, mockModel2);
+        ball.setBoundingBox(mockedBox);
+        other.setBoundingBox(mockedBox);
+
+        // assert that if the handler returns true, the checkCollision method returns true.
+        assertTrue(ball.checkCollision(other));
+        // verify that the handler is called once
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(), Mockito.any());
+
+        // verify that the balls are moved which it should as the balls are too close to each other.
+        // we do not verify a specific amount as it is done in a while loop
+        // until they are further apart.
+        Mockito.verify(mockedMatrix2).trn(Mockito.any());
+        Mockito.verify(mockedMatrix).trn(Mockito.any());
+    }
+
+    /**
+     * Test if the handler is called by the ball on collision check.
+     */
+    @Test
+    public void testBallsNotClose() {
+        // mock matrix for ball transform
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(0,0,0);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockedMatrix.trn(Mockito.any())).thenReturn(mockedMatrix);
+        // Mock modelInstance for the ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        mockModel.transform = mockedMatrix;
+
+        // second matrix
+        Matrix4 mockedMatrix2 = Mockito.mock(Matrix4.class);
+        // move second ball to a point where distance > the radius * 2
+        Vector3 position2 = new Vector3(0,0,1);
+        Mockito.when(mockedMatrix2.getTranslation(Mockito.any())).thenReturn(position2);
+        Mockito.when(mockedMatrix2.trn(Mockito.any())).thenReturn(mockedMatrix);
+        ModelInstance mockModel2 = Mockito.mock(ModelInstance.class);
+        mockModel2.transform = mockedMatrix2;
+
+        // mock handler, set handler to always return true and set handler for ball
+        CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
+        Mockito.when(mockedHandler.checkHitBoxCollision(Mockito.any(),
+                Mockito.any())).thenReturn(true);
+
+        // set up balls.
+        Ball3D ball = getBall(0, mockModel);
+        ball.setCollisionHandler(mockedHandler);
+        BoundingBox mockedBox = new BoundingBox();
+        // we do this to make sure the radius of the balls are large enough.
+        mockedBox.set(new Vector3(1,1,1), new Vector3(3,3,3));
+        Ball3D other = getBall(0, mockModel2);
+        ball.setBoundingBox(mockedBox);
+        other.setBoundingBox(mockedBox);
+
+        // assert that if the handler returns true, the checkCollision method returns true.
+        assertTrue(ball.checkCollision(other));
+        // verify that the handler is called once
+        Mockito.verify(mockedHandler, Mockito.times(1))
+                .checkHitBoxCollision(Mockito.any(), Mockito.any());
+
+        // verify that the balls are moved which it should as the balls are too close to each other.
+        // we do not verify a specific amount as it is done in a while loop
+        // until they are further apart.
+        Mockito.verify(mockedMatrix2).trn(Mockito.any());
+        Mockito.verify(mockedMatrix).trn(Mockito.any());
+    }
+
+    /**
+     * Tests that the method returns false when the ball
+     * is outside the bounds of the table.
+     */
+    @Test
+    public void testNotWithinBounds() {
+        // mock matrix for ball transform
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(5,0,0);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockedMatrix.trn(Mockito.any())).thenReturn(mockedMatrix);
+        // Mock modelInstance for the ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        mockModel.transform = mockedMatrix;
+        Ball3D ball = getBall(0, mockModel);
+        assertFalse(ball.checkWithinBounds());
+
+        Vector3 position2 = new Vector3(0,0,5);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position2);
+        assertFalse(ball.checkWithinBounds());
+
+        Vector3 position3 = new Vector3(0,0,-5);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position3);
+        assertFalse(ball.checkWithinBounds());
+
+        Vector3 position4 = new Vector3(-5,0, 5);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position4);
+        assertFalse(ball.checkWithinBounds());
+    }
+
+    /**
+     * Tests that the method returns true when the ball
+     * is outside the bounds of the table.
+     */
+    @Test
+    public void testWithinBounds() {
+        // mock matrix for ball transform
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(3,0,1);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockedMatrix.trn(Mockito.any())).thenReturn(mockedMatrix);
+        // Mock modelInstance for the ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        mockModel.transform = mockedMatrix;
+        Ball3D ball = getBall(0, mockModel);
+        assertTrue(ball.checkWithinBounds());
+    }
+
+    /**
+     * Tests that the pot method carries out every task.
+     */
+    @Test
+    public void testPot() {
+        // mock matrix for ball transform
+        Matrix4 mockedMatrix = Mockito.mock(Matrix4.class);
+        Vector3 position = new Vector3(3,0,1);
+        Mockito.when(mockedMatrix.getTranslation(Mockito.any())).thenReturn(position);
+        Mockito.when(mockedMatrix.trn(Mockito.any())).thenReturn(mockedMatrix);
+        // Mock modelInstance for the ball
+        ModelInstance mockModel = Mockito.mock(ModelInstance.class);
+        mockModel.transform = mockedMatrix;
+        Ball3D ball = getBall(0, mockModel);
+
+        ball.pot();
+        assertEquals(ball.getSpeed(), 0);
+        assertEquals(ball.getDirection(), new Vector3());
+        // verify that the ball is translated twice.
+        Mockito.verify(mockedMatrix, Mockito.times(2)).trn(Mockito.any());
     }
 }

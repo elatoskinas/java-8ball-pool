@@ -45,16 +45,16 @@ class SceneFactoryTest {
         sceneFactory =
                 new SceneFactory(tableFactory, ballFactory, cameraFactory, cueFactory, modelBatch);
 
-        Mockito.when(tableFactory.createTable())
+        Mockito.when(tableFactory.createObject())
                 .thenReturn(Mockito.mock(Table3D.class));
 
-        Mockito.when(ballFactory.createBall(Mockito.anyInt()))
+        Mockito.when(ballFactory.createObject())
                 .thenReturn(Mockito.mock(Ball3D.class));
 
         Mockito.when(cameraFactory.createCamera())
                 .thenReturn(Mockito.mock(Camera.class));
 
-        Mockito.when(cueFactory.createCue())
+        Mockito.when(cueFactory.createObject())
                 .thenReturn(Mockito.mock(Cue3D.class));
     }
 

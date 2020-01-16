@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.scene.Ball3D;
-import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -136,20 +136,6 @@ public class GameTest extends GameBaseTest {
     }
 
     /**
-     * Test case to verify that shoot is called when the left mouse button is clicked.
-     */
-    @Test
-    void testLeftClickShot() {
-        Cue3D cue = Mockito.mock(Cue3D.class);
-        Mockito.when(scene.getCue()).thenReturn(cue);
-        Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0,0,0));
-        Mockito.when(input.isButtonPressed(Input.Buttons.LEFT)).thenReturn(true);
-        setupScenePoolBallsHelper(false);
-        game.respondToInput();
-        Mockito.verify(cue).shoot(Mockito.any(Vector3.class), Mockito.any(Ball3D.class));
-    }
-
-    /**
      * Test case to verify that a running game
      * with no moving balls advances turns.
      */
@@ -167,7 +153,7 @@ public class GameTest extends GameBaseTest {
 
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
-        Mockito.verify(gameState).onMotionStop();
+        Mockito.verify(gameState).onMotionStop(null);
     }
 
     /**
@@ -259,6 +245,21 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball potted in Game State
         Mockito.verify(gameState).onBallPotted(ball);
+    }
+
+    /**
+     * Test if the recenterCue method is called when potting the cue ball.
+     */
+    @Test
+    void testPotCueBall() {
+        CueBall3D ball = Mockito.mock(CueBall3D.class);
+
+        game.startGame();
+        game.potBall(ball);
+
+        // Verify ball is potted
+        Mockito.verify(ball).pot();
+        Mockito.verify(this.scene).recenterCueBall(ball);
     }
 
     /**
@@ -371,11 +372,12 @@ public class GameTest extends GameBaseTest {
         final int observerCount = 4;
         final List<GameObserver> observers = setUpObservers(observerCount);
 
-        game.stopMotion();
+        Ball3D touched = Mockito.mock(Ball3D.class);
+        game.stopMotion(touched);
 
         for (int i = 0; i < observers.size(); ++i) {
             GameObserver o = observers.get(i);
-            Mockito.verify(o).onMotionStop();
+            Mockito.verify(o).onMotionStop(touched);
         }
     }
 
@@ -412,6 +414,35 @@ public class GameTest extends GameBaseTest {
             GameObserver o = observers.get(i);
             Mockito.verify(o).onBallPotted(ball);
         }
+    }
+
+    /**
+     * Test case to verify that when the game is determined to
+     * be no longer in motion, the observers are notified with
+     * the scene's touched ball that the motion stopped.
+     */
+    @Test
+    public void testDetermineNotInMotionTouchedBall() {
+        final int observerCount = 4;
+        final List<GameObserver> observers = setUpObservers(observerCount);
+
+        Ball3D touched = Mockito.mock(Ball3D.class);
+        Mockito.when(scene.getFirstTouched()).thenReturn(touched);
+
+        // Set in motion & determine new in motion state
+        Mockito.when(gameState.isInMotion()).thenReturn(true);
+        boolean motion = game.determineIsInMotion();
+
+        // Verify interraction on observers
+        for (int i = 0; i < observers.size(); ++i) {
+            GameObserver o = observers.get(i);
+            Mockito.verify(o).onMotionStop(touched);
+        }
+
+        // Assert that game is no longer in motion, and that the
+        // first touched ball is cleared from the scene.
+        assertFalse(motion);
+        Mockito.verify(scene).clearFirstTouched();
     }
 
     /**

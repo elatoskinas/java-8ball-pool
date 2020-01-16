@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Object3D.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.scene</a> &gt; <span class="el_source">Object3D.java</span></div><h1>Object3D.java</h1><pre class="source lang-java linenums">package com.sem.pool.scene;
+
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
+
+/**
+ * Abstract class used to generalize all 3D Objects used in the game.
+ */
+public abstract class Object3D {
+    
+    protected transient ModelInstance model;
+
+    /**
+     * Creates a default 3D Object with no internal parameters
+     * adjusted. To be used only in private/protected contexts
+     * for further extensions.
+     */
+<span class="fc" id="L18">    protected Object3D() {</span>
+        
+<span class="fc" id="L20">    }</span>
+
+    /**
+     * Constructs a new Object3D instance.
+     * @param model The model that is to be used.
+     */
+<span class="fc" id="L26">    public Object3D(ModelInstance model) {</span>
+<span class="fc" id="L27">        this.model = model;</span>
+<span class="fc" id="L28">    }</span>
+    
+    public ModelInstance getModel() {
+<span class="fc" id="L31">        return model;</span>
+    }
+
+    /**
+     * Returns the current coordinates of the ball.
+     * @return The coordinates of the ball.
+     */
+    public Vector3 getCoordinates() {
+<span class="fc" id="L39">        return this.model.transform.getTranslation(new Vector3());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
