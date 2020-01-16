@@ -35,7 +35,6 @@ public class Game implements ObservableGame {
         this.input = input;
         this.state = state;
         this.observers = new HashSet<>();
-
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
@@ -156,6 +155,7 @@ public class Game implements ObservableGame {
         } else if (cue.getState() == Cue3D.State.Dragging) {
             startMotion();
             cue.shoot(cueBall);
+            scene.getSoundPlayer().playCueSound();
         } else {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
 
@@ -254,4 +254,5 @@ public class Game implements ObservableGame {
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
     }
+
 }
