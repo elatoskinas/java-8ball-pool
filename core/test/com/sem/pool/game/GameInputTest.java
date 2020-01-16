@@ -47,7 +47,7 @@ class GameInputTest extends GameBaseTest {
 
         gameState = new GameState(players, poolBalls);
         SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState, soundPlayer, mainGame);
     }
 
     /**

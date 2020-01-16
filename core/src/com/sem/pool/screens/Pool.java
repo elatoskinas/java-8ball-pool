@@ -83,23 +83,6 @@ public class Pool implements Screen, GameObserver {
     }
 
     /**
-     * Loads a new "clean" scene.
-     */
-    public void restartGame() {
-        disposeAll();
-        mainGame.startPool();
-    }
-
-    /**
-     * Disposes all elements to save memory.
-     */
-    private void disposeAll() {
-        assetLoader.dispose();
-        modelBatch.dispose();
-        scene.dispose();
-    }
-
-    /**
      * Initializes the scene if loading of assets has
      * been completed and the scene is not yet initialized.
      */
@@ -110,7 +93,7 @@ public class Pool implements Screen, GameObserver {
         // Create a Game initializer with the Game's internal parameters
         // required for making a Game.
         GameInitializer gameInitializer = new GameInitializer(assetLoader, modelBatch,
-                Gdx.input, resolution, CAMERA_POSITION);
+                Gdx.input, resolution, CAMERA_POSITION, mainGame);
 
         // Instantiate the game & retrieve the scene from the game
         game = gameInitializer.createGame();
@@ -193,7 +176,6 @@ public class Pool implements Screen, GameObserver {
         stage.act();
         stage.draw();
     }
-
 
     @Override
     public void dispose() {

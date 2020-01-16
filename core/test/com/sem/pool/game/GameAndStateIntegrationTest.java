@@ -19,7 +19,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         super.setUp();
         gameState = new GameState(players, poolBalls);
         SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState, soundPlayer, mainGame);
     }
 
     /**
@@ -33,7 +33,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
         SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState, soundPlayer, mainGame);
         game.startGame();
         assertFalse(game.determineIsInMotion());
         gameState.onMotion();

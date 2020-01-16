@@ -5,6 +5,8 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sem.pool.screens.MainGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
@@ -19,6 +21,7 @@ abstract class GameBaseTest {
     protected transient Game game;
     protected transient List<Player> players;
     protected transient List<Ball3D> poolBalls;
+    protected transient MainGame mainGame;
 
     @BeforeEach
     void setUp() {

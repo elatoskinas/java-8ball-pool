@@ -9,6 +9,7 @@ import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SoundPlayer;
+import com.sem.pool.screens.MainGame;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +29,7 @@ public class Game implements ObservableGame {
     private transient GameState state;
     private transient Set<GameObserver> observers;
     private transient SoundPlayer soundPlayer;
+    private transient MainGame mainGame;
 
     public SoundPlayer getSoundPlayer() {
         return soundPlayer;
@@ -39,7 +41,7 @@ public class Game implements ObservableGame {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(Scene3D scene, Input input, GameState state, SoundPlayer soundPlayer) {
+    public Game(Scene3D scene, Input input, GameState state, SoundPlayer soundPlayer, MainGame mainGame) {
         this.scene = scene;
         this.input = input;
         this.state = state;
@@ -50,15 +52,17 @@ public class Game implements ObservableGame {
         // it will react to al the required functionality for
         // starting the game, potting balls and reacting to motion.
         this.observers.add(state);
+        this.mainGame = mainGame;
     }
 
     /**
      * Creates a new Game instance with the given scene and input objects.
      * @param scene  Scene to use for the Game
      * @param input  Input handler to use for the Game
-     * @return       New Game instance
+     * @param mainGame MainGame to use for restarting.
+     * @return New Game instance
      */
-    public static Game createNewGame(Scene3D scene, Input input) {
+    public static Game createNewGame(Scene3D scene, Input input, MainGame mainGame) {
         // Create 2 players with differing IDs
         Player player1 = new Player(0);
         Player player2 = new Player(1);
@@ -73,7 +77,7 @@ public class Game implements ObservableGame {
         SoundPlayer soundPlayer = new SoundPlayer(assetLoader);
 
         // Create a Game object from the parameters
-        return new Game(scene, input, gameState, soundPlayer);
+        return new Game(scene, input, gameState, soundPlayer, mainGame);
     }
 
     public Scene3D getScene() {
@@ -156,6 +160,9 @@ public class Game implements ObservableGame {
             cue.showCue();
         }
 
+        if (input.isKeyPressed(Input.Keys.U)) {
+            restartGame();
+        }
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
 
@@ -262,5 +269,9 @@ public class Game implements ObservableGame {
     @Override
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
+    }
+
+    public void restartGame() {
+        mainGame.startPool();
     }
 }

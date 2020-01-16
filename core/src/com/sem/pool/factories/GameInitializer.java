@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.game.Game;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.screens.MainGame;
 
 /**
  * Class that abstracts the functionality of initializing the
@@ -18,6 +19,7 @@ public class GameInitializer {
     private transient Vector2 resolution;
     private transient Vector3 cameraPosition;
     private transient CameraCreator cameraCreator;
+    private transient MainGame mainGame;
 
     /**
      * Creates a new Game Initializer object with the specified
@@ -28,13 +30,14 @@ public class GameInitializer {
      * @param cameraPosition  Position of the camera as a 3D vector
      */
     public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch,
-                           Input input, Vector2 resolution, Vector3 cameraPosition) {
+                           Input input, Vector2 resolution, Vector3 cameraPosition, MainGame mainGame) {
         this.assetLoader = assetLoader;
         this.modelBatch = modelBatch;
         this.input = input;
         this.resolution = resolution;
         this.cameraPosition = cameraPosition;
         this.cameraCreator = new CameraCreator();
+        this.mainGame = mainGame;
     }
 
     public void setCameraCreator(CameraCreator creator) {
@@ -97,6 +100,6 @@ public class GameInitializer {
         Scene3D scene = createSceneFactory().createScene();
 
         // Create & return new game
-        return Game.createNewGame(scene, input);
+        return Game.createNewGame(scene, input, mainGame);
     }
 }

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.sem.pool.screens.MainGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,8 @@ public class GameTest extends GameBaseTest {
         super.setUp();
         gameState = Mockito.mock(GameState.class);
         SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        MainGame mainGame = Mockito.mock(MainGame.class);
+        game = new Game(scene, input, gameState, soundPlayer, mainGame);
 
     }
 
@@ -39,7 +41,7 @@ public class GameTest extends GameBaseTest {
     void testConstructor() {
         gameState = Mockito.mock(GameState.class);
         SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        Game game2 = new Game(scene, input, gameState, soundPlayer);
+        Game game2 = new Game(scene, input, gameState, soundPlayer, mainGame);
 
         assertEquals(scene, game2.getScene());
         assertEquals(input, game2.getInput());
@@ -150,7 +152,7 @@ public class GameTest extends GameBaseTest {
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
         SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState, soundPlayer, mainGame);
         setupScenePoolBallsHelper(false, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -172,7 +174,7 @@ public class GameTest extends GameBaseTest {
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
         SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
-        game = new Game(scene, input, gameState, soundPlayer);
+        game = new Game(scene, input, gameState, soundPlayer, mainGame);
         setupScenePoolBallsHelper(true, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
