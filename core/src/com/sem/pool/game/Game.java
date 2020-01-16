@@ -160,10 +160,10 @@ public class Game implements ObservableGame {
             } else {
                 // Cancel shot -> go back to rotating
                 cue.setToRotating();
-                Vector3 mousePosition = scene.getUnprojectedMousePosition();
-                cue.toPosition(mousePosition, cueBall);
             }
-        } else {
+        }
+
+        if (cue.getState() == Cue3D.State.Rotating) {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
             cue.toPosition(mousePosition, cueBall);
         }
