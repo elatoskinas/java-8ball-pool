@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.mockito.Mockito;
 
 
@@ -26,6 +27,7 @@ public class GameTest extends GameBaseTest {
         super.setUp();
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
+
     }
 
     /**
@@ -415,7 +417,7 @@ public class GameTest extends GameBaseTest {
             Mockito.verify(o).onBallPotted(ball);
         }
     }
-
+    
     /**
      * Test case to verify that when the game is determined to
      * be no longer in motion, the observers are notified with

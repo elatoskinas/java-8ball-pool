@@ -246,6 +246,7 @@ public abstract class Ball3D extends Object3D {
             if (distance(other.getCoordinates()) <= getRadius() * 1.95f) {
                 stopClipping(other);
             }
+
             return true;
         }
         return false;

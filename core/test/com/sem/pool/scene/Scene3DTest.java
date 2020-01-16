@@ -9,14 +9,16 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
+import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mockito;
+
+
 
 /**
  * Test class containing unit tests for the Scene3D class.
@@ -31,6 +33,7 @@ class Scene3DTest {
     transient List<Ball3D> poolBalls;
     transient Table3D table;
     transient Cue3D cue;
+    transient SoundPlayer soundPlayer;
 
     /**
      * Handles setting up the test fixture by
@@ -46,8 +49,9 @@ class Scene3DTest {
         table = Mockito.mock(Table3D.class);
         poolBalls = new ArrayList<>();
         cue = Mockito.mock(Cue3D.class);
+        soundPlayer = Mockito.mock(SoundPlayer.class);
 
-        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch);
+        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch, soundPlayer);
     }
 
     /**
@@ -91,7 +95,7 @@ class Scene3DTest {
             poolBalls2.add(Mockito.mock(Ball3D.class));
         }
 
-        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch);
+        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch, soundPlayer);
 
         // Poolballs + Table + Cue
         int expectedSize = poolBalls2.size() + 2;
@@ -164,7 +168,7 @@ class Scene3DTest {
     public void testTriggerCollisionsBallPotted() {
         Ball3D ball = Mockito.mock(Ball3D.class);
         scene.getPoolBalls().add(ball);
-
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
         // Set ball to be potted
         Mockito.when(table.checkIfPot(ball)).thenReturn(true);
 
@@ -209,7 +213,7 @@ class Scene3DTest {
     public void testTriggerCollisionsNoBallPotted() {
         Ball3D ball = Mockito.mock(Ball3D.class);
         scene.getPoolBalls().add(ball);
-
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
         // Set ball to be potted
         Mockito.when(table.checkIfPot(ball)).thenReturn(false);
 
