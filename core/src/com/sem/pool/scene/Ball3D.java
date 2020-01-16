@@ -62,7 +62,7 @@ public abstract class Ball3D extends Object3D {
      * This should be called when a ball is loaded into the scene.
      */
     public void setUpBoxes() {
-        btSphereShape ballShape = new btSphereShape(this.getRadius() * 0.90f);
+        btSphereShape ballShape = new btSphereShape(this.getRadius() * 0.9f);
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
@@ -244,7 +244,7 @@ public abstract class Ball3D extends Object3D {
             other.setSpeed((float) Math.sqrt(v2x * v2x + v2z * v2z));
             other.setDirection(new Vector3((float) v2x, 0, (float) v2z));
             // avoid clipping
-            if (distance(other.getCoordinates()) <= getRadius() * 1.95f) {
+            if (distance(other.getCoordinates()) <= getRadius() * 2.05f) {
                 stopClipping(other);
             }
             return true;
