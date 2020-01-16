@@ -114,12 +114,10 @@ allprojects {
             rule {
                 element = 'PACKAGE'
 
-                // Ignore root com.sem.pool, as it contains GUI & 3d rendering
                 // Ignore com.sem.pool.screens, as it contains GUI & 3d rendering
                 // functionality that requires full on system testing.
                 // Also exclude the database main class, as this is not really testable
-                excludes = ['com.sem.pool', 'com.sem.pool.database', 'com.sem.pool.screens']
-
+                excludes = ['com.sem.pool.screens', 'com.sem.pool.database']
                 limit {
                     counter = 'BRANCH'
                     value = 'COVEREDRATIO'
