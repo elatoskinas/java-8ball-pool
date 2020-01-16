@@ -9,9 +9,13 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.factories.AssetLoader;
 
@@ -171,6 +175,7 @@ public class Pool implements Screen, GameObserver {
      */
     public void showUI() {
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        Gdx.input.setInputProcessor(stage);
 
         TextureAtlas atlas = new TextureAtlas("uiskin.atlas");
         Skin skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), atlas);
@@ -183,8 +188,17 @@ public class Pool implements Screen, GameObserver {
         cueForceLabel.setSize(200,50);
         cueForceLabel.setPosition(Gdx.graphics.getWidth() - 200,Gdx.graphics.getHeight() - 100);
 
+        Button restartButton = new TextButton("Restart", skin);
+        restartButton.addListener(new ClickListener() {
+            public void clicked(InputEvent e, float x, float y) {
+                game.restartGame();
+            }
+        });
+        restartButton.setPosition(Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 50);
+
         stage.addActor(playerTurnLabel);
         stage.addActor(cueForceLabel);
+        stage.addActor(restartButton);
         stage.act();
         stage.draw();
     }
