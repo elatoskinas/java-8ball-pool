@@ -29,7 +29,10 @@ public class Game implements GameStateObserver {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(Scene3D scene, Input input, GameState state, UserController userController, ResultController resultController) {
+    public Game(
+            Scene3D scene, Input input, GameState state,
+            UserController userController, ResultController resultController
+    ) {
         this.scene = scene;
         this.input = input;
         this.state = state;
