@@ -1,16 +1,18 @@
 package com.sem.pool.database.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.sem.pool.database.Database;
 import com.sem.pool.database.models.Result;
 import com.sem.pool.database.models.User;
 import com.sem.pool.database.tables.ResultTable;
+import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.sql.SQLException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserControllerTest {

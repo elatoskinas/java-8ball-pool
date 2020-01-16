@@ -42,9 +42,11 @@ public class ResultTableTest {
 
     /**
      * Test the saving of a result gives the correct result.
+     * PMD error ignored as this is a mock object.
      * @throws SQLException Throws an error if not successfully.
      */
     @Test
+    @SuppressWarnings("PMD.CloseResource")
     public void testSaveFailed() throws SQLException {
         Connection conn = Mockito.mock(Connection.class);
         PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
@@ -77,7 +79,7 @@ public class ResultTableTest {
      */
     @Test
     public void testGetUserID() throws SQLException {
-        User user = new User(69, "user", "pass");
+        User user = new User(69, "userName", "passWord");
         Result result = new Result(42, user, user);
         assertTrue(this.resultTable.save(result));
         assertTrue(this.resultTable.save(result));

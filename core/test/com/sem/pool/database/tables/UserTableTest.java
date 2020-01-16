@@ -1,7 +1,13 @@
 package com.sem.pool.database.tables;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.sem.pool.database.Database;
-import com.sem.pool.database.models.Result;
 import com.sem.pool.database.models.User;
 
 import java.sql.Connection;
@@ -10,8 +16,6 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTableTest {
     private transient UserTable userTable;
@@ -79,7 +83,13 @@ public class UserTableTest {
         assertFalse(this.userTable.update(user));
     }
 
+    /**
+     * Test the flow of the saving is correct when a sqlerror occurs.
+     * PMD error is ignored, as this is a mock object.
+     * @throws SQLException When a exception occurs.
+     */
     @Test
+    @SuppressWarnings("PMD.CloseResource")
     public void testInvalidStatement() throws SQLException {
         Connection conn = Mockito.mock(Connection.class);
         PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
@@ -88,7 +98,7 @@ public class UserTableTest {
         Mockito.when(conn.prepareStatement(Mockito.anyString())).thenReturn(stmt);
         Mockito.when(stmt.executeUpdate()).thenThrow(SQLException.class);
 
-        User user = new User(69, "user", "pass");
+        User user = new User(69, "user", "passwd");
 
         assertThrows(SQLException.class, () -> {
             table.save(user);
