@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Class that handlesn everything related to the pool game.
+ * Class that handles everything related to the pool game.
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */

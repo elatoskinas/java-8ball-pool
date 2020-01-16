@@ -136,7 +136,6 @@ public class Scene3D {
             // Check collisions between the board and
             // every ball in the scene
             if (table.checkCollision(ball)) {
-                System.out.println("b");
                 soundPlayer.playTableCollisionSound();
             }
 
@@ -144,7 +143,6 @@ public class Scene3D {
             boolean potResult = table.checkIfPot(ball);
             if (potResult) {
                 soundPlayer.playPotSound();
-                System.out.println("a");
                 potted.add(ball);
             }
 
