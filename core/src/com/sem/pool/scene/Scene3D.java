@@ -192,6 +192,51 @@ public class Scene3D {
     }
 
     /**
+     * Resets the cue ball to the default position, after being potted.
+     * PMD errors are ignored, as this is a bug within PMD.
+     * It gives an error of an undefined variable in the foreach,
+     * but it's defined in the block.
+     * @param ball The cue ball.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public void recenterCueBall(CueBall3D ball) {
+        float magnitude = 0f;
+
+        // This will not result in an endless loop,
+        // unless there is no possible location for the ball.
+        // As this is not possible an endless loop also is not possible.
+        while (true) {
+            ball.getModel().transform.set(ball.getModel().transform.idt());
+
+            float x = -1.75f  + ((float) Math.random() - 0.5f) * magnitude;
+            float y = 0.28f;
+            float z = ((float) Math.random() - 0.5f) * magnitude;
+            ball.getModel().transform.setTranslation(new Vector3(x, y, z));
+            ball.getHitBox().updateLocation(ball.getModel().transform);
+
+            boolean doesCollide = false;
+
+            for (Ball3D other : this.getPoolBalls()) {
+                if (ball.equals(other)) {
+                    continue;
+                }
+
+                CollisionHandler handler = ball.getCollisionHandler();
+                if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
+                    doesCollide = true;
+                    break;
+                }
+            }
+
+            if (!doesCollide) {
+                break;
+            }
+
+            magnitude += 0.1;
+        }
+    }
+
+    /**
      * Updates the first ball touched variable in the Scene
      * based on the balls that collided. Is only effective
      * when one of the balls is a Cue Ball and when the balls
