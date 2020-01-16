@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.game.Game;
-import com.sem.pool.game.GameConstants;
 
 /**
  * GameUI that adds and updates all UI elements.
