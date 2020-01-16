@@ -147,7 +147,6 @@ public class SceneFactory {
         // (distance from the center of one ball to the other), but
         // we use a slightly smaller value (1.8) to make the balls
         // closer together to each other.
-        // TODO: Set 1.8 as a final float in the class
         float radius = poolBalls.get(0).getRadius();
         float spacing = radius * 2.1f;
 

@@ -117,6 +117,7 @@ public abstract class Ball3D extends Object3D {
         }
         Vector3 translation = new Vector3(getDirection()).scl(speed);
         translate(translation);
+        // if we're outside of the bounds of the table, move back.
         if (!checkWithinBounds()) {
             translate(translation.scl(-1));
         }
