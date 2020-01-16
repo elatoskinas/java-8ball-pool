@@ -71,11 +71,9 @@ public class UserTable extends Table {
 
         try {
             return stmt.executeUpdate() > 0;
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+        } catch (SQLException e) {
+            return false;
         }
-
-        return false;
     }
 
     /**
