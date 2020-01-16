@@ -18,7 +18,6 @@ import com.sem.pool.factories.AssetLoader;
 
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
-import com.sem.pool.game.GameConstants;
 import com.sem.pool.game.GameObserver;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;

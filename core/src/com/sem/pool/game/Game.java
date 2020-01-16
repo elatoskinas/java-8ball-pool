@@ -136,7 +136,6 @@ public class Game implements ObservableGame {
      * Process the input mouse input for the cue.
      */
     protected void processCueInput() {
-        CueBall3D cueBall = scene.getCueBall();
         Cue3D cue = scene.getCue();
 
         if (cue.getState() == Cue3D.State.Hidden) {
@@ -150,12 +149,17 @@ public class Game implements ObservableGame {
             if (cue.getState() == Cue3D.State.Rotating) {
                 cue.setToDragging(mousePosition);
             }
+
+            CueBall3D cueBall = scene.getCueBall();
             cue.toDragPosition(mousePosition, cueBall);
 
         } else if (cue.getState() == Cue3D.State.Dragging) {
             if (cue.getCurrentForce() > 0) {
                 startMotion();
+
+                CueBall3D cueBall = scene.getCueBall();
                 cue.shoot(cueBall);
+
                 scene.getSoundPlayer().playCueSound();
             } else {
                 // Cancel shot -> go back to rotating
@@ -165,6 +169,7 @@ public class Game implements ObservableGame {
 
         if (cue.getState() == Cue3D.State.Rotating) {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
+            CueBall3D cueBall = scene.getCueBall();
             cue.toPosition(mousePosition, cueBall);
         }
     }
