@@ -149,6 +149,7 @@ public class Pool implements Screen, GameObserver {
         if (loaded) {
             gameUI.updateForceLabel(scene);
             gameUI.updatePlayerTurnLabel(game);
+            gameUI.updateBallTypeLabels(game);
         }
         gameUI.render();
     }
