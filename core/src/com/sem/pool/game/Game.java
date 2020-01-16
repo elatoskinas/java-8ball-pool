@@ -18,7 +18,6 @@ import java.util.Set;
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-
 public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
@@ -36,7 +35,6 @@ public class Game implements ObservableGame {
         this.input = input;
         this.state = state;
         this.observers = new HashSet<>();
-
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
@@ -153,10 +151,12 @@ public class Game implements ObservableGame {
                 cue.setToDragging(mousePosition);
             }
             cue.toDragPosition(mousePosition, cueBall);
+
         } else if (cue.getState() == Cue3D.State.Dragging) {
             if (cue.getCurrentForce() > 0) {
                 startMotion();
                 cue.shoot(cueBall);
+                scene.getSoundPlayer().playCueSound();
             } else {
                 // Cancel shot -> go back to rotating
                 cue.setToRotating();
@@ -216,12 +216,15 @@ public class Game implements ObservableGame {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
 
+        if (ball instanceof CueBall3D) {
+            this.scene.recenterCueBall((CueBall3D) ball);
+        }
+
         // Notify all observers of the potted ball
         for (GameObserver o : observers) {
             o.onBallPotted(ball);
         }
     }
-
 
     @Override
     public void addObserver(GameObserver observer) {
@@ -257,4 +260,5 @@ public class Game implements ObservableGame {
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
     }
+
 }

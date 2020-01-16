@@ -27,6 +27,7 @@ public class Scene3D {
     private final transient List<Ball3D> poolBalls;
     private final transient Table3D table;
     private final transient Cue3D cue;
+    private transient SoundPlayer soundPlayer;
 
     // Represents the first ball touched on the last
     // check of trigger collisions.
@@ -44,14 +45,14 @@ public class Scene3D {
      * @param batch       Model Batch to use for rendering
      */
     public Scene3D(Environment environment, Camera camera, List<Ball3D> poolBalls,
-                   Table3D table, Cue3D cue, ModelBatch batch) {
+                   Table3D table, Cue3D cue, ModelBatch batch, SoundPlayer soundPlayer) {
         this.environment = environment;
         this.camera = camera;
         this.poolBalls = poolBalls;
         this.table = table;
         this.cue = cue;
         this.modelBatch = batch;
-
+        this.soundPlayer = soundPlayer;
         // For all the pool balls and the table, add the models
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
@@ -134,18 +135,23 @@ public class Scene3D {
 
             // Check collisions between the board and
             // every ball in the scene
-            table.checkCollision(ball);
+            if (table.checkCollision(ball)) {
+                soundPlayer.playTableCollisionSound();
+            }
 
             // Check if ball is potted
             boolean potResult = table.checkIfPot(ball);
-
             if (potResult) {
+                soundPlayer.playPotSound();
                 potted.add(ball);
             }
 
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
                 boolean collided = ball.checkCollision(other);
+                if (collided) {
+                    soundPlayer.playBallCollisionSound();
+                }
                 updateFirstTouched(ball, other, collided);
             }
         }
@@ -192,6 +198,51 @@ public class Scene3D {
     }
 
     /**
+     * Resets the cue ball to the default position, after being potted.
+     * PMD errors are ignored, as this is a bug within PMD.
+     * It gives an error of an undefined variable in the foreach,
+     * but it's defined in the block.
+     * @param ball The cue ball.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public void recenterCueBall(CueBall3D ball) {
+        float magnitude = 0f;
+
+        // This will not result in an endless loop,
+        // unless there is no possible location for the ball.
+        // As this is not possible an endless loop also is not possible.
+        while (true) {
+            ball.getModel().transform.set(ball.getModel().transform.idt());
+
+            float x = -1.75f  + ((float) Math.random() - 0.5f) * magnitude;
+            float y = 0.28f;
+            float z = ((float) Math.random() - 0.5f) * magnitude;
+            ball.getModel().transform.setTranslation(new Vector3(x, y, z));
+            ball.getHitBox().updateLocation(ball.getModel().transform);
+
+            boolean doesCollide = false;
+
+            for (Ball3D other : this.getPoolBalls()) {
+                if (ball.equals(other)) {
+                    continue;
+                }
+
+                CollisionHandler handler = ball.getCollisionHandler();
+                if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
+                    doesCollide = true;
+                    break;
+                }
+            }
+
+            if (!doesCollide) {
+                break;
+            }
+
+            magnitude += 0.1;
+        }
+    }
+
+    /**
      * Updates the first ball touched variable in the Scene
      * based on the balls that collided. Is only effective
      * when one of the balls is a Cue Ball and when the balls
@@ -227,5 +278,13 @@ public class Scene3D {
         } else {
             return new NullBall();
         }
+    }
+
+    public SoundPlayer getSoundPlayer() {
+        return this.soundPlayer;
+    }
+
+    public void setSoundPlayer(SoundPlayer soundPlayer) {
+        this.soundPlayer = soundPlayer;
     }
 }

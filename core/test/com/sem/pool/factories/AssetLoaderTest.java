@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
@@ -159,5 +160,50 @@ class AssetLoaderTest {
 
         // Make sure that the texture coordinates are flipped
         assertTrue(objLoaderParameters.flipV);
+    }
+
+    /**
+     * Test case to ensure that the getBallSound method returns the proper
+     * Music object.
+     */
+    @Test
+    public void testGetBallSound() {
+        Music mockedBallSound = Mockito.mock(Music.class);
+        Mockito.when(manager.get(loader.BALL_SOUND_PATH, Music.class)).thenReturn(mockedBallSound);
+        assertEquals(mockedBallSound, loader.getBallSound());
+    }
+
+    /**
+     * Test case to ensure that the getCueSound method returns the proper
+     * Music object.
+     */
+    @Test
+    public void testGetCueSound() {
+        Music mockedCueSound = Mockito.mock(Music.class);
+        Mockito.when(manager.get(loader.CUE_SOUND_PATH, Music.class)).thenReturn(mockedCueSound);
+        assertEquals(mockedCueSound, loader.getCueSound());
+    }
+
+    /**
+     * Test case to ensure that the getBallSound method returns the proper
+     * Music object.
+     */
+    @Test
+    public void testGetTableSound() {
+        Music mockedTableSound = Mockito.mock(Music.class);
+        Mockito.when(manager.get(loader.TABLE_SOUND_PATH, Music.class))
+                .thenReturn(mockedTableSound);
+        assertEquals(mockedTableSound, loader.getTableSound());
+    }
+
+    /**
+     * Test case to ensure that the getBallSound method returns the proper
+     * Music object.
+     */
+    @Test
+    public void testGetPotSound() {
+        Music mockedPotSound = Mockito.mock(Music.class);
+        Mockito.when(manager.get(loader.POT_SOUND_PATH, Music.class)).thenReturn(mockedPotSound);
+        assertEquals(mockedPotSound, loader.getPotSound());
     }
 }
