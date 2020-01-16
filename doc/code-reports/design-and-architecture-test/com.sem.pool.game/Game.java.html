@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Game.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.game</a> &gt; <span class="el_source">Game.java</span></div><h1>Game.java</h1><pre class="source lang-java linenums">package com.sem.pool.game;
+
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.Scene3D;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Class that handles everything related to the pool game.
+ * TODO: This is currently only a template, no functionality has been implemented as of yet.
+ * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
+ */
+
+public class Game implements ObservableGame {
+    private transient Scene3D scene;
+    private transient Input input;
+    private transient GameState state;
+    private transient Set&lt;GameObserver&gt; observers;
+
+    /**
+     * Constructs a new Game object with the given scene, input, and state.
+     * @param scene The scene of the game.
+     * @param input The input the game should listen to.
+     * @param state The state of the game.
+     */
+<span class="fc" id="L34">    public Game(Scene3D scene, Input input, GameState state) {</span>
+<span class="fc" id="L35">        this.scene = scene;</span>
+<span class="fc" id="L36">        this.input = input;</span>
+<span class="fc" id="L37">        this.state = state;</span>
+<span class="fc" id="L38">        this.observers = new HashSet&lt;&gt;();</span>
+
+        // Add State as an observer to the game
+        // NOTE: Since the Game State is an observer,
+        // it will react to al the required functionality for
+        // starting the game, potting balls and reacting to motion.
+<span class="fc" id="L44">        this.observers.add(state);</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * Creates a new Game instance with the given scene and input objects.
+     * @param scene  Scene to use for the Game
+     * @param input  Input handler to use for the Game
+     * @return       New Game instance
+     */
+    public static Game createNewGame(Scene3D scene, Input input) {
+        // Create 2 players with differing IDs
+<span class="fc" id="L55">        Player player1 = new Player(0);</span>
+<span class="fc" id="L56">        Player player2 = new Player(1);</span>
+<span class="fc" id="L57">        List&lt;Player&gt; players = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L58">        players.add(player1);</span>
+<span class="fc" id="L59">        players.add(player2);</span>
+
+        // Create game state with the scene's pool balls &amp; the two players
+<span class="fc" id="L62">        GameState gameState = new GameState(players, scene.getPoolBalls());</span>
+
+        // Create a Game object from the parameters
+<span class="fc" id="L65">        return new Game(scene, input, gameState);</span>
+    }
+
+    public Scene3D getScene() {
+<span class="fc" id="L69">        return scene;</span>
+    }
+
+    public Input getInput() {
+<span class="fc" id="L73">        return input;</span>
+    }
+
+    public GameState getState() {
+<span class="fc" id="L77">        return state;</span>
+    }
+
+    /**
+     * Publicly accessible method call that handles all of the
+     * logic for the current game loop iteration, such as
+     * moving the balls, responding to input, and ending
+     * the current turn.
+     * @param deltaTime deltaTime, time between current and last frame.
+     */
+    public void advanceGameLoop(float deltaTime) {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (state.isStarted()) {</span>
+            // Check if Game has a winning Player
+<span class="fc bfc" id="L90" title="All 2 branches covered.">            if (state.getWinningPlayer().isPresent()) {</span>
+<span class="fc" id="L91">                endGame();</span>
+            } else {
+                // Check if any ball is in motion
+<span class="fc" id="L94">                determineIsInMotion();</span>
+
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                if (state.isInMotion()) {</span>
+<span class="fc" id="L97">                    moveBalls(deltaTime);</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                } else if (state.isIdle()) {</span>
+<span class="fc" id="L99">                    respondToInput();</span>
+                }
+            }
+        } // Do nothing if game is not started
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * Moves the balls according to our physics implementation. This method will be called
+     * every frame in the render() method.
+     */
+    // Seems like there is a false positive with regards to UR anomalies that
+    // is caused by the loop.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    protected void moveBalls(float deltaTime) {
+        // Move all the balls in the scene, regardless of whether
+        // they are in motion or not. Here, we assume that the ball
+        // is simply not moved if it is not in motion (via internal logic of ball)
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (Ball3D ball : scene.getPoolBalls()) {</span>
+<span class="fc" id="L117">            ball.move(deltaTime);</span>
+<span class="fc" id="L118">        }</span>
+
+        // Check collisions for current game loop iteration
+<span class="fc" id="L121">        List&lt;Ball3D&gt; potted = scene.triggerCollisions();</span>
+
+        // Pot the ball for every ball that was determined to be potted
+        // by the scene
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for (Ball3D ball : potted) {</span>
+<span class="fc" id="L126">            potBall(ball);</span>
+<span class="fc" id="L127">        }</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Method to handle any input by the player(s), should ignore input if invalid.
+     */
+    protected void respondToInput() {
+<span class="fc" id="L134">        processCueInput();</span>
+<span class="fc" id="L135">    }</span>
+
+    /**
+     * Process the input mouse input for the cue.
+     */
+    protected void processCueInput() {
+<span class="fc" id="L141">        CueBall3D cueBall = scene.getCueBall();</span>
+<span class="fc" id="L142">        Cue3D cue = scene.getCue();</span>
+
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (cue.getState() == Cue3D.State.Hidden) {</span>
+<span class="fc" id="L145">            cue.showCue();</span>
+        }
+
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (input.isButtonPressed(Input.Buttons.LEFT)) {</span>
+<span class="fc" id="L149">            Vector3 mousePosition = scene.getUnprojectedMousePosition();</span>
+
+            // Enter dragging
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">            if (cue.getState() == Cue3D.State.Rotating) {</span>
+<span class="fc" id="L153">                cue.setToDragging(mousePosition);</span>
+            }
+<span class="fc" id="L155">            cue.toDragPosition(mousePosition, cueBall);</span>
+
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        } else if (cue.getState() == Cue3D.State.Dragging) {</span>
+<span class="fc" id="L158">            startMotion();</span>
+<span class="fc" id="L159">            cue.shoot(cueBall);</span>
+        } else {
+<span class="fc" id="L161">            Vector3 mousePosition = scene.getUnprojectedMousePosition();</span>
+
+<span class="fc" id="L163">            cue.toPosition(mousePosition, cueBall);</span>
+        }
+<span class="fc" id="L165">    }</span>
+
+    /**
+     * Determines if there is at least one ball that is currently
+     * in motion. To be used as a helper for the game loop in
+     * ending a movement loop iteration.
+     * @return  True if at least one ball is in motion, and false otherwise.
+     */
+    // Seems like there is a false positive with regards to UR anomalies that
+    // is caused by the loop.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    protected boolean determineIsInMotion() {
+        // Check all the balls currently in the scene
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        for (Ball3D ball : scene.getPoolBalls()) {</span>
+            // Found one that is in motion;
+            // Game should also be in motion.
+<span class="fc bfc" id="L181" title="All 2 branches covered.">            if (ball.isInMotion()) {</span>
+<span class="fc" id="L182">                return true;</span>
+            }
+<span class="fc" id="L184">        }</span>
+
+        // No ball in motion; Game should not be in motion either.
+        // If no balls are in motion, that means
+        // we are at the phase where we can respond to input.
+        // Otherwise, we need to move the balls.
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (state.isInMotion()) {</span>
+            // Get the ball that was touched first
+<span class="fc" id="L192">            Ball3D touched = scene.getFirstTouched();</span>
+<span class="fc" id="L193">            scene.clearFirstTouched();</span>
+
+<span class="fc" id="L195">            stopMotion(touched);</span>
+        }
+
+<span class="fc" id="L198">        return false;</span>
+    }
+
+    /**
+     * Pots the specified ball in the Pool Game.
+     * This makes the specified ball disappear from the table,
+     * and updates the Game State to score the potting for the
+     * active Player.
+     * @param ball  Ball to be potted
+     */
+    // False positive in the foreach loop with regards to variable 'o'.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    public void potBall(Ball3D ball) {
+        // Pot the ball (handles potting the ball visually)
+<span class="fc" id="L212">        ball.pot();</span>
+
+        // Notify all observers of the potted ball
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        for (GameObserver o : observers) {</span>
+<span class="fc" id="L216">            o.onBallPotted(ball);</span>
+<span class="fc" id="L217">        }</span>
+<span class="fc" id="L218">    }</span>
+
+
+    @Override
+    public void addObserver(GameObserver observer) {
+<span class="fc" id="L223">        observers.add(observer);</span>
+<span class="fc" id="L224">    }</span>
+
+    @Override
+    public void removeObserver(GameObserver observer) {
+<span class="fc" id="L228">        observers.remove(observer);</span>
+<span class="fc" id="L229">    }</span>
+
+    @Override
+    public Collection&lt;GameObserver&gt; getObservers() {
+<span class="fc" id="L233">        return observers;</span>
+    }
+
+    @Override
+    public void startGame() {
+<span class="fc" id="L238">        observers.forEach(GameObserver::onGameStarted);</span>
+<span class="fc" id="L239">    }</span>
+
+    @Override
+    public void startMotion() {
+<span class="fc" id="L243">        observers.forEach(GameObserver::onMotion);</span>
+<span class="fc" id="L244">    }</span>
+
+    @Override
+    public void stopMotion(Ball3D touched) {
+<span class="fc" id="L248">        observers.forEach(x -&gt; x.onMotionStop(touched));</span>
+<span class="fc" id="L249">    }</span>
+
+    @Override
+    public void endGame() {
+<span class="fc" id="L253">        observers.forEach(GameObserver::onGameEnded);</span>
+<span class="fc" id="L254">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
