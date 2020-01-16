@@ -130,7 +130,7 @@ public class SceneFactory {
         // Create sound player for the scene.
         AssetManager assetManager = new AssetManager();
         AssetLoader assetLoader = new AssetLoader(assetManager);
-        SoundPlayer soundPlayer= new SoundPlayer(assetLoader);
+        SoundPlayer soundPlayer = new SoundPlayer(assetLoader);
 
         return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch, soundPlayer);
     }

@@ -2,7 +2,6 @@ package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.scene.Ball3D;

@@ -1,13 +1,11 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
