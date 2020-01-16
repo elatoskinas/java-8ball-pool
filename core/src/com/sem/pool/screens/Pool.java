@@ -83,6 +83,23 @@ public class Pool implements Screen, GameObserver {
     }
 
     /**
+     * Loads a new "clean" scene.
+     */
+    public void restartGame() {
+        disposeAll();
+        mainGame.startPool();
+    }
+
+    /**
+     * Disposes all elements to save memory.
+     */
+    private void disposeAll() {
+        assetLoader.dispose();
+        modelBatch.dispose();
+        scene.dispose();
+    }
+
+    /**
      * Initializes the scene if loading of assets has
      * been completed and the scene is not yet initialized.
      */
