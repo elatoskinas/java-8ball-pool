@@ -1,5 +1,6 @@
 package com.sem.pool.factories;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -10,6 +11,7 @@ import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SoundPlayer;
 import com.sem.pool.scene.Table3D;
 
 import java.util.ArrayList;
@@ -124,7 +126,13 @@ public class SceneFactory {
         // Create camera
         Camera camera = cameraFactory.createCamera();
         // Create scene with the constructed objects
-        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);
+
+        // Create sound player for the scene.
+        AssetManager assetManager = new AssetManager();
+        AssetLoader assetLoader = new AssetLoader(assetManager);
+        SoundPlayer soundPlayer= new SoundPlayer(assetLoader);
+
+        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch, soundPlayer);
     }
 
     /**

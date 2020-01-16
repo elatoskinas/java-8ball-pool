@@ -174,6 +174,7 @@ public abstract class Ball3D extends Object3D {
             // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
                     .sub(new Vector3(getCoordinates()));
+            // Create vector from other to ball.
             Vector3 directionToMe = new Vector3(getCoordinates())
                     .sub(new Vector3(other.getCoordinates()));
 

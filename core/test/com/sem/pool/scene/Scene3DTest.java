@@ -32,6 +32,7 @@ class Scene3DTest {
     transient List<Ball3D> poolBalls;
     transient Table3D table;
     transient Cue3D cue;
+    transient SoundPlayer soundPlayer;
 
     /**
      * Handles setting up the test fixture by
@@ -47,8 +48,9 @@ class Scene3DTest {
         table = Mockito.mock(Table3D.class);
         poolBalls = new ArrayList<>();
         cue = Mockito.mock(Cue3D.class);
+        soundPlayer = Mockito.mock(SoundPlayer.class);
 
-        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch);
+        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch, soundPlayer);
     }
 
     /**
@@ -92,7 +94,7 @@ class Scene3DTest {
             poolBalls2.add(Mockito.mock(Ball3D.class));
         }
 
-        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch);
+        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch, soundPlayer);
 
         // Poolballs + Table + Cue
         int expectedSize = poolBalls2.size() + 2;

@@ -47,15 +47,14 @@ public class Scene3D {
      * @param batch       Model Batch to use for rendering
      */
     public Scene3D(Environment environment, Camera camera, List<Ball3D> poolBalls,
-                   Table3D table, Cue3D cue, ModelBatch batch) {
+                   Table3D table, Cue3D cue, ModelBatch batch, SoundPlayer soundPlayer) {
         this.environment = environment;
         this.camera = camera;
         this.poolBalls = poolBalls;
         this.table = table;
         this.cue = cue;
         this.modelBatch = batch;
-        AssetManager assetManager = new AssetManager();
-        this.soundPlayer = new SoundPlayer(new AssetLoader(assetManager));
+        this.soundPlayer = soundPlayer;
         // For all the pool balls and the table, add the models
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
