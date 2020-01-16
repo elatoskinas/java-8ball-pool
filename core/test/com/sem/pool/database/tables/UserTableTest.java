@@ -1,15 +1,17 @@
 package com.sem.pool.database.tables;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.sem.pool.database.Database;
+import com.sem.pool.database.models.Result;
 import com.sem.pool.database.models.User;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTableTest {
     private transient UserTable userTable;
@@ -30,6 +32,14 @@ public class UserTableTest {
     public void testNoneUpdate() throws SQLException {
         User user = new User("blabla", "password");
         assertFalse(this.userTable.update(user));
+    }
+
+    @Test
+    public void testGetUserID() throws SQLException {
+        User user = new User("blabla", "password");
+        User savedUser = this.userTable.getUser(user.getUsername());
+
+        assertEquals(savedUser, this.userTable.getUser(user.getUserID()));
     }
 
     @Test
@@ -67,5 +77,21 @@ public class UserTableTest {
         user.setUsername("ghi");
         user.setUserID(42);
         assertFalse(this.userTable.update(user));
+    }
+
+    @Test
+    public void testInvalidStatement() throws SQLException {
+        Connection conn = Mockito.mock(Connection.class);
+        PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
+        UserTable table = new UserTable(conn);
+
+        Mockito.when(conn.prepareStatement(Mockito.anyString())).thenReturn(stmt);
+        Mockito.when(stmt.executeUpdate()).thenThrow(SQLException.class);
+
+        User user = new User(69, "user", "pass");
+
+        assertThrows(SQLException.class, () -> {
+            table.save(user);
+        });
     }
 }

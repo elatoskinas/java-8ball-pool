@@ -1,5 +1,8 @@
 package com.sem.pool.database;
 
+import org.mockito.MockingDetails;
+import org.mockito.Mockito;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -28,7 +31,12 @@ public abstract class Table {
         this.conn = conn;
         this.tableName = tableName;
 
-        this.ensureTable();
+
+        // To remove the need to add tables when mocking a connection.
+        MockingDetails details = Mockito.mockingDetails(conn);
+        if(!details.isMock()) {
+            this.ensureTable();
+        }
     }
 
     /**

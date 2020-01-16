@@ -1,13 +1,18 @@
 package com.sem.pool.database.tables;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
 import com.sem.pool.database.models.Result;
 import com.sem.pool.database.models.User;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class ResultTableTest {
     private transient ResultTable resultTable;
@@ -36,11 +41,42 @@ public class ResultTableTest {
     }
 
     /**
+     * Test the saving of a result gives the correct result.
+     * @throws SQLException Throws an error if not successfully.
+     */
+    @Test
+    public void testSaveFailed() throws SQLException {
+        Connection conn = Mockito.mock(Connection.class);
+        PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
+        ResultTable table = new ResultTable(conn);
+
+        Mockito.when(conn.prepareStatement(Mockito.anyString())).thenReturn(stmt);
+        Mockito.when(stmt.executeUpdate()).thenReturn(0);
+
+        User user = new User(69, "user", "pass");
+        Result result = new Result(42, user, user);
+
+        assertFalse(table.save(result));
+    }
+
+    /**
      * Test if you can insert the same result twice.
      * @throws SQLException Throws an error if not successfully.
      */
     @Test
     public void testDoubleInsert() throws SQLException {
+        User user = new User(69, "user", "pass");
+        Result result = new Result(42, user, user);
+        assertTrue(this.resultTable.save(result));
+        assertTrue(this.resultTable.save(result));
+    }
+
+    /**
+     * Test if you can insert the same result twice.
+     * @throws SQLException Throws an error if not successfully.
+     */
+    @Test
+    public void testGetUserID() throws SQLException {
         User user = new User(69, "user", "pass");
         Result result = new Result(42, user, user);
         assertTrue(this.resultTable.save(result));
