@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
@@ -161,9 +159,6 @@ class GameStateTest {
         // Pot the ball
         gameState.onBallPotted(ball);
         gameState.advanceTurn();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-        }
 
         // Assert ball is no longer contained in remaining ball set
         assertFalse(gameState.getRemainingBalls().contains(ball));

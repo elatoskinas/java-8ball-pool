@@ -4,26 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.factories.AssetLoader;
 
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
-import com.sem.pool.game.GameConstants;
 import com.sem.pool.game.GameObserver;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.GameUI;
 import com.sem.pool.scene.Scene3D;
 
 /**
@@ -40,10 +31,7 @@ public class Pool implements Screen, GameObserver {
     private static final Vector3 CAMERA_POSITION = new Vector3(0f, 100f, 0f);
     private transient Game game;
 
-    private transient Stage stage;
-    private transient Label playerTurnLabel;
-    private transient Label cueForceLabel;
-
+    private transient GameUI gameUI;
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -152,55 +140,29 @@ public class Pool implements Screen, GameObserver {
         // Update the scene & game for the current iteration
         update(delta);
 
-        loadUI();
+        updateUI();
     }
 
     /**
-     * Load the UI elements like the playerturn.
+     * Updates the UI elements and renders them.
      */
-    public void loadUI() {
+    public void updateUI() {
         if (loaded) {
-            playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn());
-
-            float relativeForce = scene.getCue().getCurrentForce() / GameConstants.MAX_CUE_FORCE;
-            int floatPercentage = (int) (100 * relativeForce);
-            cueForceLabel.setText("Force: " + floatPercentage + "%");
+            gameUI.updateForceLabel(scene);
+            gameUI.updatePlayerTurnLabel(game);
         }
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+        gameUI.render();
     }
 
     /**
-     * Shows the UI.
+     * Create gameUI and shows all elements.
      */
     public void showUI() {
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        Gdx.input.setInputProcessor(stage);
+        gameUI = new GameUI();
 
-        TextureAtlas atlas = new TextureAtlas("uiskin.atlas");
-        Skin skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), atlas);
+        gameUI.createUI(game);
 
-        playerTurnLabel = new Label("", skin);
-        playerTurnLabel.setSize(200,50);
-        playerTurnLabel.setPosition(80,Gdx.graphics.getHeight() - 100);
-
-        cueForceLabel = new Label("", skin);
-        cueForceLabel.setSize(200,50);
-        cueForceLabel.setPosition(Gdx.graphics.getWidth() - 200,Gdx.graphics.getHeight() - 100);
-
-        Button restartButton = new TextButton("Restart", skin);
-        restartButton.addListener(new ClickListener() {
-            public void clicked(InputEvent e, float x, float y) {
-                game.restartGame();
-            }
-        });
-        restartButton.setPosition(Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 50);
-
-        stage.addActor(playerTurnLabel);
-        stage.addActor(cueForceLabel);
-        stage.addActor(restartButton);
-        stage.act();
-        stage.draw();
+        gameUI.render();
     }
 
     @Override

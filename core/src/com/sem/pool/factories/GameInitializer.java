@@ -29,8 +29,8 @@ public class GameInitializer {
      * @param resolution      Resolution of the game as a 2D vector
      * @param cameraPosition  Position of the camera as a 3D vector
      */
-    public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch,
-                           Input input, Vector2 resolution, Vector3 cameraPosition, MainGame mainGame) {
+    public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch, Input input,
+                           Vector2 resolution, Vector3 cameraPosition, MainGame mainGame) {
         this.assetLoader = assetLoader;
         this.modelBatch = modelBatch;
         this.input = input;

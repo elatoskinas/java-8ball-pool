@@ -3,10 +3,9 @@ package com.sem.pool.game;
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.screens.MainGame;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.sem.pool.screens.MainGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 

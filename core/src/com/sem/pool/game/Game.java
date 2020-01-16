@@ -41,7 +41,8 @@ public class Game implements ObservableGame {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(Scene3D scene, Input input, GameState state, SoundPlayer soundPlayer, MainGame mainGame) {
+    public Game(Scene3D scene, Input input, GameState state,
+                SoundPlayer soundPlayer, MainGame mainGame) {
         this.scene = scene;
         this.input = input;
         this.state = state;
