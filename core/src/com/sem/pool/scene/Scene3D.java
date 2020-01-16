@@ -149,6 +149,9 @@ public class Scene3D {
             for (int j = i + 1; j < poolBalls.size(); j++) {
                 Ball3D other = poolBalls.get(j);
                 boolean collided = ball.checkCollision(other);
+                if (collided) {
+                    soundPlayer.playBallCollisionSound();
+                }
                 updateFirstTouched(ball, other, collided);
             }
         }
@@ -275,5 +278,13 @@ public class Scene3D {
         } else {
             return new NullBall();
         }
+    }
+
+    public SoundPlayer getSoundPlayer() {
+        return this.soundPlayer;
+    }
+
+    public void setSoundPlayer(SoundPlayer soundPlayer) {
+        this.soundPlayer = soundPlayer;
     }
 }

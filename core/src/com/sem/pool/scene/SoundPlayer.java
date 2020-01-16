@@ -30,6 +30,12 @@ public class SoundPlayer {
             cueSound = assetLoader.getCueSound();
             tableSound = assetLoader.getTableSound();
             ballSound = assetLoader.getBallSound();
+        } else {
+            assetLoader.getAssetManager().finishLoading();
+            potSound = assetLoader.getPotSound();
+            cueSound = assetLoader.getCueSound();
+            tableSound = assetLoader.getTableSound();
+            ballSound = assetLoader.getBallSound();
         }
     }
 

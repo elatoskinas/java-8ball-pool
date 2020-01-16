@@ -1,16 +1,12 @@
 package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
-import com.sem.pool.scene.SoundPlayer;
 import com.sem.pool.screens.MainGame;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,12 +23,7 @@ public class Game implements ObservableGame {
     private transient Input input;
     private transient GameState state;
     private transient Set<GameObserver> observers;
-    private transient SoundPlayer soundPlayer;
     private transient MainGame mainGame;
-
-    public SoundPlayer getSoundPlayer() {
-        return soundPlayer;
-    }
 
     /**
      * Constructs a new Game object with the given scene, input, and state.
@@ -41,12 +32,12 @@ public class Game implements ObservableGame {
      * @param state The state of the game.
      */
     public Game(Scene3D scene, Input input, GameState state,
-                SoundPlayer soundPlayer, MainGame mainGame) {
+                 MainGame mainGame) {
+
         this.scene = scene;
         this.input = input;
         this.state = state;
         this.observers = new HashSet<>();
-        this.soundPlayer = soundPlayer;
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
@@ -72,12 +63,9 @@ public class Game implements ObservableGame {
 
         // Create game state with the scene's pool balls & the two players
         GameState gameState = new GameState(players, scene.getPoolBalls());
-        AssetManager assetManager = new AssetManager();
-        AssetLoader assetLoader = new AssetLoader(assetManager);
-        SoundPlayer soundPlayer = new SoundPlayer(assetLoader);
 
         // Create a Game object from the parameters
-        return new Game(scene, input, gameState, soundPlayer, mainGame);
+        return new Game(scene, input, gameState, mainGame);
     }
 
     public Scene3D getScene() {
@@ -175,6 +163,7 @@ public class Game implements ObservableGame {
             if (cue.getCurrentForce() > 0) {
                 startMotion();
                 cue.shoot(cueBall);
+                scene.getSoundPlayer().playCueSound();
             } else {
                 // Cancel shot -> go back to rotating
                 cue.setToRotating();
@@ -282,4 +271,5 @@ public class Game implements ObservableGame {
     public void restartGame() {
         mainGame.startPool();
     }
+
 }
