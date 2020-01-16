@@ -98,19 +98,39 @@ class GameInputTest extends GameBaseTest {
     }
 
     /**
-     * Test case to verify that the cue processes the input when it goes from Dragging to Hidden.
+     * Test case to verify that the cue processes the input when it goes from
+     * Dragging to Hidden and that the cue shoots the cueball.
      */
     @Test
-    public void testProcessInputWhenDragging() {
+    public void testProcessInputWhenDraggingShot() {
 
         Mockito.doNothing().when(cue).toDragPosition(any(Vector3.class), any(CueBall3D.class));
 
         cue.setState(Cue3D.State.Dragging);
+        cue.setCurrentForce(1f);
         game.processCueInput();
         assertEquals(Cue3D.State.Hidden, cue.getState());
 
         Mockito.verify(cue, Mockito.times(1)).shoot(any(Ball3D.class));
         Mockito.verify(cue, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
+    }
+
+    /**
+     * Test case to verify that the cue cancel the shot and goes
+     * back to rotating when the force of the shot was 0.
+     */
+    @Test
+    public void testProcessInputWhenDraggingCancelShot() {
+
+        Mockito.doNothing().when(cue).toPosition(any(Vector3.class), any(CueBall3D.class));
+
+        cue.setState(Cue3D.State.Dragging);
+        cue.setCurrentForce(0f);
+        game.processCueInput();
+        assertEquals(Cue3D.State.Rotating, cue.getState());
+
+        Mockito.verify(cue, Mockito.never()).shoot(any(Ball3D.class));
+        Mockito.verify(cue, Mockito.times(1)).toPosition(any(Vector3.class), any(Ball3D.class));
     }
 
     /**

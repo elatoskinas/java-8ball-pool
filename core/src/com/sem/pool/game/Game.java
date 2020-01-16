@@ -171,13 +171,18 @@ public class Game implements ObservableGame {
                 cue.setToDragging(mousePosition);
             }
             cue.toDragPosition(mousePosition, cueBall);
-
         } else if (cue.getState() == Cue3D.State.Dragging) {
-            startMotion();
-            cue.shoot(cueBall);
+            if (cue.getCurrentForce() > 0) {
+                startMotion();
+                cue.shoot(cueBall);
+            } else {
+                // Cancel shot -> go back to rotating
+                cue.setToRotating();
+                Vector3 mousePosition = scene.getUnprojectedMousePosition();
+                cue.toPosition(mousePosition, cueBall);
+            }
         } else {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
-
             cue.toPosition(mousePosition, cueBall);
         }
     }
