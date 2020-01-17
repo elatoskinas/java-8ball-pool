@@ -1,5 +1,10 @@
 package com.sem.pool.scene;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.acos;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -20,6 +25,9 @@ public abstract class Ball3D extends Object3D {
     private transient Vector3 direction;
     private transient float speed;
     private transient CollisionHandler collisionHandler;
+    // The ratio of the model to the hitbox's radius
+    static final float hitBoxRatio = 0.95f;
+
 
     public CollisionHandler getCollisionHandler() {
         return collisionHandler;
@@ -57,7 +65,7 @@ public abstract class Ball3D extends Object3D {
      * This should be called when a ball is loaded into the scene.
      */
     public void setUpBoxes() {
-        btSphereShape ballShape = new btSphereShape(this.getRadius());
+        btSphereShape ballShape = new btSphereShape(this.getRadius() * hitBoxRatio);
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
@@ -111,6 +119,10 @@ public abstract class Ball3D extends Object3D {
         }
         Vector3 translation = new Vector3(getDirection()).scl(speed);
         translate(translation);
+        // if we're outside of the bounds of the table, move back.
+        if (!checkWithinBounds()) {
+            translate(new Vector3(translation).scl(-1));
+        }
 
     }
 
@@ -119,11 +131,10 @@ public abstract class Ball3D extends Object3D {
      * @param translation direction of movement.
      */
     public void translate(Vector3 translation) {
-        // move the visual model of the ball
-        this.model.transform.trn(translation);
+        // move the visual model of the ball, we update the value as well.
+        this.model.transform = this.model.transform.trn(translation);
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
-        // TODO: refactor code to fix this issue with tests
         if (hitBox != null) {
             this.hitBox.updateLocation(this.model.transform);
         }
@@ -161,6 +172,10 @@ public abstract class Ball3D extends Object3D {
         return Objects.hash(id, model);
     }
 
+    public void setBoundingBox(BoundingBox boundingBox) {
+        this.boundingBox = boundingBox;
+    }
+
     /**
      * Method that checks if this and another ball collide.
      * If they do, both ball change directions and speed.
@@ -169,35 +184,116 @@ public abstract class Ball3D extends Object3D {
      * @param other Other ball.
      * @return whether the ball collided with the other ball.
      */
+    // PMD gives a few DD warnings because the values of variables such as phi
+    // are sometimes changed several times (because of conditions) before being used.
+    // If it is not all changed in one line PMD gives a DD warning.
+    // However since sometimes the conditions don't apply we cannot do it in one line.
+    // Thus we suppress the warning.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public boolean checkCollision(Ball3D other) {
+        // balls placed below the table (when potted) should not collide.
+        if (this.getCoordinates().y < 0 || other.getCoordinates().y < 0) {
+            return false;
+        }
         if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
             // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
                     .sub(new Vector3(getCoordinates()));
-            // Create vector from other to ball.
-            Vector3 directionToMe = new Vector3(getCoordinates())
-                    .sub(new Vector3(other.getCoordinates()));
 
-            // set directions of balls to opposite of their direction to the other.
-            setDirection(directionToOther.scl(-1));
-            other.setDirection(directionToMe.scl(-1));
+            // Calculate phi, the angle of the direction of collision.
+            double phi = acos(directionToOther.nor().x);
+            
+            // Calculate theta1 and theta2, the angle of the respective ball's direction.
+            double theta1 = acos(this.getDirection().x);
+            
+            double theta2 = acos(other.getDirection().x);
+            theta2 = checkAngle(other.getDirection().x, theta2);
+            phi = checkAngle(directionToOther.z, phi);
+            theta1 = checkAngle(this.getDirection().z, theta1);
 
-            // halve our speed on collision (implementation will be improved later)
-            setSpeed(getSpeed() / 2);
+            // Declaration of the speed of both balls before the collision for calculation purposes
+            double v1 = this.getSpeed();
+            double v2 = other.getSpeed();
 
-            // if we hit a ball that is not moving or has no direction, give it speed/direction.
-            if (other.getSpeed() <= 0) {
-                other.setSpeed(getSpeed());
-            } else { // else, give it more speed if the similar direction, slow down if not.
-                other.setSpeed(other.getSpeed() - getDirection()
-                        .dot(other.getDirection()) / 100);
-            }
-            if (other.getDirection().equals(new Vector3())) {
-                other.setDirection(new Vector3(getDirection()));
-            }
+            // Calculate and set the speed and direction of ball 1
+            // We do this using two methods now,
+            // but keep the old code here in case something went wrong.
+            double v1x = calculateVx(v1, v2, theta1, theta2, phi);
+            //v2 * cos(theta2 - phi) * cos(phi) + v1 * sin(theta1 - phi)
+            //* cos(phi + (PI / 2));
+            double v1z = calculateVz(v1, v2, theta1, theta2, phi);
+            // v2* cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
+            //* sin(phi + (PI / 2));
+
+            this.setSpeed(calculateSpeed(v1x, v1z));
+            Vector3 newDirection = new Vector3(getDirection()).sub(new Vector3(directionToOther));
+            setDirection(newDirection);
+
+            // Calculate and set the speed and direction of ball 2
+            double v2x = calculateVx(v2, v1, theta2, theta1, phi);
+            //v1 * cos(theta1 - phi) * cos(phi) + v2 * sin(theta2 - phi)
+            //* cos(phi + (PI / 2));
+            double v2z = calculateVz(v2, v1, theta2, theta1, phi);
+            //v1 * cos(theta1 - phi) * sin(phi) + v2 * sin(theta2 - phi)
+            //* sin(phi + (PI / 2));
+
+            other.setSpeed(calculateSpeed(v2x, v2z));
+            other.setDirection(directionToOther);
             return true;
         }
         return false;
+    }
+
+    /**
+     * If the movement in the direction is negative, the angle will be multiplied by -1.
+     * @param direction direction on the axis we're moving in.
+     * @param angle angle.
+     * @return the updated angle.
+     */
+    double checkAngle(float direction, double angle) {
+        if (direction < 0) {
+            angle *= -1;
+        }
+        return angle;
+    }
+
+    /**
+     * Calculates the speed in the x direction.
+     * @param v1 Our speed.
+     * @param v2 Speed of other object.
+     * @param theta1 Angle of our direction.
+     * @param theta2 Angle of direction of other object.
+     * @param phi Angle of collision between objects.
+     * @return Speed in the x direction after collision.
+     */
+    private double calculateVx(double v1, double v2, double theta1, double theta2, double phi) {
+        return v2 * cos(theta2 - phi) * cos(phi) + v1 * sin(theta1 - phi)
+                * cos(phi + (PI / 2));
+    }
+
+    /**
+     * Calculates the speed in the z direction.
+     * @param v1 Our speed.
+     * @param v2 Speed of other object.
+     * @param theta1 Angle of our direction.
+     * @param theta2 Angle of direction of other object.
+     * @param phi Angle of collision between objects.
+     * @return Speed in the z direction after collision.
+     */
+    private double calculateVz(double v1, double v2, double theta1, double theta2, double phi) {
+        return v2 * cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
+                * sin(phi + (PI / 2));
+    }
+
+
+    /**
+     * Calculates the new speed given the speed in the x and z direction.
+     * @param speedX speed in the x direction.
+     * @param speedZ speed in the z direction.
+     * @return the new speed of the ball.
+     */
+    protected float calculateSpeed(double speedX, double speedZ) {
+        return (float) Math.sqrt(speedX * speedX + speedZ * speedZ);
     }
 
     /**
@@ -212,5 +308,19 @@ public abstract class Ball3D extends Object3D {
         translate(new Vector3(0, -100, 0));
         setSpeed(0);
         setDirection(new Vector3());
+    }
+
+    /**
+     * Returns whether the ball is within the bounds of the table.
+     * @return whether the ball is within the bounds of the table.
+     */
+    public boolean checkWithinBounds() {
+        return Math.abs(getCoordinates().x) < Table3D.xBound
+                && Math.abs(getCoordinates().z) < Table3D.zBound;
+    }
+
+
+    public void setHitBox(HitBox hitBox) {
+        this.hitBox = hitBox;
     }
 }

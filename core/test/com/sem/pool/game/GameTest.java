@@ -7,7 +7,9 @@ import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.mockito.Mockito;
 
 
@@ -24,6 +27,7 @@ public class GameTest extends GameBaseTest {
         super.setUp();
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
+
     }
 
     /**
@@ -246,6 +250,21 @@ public class GameTest extends GameBaseTest {
     }
 
     /**
+     * Test if the recenterCue method is called when potting the cue ball.
+     */
+    @Test
+    void testPotCueBall() {
+        CueBall3D ball = Mockito.mock(CueBall3D.class);
+
+        game.startGame();
+        game.potBall(ball);
+
+        // Verify ball is potted
+        Mockito.verify(ball).pot();
+        Mockito.verify(this.scene).recenterCueBall(ball);
+    }
+
+    /**
      * Test case to verify that the game state is an observer of the Game
      * class after constructing the Game class.
      */
@@ -398,7 +417,7 @@ public class GameTest extends GameBaseTest {
             Mockito.verify(o).onBallPotted(ball);
         }
     }
-
+    
     /**
      * Test case to verify that when the game is determined to
      * be no longer in motion, the observers are notified with

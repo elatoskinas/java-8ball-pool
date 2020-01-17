@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
+
+import com.sem.pool.scene.SoundPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -68,13 +70,15 @@ class GameInputTest extends GameBaseTest {
      */
     @Test
     public void testRotateCueIsCalledInDrag() {
-
-        CueBall3D ball = makeCueBall();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        cue.getModel().transform = mockMatrix;
         Cue3D cueSpy = Mockito.spy(cue);
-
+        cue.getModel().transform = mockMatrix;
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(new Vector3());
+        cueSpy.getModel().transform = mockMatrix;
+        CueBall3D ball = makeCueBall();
         Mockito.doNothing().when(cueSpy).rotateCue(ball);
-        Mockito.when(cueSpy.getCoordinates()).thenReturn(new Vector3(0, 0, 0));
-
+        Mockito.when(cueSpy.getCoordinates()).thenReturn(new Vector3());
         cueSpy.toDragPosition(new Vector3(1, 0, 0), ball);
 
         Mockito.verify(cueSpy, Mockito.times(1)).rotateCue(ball);
@@ -96,19 +100,45 @@ class GameInputTest extends GameBaseTest {
     }
 
     /**
-     * Test case to verify that the cue processes the input when it goes from Dragging to Hidden.
+     * Test case to verify that the cue processes the input when it goes from
+     * Dragging to Hidden and that the cue shoots the cueball.
      */
     @Test
-    public void testProcessInputWhenDragging() {
+    public void testProcessInputWhenDraggingShot() {
+
+        // to avoid nullptr
+        SoundPlayer soundPlayer = Mockito.mock(SoundPlayer.class);
+        Mockito.doNothing().when(soundPlayer).playCueSound();
+        Mockito.when(scene.getSoundPlayer()).thenReturn(soundPlayer);
 
         Mockito.doNothing().when(cue).toDragPosition(any(Vector3.class), any(CueBall3D.class));
 
         cue.setState(Cue3D.State.Dragging);
+        cue.setCurrentForce(1f);
+
         game.processCueInput();
         assertEquals(Cue3D.State.Hidden, cue.getState());
 
         Mockito.verify(cue, Mockito.times(1)).shoot(any(Ball3D.class));
         Mockito.verify(cue, Mockito.never()).toPosition(any(Vector3.class), any(Ball3D.class));
+    }
+
+    /**
+     * Test case to verify that the cue cancel the shot and goes
+     * back to rotating when the force of the shot was 0.
+     */
+    @Test
+    public void testProcessInputWhenDraggingCancelShot() {
+
+        Mockito.doNothing().when(cue).toPosition(any(Vector3.class), any(CueBall3D.class));
+
+        cue.setState(Cue3D.State.Dragging);
+        cue.setCurrentForce(0f);
+        game.processCueInput();
+        assertEquals(Cue3D.State.Rotating, cue.getState());
+
+        Mockito.verify(cue, Mockito.never()).shoot(any(Ball3D.class));
+        Mockito.verify(cue, Mockito.times(1)).toPosition(any(Vector3.class), any(Ball3D.class));
     }
 
     /**
@@ -122,6 +152,9 @@ class GameInputTest extends GameBaseTest {
         Mockito.doNothing().when(cue).toDragPosition(any(Vector3.class), any(CueBall3D.class));
 
         cue.setState(Cue3D.State.Rotating);
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(new Vector3());
+        cue.getModel().transform = mockMatrix;
         game.processCueInput();
         assertEquals(Cue3D.State.Dragging, cue.getState());
 
@@ -135,9 +168,12 @@ class GameInputTest extends GameBaseTest {
      */
     @Test
     public void testRotateCue() {
-        CueBall3D cueball = makeCueBall();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(new Vector3());
+        cue.getModel().transform = mockMatrix;
+        CueBall3D cueBall = makeCueBall();
         Mockito.when(cue.getCoordinates()).thenReturn(new Vector3(0, 0,0));
-        cue.rotateCue(cueball);
+        cue.rotateCue(cueBall);
         Mockito.verify(cue.getModel().transform).rotateRad(any(Vector3.class), any(float.class));
     }
 

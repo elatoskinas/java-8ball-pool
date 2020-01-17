@@ -18,7 +18,6 @@ import java.util.Set;
  * TODO: This is currently only a template, no functionality has been implemented as of yet.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
-
 public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
@@ -36,7 +35,6 @@ public class Game implements ObservableGame {
         this.input = input;
         this.state = state;
         this.observers = new HashSet<>();
-
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
         // it will react to al the required functionality for
@@ -138,7 +136,6 @@ public class Game implements ObservableGame {
      * Process the input mouse input for the cue.
      */
     protected void processCueInput() {
-        CueBall3D cueBall = scene.getCueBall();
         Cue3D cue = scene.getCue();
 
         if (cue.getState() == Cue3D.State.Hidden) {
@@ -152,14 +149,27 @@ public class Game implements ObservableGame {
             if (cue.getState() == Cue3D.State.Rotating) {
                 cue.setToDragging(mousePosition);
             }
+
+            CueBall3D cueBall = scene.getCueBall();
             cue.toDragPosition(mousePosition, cueBall);
 
         } else if (cue.getState() == Cue3D.State.Dragging) {
-            startMotion();
-            cue.shoot(cueBall);
-        } else {
-            Vector3 mousePosition = scene.getUnprojectedMousePosition();
+            if (cue.getCurrentForce() > 0) {
+                startMotion();
 
+                CueBall3D cueBall = scene.getCueBall();
+                cue.shoot(cueBall);
+
+                scene.getSoundPlayer().playCueSound();
+            } else {
+                // Cancel shot -> go back to rotating
+                cue.setToRotating();
+            }
+        }
+
+        if (cue.getState() == Cue3D.State.Rotating) {
+            Vector3 mousePosition = scene.getUnprojectedMousePosition();
+            CueBall3D cueBall = scene.getCueBall();
             cue.toPosition(mousePosition, cueBall);
         }
     }
@@ -211,12 +221,15 @@ public class Game implements ObservableGame {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
 
+        if (ball instanceof CueBall3D) {
+            this.scene.recenterCueBall((CueBall3D) ball);
+        }
+
         // Notify all observers of the potted ball
         for (GameObserver o : observers) {
             o.onBallPotted(ball);
         }
     }
-
 
     @Override
     public void addObserver(GameObserver observer) {
@@ -252,4 +265,5 @@ public class Game implements ObservableGame {
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
     }
+
 }
