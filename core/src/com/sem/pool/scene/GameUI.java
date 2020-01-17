@@ -90,7 +90,7 @@ public class GameUI {
      * @param game the game to get the player turn.
      */
     public void updatePlayerTurnLabel(Game game) {
-        playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn());
+        playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn() + 1);
     }
 
     /**
