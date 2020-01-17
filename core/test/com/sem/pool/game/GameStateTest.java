@@ -791,7 +791,8 @@ class GameStateTest {
     }
 
     /**
-     * Test case to verify that a player keeps their turn if they pot a correct ball.
+     * Test case to verify that a player keeps their turn if they pot a correct ball
+     * while ball types are not yet assigned.
      */
     @Test
     void testKeepTurnAfterBallPotUnassigned() {
@@ -810,6 +811,10 @@ class GameStateTest {
         assertEquals(current, gameState.getActivePlayer());
     }
 
+    /**
+     * Test case to verify that a player keeps its turn when it pots a ball
+     * while ball types are already assigned.
+     */
     @Test
     void testKeepTurnAfterBallPotAssigned() {
         balls = constructBallsList(true, true, 2, 2);
@@ -830,7 +835,10 @@ class GameStateTest {
         // This should result in the player keeping its turn again
         assertEquals(current, gameState.getActivePlayer());
     }
-    
+
+    /**
+     * Test case to verify that a player keeps its turn when it pots a ball during the breakshot
+     */
     @Test
     void testKeepTurnAfterBallPotBreakShot() {
         balls = constructBallsList(true, true, 2, 2);
@@ -909,6 +917,25 @@ class GameStateTest {
 
         gameState.onMotionStop(balls.get(5));
 
+        assertNotEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses its turn when it pots the cue ball 
+     * as well as a regular ball during the break shot
+     */
+    @Test
+    void loseTurnWhenCueBallPottedBreakShot() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Pot a regular ball and cue ball during breakshot while keeping track of the player
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+        gameState.onBallPotted(balls.get(0));
+        gameState.onMotionStop(balls.get(2));
+        
         assertNotEquals(current, gameState.getActivePlayer());
     }
 }

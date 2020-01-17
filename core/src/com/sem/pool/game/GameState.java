@@ -344,16 +344,15 @@ public class GameState implements GameObserver {
         } else {
             correctFirstTouch = false;
         }
-        
+
+        // Check for four criteria:
+        // - Did the player touch the right type of ball first
+        // - Did the player not pot the cue ball
+        // - Did the player pot a ball of the wrong type
+        // - Did the player pot a ball of the correct type
         // Special case: if any ball is potted during the break shot, keep the turn
-        if (!(turnCount == 0 && !allPottedBalls.isEmpty())) {
-            // Check for four criteria:
-            // - Did the player touch the right type of ball first
-            // - Did the player not pot the cue ball
-            // - Did the player pot a ball of the wrong type
-            // - Did the player pot a ball of the correct type
+        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) && !cuePotted) {
             if (!correctFirstTouch
-                    || cuePotted
                     || !getActivePlayer().getPottedCorrectBall()) {
                 // Not all criteria were satisfied -> player loses the turn
                 loseTurn();
