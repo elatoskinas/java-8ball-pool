@@ -119,7 +119,7 @@ public abstract class Ball3D extends Object3D {
         translate(translation);
         // if we're outside of the bounds of the table, move back.
         if (!checkWithinBounds()) {
-            translate(translation.scl(-1));
+            translate(new Vector3(translation).scl(-1));
         }
 
     }
@@ -133,7 +133,6 @@ public abstract class Ball3D extends Object3D {
         this.model.transform = this.model.transform.trn(translation);
         // hit box needs to be moved too to make sure hit box
         // and visual model are at the same position
-        // TODO: refactor code to fix this issue with tests
         if (hitBox != null) {
             this.hitBox.updateLocation(this.model.transform);
         }
@@ -311,5 +310,9 @@ public abstract class Ball3D extends Object3D {
             }
             distance = distance(other.getCoordinates());
         }
+    }
+
+    public void setHitBox(HitBox hitBox) {
+        this.hitBox = hitBox;
     }
 }
