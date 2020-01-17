@@ -7,6 +7,12 @@
 | Ball Interactions             | Potting Balls Systtem     | Evaldas               | 1 hour 30 minutes          | 2 hours            | Yes                            | Feature completed & verified successfully    |
 | Game Win & Loss               | Black Ball Potting Victory & Loss     | Evaldas               | 1 hour 30 minutes          | 2 hours 30 minutes            | Yes     | Feature completed & verified successfully    |
 | Game Win & Loss               | Black Ball & Cue Ball Potting Loss     | Evaldas               | 2 hours          | 30 minutes            | Yes                      | Feature completed & verified successfully    |
+| Game Animations               | Cue Animation (Rotation, Drag, Hiding)     | Pepijn             | 4 hours          | 5 hours     | Yes | Feature completed & verified successfully   |
+| Player Cue Interaction              | Cancel Cue Shot     | Pepijn             | 1 hours          | 1 hours     | Yes | Feature completed & verified successfully   |
+| Player Cue Interaction              | Ability to control cue force    | Pepijn             | 2 hours          | 3 hours     | Yes | Feature completed & verified successfully   |
+| Visual Display             | Cue force visual display    | Pepijn             | 1 hours          | 1 hours     | Yes | Feature completed but not reviewed  |
+| Visual Display             | Player turn visual display    | Pepijn             | 1 hours          | 1 hours     | Yes | Feature completed but not reviewed  |
+| Visual Display & Turn System            | Potting turn advancement  | Pepijn & Thomas             | 4 hours          | 4 hours     | Yes | Feature completed & verified successfully |
 | N/A (Assignment 3)               | Design Patterns Write-Up, Implementation & Refactoring     | Evaldas & Thomas               | 4 hours          | 6 hours     | Yes | Work completed, reviewed & verified successfully    |
 | N/A (Assignment 3)               | System Architecture Write-Up     | Evaldas & Thomas               | 5 hours          | 5 hours     | Yes | Work completed, reviewed & verified successfully    |
 | N/A (Final Product)               | Larger Scale Integration Tests    | Evaldas & Thomas               | 5 hours          | 40 minutes     | No | Some efforts to integration testing have been made, but the task was not started properly due to other priorities & workload    |
