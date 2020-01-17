@@ -10,6 +10,13 @@
 | N/A (Assignment 3)               | Design Patterns Write-Up, Implementation & Refactoring     | Evaldas & Thomas               | 4 hours          | 6 hours     | Yes | Work completed, reviewed & verified successfully    |
 | N/A (Assignment 3)               | System Architecture Write-Up     | Evaldas & Thomas               | 5 hours          | 5 hours     | Yes | Work completed, reviewed & verified successfully    |
 | N/A (Final Product)               | Larger Scale Integration Tests    | Evaldas & Thomas               | 5 hours          | 40 minutes     | No | Some efforts to integration testing have been made, but the task was not started properly due to other priorities & workload    |
+| N/A (Final Product)               | Sound effects for collisions    | Luuk             | 2 hours          | 5 hours    | Yes | Testing and refactoring caused the amount of time required to exceed estimated amount   |
+| Ball Interactions               | Ball type assignment extension    | Luuk           | 3 hours     |  3 hours  | Yes | Feature completed & verified successfully   |
+| Ball Interactions               | Elastic collisions  | Luuk & Thomas          | 4 hours     |  10 hours  | Yes | Feature completed but not yet verified completely|
+| N/A (Final Product)               | Game Restart  | Luuk           | 2 hours     |  1.5 hours  | No | Feature completed but not verified completely|
+v
+
+
 
 
 ## Main Problems Encountered
