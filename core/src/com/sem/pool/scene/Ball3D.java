@@ -25,6 +25,9 @@ public abstract class Ball3D extends Object3D {
     private transient Vector3 direction;
     private transient float speed;
     private transient CollisionHandler collisionHandler;
+    // The ratio of the model to the hitbox's radius
+    static final float hitBoxRatio = 0.95f;
+
 
     public CollisionHandler getCollisionHandler() {
         return collisionHandler;
@@ -62,7 +65,7 @@ public abstract class Ball3D extends Object3D {
      * This should be called when a ball is loaded into the scene.
      */
     public void setUpBoxes() {
-        btSphereShape ballShape = new btSphereShape(this.getRadius() * 0.9f);
+        btSphereShape ballShape = new btSphereShape(this.getRadius() * hitBoxRatio);
         btCollisionObject ballObject = new btCollisionObject();
         ballObject.setCollisionShape(ballShape);
         ballObject.setWorldTransform(this.model.transform);
@@ -113,7 +116,6 @@ public abstract class Ball3D extends Object3D {
         setSpeed(getSpeed() - (deltaTime * GameConstants.DRAG_COEFFICIENT));
         if (getSpeed() <= GameConstants.MIN_SPEED) {
             setSpeed(0);
-            setDirection(new Vector3());
         }
         Vector3 translation = new Vector3(getDirection()).scl(speed);
         translate(translation);
@@ -193,16 +195,11 @@ public abstract class Ball3D extends Object3D {
             // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
                     .sub(new Vector3(getCoordinates()));
-            
-            if (other.getDirection().equals(new Vector3(0, 0, 0))) {
-                other.setDirection(directionToOther);
-            }
-            
-            // Calculate phi
-            
+
+            // Calculate phi, the angle of the direction of collision.
             double phi = acos(directionToOther.nor().x);
             
-            // Calculate theta1 and theta2
+            // Calculate theta1 and theta2, the angle of the respective ball's direction.
             double theta1 = acos(this.getDirection().x);
             
             double theta2 = acos(other.getDirection().x);
@@ -226,31 +223,44 @@ public abstract class Ball3D extends Object3D {
             double v2 = other.getSpeed();
 
             // Calculate and set the speed and direction of ball 1
-            double v1x = v2 * cos(theta2 - phi) * cos(phi) + v1 * sin(theta1 - phi)
-                     * cos(phi + (PI / 2));
-            double v1z = v2 * cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
-                     * sin(phi + (PI / 2));
+            // We do this using two methods now,
+            // but keep the old code here in case something went wrong.
+            double v1x = calculateVx(v1, v2, theta1, theta2, phi);
+            //v2 * cos(theta2 - phi) * cos(phi) + v1 * sin(theta1 - phi)
+            //* cos(phi + (PI / 2));
+            double v1z = calculateVz(v1, v2, theta1, theta2, phi);
+            // v2* cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
+            //* sin(phi + (PI / 2));
 
             this.setSpeed((float) Math.sqrt(v1x * v1x + v1z * v1z));
-            this.setDirection(new Vector3((float) v1x, 0, (float) v1z));
+            Vector3 newDirection = new Vector3(getDirection()).sub(new Vector3(directionToOther));
+            setDirection(newDirection);
 
             // Calculate and set the speed and direction of ball 2
-            double v2x = v1 * cos(theta1 - phi) * cos(phi) + v2 * sin(theta2 - phi)
-                     * cos(phi + (PI / 2));
-            double v2z = v1 * cos(theta1 - phi) * sin(phi) + v2 * sin(theta2 - phi)
-                         * sin(phi + (PI / 2));
+            double v2x = calculateVx(v2, v1, theta2, theta1, phi);
+            //v1 * cos(theta1 - phi) * cos(phi) + v2 * sin(theta2 - phi)
+            //* cos(phi + (PI / 2));
+            double v2z = calculateVz(v2, v1, theta2, theta1, phi);
+            //v1 * cos(theta1 - phi) * sin(phi) + v2 * sin(theta2 - phi)
+            //* sin(phi + (PI / 2));
 
             other.setSpeed((float) Math.sqrt(v2x * v2x + v2z * v2z));
-            other.setDirection(new Vector3((float) v2x, 0, (float) v2z));
-            // avoid clipping
-            if (distance(other.getCoordinates()) <= getRadius() * 2.05f) {
-                stopClipping(other);
-            }
-
+            other.setDirection(directionToOther);
             return true;
         }
         return false;
     }
+
+    private double calculateVx(double v1, double v2, double theta1, double theta2, double phi) {
+        return v2 * cos(theta2 - phi) * cos(phi) + v1 * sin(theta1 - phi)
+                * cos(phi + (PI / 2));
+    }
+
+    private double calculateVz(double v1, double v2, double theta1, double theta2, double phi) {
+        return v2 * cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
+                * sin(phi + (PI / 2));
+    }
+
 
     /**
      * Pot method for a ball.
@@ -267,19 +277,6 @@ public abstract class Ball3D extends Object3D {
     }
 
     /**
-     * Calculates the distance between the ball and another point.
-     * @param other other object to measure the distance with.
-     * @return the distance between the ball and the other object.
-     */
-    public double distance(Vector3 other) {
-        Vector3 position = new Vector3(getCoordinates());
-        double distance = Math.sqrt(Math.pow(position.x - other.x, 2)
-                + Math.pow(position.y - other.y, 2)
-                + Math.pow(position.z - other.z, 2));
-        return distance;
-    }
-
-    /**
      * Returns whether the ball is within the bounds of the table.
      * @return whether the ball is within the bounds of the table.
      */
@@ -288,29 +285,6 @@ public abstract class Ball3D extends Object3D {
                 && Math.abs(getCoordinates().z) < Table3D.zBound;
     }
 
-    /**
-     * Moves the ball and another ball further away until
-     * their distance is sufficient.
-     * @param other The other ball.
-     */
-    public void stopClipping(Ball3D other) {
-        double distance = distance(other.getCoordinates());
-        while ((distance <= (getRadius() * 1.95f)) && distance > 0.0) {
-            Vector3 direction = getCoordinates().sub(other.getCoordinates()).nor();
-            translate(new Vector3(direction).scl(.001f));
-            other.translate(new Vector3(direction).scl(0.001f).scl(-1));
-
-            // in case the balls get translated outside of the bounds.
-            if (!checkWithinBounds()) {
-                translate(new Vector3(direction).scl(0.001f).scl(-1));
-            }
-
-            if (!other.checkWithinBounds()) {
-                other.translate(new Vector3(direction).scl(0.001f));
-            }
-            distance = distance(other.getCoordinates());
-        }
-    }
 
     public void setHitBox(HitBox hitBox) {
         this.hitBox = hitBox;
