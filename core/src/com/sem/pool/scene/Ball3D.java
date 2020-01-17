@@ -191,6 +191,10 @@ public abstract class Ball3D extends Object3D {
     // Thus we suppress the warning.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public boolean checkCollision(Ball3D other) {
+        // balls placed below the table (when potted) should not collide.
+        if (this.getCoordinates().y < 0 || other.getCoordinates().y < 0) {
+            return false;
+        }
         if (getCollisionHandler().checkHitBoxCollision(getHitBox(), other.getHitBox())) {
             // Create vector from ball to other
             Vector3 directionToOther = new Vector3(other.getCoordinates())
