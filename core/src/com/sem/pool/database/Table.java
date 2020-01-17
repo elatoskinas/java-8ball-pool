@@ -1,12 +1,12 @@
 package com.sem.pool.database;
 
-import org.mockito.MockingDetails;
-import org.mockito.Mockito;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.mockito.MockingDetails;
+import org.mockito.Mockito;
 
 /**
  * Abstract class, to be implemented by database tables implementations.
@@ -34,7 +34,7 @@ public abstract class Table {
 
         // To remove the need to add tables when mocking a connection.
         MockingDetails details = Mockito.mockingDetails(conn);
-        if(!details.isMock()) {
+        if (!details.isMock()) {
             this.ensureTable();
         }
     }
@@ -61,7 +61,6 @@ public abstract class Table {
             boolean createTable = tables.isAfterLast();
 
             if (createTable) {
-                System.out.println("Creating table for " + this.tableName + "..");
                 this.createTable();
                 tables.close();
             }

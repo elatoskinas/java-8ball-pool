@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameState.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.game</a> &gt; <span class="el_source">GameState.java</span></div><h1>GameState.java</h1><pre class="source lang-java linenums">package com.sem.pool.game;
+
+import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.EightBall3D;
+import com.sem.pool.scene.RegularBall3D;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+/**
+ * Class to keep track of the current state of the game with regards to the rules.
+ * GameState can be observed by implementing the GameStateObserver interface.
+ * The methods that u
+ * pdate observers are WinGame.
+ * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
+ */
+public class GameState implements GameObserver {
+    private transient List&lt;Player&gt; players;
+    private transient Set&lt;Ball3D&gt; remainingBalls;
+    private transient List&lt;Ball3D&gt; currentPottedBalls; // Balls potted in current turn
+    private transient List&lt;Ball3D&gt; allPottedBalls; // All Balls potted in any turn.
+
+    private transient int playerTurn;
+    private transient int turnCount;
+    private transient boolean typesAssigned; // if ball types have been assigned yet
+
+    private transient Player winningPlayer;
+
+    // First ball touched in current turn
+    private transient Ball3D firstBallTouched;
+
+<span class="fc" id="L36">    public enum State {</span>
+<span class="fc" id="L37">        Stopped,</span>
+<span class="fc" id="L38">        Idle,</span>
+<span class="fc" id="L39">        InMotion,</span>
+<span class="fc" id="L40">        Ended</span>
+    }
+
+    private transient State state;
+
+    /**
+     * Creates a new game state with the specified Players and
+     * the specified Pool balls.
+     * @param players     List of Players for the game
+     * @param poolBalls   List of pool balls to use for the game
+     */
+<span class="fc" id="L51">    public GameState(List&lt;Player&gt; players, List&lt;Ball3D&gt; poolBalls) {</span>
+<span class="fc" id="L52">        this.state = State.Stopped;</span>
+<span class="fc" id="L53">        this.players = players;</span>
+<span class="fc" id="L54">        this.remainingBalls = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L55">        this.currentPottedBalls = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L56">        this.allPottedBalls = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L57">        this.typesAssigned = false;</span>
+        // Add all pool balls except cue ball to remaining balls set
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (Ball3D ball : poolBalls) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (!(ball instanceof CueBall3D)) {</span>
+<span class="fc" id="L61">                remainingBalls.add(ball);</span>
+            }
+<span class="fc" id="L63">        }</span>
+<span class="fc" id="L64">    }</span>
+
+    public boolean isStarted() {
+<span class="fc bfc" id="L67" title="All 4 branches covered.">        return state != State.Stopped &amp;&amp; state != State.Ended;</span>
+    }
+
+    public List&lt;Player&gt; getPlayers() {
+<span class="fc" id="L71">        return players;</span>
+    }
+
+    public Set&lt;Ball3D&gt; getRemainingBalls() {
+<span class="fc" id="L75">        return remainingBalls;</span>
+    }
+
+    public List&lt;Ball3D&gt; getCurrentPottedBalls() {
+<span class="fc" id="L79">        return currentPottedBalls;</span>
+    }
+
+    public void setInMotion() {
+<span class="nc" id="L83">        this.state = State.InMotion;</span>
+<span class="nc" id="L84">    }</span>
+
+    public boolean isInMotion() {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        return state == State.InMotion;</span>
+    }
+
+    public boolean isIdle() {
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        return state == State.Idle;</span>
+    }
+
+    public boolean isStopped() {
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        return !isStarted();</span>
+    }
+
+    public int getPlayerTurn() {
+<span class="fc" id="L99">        return playerTurn;</span>
+    }
+
+    /**
+     * Gets the active player.
+     * @return active player
+     */
+    public Player getActivePlayer() {
+<span class="fc" id="L107">        return players.get(playerTurn);</span>
+    }
+
+    /**
+     * Gets the next inactive player.
+     * @return an inactive player
+     */
+    public Player getNextInactivePlayer() {
+<span class="fc" id="L115">        return players.get((playerTurn + 1) % players.size());</span>
+    }
+
+    /**
+     * Starts the pool game by picking a random Player
+     * for the break shot.
+     */
+    public void onGameStarted() {
+<span class="fc" id="L123">        initStartingPlayer();</span>
+
+<span class="fc" id="L125">        this.state = State.Idle;</span>
+<span class="fc" id="L126">    }</span>
+
+    /**
+     * Initializes the starting player at random.
+     */
+    public void initStartingPlayer() {
+<span class="fc" id="L132">        playerTurn = (int) Math.round(Math.random());</span>
+<span class="fc" id="L133">    }</span>
+
+    /**
+     * Advances the turn of the game, ending the current Player's
+     * turn and starting the subsequent Player's turn.
+     */
+    public void advanceTurn() {
+<span class="fc" id="L140">        boolean cuePotted = handleBallPotting();</span>
+<span class="fc" id="L141">        handleTurnAdvancement(cuePotted);</span>
+<span class="fc" id="L142">    }</span>
+
+    //    /**
+    //     * Ends the game with the specified Player ID to be marked
+    //     * as the winner.
+    //     * Notifies the observers of the won game.
+    //     * @param winner  Winning Player object
+    //     */
+    //    // False positive on Dataflow Anomaly for the observer
+    //    // loop in the method. Also false positive for the winningPlayer.
+    //    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    //    public void winGame(Player winner) {
+    //        // Stop the game
+    //        state = State.Stopped;
+    //    }
+
+    /**
+     * Determines the winner of the game &amp; updates the internal
+     * state to &quot;Won&quot;.
+     *
+     * @param allPotted  True if the current Player had all of their balls potted.
+     */
+    public void winGame(boolean allPotted, boolean cuePotted) {
+<span class="fc bfc" id="L165" title="All 4 branches covered.">        if (allPotted &amp;&amp; !cuePotted) {</span>
+            // All balls + 8-ball potted; Active player wins.
+<span class="fc" id="L167">            winningPlayer = getActivePlayer();</span>
+        } else {
+            // Not all balls potted; Other Player wins.
+<span class="fc" id="L170">            winningPlayer = getNextInactivePlayer();</span>
+        }
+<span class="fc" id="L172">    }</span>
+
+    @Override
+    public void onMotion() {
+<span class="fc" id="L176">        this.state = State.InMotion;</span>
+<span class="fc" id="L177">    }</span>
+
+    @Override
+    public void onMotionStop(Ball3D touched) {
+<span class="fc" id="L181">        this.firstBallTouched = touched;</span>
+<span class="fc" id="L182">        advanceTurn();</span>
+<span class="fc" id="L183">    }</span>
+
+    @Override
+    public void onGameEnded() {
+<span class="fc" id="L187">        this.state = State.Ended;</span>
+<span class="fc" id="L188">    }</span>
+
+    public boolean getTypesAssigned() {
+<span class="nc" id="L191">        return typesAssigned;</span>
+    }
+
+    public List&lt;Ball3D&gt; getAllPottedBalls() {
+<span class="fc" id="L195">        return allPottedBalls;</span>
+    }
+
+    /**
+     * Pots the specified ball for the current turn of the Game State.
+     * @param ball  Ball to pot
+     */
+    public void onBallPotted(Ball3D ball) {
+        // Pot ball in current turn
+<span class="fc" id="L204">        currentPottedBalls.add(ball);</span>
+<span class="fc" id="L205">    }</span>
+
+    /**
+     * Adds all the balls that were potted before types were
+     * assigned to the proper player.
+     */
+    // Since the issue is raised due to a bug in PMD, it is suppressed.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    private void postPotBalls() {
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        for (Ball3D pottedBall: allPottedBalls) {</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">            if (pottedBall instanceof RegularBall3D) {</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">                for (Player player: players) {</span>
+<span class="fc" id="L217">                    player.potBall((RegularBall3D) pottedBall);</span>
+<span class="fc" id="L218">                }</span>
+            }
+<span class="fc" id="L220">        }</span>
+<span class="fc" id="L221">        allPottedBalls.clear();</span>
+<span class="fc" id="L222">    }</span>
+
+    /**
+     * Handles ball potting logic of all balls in the current turn,
+     * including special cases on potting the cue and 8-ball, which might
+     * result in the victory or loss of the game.
+     * @return Whether or not the cue ball was potted.
+     */
+    // UR anomaly false positive triggered by foreach loop (ball variable)
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    protected boolean handleBallPotting() {
+        // TODO: Special cue ball handling
+
+        // Check if Player has potted all of their assigned ball
+        // type balls. We check for this before potting all balls
+        // because a Player might pot the 8-ball and then all of
+        // their balls after, which would result in a win when
+        // it should be a loss.
+<span class="fc" id="L240">        boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);</span>
+<span class="fc" id="L241">        boolean eightPotted = false;</span>
+<span class="fc" id="L242">        boolean cuePotted = false;</span>
+
+<span class="fc bfc" id="L244" title="All 2 branches covered.">        for (Ball3D ball : currentPottedBalls) {</span>
+<span class="fc bfc" id="L245" title="All 4 branches covered.">            if (!typesAssigned &amp;&amp; !(ball instanceof CueBall3D)) {</span>
+<span class="fc" id="L246">                allPottedBalls.add(ball); // until types are assigned</span>
+                // keep track of balls potted
+            }
+
+<span class="fc bfc" id="L250" title="All 2 branches covered.">            if (ball instanceof RegularBall3D) {</span>
+<span class="fc" id="L251">                potRegularBall((RegularBall3D) ball);</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">            } else if (ball instanceof EightBall3D) {</span>
+<span class="fc" id="L253">                eightPotted = true;</span>
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">            } else if (ball instanceof CueBall3D) {</span>
+<span class="fc" id="L255">                cuePotted = true;</span>
+            }
+
+            // Remove the ball from the remaining balls set
+<span class="fc" id="L259">            remainingBalls.remove(ball);</span>
+<span class="fc" id="L260">        }</span>
+
+        // 8-ball potted
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        if (eightPotted) {</span>
+<span class="fc" id="L264">            winGame(allPotted, cuePotted);</span>
+        }
+
+        // Reset potted balls for next turn
+<span class="fc" id="L268">        currentPottedBalls.clear();</span>
+        
+<span class="fc" id="L270">        return cuePotted;</span>
+    }
+    
+    public void setTypesAssigned(boolean typesAssigned) {
+<span class="fc" id="L274">        this.typesAssigned = typesAssigned;</span>
+<span class="fc" id="L275">    }</span>
+
+    /**
+     * Logic for a regular ball pot.
+     * If the players don't have a ball type -&gt; assign ball types to players.
+     * @param ball regular ball
+     */
+    // PMD calls a warning because a change is made to an object and not always used.
+    // This warning is incorrect and therefore ignored.
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;)
+    public void potRegularBall(RegularBall3D ball) {
+<span class="fc" id="L286">        Player activePlayer = getActivePlayer();</span>
+
+        // if turncount == 0, this is the first turn (breakshot)
+        // so types should not be assigned
+<span class="pc bpc" id="L290" title="1 of 4 branches missed.">        if (turnCount &gt; 0 &amp;&amp; !typesAssigned) {</span>
+<span class="fc" id="L291">            assignBallTypesToPlayers(ball);</span>
+        }
+
+        // Valid pot
+<span class="fc bfc" id="L295" title="All 2 branches covered.">        if (typesAssigned) {</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">            if (activePlayer.getBallType() == ball.getType()) {</span>
+<span class="fc" id="L297">                activePlayer.potBall(ball);</span>
+            } else { // else pot for other player.
+<span class="fc" id="L299">                getNextInactivePlayer().potBall(ball);</span>
+            }
+        }
+<span class="fc" id="L302">    }</span>
+
+    /**
+     * Assigns the ball type of the first valid potted ball to the active player.
+     * The other player gets the other ball type
+     * @param ball first regular ball that is potted in a valid way
+     */
+    public void assignBallTypesToPlayers(RegularBall3D ball) {
+<span class="fc" id="L310">        Player activePlayer = getActivePlayer();</span>
+<span class="fc" id="L311">        Player otherPlayer = getNextInactivePlayer();</span>
+<span class="fc" id="L312">        activePlayer.assignBallType(ball.getType());</span>
+        RegularBall3D.Type otherType;
+
+        // Assign the other ball type to the other player
+<span class="fc bfc" id="L316" title="All 2 branches covered.">        if (ball.getType() == RegularBall3D.Type.STRIPED) {</span>
+<span class="fc" id="L317">            otherType = RegularBall3D.Type.FULL;</span>
+        } else {
+<span class="fc" id="L319">            otherType = RegularBall3D.Type.STRIPED;</span>
+        }
+<span class="fc" id="L321">        otherPlayer.assignBallType(otherType);</span>
+<span class="fc" id="L322">        postPotBalls(); // adds balls that were potted</span>
+        // before assignment to the proper player.
+<span class="fc" id="L324">        typesAssigned = true;</span>
+<span class="fc" id="L325">    }</span>
+
+    /**
+     * Method to handle all logic with regards to gaining an extra turn.
+     */
+    public void handleTurnAdvancement(boolean cuePotted) {
+<span class="fc" id="L331">        state = State.Idle;</span>
+<span class="fc" id="L332">        Player activePlayer = getActivePlayer();</span>
+        
+        boolean correctFirstTouch;
+<span class="fc bfc" id="L335" title="All 2 branches covered.">        if (firstBallTouched instanceof RegularBall3D) {</span>
+<span class="fc" id="L336">            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;</span>
+<span class="pc bpc" id="L337" title="1 of 2 branches missed.">            correctFirstTouch = firstTouched.getType() == activePlayer.getBallType();</span>
+<span class="fc" id="L338">        } else {</span>
+<span class="fc" id="L339">            correctFirstTouch = false;</span>
+        }
+        
+        // Check for four criteria:
+        // - Did the player touch the right type of ball first
+        // - Did the player not pot the cue ball
+        // - Did the player pot a ball of the wrong type
+        // - Did the player pot a ball of the correct type
+<span class="pc bpc" id="L347" title="3 of 4 branches missed.">        if (!correctFirstTouch</span>
+                || cuePotted
+<span class="nc bnc" id="L349" title="All 2 branches missed.">                || !getActivePlayer().getPottedCorrectBall()) {</span>
+            // Not all criteria were satisfied -&gt; player loses the turn
+<span class="fc" id="L351">            loseTurn();</span>
+        }
+
+        // Reset temporary variable
+<span class="fc" id="L355">        activePlayer.setPottedCorrectBall(false);</span>
+        
+        // Increment the turn counter
+<span class="fc" id="L358">        turnCount += 1;</span>
+<span class="fc" id="L359">    }</span>
+
+    /**
+     * Handles the game logic when a player loses its turn.
+     */
+    protected void loseTurn() {
+        // Increment player turn and wrap turn ID around
+        // players size to keep it within bounds
+<span class="fc" id="L367">        playerTurn = (playerTurn + 1) % players.size();</span>
+<span class="fc" id="L368">    }</span>
+    
+    /**
+     * Returns an object representing the winning Player.
+     * If there is no winner yet, the returned Optional object
+     * is empty.
+     * @return  Optional object holding the winner.
+     */
+    public Optional&lt;Player&gt; getWinningPlayer() {
+<span class="fc" id="L377">        return Optional.ofNullable(winningPlayer);</span>
+    }
+
+    // Might come useful at some point; Determines count for specified
+    // Ball type.
+    //    /**
+    //     * Returns the remaining number of balls of the specified type.
+    //     * @param type  Type of ball to get count for
+    //     * @return  Number of balls remaining in Game of specified type.
+    //     */
+    //    public int getRemainingBallCount(RegularBall3D.Type type) {
+    //        int count = 0;
+    //
+    //        for (Ball3D ball : remainingBalls) {
+    //            if (ball instanceof RegularBall3D
+    //                    &amp;&amp; ((RegularBall3D)ball).getType() == type) {
+    //                count++;
+    //            }
+    //        }
+    //
+    //        return count;
+    //    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

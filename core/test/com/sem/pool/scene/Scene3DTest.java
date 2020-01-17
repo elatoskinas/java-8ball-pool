@@ -1,19 +1,24 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
+import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mockito;
+
+
 
 /**
  * Test class containing unit tests for the Scene3D class.
@@ -28,6 +33,7 @@ class Scene3DTest {
     transient List<Ball3D> poolBalls;
     transient Table3D table;
     transient Cue3D cue;
+    transient SoundPlayer soundPlayer;
 
     /**
      * Handles setting up the test fixture by
@@ -43,8 +49,9 @@ class Scene3DTest {
         table = Mockito.mock(Table3D.class);
         poolBalls = new ArrayList<>();
         cue = Mockito.mock(Cue3D.class);
+        soundPlayer = Mockito.mock(SoundPlayer.class);
 
-        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch);
+        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch, soundPlayer);
     }
 
     /**
@@ -88,7 +95,7 @@ class Scene3DTest {
             poolBalls2.add(Mockito.mock(Ball3D.class));
         }
 
-        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch);
+        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch, soundPlayer);
 
         // Poolballs + Table + Cue
         int expectedSize = poolBalls2.size() + 2;
@@ -161,7 +168,7 @@ class Scene3DTest {
     public void testTriggerCollisionsBallPotted() {
         Ball3D ball = Mockito.mock(Ball3D.class);
         scene.getPoolBalls().add(ball);
-
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
         // Set ball to be potted
         Mockito.when(table.checkIfPot(ball)).thenReturn(true);
 
@@ -206,7 +213,7 @@ class Scene3DTest {
     public void testTriggerCollisionsNoBallPotted() {
         Ball3D ball = Mockito.mock(Ball3D.class);
         scene.getPoolBalls().add(ball);
-
+        ball.setSpeed(GameConstants.MIN_SPEED + 1);
         // Set ball to be potted
         Mockito.when(table.checkIfPot(ball)).thenReturn(false);
 
@@ -215,5 +222,157 @@ class Scene3DTest {
 
         // Ensure that no ball was potted
         assertEquals(0, potted.size());
+    }
+
+    /**
+     * Test case to verify that upon triggering collisions
+     * with the cue ball not colliding with anything,
+     * the first touched ball is null.
+     */
+    @Test
+    public void testTriggerCollisionsOtherBallsTouch() {
+        // Create 2 mock pool balls, and add them to the scene
+        Ball3D ball1 = Mockito.mock(Ball3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+
+        scene.getPoolBalls().add(ball1);
+        scene.getPoolBalls().add(ball2);
+
+        // Make the two balls collide
+        Mockito.when(ball1.checkCollision(ball2)).thenReturn(true);
+
+        // Trigger collisions for the scene
+        scene.triggerCollisions();
+
+        // Assert that cue ball did not touch any ball
+        assertTrue(scene.getFirstTouched() instanceof NullBall);
+    }
+
+    /**
+     * Test case to verify that upon triggering collisions
+     * with the cue ball colliding with another ball,
+     * the last touched ball is updated to that ball.
+     */
+    @Test
+    public void testTriggerCollisionsCueTouch() {
+        assertTrue(scene.getFirstTouched() instanceof NullBall);
+
+        // Create 2 mock pool balls, and add them to the scene
+        Ball3D ball1 = Mockito.mock(CueBall3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+
+        scene.getPoolBalls().add(ball1);
+        scene.getPoolBalls().add(ball2);
+
+        // Make the two balls collide
+        Mockito.when(ball1.checkCollision(ball2)).thenReturn(true);
+
+        // Trigger collisions for the scene
+        scene.triggerCollisions();
+
+        // Assert that cue ball touched the ball it collided with
+        assertEquals(ball2, scene.getFirstTouched());
+    }
+
+    /**
+     * Test case to verify that upon triggering collisions
+     * with the cue ball colliding with another ball,
+     * the last touched ball is updated to that ball.
+     */
+    @Test
+    public void testTriggerCollisionsCueTouchMultiple() {
+        // Create 3 mock pool balls, and add them to the scene
+        Ball3D ball1 = Mockito.mock(CueBall3D.class);
+        Ball3D ball2 = Mockito.mock(Ball3D.class);
+        Ball3D ball3 = Mockito.mock(Ball3D.class);
+
+        scene.getPoolBalls().add(ball1);
+        scene.getPoolBalls().add(ball2);
+        scene.getPoolBalls().add(ball3);
+
+        // Make the two balls collide
+        Mockito.when(ball1.checkCollision(ball2)).thenReturn(true);
+        Mockito.when(ball1.checkCollision(ball3)).thenReturn(true);
+
+        // Trigger collisions for the scene
+        scene.triggerCollisions();
+
+        // Assert that cue ball touched the ball it collided with
+        assertEquals(ball2, scene.getFirstTouched());
+    }
+
+    /**
+     * Test case to verify that clearing touched ball
+     * successfully removes the ball that was stored
+     * as first touched.
+     */
+    @Test
+    public void testTriggerCollisionsClearTouched() {
+        // Call previous test to setup into Cue Ball having touched
+        // a ball
+        testTriggerCollisionsCueTouch();
+
+        // Clear pool balls of scene to prevent collision re-checking
+        scene.getPoolBalls().clear();
+
+        // Trigger collisions again
+        scene.triggerCollisions();
+
+        // Verify a touched ball still exists (i.e. not reset)
+        assertNotNull(scene.getFirstTouched());
+
+        // Clear the first touched ball & assert that it is now
+        // null when checked in the scnee.
+        scene.clearFirstTouched();
+        assertTrue(scene.getFirstTouched() instanceof NullBall);
+    }
+
+    /**
+     * Test if getting the cue ball will actually return the cue ball.
+     */
+    @Test
+    public void testGetCueBall() {
+        Scene3D scene = Mockito.mock(Scene3D.class);
+        Ball3D ball = Mockito.mock(CueBall3D.class);
+        ArrayList<Ball3D> balls = new ArrayList<>();
+        balls.add(ball);
+
+        Mockito.when(scene.getPoolBalls()).thenReturn(balls);
+        Mockito.when(scene.getCueBall()).thenCallRealMethod();
+
+        assertEquals(ball, scene.getCueBall());
+    }
+
+    /**
+     * Test the resetting of the cue ball.
+     * The PMD error is ignored, as fixing it would decrease the readability of the test.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:variabledeclarationusagedistance")
+    public void testRecenterCueBall() {
+        CueBall3D cue = Mockito.mock(CueBall3D.class);
+        Ball3D ball = Mockito.mock(Ball3D.class);
+        ModelInstance model = Mockito.mock(ModelInstance.class);
+        Matrix4 transform = Mockito.mock(Matrix4.class);
+        Matrix4 newTransform = Mockito.mock(Matrix4.class);
+        CollisionHandler collisionHandler = Mockito.mock(CollisionHandler.class);
+        final HitBox hitBox = Mockito.mock(HitBox.class);
+
+        model.transform = transform;
+        this.scene.getPoolBalls().add(cue);
+        this.scene.getPoolBalls().add(ball);
+
+        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
+        Mockito.when(cue.getModel()).thenReturn(model);
+        Mockito.when(cue.getHitBox()).thenReturn(hitBox);
+        Mockito.when(cue.getCollisionHandler()).thenReturn(collisionHandler);
+        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
+        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
+        Mockito
+                .when(collisionHandler.checkHitBoxCollision(hitBox, hitBox))
+                .thenReturn(true)
+                .thenReturn(false);
+
+        this.scene.recenterCueBall(cue);
     }
 }

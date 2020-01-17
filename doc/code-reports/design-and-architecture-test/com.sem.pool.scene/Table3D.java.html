@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Table3D.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core</a> &gt; <a href="index.source.html" class="el_package">com.sem.pool.scene</a> &gt; <span class="el_source">Table3D.java</span></div><h1>Table3D.java</h1><pre class="source lang-java linenums">package com.sem.pool.scene;
+
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
+
+import java.util.ArrayList;
+
+/**
+ * Class representing a 3D Board of a single game.
+ */
+public class Table3D extends Object3D {
+    private transient ArrayList&lt;HitBox&gt; hitBoxes;
+    private transient CollisionHandler collisionHandler;
+
+    public static ArrayList&lt;HitBox&gt; potHitBoxes;
+
+    /**
+     * Constructs a new 3D Board instance with the specified model.
+     * @param model  Model object of the Board
+     */
+    public Table3D(ModelInstance model) {
+<span class="fc" id="L22">        super(model);</span>
+<span class="fc" id="L23">        this.hitBoxes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L24">    }</span>
+
+    public ArrayList&lt;HitBox&gt; getHitBoxes() {
+<span class="fc" id="L27">        return hitBoxes;</span>
+    }
+
+    public void addHitBox(HitBox hitBox) {
+<span class="fc" id="L31">        hitBoxes.add(hitBox);</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Method to add a pot hit box to the table.
+     * These will not be checked for regular collisions
+     * but only for when potting is being checked.
+     * @param pot HitBox of the pot.
+     */
+    public void addPotHitBox(HitBox pot) {
+<span class="fc" id="L41">        potHitBoxes.add(pot);</span>
+<span class="fc" id="L42">    }</span>
+
+    public CollisionHandler getCollisionHandler() {
+<span class="fc" id="L45">        return collisionHandler;</span>
+    }
+
+    public void setCollisionHandler(CollisionHandler collisionHandler) {
+<span class="fc" id="L49">        this.collisionHandler = collisionHandler;</span>
+<span class="fc" id="L50">    }</span>
+
+    public ArrayList&lt;HitBox&gt; getPotHitBoxes() {
+<span class="fc" id="L53">        return potHitBoxes;</span>
+    }
+
+    /**
+     * Checks whether a ball has collided with any of the hit boxes of the table.
+     * @param ball Ball that we check collisions with.
+     * @return whether the ball collided with the table.
+     */
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;) // Suppressed as PMD flags hit box
+    // as a UR anomaly / being undefined
+    // Checking for UR anomalies has been removed in updated versions of PMD: https://pmd.github.io/2019/10/31/PMD-6.19.0/
+    public boolean checkCollision(Ball3D ball) {
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        for (HitBox hitBox: hitBoxes) {</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">            if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {</span>
+<span class="fc" id="L67">                Vector3 newDirection = collisionHandler.reflectVector(</span>
+<span class="fc" id="L68">                        new Vector3(ball.getDirection()),</span>
+<span class="fc" id="L69">                        new Vector3(hitBox.getNormal()));</span>
+<span class="fc" id="L70">                ball.setDirection(newDirection);</span>
+<span class="fc" id="L71">                ball.translate(new Vector3(newDirection).scl(0.01f));</span>
+<span class="fc" id="L72">                return true;</span>
+            }
+<span class="nc" id="L74">        }</span>
+<span class="nc" id="L75">        return false;</span>
+    }
+
+    /**
+     * Checks if a ball is currently colliding with one of the pots.
+     * If this is the case the ball will be potted.
+     * @param ball Ball that we check collisions with.
+     * @return whether or not a ball was potted.
+     */
+    @SuppressWarnings(&quot;PMD.DataflowAnomalyAnalysis&quot;) // Suppressed as PMD flags pot
+    // as a UR anomaly / being undefined
+    // Checking for UR anomalies has been removed in updated versions of PMD: https://pmd.github.io/2019/10/31/PMD-6.19.0/
+    public boolean checkIfPot(Ball3D ball) {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        for (HitBox pot: Table3D.potHitBoxes) {</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), pot)) {</span>
+<span class="fc" id="L90">                return true;</span>
+            }
+<span class="fc" id="L92">        }</span>
+<span class="fc" id="L93">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

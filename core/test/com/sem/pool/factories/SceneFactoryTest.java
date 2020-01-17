@@ -10,10 +10,13 @@ import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SoundPlayer;
 import com.sem.pool.scene.Table3D;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 
 /**
  * Test class containing unit tests for the SceneFactory class and
@@ -27,6 +30,7 @@ class SceneFactoryTest {
     transient CameraFactory cameraFactory;
     transient CueFactory cueFactory;
     transient ModelBatch modelBatch;
+    transient SoundPlayer soundPlayer;
 
     /**
      * Handles setting up the test fixture by
@@ -41,20 +45,23 @@ class SceneFactoryTest {
         cameraFactory = Mockito.mock(CameraFactory.class);
         cueFactory = Mockito.mock(CueFactory.class);
         modelBatch = Mockito.mock(ModelBatch.class);
+        soundPlayer = Mockito.mock(SoundPlayer.class);
+
 
         sceneFactory =
-                new SceneFactory(tableFactory, ballFactory, cameraFactory, cueFactory, modelBatch);
+                new SceneFactory(tableFactory, ballFactory, cameraFactory, cueFactory, modelBatch,
+                                soundPlayer);
 
-        Mockito.when(tableFactory.createTable())
+        Mockito.when(tableFactory.createObject())
                 .thenReturn(Mockito.mock(Table3D.class));
 
-        Mockito.when(ballFactory.createBall(Mockito.anyInt()))
+        Mockito.when(ballFactory.createObject())
                 .thenReturn(Mockito.mock(Ball3D.class));
 
         Mockito.when(cameraFactory.createCamera())
                 .thenReturn(Mockito.mock(Camera.class));
 
-        Mockito.when(cueFactory.createCue())
+        Mockito.when(cueFactory.createObject())
                 .thenReturn(Mockito.mock(Cue3D.class));
     }
 

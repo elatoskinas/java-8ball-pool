@@ -10,6 +10,7 @@ import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SoundPlayer;
 import com.sem.pool.scene.Table3D;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class SceneFactory {
     private transient BallFactory ballFactory;
     private transient CameraFactory cameraFactory;
     private transient CueFactory cueFactory;
+    private transient SoundPlayer soundPlayer;
 
     private final transient ModelBatch modelBatch;
 
@@ -39,12 +41,14 @@ public class SceneFactory {
      * @param modelBatch    Model Batch to use for scene rendering
      */
     public SceneFactory(TableFactory tableFactory, BallFactory ballFactory,
-                        CameraFactory cameraFactory, CueFactory cueFactory, ModelBatch modelBatch) {
+                        CameraFactory cameraFactory, CueFactory cueFactory, ModelBatch modelBatch,
+                        SoundPlayer soundPlayer) {
         this.tableFactory = tableFactory;
         this.ballFactory = ballFactory;
         this.cameraFactory = cameraFactory;
         this.cueFactory = cueFactory;
         this.modelBatch = modelBatch;
+        this.soundPlayer = soundPlayer;
     }
 
     public TableFactory getTableFactory() {
@@ -102,7 +106,8 @@ public class SceneFactory {
         List<Ball3D> poolBalls = new ArrayList<>();
 
         for (int i = 0; i < GameConstants.BALL_COUNT; ++i) {
-            Ball3D ball = ballFactory.createBall(i);
+            ballFactory.setId(i);
+            Ball3D ball = ballFactory.createObject();
             poolBalls.add(ball);
         }
 
@@ -110,12 +115,12 @@ public class SceneFactory {
         positionPoolBalls(poolBalls);
 
         // Create table
-        Table3D table = tableFactory.createTable();
+        Table3D table = tableFactory.createObject();
         tableFactory.setBoundingBoxes(table);
         tableFactory.setUpPotHitBoxes(table);
 
         // Create cue
-        Cue3D cue = cueFactory.createCue();
+        Cue3D cue = cueFactory.createObject();
 
         // Set cue to cueBall position
         cue.toBeginPosition(poolBalls.get(0));
@@ -123,7 +128,8 @@ public class SceneFactory {
         // Create camera
         Camera camera = cameraFactory.createCamera();
         // Create scene with the constructed objects
-        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch);
+
+        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch, soundPlayer);
     }
 
     /**
@@ -146,9 +152,8 @@ public class SceneFactory {
         // (distance from the center of one ball to the other), but
         // we use a slightly smaller value (1.8) to make the balls
         // closer together to each other.
-        // TODO: Set 1.8 as a final float in the class
         float radius = poolBalls.get(0).getRadius();
-        float spacing = radius * 1.8f;
+        float spacing = radius * 2f;
 
         // Iterate through all non-cue balls
         for (int i = 1; i < poolBalls.size(); ++i) {

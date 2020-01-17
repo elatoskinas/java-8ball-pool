@@ -1,6 +1,7 @@
 package com.sem.pool.factories;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -21,6 +22,14 @@ public class AssetLoader {
     protected static final String TABLE_MODEL_PATH = "models/table.obj";
     protected static final String CUE_MODEL_PATH = "models/cue.obj";
     protected static final String BALL_TEXTURE_PATH = "models/Textures/ball%d.jpg";
+    protected static final String CUE_TEXTURE_PATH = "models/Textures/cue.jpg";
+    protected static final String TABLE_TEXTURE_PATH = "models/Textures/table.jpg";
+
+    protected static final String BALL_SOUND_PATH = "sounds/ballandballcollision.mp3";
+    protected static final String TABLE_SOUND_PATH = "sounds/ballandtablecollision.mp3";
+    protected static final String CUE_SOUND_PATH = "sounds/cueshot.mp3";
+    protected static final String POT_SOUND_PATH = "sounds/ballpot.mp3";
+
 
     // Parameters for loading 3D models
     private transient ObjLoader.ObjLoaderParameters objectLoaderParameters;
@@ -89,6 +98,10 @@ public class AssetLoader {
             String texturePath = getBallTexturePath(i);
             assetManager.load(texturePath, Texture.class);
         }
+        assetManager.load(POT_SOUND_PATH, Music.class);
+        assetManager.load(BALL_SOUND_PATH, Music.class);
+        assetManager.load(TABLE_SOUND_PATH, Music.class);
+        assetManager.load(CUE_SOUND_PATH, Music.class);
     }
 
     /**
@@ -115,6 +128,28 @@ public class AssetLoader {
     }
 
     /**
+     * Returns the currently loaded cue texture, if present, and null otherwise.
+     * @return  Cue texture object
+     */
+    public Texture getCueTexture() {
+        // TODO: Currently, this method is not of much use, as textures are not used for cue/table.
+        //       However, this was created with the idea in mind that the Game could be extended
+        //       to allow different cue/table textures in the future, making this method very easily
+        //       extendible and applicable. Moreover, we can make it so that the AssetLoader handles
+        //       holding the textures with the current approach.
+        return loadTexture(CUE_TEXTURE_PATH);
+    }
+
+    /**
+     * Returns the currently loaded table texture, if present, and null otherwise.
+     * @return  Board texture object
+     */
+    public Texture getTableTexture() {
+        // TODO: @see getCueTexture() TODO. Same situation.
+        return loadTexture(TABLE_TEXTURE_PATH);
+    }
+
+    /**
      * Returns the texture path for the ball of the specified id.
      * @param id  Id of the ball
      * @return    Texture path (String) for the ball
@@ -122,6 +157,19 @@ public class AssetLoader {
     private String getBallTexturePath(int id) {
         // Get the texture path for the i-th texture (replace %d placeholder with i)
         return String.format(BALL_TEXTURE_PATH, id);
+    }
+
+    /**
+     * Loads the texture from the specified path.
+     * @param path  Path of texture to load from
+     * @return      Loaded texture if present, and null otherwise.
+     */
+    private Texture loadTexture(String path) {
+        if (assetManager.contains(path)) {
+            return assetManager.get(path, Texture.class);
+        }
+
+        return null;
     }
 
     /**
@@ -141,5 +189,41 @@ public class AssetLoader {
      */
     public void dispose() {
         assetManager.dispose();
+    }
+
+    /**
+     * Returns the sound for a ball and ball collision.
+     * @return the sound for a ball and ball collision.
+     */
+    public Music getBallSound() {
+        Music sound = assetManager.get(BALL_SOUND_PATH, Music.class);
+        return sound;
+    }
+
+    /**
+     * Returns the sound for a ball and table collision.
+     * @return the sound for a ball and table collision.
+     */
+    public Music getTableSound() {
+        Music sound = assetManager.get(TABLE_SOUND_PATH, Music.class);
+        return sound;
+    }
+
+    /**
+     * Returns the sound for a ball and cue collision.
+     * @return the sound for a ball and cue collision.
+     */
+    public Music getCueSound() {
+        Music sound = assetManager.get(CUE_SOUND_PATH, Music.class);
+        return sound;
+    }
+
+    /**
+     * Returns the sound for a ball that is potted.
+     * @return the sound for a ball that is potted.
+     */
+    public Music getPotSound() {
+        Music sound = assetManager.get(POT_SOUND_PATH, Music.class);
+        return sound;
     }
 }
