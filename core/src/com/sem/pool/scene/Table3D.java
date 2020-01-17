@@ -72,7 +72,6 @@ public class Table3D extends Object3D {
                         new Vector3(ball.getDirection()),
                         new Vector3(hitBox.getNormal()));
                 ball.setDirection(newDirection);
-                ball.move(0.025f); // move the ball a bit to avoid clipping
                 return true;
             }
         }
