@@ -251,16 +251,33 @@ public abstract class Ball3D extends Object3D {
         return false;
     }
 
+    /**
+     * Calculates the speed in the x direction.
+     * @param v1 Our speed.
+     * @param v2 Speed of other object.
+     * @param theta1 Angle of our direction.
+     * @param theta2 Angle of direction of other object.
+     * @param phi Angle of collision between objects.
+     * @return Speed in the x direction after collision.
+     */
     private double calculateVx(double v1, double v2, double theta1, double theta2, double phi) {
         return v2 * cos(theta2 - phi) * cos(phi) + v1 * sin(theta1 - phi)
                 * cos(phi + (PI / 2));
     }
 
+    /**
+     * Calculates the speed in the z direction.
+     * @param v1 Our speed.
+     * @param v2 Speed of other object.
+     * @param theta1 Angle of our direction.
+     * @param theta2 Angle of direction of other object.
+     * @param phi Angle of collision between objects.
+     * @return Speed in the z direction after collision.
+     */
     private double calculateVz(double v1, double v2, double theta1, double theta2, double phi) {
         return v2 * cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
                 * sin(phi + (PI / 2));
     }
-
 
     /**
      * Pot method for a ball.
