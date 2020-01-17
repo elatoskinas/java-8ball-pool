@@ -23,6 +23,10 @@
 | N/A (Final Product)   | Ball Rolling Animation | Luuk | 2 hours | 1.5 hours | No | Could not be completed due to other higher priority tasks not being finished yet. Also turned out more difficult than expected.|
 | Ball Interactions    | Cue ball placement during break shot | Thomas | 3 hours | 30 minutes | No | Was not completed due to lack of time, most of which was spent on elastic collisions. |
 | Ball Interactions | Cue ball placement after invalid move | Thomas | 1.5 hours | 0 hours | No | Was not completed due to lack of time, and a misunderstanding in communication in the team. | |
+| Ball Interactions | Cue ball returns to table when potted | Dany | 2 hours | 7 hours | Yes | Took a lot longer because of a corner case. There also was trouble finding a method setting the ball position in an absolute way. | |
+| Ball Interactions | Cue ball only placed after the turn is over | Dany | 1 hours | 2 hours | Yes, not merged | | |
+| Scoring | Saving Results | Dany | 4 hours | 8 hours | Yes, not merged | Took a lot longer than expected, as testing was proven to be difficult | |
+| Scoring | Show scoreboard at the end | Dany | 6 hours | 2 hours | No | Was not compleated due to a lack of time. | |
 
 
 
