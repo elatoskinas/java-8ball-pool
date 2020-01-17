@@ -115,6 +115,10 @@ class GameInputTest extends GameBaseTest {
 
         cue.setState(Cue3D.State.Dragging);
         cue.setCurrentForce(1f);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4b0debe5718cde62e8b8ab700b1700cbc5adc8c2
         game.processCueInput();
         assertEquals(Cue3D.State.Hidden, cue.getState());
 

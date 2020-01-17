@@ -31,8 +31,7 @@ public class Game implements ObservableGame {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(Scene3D scene, Input input, GameState state,
-                 MainGame mainGame) {
+    public Game(Scene3D scene, Input input, GameState state) {
 
         this.scene = scene;
         this.input = input;
@@ -43,17 +42,15 @@ public class Game implements ObservableGame {
         // it will react to al the required functionality for
         // starting the game, potting balls and reacting to motion.
         this.observers.add(state);
-        this.mainGame = mainGame;
     }
 
     /**
      * Creates a new Game instance with the given scene and input objects.
      * @param scene  Scene to use for the Game
      * @param input  Input handler to use for the Game
-     * @param mainGame MainGame to use for restarting.
      * @return New Game instance
      */
-    public static Game createNewGame(Scene3D scene, Input input, MainGame mainGame) {
+    public static Game createNewGame(Scene3D scene, Input input) {
         // Create 2 players with differing IDs
         Player player1 = new Player(0);
         Player player2 = new Player(1);
@@ -65,7 +62,7 @@ public class Game implements ObservableGame {
         GameState gameState = new GameState(players, scene.getPoolBalls());
 
         // Create a Game object from the parameters
-        return new Game(scene, input, gameState, mainGame);
+        return new Game(scene, input, gameState);
     }
 
     public Scene3D getScene() {
@@ -141,16 +138,12 @@ public class Game implements ObservableGame {
      * Process the input mouse input for the cue.
      */
     protected void processCueInput() {
-        CueBall3D cueBall = scene.getCueBall();
         Cue3D cue = scene.getCue();
 
         if (cue.getState() == Cue3D.State.Hidden) {
             cue.showCue();
         }
 
-        if (input.isKeyPressed(Input.Keys.U)) {
-            restartGame();
-        }
         if (input.isButtonPressed(Input.Buttons.LEFT)) {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
 
@@ -158,20 +151,26 @@ public class Game implements ObservableGame {
             if (cue.getState() == Cue3D.State.Rotating) {
                 cue.setToDragging(mousePosition);
             }
+
+            CueBall3D cueBall = scene.getCueBall();
             cue.toDragPosition(mousePosition, cueBall);
+
         } else if (cue.getState() == Cue3D.State.Dragging) {
             if (cue.getCurrentForce() > 0) {
                 startMotion();
+
+                CueBall3D cueBall = scene.getCueBall();
                 cue.shoot(cueBall);
                 scene.getSoundPlayer().playCueSound();
             } else {
                 // Cancel shot -> go back to rotating
                 cue.setToRotating();
-                Vector3 mousePosition = scene.getUnprojectedMousePosition();
-                cue.toPosition(mousePosition, cueBall);
             }
-        } else {
+        }
+
+        if (cue.getState() == Cue3D.State.Rotating) {
             Vector3 mousePosition = scene.getUnprojectedMousePosition();
+            CueBall3D cueBall = scene.getCueBall();
             cue.toPosition(mousePosition, cueBall);
         }
     }
@@ -267,9 +266,4 @@ public class Game implements ObservableGame {
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
     }
-
-    public void restartGame() {
-        mainGame.startPool();
-    }
-
 }

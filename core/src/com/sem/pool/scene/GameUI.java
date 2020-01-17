@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.game.Game;
+import com.sem.pool.screens.MainGame;
 
 /**
  * GameUI that adds and updates all UI elements.
@@ -54,13 +55,13 @@ public class GameUI {
 
     /**
      * Add restart button.
-     * @param game Game to restart.
+     * @param mainGame Game to restart.
      */
-    private void addRestartButton(Game game) {
+    private void addRestartButton(MainGame mainGame) {
         restartButton = new TextButton("Restart", skin);
         restartButton.addListener(new ClickListener() {
             public void clicked(InputEvent e, float x, float y) {
-                game.restartGame();
+                mainGame.startPool();
             }
         });
         restartButton.setPosition(Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 50);
@@ -102,12 +103,12 @@ public class GameUI {
 
     /**
      * Create all UI elements and add them to the stage.
-     * @param game the game which is needed to create the restart button.
+     * @param mainGame the game which is needed to create the restart button.
      */
-    public void createUI(Game game) {
+    public void createUI(MainGame mainGame) {
         addPlayerTurnLabel();
         addCueForceLabel();
-        addRestartButton(game);
+        addRestartButton(mainGame);
 
         addActors();
     }
