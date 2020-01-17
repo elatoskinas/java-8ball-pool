@@ -6,7 +6,6 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
-import com.sem.pool.screens.MainGame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
