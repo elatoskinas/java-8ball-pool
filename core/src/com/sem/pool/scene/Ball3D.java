@@ -207,21 +207,10 @@ public abstract class Ball3D extends Object3D {
             double theta1 = acos(this.getDirection().x);
             
             double theta2 = acos(other.getDirection().x);
-            if (other.getDirection().z < 0) {
-                theta2 = theta2 * -1;
-            }
-            // Whenever the z direction of the ball is negative, invert the angle, 
-            // as the domain of the acos function does not cover negative angles
-            if (directionToOther.nor().z < 0) {
-                phi = phi * -1;
-            }
-            if (this.getDirection().z < 0) {
-                theta1 = theta1 * -1;
-            }
-            if (this.getDirection().z < 0) {
-                theta1 = theta1 * -1;
-            }
-            
+            theta2 = checkAngle(other.getDirection().x, theta2);
+            phi = checkAngle(directionToOther.z, phi);
+            theta1 = checkAngle(this.getDirection().z, theta1);
+
             // Declaration of the speed of both balls before the collision for calculation purposes
             double v1 = this.getSpeed();
             double v2 = other.getSpeed();
@@ -236,7 +225,7 @@ public abstract class Ball3D extends Object3D {
             // v2* cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
             //* sin(phi + (PI / 2));
 
-            this.setSpeed((float) Math.sqrt(v1x * v1x + v1z * v1z));
+            this.setSpeed(calculateSpeed(v1x, v1z));
             Vector3 newDirection = new Vector3(getDirection()).sub(new Vector3(directionToOther));
             setDirection(newDirection);
 
@@ -248,11 +237,24 @@ public abstract class Ball3D extends Object3D {
             //v1 * cos(theta1 - phi) * sin(phi) + v2 * sin(theta2 - phi)
             //* sin(phi + (PI / 2));
 
-            other.setSpeed((float) Math.sqrt(v2x * v2x + v2z * v2z));
+            other.setSpeed(calculateSpeed(v2x, v2z));
             other.setDirection(directionToOther);
             return true;
         }
         return false;
+    }
+
+    /**
+     * If the movement in the direction is negative, the angle will be multiplied by -1.
+     * @param direction direction on the axis we're moving in.
+     * @param angle angle.
+     * @return the updated angle.
+     */
+    double checkAngle(float direction, double angle) {
+        if (direction < 0) {
+            angle *= -1;
+        }
+        return angle;
     }
 
     /**
@@ -281,6 +283,17 @@ public abstract class Ball3D extends Object3D {
     private double calculateVz(double v1, double v2, double theta1, double theta2, double phi) {
         return v2 * cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
                 * sin(phi + (PI / 2));
+    }
+
+
+    /**
+     * Calculates the new speed given the speed in the x and z direction.
+     * @param speedX speed in the x direction.
+     * @param speedZ speed in the z direction.
+     * @return the new speed of the ball.
+     */
+    protected float calculateSpeed(double speedX, double speedZ) {
+        return (float) Math.sqrt(speedX * speedX + speedZ * speedZ);
     }
 
     /**
