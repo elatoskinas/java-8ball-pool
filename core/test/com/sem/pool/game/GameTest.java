@@ -261,7 +261,6 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball is potted
         Mockito.verify(ball).pot();
-        Mockito.verify(this.scene).recenterCueBall(ball);
     }
 
     /**

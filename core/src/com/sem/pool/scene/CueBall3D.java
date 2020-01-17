@@ -24,6 +24,7 @@ public class CueBall3D extends Ball3D {
      */
     @Override
     public void pot() {
+        this.translate(new Vector3(0, -100, 0));
         this.setSpeed(0);
         this.setDirection(new Vector3());
     }

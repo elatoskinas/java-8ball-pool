@@ -4,6 +4,7 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
+import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ public class GameState implements GameObserver {
     private transient Set<Ball3D> remainingBalls;
     private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
     private transient List<Ball3D> allPottedBalls; // All Balls potted in any turn.
+    private transient Scene3D scene;
 
     private transient int playerTurn;
     private transient int turnCount;
@@ -45,18 +47,20 @@ public class GameState implements GameObserver {
     /**
      * Creates a new game state with the specified Players and
      * the specified Pool balls.
-     * @param players     List of Players for the game
-     * @param poolBalls   List of pool balls to use for the game
+     * @param players List of Players for the game
+     * @param scene The game scene.
      */
-    public GameState(List<Player> players, List<Ball3D> poolBalls) {
+    public GameState(List<Player> players, Scene3D scene) {
         this.state = State.Stopped;
         this.players = players;
         this.remainingBalls = new HashSet<>();
         this.currentPottedBalls = new ArrayList<>();
         this.allPottedBalls = new ArrayList<>();
         this.typesAssigned = false;
+        this.scene = scene;
+
         // Add all pool balls except cue ball to remaining balls set
-        for (Ball3D ball : poolBalls) {
+        for (Ball3D ball : scene.getPoolBalls()) {
             if (!(ball instanceof CueBall3D)) {
                 remainingBalls.add(ball);
             }
@@ -230,8 +234,6 @@ public class GameState implements GameObserver {
     // UR anomaly false positive triggered by foreach loop (ball variable)
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     protected boolean handleBallPotting() {
-        // TODO: Special cue ball handling
-
         // Check if Player has potted all of their assigned ball
         // type balls. We check for this before potting all balls
         // because a Player might pot the 8-ball and then all of
@@ -253,6 +255,7 @@ public class GameState implements GameObserver {
                 eightPotted = true;
             } else if (ball instanceof CueBall3D) {
                 cuePotted = true;
+                this.scene.recenterCueBall((CueBall3D) ball);
             }
 
             // Remove the ball from the remaining balls set

@@ -215,5 +215,4 @@ public abstract class Ball3D extends Object3D {
         setSpeed(0);
         setDirection(new Vector3());
     }
-
 }

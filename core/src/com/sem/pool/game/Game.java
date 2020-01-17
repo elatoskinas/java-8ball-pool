@@ -57,7 +57,7 @@ public class Game implements ObservableGame {
         players.add(player2);
 
         // Create game state with the scene's pool balls & the two players
-        GameState gameState = new GameState(players, scene.getPoolBalls());
+        GameState gameState = new GameState(players, scene);
 
         // Create a Game object from the parameters
         return new Game(scene, input, gameState);
@@ -220,10 +220,6 @@ public class Game implements ObservableGame {
     public void potBall(Ball3D ball) {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
-
-        if (ball instanceof CueBall3D) {
-            this.scene.recenterCueBall((CueBall3D) ball);
-        }
 
         // Notify all observers of the potted ball
         for (GameObserver o : observers) {
