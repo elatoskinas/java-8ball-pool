@@ -658,15 +658,15 @@ class GameStateTest {
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
         gameState.onBallPotted(balls.get(3));
-        gameState.advanceTurn(); // handle turn
-        // Player 1 pots full ball
+        gameState.advanceTurn(); // handle turn, this results in player 0 keeping their turn
+        // Player 0 pots full ball
         gameState.onBallPotted(balls.get(2));
         gameState.advanceTurn(); // handle turn
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
-        assertTrue(players.get(0).getPottedBalls().contains(balls.get(5)));
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(2)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(5)));
     }
 
     /**
@@ -686,13 +686,13 @@ class GameStateTest {
         // Player 1 pots full ball
         gameState.onBallPotted(balls.get(2));
         gameState.advanceTurn();
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
-        assertTrue(players.get(0).getPottedBalls().contains(balls.get(5)));
-        assertFalse(players.get(1).getPottedBalls().contains(balls.get(1)));
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(2)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(5)));
         assertFalse(players.get(0).getPottedBalls().contains(balls.get(1)));
+        assertFalse(players.get(1).getPottedBalls().contains(balls.get(1)));
     }
 
 
@@ -709,15 +709,16 @@ class GameStateTest {
         gameState.onBallPotted(balls.get(3));
         gameState.onBallPotted(balls.get(1)); // should not be added,
         // if this happens the game should immediately end.
-        gameState.advanceTurn();
+        gameState.advanceTurn(); // player 0 keeps the turn here, 
+        // as a ball was potted during the break shot
         // Player 2 pots full ball
         gameState.onBallPotted(balls.get(2));
         gameState.advanceTurn();
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
         // Player 1 pots a full ball, should be added to player 2's potted balls
         gameState.onBallPotted(balls.get(3));
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(3)));
     }
 
     /**
@@ -790,10 +791,11 @@ class GameStateTest {
     }
 
     /**
-     * Test case to verify that a player keeps their turn if they pot a correct ball.
+     * Test case to verify that a player keeps their turn if they pot a correct ball
+     * while ball types are not yet assigned.
      */
     @Test
-    void testKeepTurnAfterBallPot() {
+    void testKeepTurnAfterBallPotUnassigned() {
         balls = constructBallsList(true, true, 2, 2);
 
         gameState = new GameState(players, balls);
@@ -804,7 +806,52 @@ class GameStateTest {
         Player current = gameState.getActivePlayer();
         gameState.onBallPotted(balls.get(2));
 
+        gameState.onMotionStop(balls.get(2));
+        
         assertEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player keeps its turn when it pots a ball
+     * while ball types are already assigned.
+     */
+    @Test
+    void testKeepTurnAfterBallPotAssigned() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Break shot
+        gameState.advanceTurn();
+        // pot a ball to assign types
+        gameState.onBallPotted(balls.get(2));
+        // This should result in the player keeping their turn (tested in previous test case)
+        gameState.onMotionStop(balls.get(2));
+        // Keep track of current player and pot another ball
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(3));
+        gameState.onMotionStop(balls.get(3));
+        
+        // This should result in the player keeping its turn again
+        assertEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player keeps its turn when it pots a ball during the breakshot.
+     */
+    @Test
+    void testKeepTurnAfterBallPotBreakShot() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+        
+        // Break shot -> pot a ball while keeping track of the player
+        Player current = gameState.getActivePlayer();
+        gameState.onBallPotted(balls.get(2));
+        gameState.onMotionStop(balls.get(2));
+        
+        assertEquals(current, gameState.getActivePlayer());
+        assertFalse(gameState.getTypesAssigned());
     }
 
     /**
@@ -870,6 +917,25 @@ class GameStateTest {
 
         gameState.onMotionStop(balls.get(5));
 
+        assertNotEquals(current, gameState.getActivePlayer());
+    }
+
+    /**
+     * Test case to verify that a player loses its turn when it pots the cue ball 
+     * as well as a regular ball during the break shot.
+     */
+    @Test
+    void loseTurnWhenCueBallPottedBreakShot() {
+        balls = constructBallsList(true, true, 2, 2);
+
+        gameState = new GameState(players, balls);
+
+        // Pot a regular ball and cue ball during breakshot while keeping track of the player
+        gameState.onBallPotted(balls.get(2));
+        gameState.onBallPotted(balls.get(0));
+        Player current = gameState.getActivePlayer();
+        gameState.onMotionStop(balls.get(2));
+        
         assertNotEquals(current, gameState.getActivePlayer());
     }
 }
