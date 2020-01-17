@@ -351,7 +351,7 @@ public class GameState implements GameObserver {
         // - Did the player pot a ball of the wrong type
         // - Did the player pot a ball of the correct type
         // Special case: if any ball is potted during the break shot, keep the turn
-        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) && !cuePotted) {
+        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) || cuePotted) {
             if (!correctFirstTouch
                     || !getActivePlayer().getPottedCorrectBall()) {
                 // Not all criteria were satisfied -> player loses the turn

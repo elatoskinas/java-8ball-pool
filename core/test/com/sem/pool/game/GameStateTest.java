@@ -837,7 +837,7 @@ class GameStateTest {
     }
 
     /**
-     * Test case to verify that a player keeps its turn when it pots a ball during the breakshot
+     * Test case to verify that a player keeps its turn when it pots a ball during the breakshot.
      */
     @Test
     void testKeepTurnAfterBallPotBreakShot() {
@@ -922,7 +922,7 @@ class GameStateTest {
 
     /**
      * Test case to verify that a player loses its turn when it pots the cue ball 
-     * as well as a regular ball during the break shot
+     * as well as a regular ball during the break shot.
      */
     @Test
     void loseTurnWhenCueBallPottedBreakShot() {
@@ -931,9 +931,9 @@ class GameStateTest {
         gameState = new GameState(players, balls);
 
         // Pot a regular ball and cue ball during breakshot while keeping track of the player
-        Player current = gameState.getActivePlayer();
         gameState.onBallPotted(balls.get(2));
         gameState.onBallPotted(balls.get(0));
+        Player current = gameState.getActivePlayer();
         gameState.onMotionStop(balls.get(2));
         
         assertNotEquals(current, gameState.getActivePlayer());
