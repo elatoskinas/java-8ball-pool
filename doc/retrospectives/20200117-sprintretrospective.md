@@ -12,15 +12,17 @@
 | Player Cue Interaction              | Ability to control cue force    | Pepijn             | 2 hours          | 3 hours     | Yes | Feature completed & verified successfully   |
 | Visual Display             | Cue force visual display    | Pepijn             | 1 hours          | 1 hours     | Yes | Feature completed but not reviewed  |
 | Visual Display             | Player turn visual display    | Pepijn             | 1 hours          | 1 hours     | Yes | Feature completed but not reviewed  |
-| Visual Display & Turn System            | Potting turn advancement  | Pepijn & Thomas             | 4 hours          | 4 hours     | Yes | Feature completed & verified successfully |
+| Visual Display & Turn System            | Potting turn advancement  | Pepijn & Thomas             | 4 hours          | 5 hours     | Yes | Feature completed & verified successfully |
 | N/A (Assignment 3)               | Design Patterns Write-Up, Implementation & Refactoring     | Evaldas & Thomas               | 4 hours          | 6 hours     | Yes | Work completed, reviewed & verified successfully    |
 | N/A (Assignment 3)               | System Architecture Write-Up     | Evaldas & Thomas               | 5 hours          | 5 hours     | Yes | Work completed, reviewed & verified successfully    |
 | N/A (Final Product)               | Larger Scale Integration Tests    | Evaldas & Thomas               | 5 hours          | 40 minutes     | No | Some efforts to integration testing have been made, but the task was not started properly due to other priorities & workload    |
 | N/A (Final Product)               | Sound effects for collisions    | Luuk             | 2 hours          | 5 hours    | Yes | Testing and refactoring caused the amount of time required to exceed estimated amount   |
 | Ball Interactions               | Ball type assignment extension    | Luuk           | 3 hours     |  3 hours  | Yes | Feature completed & verified successfully   |
-| Ball Interactions               | Elastic collisions  | Luuk & Thomas          | 4 hours     |  10 hours  | Yes | Feature completed and verified completely|
+| Ball Interactions               | Elastic collisions  | Luuk & Thomas          | 4 hours     |  10 hours  | Yes | Feature completed and verified completely, finally!|
 | N/A (Final Product)               | Game Restart  | Luuk & Pepijn     | 3 hours     |  3 hours  | No | Feature does not follow specifications of the requirement|
-| N/A (Final Product)   | Ball Rolling Animation | Luuk | 2 hours | 1.5 hours | No | Could not be completed due to other higher priority tasks not being finished yet. Also turned out more difficult than expected.
+| N/A (Final Product)   | Ball Rolling Animation | Luuk | 2 hours | 1.5 hours | No | Could not be completed due to other higher priority tasks not being finished yet. Also turned out more difficult than expected.|
+| Ball Interactions    | Cue ball placement during break shot | Thomas | 3 hours | 30 minutes | No | Was not completed due to lack of time, most of which was spent on elastic collisions. |
+| Ball Interactions | Cue ball placement after invalid move | Thomas | 1.5 hours | 0 hours | No | Was not completed due to lack of time, and a misunderstanding in communication in the team. | |
 
 
 
