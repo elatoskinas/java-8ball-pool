@@ -411,10 +411,14 @@ abstract class Ball3DTest {
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
         final Ball3D mockedBall = Mockito.mock(Ball3D.class);
         Ball3D ball = getBall(initId, mockModel);
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(new Vector3());
         ball.setSpeed(GameConstants.MIN_SPEED + 1);
+        ball.model.transform = mockMatrix;
         CollisionHandler mockedHandler = Mockito.mock(CollisionHandler.class);
         ball.setCollisionHandler(mockedHandler);
         Mockito.when(mockedBall.getHitBox()).thenReturn(Mockito.mock(HitBox.class));
+        Mockito.when(mockedBall.getCoordinates()).thenReturn(new Vector3());
         ball.checkCollision(mockedBall);
         assertFalse(ball.checkCollision(ball));
         Mockito.verify(mockedHandler, Mockito.times(1))
