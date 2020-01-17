@@ -23,7 +23,6 @@ public class Game implements ObservableGame {
     private transient Input input;
     private transient GameState state;
     private transient Set<GameObserver> observers;
-    private transient MainGame mainGame;
 
     /**
      * Constructs a new Game object with the given scene, input, and state.
