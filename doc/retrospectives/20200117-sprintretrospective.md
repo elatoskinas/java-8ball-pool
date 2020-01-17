@@ -18,7 +18,7 @@
 | N/A (Final Product)               | Larger Scale Integration Tests    | Evaldas & Thomas               | 5 hours          | 40 minutes     | No | Some efforts to integration testing have been made, but the task was not started properly due to other priorities & workload    |
 | N/A (Final Product)               | Sound effects for collisions    | Luuk             | 2 hours          | 5 hours    | Yes | Testing and refactoring caused the amount of time required to exceed estimated amount   |
 | Ball Interactions               | Ball type assignment extension    | Luuk           | 3 hours     |  3 hours  | Yes | Feature completed & verified successfully   |
-| Ball Interactions               | Elastic collisions  | Luuk & Thomas          | 4 hours     |  10 hours  | Yes | Feature completed but not yet verified completely|
+| Ball Interactions               | Elastic collisions  | Luuk & Thomas          | 4 hours     |  10 hours  | Yes | Feature completed and verified completely|
 | N/A (Final Product)               | Game Restart  | Luuk & Pepijn     | 3 hours     |  3 hours  | No | Feature does not follow specifications of the requirement|
 | N/A (Final Product)   | Ball Rolling Animation | Luuk | 2 hours | 1.5 hours | No | Could not be completed due to other higher priority tasks not being finished yet. Also turned out more difficult than expected.
 
