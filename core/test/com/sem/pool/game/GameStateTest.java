@@ -658,15 +658,15 @@ class GameStateTest {
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
         gameState.onBallPotted(balls.get(3));
-        gameState.advanceTurn(); // handle turn
-        // Player 1 pots full ball
+        gameState.advanceTurn(); // handle turn, this results in player 0 keeping their turn
+        // Player 0 pots full ball
         gameState.onBallPotted(balls.get(2));
         gameState.advanceTurn(); // handle turn
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
-        assertTrue(players.get(0).getPottedBalls().contains(balls.get(5)));
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(2)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(5)));
     }
 
     /**
@@ -686,13 +686,13 @@ class GameStateTest {
         // Player 1 pots full ball
         gameState.onBallPotted(balls.get(2));
         gameState.advanceTurn();
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(2)));
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
-        assertTrue(players.get(0).getPottedBalls().contains(balls.get(5)));
-        assertFalse(players.get(1).getPottedBalls().contains(balls.get(1)));
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(2)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(1).getPottedBalls().contains(balls.get(5)));
         assertFalse(players.get(0).getPottedBalls().contains(balls.get(1)));
+        assertFalse(players.get(1).getPottedBalls().contains(balls.get(1)));
     }
 
 
@@ -709,15 +709,16 @@ class GameStateTest {
         gameState.onBallPotted(balls.get(3));
         gameState.onBallPotted(balls.get(1)); // should not be added,
         // if this happens the game should immediately end.
-        gameState.advanceTurn();
+        gameState.advanceTurn(); // player 0 keeps the turn here, 
+        // as a ball was potted during the break shot
         // Player 2 pots full ball
         gameState.onBallPotted(balls.get(2));
         gameState.advanceTurn();
-        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.STRIPED);
-        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(0).getBallType(), RegularBall3D.Type.FULL);
+        assertEquals(players.get(1).getBallType(), RegularBall3D.Type.STRIPED);
         // Player 1 pots a full ball, should be added to player 2's potted balls
         gameState.onBallPotted(balls.get(3));
-        assertTrue(players.get(1).getPottedBalls().contains(balls.get(3)));
+        assertTrue(players.get(0).getPottedBalls().contains(balls.get(3)));
     }
 
     /**
