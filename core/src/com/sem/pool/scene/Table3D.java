@@ -14,6 +14,10 @@ public class Table3D extends Object3D {
 
     public static ArrayList<HitBox> potHitBoxes;
 
+    // bounding borders for the board
+    public static final float xBound = 3.05f;
+    public static final float zBound = 1.45f;
+
     /**
      * Constructs a new 3D Board instance with the specified model.
      * @param model  Model object of the Board
@@ -68,7 +72,6 @@ public class Table3D extends Object3D {
                         new Vector3(ball.getDirection()),
                         new Vector3(hitBox.getNormal()));
                 ball.setDirection(newDirection);
-                ball.translate(new Vector3(newDirection).scl(0.01f));
                 return true;
             }
         }

@@ -36,6 +36,6 @@ public abstract class Object3D {
      * @return The coordinates of the ball.
      */
     public Vector3 getCoordinates() {
-        return this.model.transform.getTranslation(new Vector3());
+        return new Vector3(this.model.transform.getTranslation(new Vector3()));
     }
 }
