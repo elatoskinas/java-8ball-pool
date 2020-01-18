@@ -2,16 +2,11 @@ package com.sem.pool.scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.game.Game;
-import com.sem.pool.screens.MainGame;
 
 /**
  * GameUI that adds and updates all UI elements.
@@ -19,7 +14,6 @@ import com.sem.pool.screens.MainGame;
 public class GameUI {
     private transient Label playerTurnLabel;
     private transient Label cueForceLabel;
-    private transient Button restartButton;
     private transient Stage stage;
     private transient Skin skin;
 
@@ -51,20 +45,6 @@ public class GameUI {
         cueForceLabel = new Label("", skin);
         cueForceLabel.setSize(200,50);
         cueForceLabel.setPosition(Gdx.graphics.getWidth() - 200,Gdx.graphics.getHeight() - 100);
-    }
-
-    /**
-     * Add restart button.
-     * @param mainGame Game to restart.
-     */
-    private void addRestartButton(MainGame mainGame) {
-        restartButton = new TextButton("Restart", skin);
-        restartButton.addListener(new ClickListener() {
-            public void clicked(InputEvent e, float x, float y) {
-                mainGame.startPool();
-            }
-        });
-        restartButton.setPosition(Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 50);
     }
 
     /**
@@ -105,12 +85,10 @@ public class GameUI {
 
     /**
      * Create all UI elements and add them to the stage.
-     * @param mainGame the game which is needed to create the restart button.
      */
-    public void createUI(MainGame mainGame) {
+    public void createUI() {
         addPlayerTurnLabel();
         addCueForceLabel();
-        //  addRestartButton(mainGame);
 
         addActors();
     }

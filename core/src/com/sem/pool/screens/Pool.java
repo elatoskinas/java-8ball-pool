@@ -160,7 +160,7 @@ public class Pool implements Screen, GameObserver {
     public void showUI() {
         gameUI = new GameUI();
 
-        gameUI.createUI(mainGame);
+        gameUI.createUI();
 
         gameUI.render();
     }
