@@ -73,7 +73,7 @@ public class GameUI {
     private void addActors() {
         stage.addActor(playerTurnLabel);
         stage.addActor(cueForceLabel);
-        stage.addActor(restartButton);
+        //  stage.addActor(restartButton);
     }
 
     /**
@@ -81,7 +81,7 @@ public class GameUI {
      * @param scene the scene to get the force of the cue.
      */
     public void updateForceLabel(Scene3D scene) {
-        float forcePercentage = scene.getCue().getRelativeForcePercentage();
+        int forcePercentage = scene.getCue().getRelativeForcePercentage();
         cueForceLabel.setText("Force: " + forcePercentage + "%");
     }
 
@@ -90,7 +90,9 @@ public class GameUI {
      * @param game the game to get the player turn.
      */
     public void updatePlayerTurnLabel(Game game) {
-        playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn() + 1);
+        // + 1 to have player 1 and 2 instead of player 0 and 1
+        int playerTurn = game.getState().getPlayerTurn() + 1;
+        playerTurnLabel.setText("Turn: Player " + playerTurn);
     }
 
     /**
@@ -108,7 +110,7 @@ public class GameUI {
     public void createUI(MainGame mainGame) {
         addPlayerTurnLabel();
         addCueForceLabel();
-        addRestartButton(mainGame);
+        //  addRestartButton(mainGame);
 
         addActors();
     }
