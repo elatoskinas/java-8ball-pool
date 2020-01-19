@@ -33,7 +33,7 @@ class GameStateTest {
         players.add(player2);
         balls = constructBallsList(true, true, 2, 2);
 
-        gameState = new GameState(players, balls);
+        gameState = new GameState(players, this.balls);
     }
 
     /**
@@ -123,6 +123,7 @@ class GameStateTest {
 
         gameState.advanceTurn();
         assertEquals(playerTurn, gameState.getPlayerTurn());
+        assertFalse(gameState.isCueBallPotted());
     }
 
     /**
@@ -461,13 +462,12 @@ class GameStateTest {
     @Test
     void testPotOnlyEightBallWin() {
         balls = constructBallsList(true, true, 0, 0);
-        Ball3D eightBall = balls.get(1);
 
         gameState = new GameState(players, balls);
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
-        gameState.onBallPotted(eightBall);
+        gameState.onBallPotted(balls.get(1));
         gameState.handleBallPotting();
 
         Player expectedWinner = gameState.getActivePlayer();

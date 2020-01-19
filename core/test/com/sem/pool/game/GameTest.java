@@ -54,7 +54,25 @@ public class GameTest extends GameBaseTest {
     @Test
     void testStartGameInMotion() {
         game.startGame();
+
         assertFalse(game.determineIsInMotion());
+    }
+
+    /**
+     * Test that the ball potting method is called appropriately.
+     */
+    @Test
+    void testBallPotting() {
+        CueBall3D cue = Mockito.mock(CueBall3D.class);
+        Mockito.when(this.gameState.isCueBallPotted()).thenReturn(true);
+        Mockito.when(this.gameState.isInMotion()).thenReturn(true);
+        Mockito.when(this.scene.getCueBall()).thenReturn(cue);
+        game.startGame();
+
+        Mockito.verify(this.scene, Mockito.never()).recenterCueBall(Mockito.any(CueBall3D.class));
+        game.determineIsInMotion();
+
+        Mockito.verify(this.scene).recenterCueBall(Mockito.any(CueBall3D.class));
     }
 
     /**
@@ -262,7 +280,6 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball is potted
         Mockito.verify(ball).pot();
-        Mockito.verify(this.scene).recenterCueBall(ball);
     }
 
     /**

@@ -319,7 +319,6 @@ public abstract class Ball3D extends Object3D {
                 && Math.abs(getCoordinates().z) < Table3D.zBound;
     }
 
-
     public void setHitBox(HitBox hitBox) {
         this.hitBox = hitBox;
     }
