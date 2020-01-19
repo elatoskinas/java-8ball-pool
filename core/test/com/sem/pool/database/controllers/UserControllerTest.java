@@ -66,14 +66,14 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getUser() {
+    public void getUserById() {
         User user = this.userController.register("user", "pass");
         User user2 = this.userController.getUser(user.getUserID());
         assertEquals(user, user2);
     }
 
     @Test
-    public void getUserFailed() throws SQLException {
+    public void getUserByIdFailed() throws SQLException {
         Database db = Mockito.mock(Database.class);
         ResultTable table = Mockito.mock(ResultTable.class);
         UserController userController = new UserController(db);
@@ -82,5 +82,24 @@ public class UserControllerTest {
         Mockito.when(table.save(Mockito.any(Result.class))).thenThrow(SQLException.class);
 
         assertNull(userController.getUser(0));
+    }
+
+    @Test
+    public void getUserByUsername() {
+        User user = this.userController.register("username", "S3cr!d");
+        User user2 = this.userController.getUser("username");
+        assertEquals(user, user2);
+    }
+
+    @Test
+    public void getUserByUsernameFailed() throws SQLException {
+        Database db = Mockito.mock(Database.class);
+        ResultTable table = Mockito.mock(ResultTable.class);
+        UserController userController = new UserController(db);
+
+        Mockito.when(db.table(Mockito.anyString())).thenReturn(table);
+        Mockito.when(table.save(Mockito.any(Result.class))).thenThrow(SQLException.class);
+
+        assertNull(userController.getUser("thiswillfail"));
     }
 }

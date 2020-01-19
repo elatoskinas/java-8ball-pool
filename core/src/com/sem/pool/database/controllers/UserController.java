@@ -98,4 +98,17 @@ public class UserController {
             return null;
         }
     }
+
+    /**
+     * Get a user by username.
+     * @param username The username to get
+     * @return The user if found, NULL if not.
+     */
+    public User getUser(String username) {
+        try {
+            return this.table.getUser(username);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

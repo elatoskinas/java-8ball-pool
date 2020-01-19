@@ -255,10 +255,9 @@ public class Login implements Screen {
     @SuppressWarnings({"PMD.DoNotCallSystemExit"})
     private void startGame(User user) {
         // TODO: Let the user select there opponent and handle this more gracefully.
-        User opponent = this.userController.getUser(0);
+        User opponent = this.userController.getUser("testUser");
         if (opponent == null) {
-            System.out.println("Failed to launch game, does player `0` exists?");
-            System.exit(1);
+            this.userController.register("testUser", "passwd");
         }
 
         ArrayList<User> users = new ArrayList<>();
