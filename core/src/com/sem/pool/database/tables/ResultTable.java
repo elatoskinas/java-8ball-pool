@@ -47,24 +47,16 @@ public class ResultTable extends Table {
      */
     @Override
     protected void createTable() throws SQLException {
-        Statement stmt = this.conn.createStatement();
-        String query = "create table " + this.getTableName() + " ("
-                + "   gameId    integer primary key autoincrement,"
-                + "   winner    integer not null,"
-                + "   loser     integer not null,"
-                + "   FOREIGN KEY(winner) REFERENCES User(id),"
-                + "   FOREIGN KEY(loser) REFERENCES User(id)"
-                + ")";
-
-        // This comment is to ignore IntelIJ to complain about a "fix" which would make
-        // PMD complain again.
-        // noinspection TryFinallyCanBeTryWithResources
-        try {
+        try (Statement stmt = this.conn.createStatement()) {
+            String query = "create table " + this.getTableName() + " ("
+                    + "   gameId    integer primary key autoincrement,"
+                    + "   winner    integer not null,"
+                    + "   loser     integer not null,"
+                    + "   FOREIGN KEY(winner) REFERENCES User(id),"
+                    + "   FOREIGN KEY(loser) REFERENCES User(id)"
+                    + ")";
             stmt.execute(query);
-        } finally {
-            stmt.close();
         }
-        stmt.close();
     }
 
     protected String getTableName() {

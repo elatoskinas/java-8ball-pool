@@ -39,6 +39,8 @@ public interface GameObserver {
 
     /**
      * Event that is triggered when the observed Game ends.
+     * @param winner The winner of the game.
+     * @param players a list of participating player, including the winner.
      */
     public void onGameEnded(Player winner, List<Player> players);
 }

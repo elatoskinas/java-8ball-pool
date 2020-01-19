@@ -109,22 +109,14 @@ public class UserTable extends Table {
      */
     @Override
     protected void createTable() throws SQLException {
-        Statement stmt = this.conn.createStatement();
-        String query = "create table " + this.getTableName() + " ("
-                + "   id       integer primary key autoincrement,"
-                + "   username text    not null unique,"
-                + "   password text    not null"
-                + ")";
-
-        // This comment is to ignore IntelIJ to complain about a "fix" which would make
-        // PMD complain again.
-        // noinspection TryFinallyCanBeTryWithResources
-        try {
+        try (Statement stmt = this.conn.createStatement()) {
+            String query = "create table " + this.getTableName() + " ("
+                    + "   id       integer primary key autoincrement,"
+                    + "   username text    not null unique,"
+                    + "   password text    not null"
+                    + ")";
             stmt.execute(query);
-        } finally {
-            stmt.close();
         }
-        stmt.close();
     }
 
     protected String getTableName() {

@@ -45,18 +45,14 @@ public abstract class Table {
      *
      * @throws SQLException Throws on SQL error.
      */
-    @SuppressWarnings("PMD.CloseResource")
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void ensureTable() throws SQLException {
         DatabaseMetaData dbm = this.conn.getMetaData();
-        ResultSet tables = dbm.getTables(null, null, this.getTableName(), null);
 
-        try {
+        try (ResultSet tables = dbm.getTables(null, null, this.getTableName(), null)) {
             if (tables.isAfterLast()) {
                 this.createTable();
-                tables.close();
             }
-        } catch (SQLException e) {
-            tables.close();
         }
     }
 }

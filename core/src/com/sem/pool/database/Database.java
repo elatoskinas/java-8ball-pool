@@ -45,8 +45,8 @@ public class Database {
             }
 
             // Add all tables.
-            this.tables.put("User", new UserTable(conn));
-            this.tables.put("Result", new ResultTable(conn));
+            this.tables.put(UserTable.TABLE_NAME, new UserTable(conn));
+            this.tables.put(ResultTable.TABLE_NAME, new ResultTable(conn));
         } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
