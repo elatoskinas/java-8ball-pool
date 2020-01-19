@@ -107,22 +107,6 @@ public class Pool implements Screen, GameObserver {
 
         // Make the Pool game observe the Game loop class to receive events.
         game.addObserver(this);
-    }
-
-    /**
-     * Initializes the Game instance for the current Pool Game.
-     */
-    private void initializeGame() {
-        // Create players with IDs 0 and 1
-        List<Player> players = new ArrayList<>();
-        players.add(new Player(0));
-        players.add(new Player(1));
-
-        // Create game state with the scene's pool balls and created players
-        GameState gameState = new GameState(players, scene.getPoolBalls());
-
-        // Create game instance with GDX input, the scene and the created game state
-        game = new Game(scene, Gdx.input, gameState);
 
         // Start the game.
         game.startGame();
@@ -156,7 +140,6 @@ public class Pool implements Screen, GameObserver {
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
             this.initializeScene();
-            this.initializeGame();
         }
 
         // Clear depth buffer & color buffer masks
