@@ -17,7 +17,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, this.scene.getPoolBalls());
         game = new Game(scene, input, gameState);
     }
 

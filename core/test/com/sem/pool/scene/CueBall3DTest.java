@@ -33,6 +33,12 @@ public class CueBall3DTest extends Ball3DTest {
         float speed = 5.1f;
         ModelInstance mockModel = Mockito.mock(ModelInstance.class);
         mockModel.transform = Mockito.mock(Matrix4.class);
+        Mockito.when(
+                mockModel.transform.getTranslation(Mockito.any(Vector3.class))
+        ).thenReturn(
+                new Vector3(0, 0, 0)
+        );
+
         Ball3D ball = getBall(0, mockModel);
         ball.setSpeed(speed);
 

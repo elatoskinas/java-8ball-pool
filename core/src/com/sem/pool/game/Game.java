@@ -57,7 +57,7 @@ public class Game implements ObservableGame {
         players.add(player2);
 
         // Create game state with the scene's pool balls & the two players
-        GameState gameState = new GameState(players, scene);
+        GameState gameState = new GameState(players, scene.getPoolBalls());
 
         // Create a Game object from the parameters
         return new Game(scene, input, gameState);
@@ -203,6 +203,11 @@ public class Game implements ObservableGame {
             scene.clearFirstTouched();
 
             stopMotion(touched);
+
+            // Reset the cue ball if it was potted.
+            if (this.state.isCuePotted()) {
+                this.scene.recenterCueBall(this.scene.getCueBall());
+            }
         }
 
         return false;

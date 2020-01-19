@@ -4,7 +4,6 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
-import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,11 +23,11 @@ public class GameState implements GameObserver {
     private transient Set<Ball3D> remainingBalls;
     private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
     private transient List<Ball3D> allPottedBalls; // All Balls potted in any turn.
-    private transient Scene3D scene;
 
     private transient int playerTurn;
     private transient int turnCount;
     private transient boolean typesAssigned; // if ball types have been assigned yet
+    private transient boolean cueBallPotted;
 
     private transient Player winningPlayer;
 
@@ -47,20 +46,20 @@ public class GameState implements GameObserver {
     /**
      * Creates a new game state with the specified Players and
      * the specified Pool balls.
-     * @param players List of Players for the game
-     * @param scene The game scene.
+     * @param players     List of Players for the game
+     * @param poolBalls   List of pool balls to use for the game
      */
-    public GameState(List<Player> players, Scene3D scene) {
+    public GameState(List<Player> players, List<Ball3D> poolBalls) {
         this.state = State.Stopped;
         this.players = players;
         this.remainingBalls = new HashSet<>();
         this.currentPottedBalls = new ArrayList<>();
         this.allPottedBalls = new ArrayList<>();
         this.typesAssigned = false;
-        this.scene = scene;
+        this.cueBallPotted = false;
 
         // Add all pool balls except cue ball to remaining balls set
-        for (Ball3D ball : scene.getPoolBalls()) {
+        for (Ball3D ball : poolBalls) {
             if (!(ball instanceof CueBall3D)) {
                 remainingBalls.add(ball);
             }
@@ -240,8 +239,8 @@ public class GameState implements GameObserver {
         // their balls after, which would result in a win when
         // it should be a loss.
         boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
+        this.cueBallPotted = false;
         boolean eightPotted = false;
-        boolean cuePotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
             if (!typesAssigned && !(ball instanceof CueBall3D)) {
@@ -254,8 +253,7 @@ public class GameState implements GameObserver {
             } else if (ball instanceof EightBall3D) {
                 eightPotted = true;
             } else if (ball instanceof CueBall3D) {
-                cuePotted = true;
-                this.scene.recenterCueBall((CueBall3D) ball);
+                this.cueBallPotted = true;
             }
 
             // Remove the ball from the remaining balls set
@@ -264,13 +262,13 @@ public class GameState implements GameObserver {
 
         // 8-ball potted
         if (eightPotted) {
-            winGame(allPotted, cuePotted);
+            winGame(allPotted, this.cueBallPotted);
         }
 
         // Reset potted balls for next turn
         currentPottedBalls.clear();
         
-        return cuePotted;
+        return this.cueBallPotted;
     }
     
     public void setTypesAssigned(boolean typesAssigned) {
@@ -359,6 +357,10 @@ public class GameState implements GameObserver {
         
         // Increment the turn counter
         turnCount += 1;
+    }
+
+    public boolean isCuePotted() {
+        return this.cueBallPotted;
     }
 
     /**

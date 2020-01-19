@@ -10,7 +10,6 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
-import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,6 @@ class GameStateTest {
     transient GameState gameState;
     transient List<Player> players;
     transient List<Ball3D> balls;
-    transient Scene3D scene;
 
     @BeforeEach
     public void setUp() {
@@ -35,10 +33,7 @@ class GameStateTest {
         players.add(player2);
         balls = constructBallsList(true, true, 2, 2);
 
-        this.scene = Mockito.mock(Scene3D.class);
-        Mockito.when(this.scene.getPoolBalls()).thenReturn(this.balls);
-
-        gameState = new GameState(players, scene);
+        gameState = new GameState(players, this.balls);
     }
 
     /**
@@ -89,12 +84,11 @@ class GameStateTest {
         final int solidBalls = 3;
         final int stripedBalls = 2;
         balls = constructBallsList(true, true, solidBalls, stripedBalls);
-        Mockito.when(this.scene.getPoolBalls()).thenReturn(this.balls);
 
         // We do not expect the cue ball to be in remaining balls list
         final int expectedBalls = solidBalls + stripedBalls + 1;
 
-        GameState gameState2 = new GameState(players, this.scene);
+        GameState gameState2 = new GameState(players, balls);
 
         assertEquals(players, gameState2.getPlayers());
         assertEquals(expectedBalls, gameState2.getRemainingBalls().size());
@@ -129,6 +123,7 @@ class GameStateTest {
 
         gameState.advanceTurn();
         assertEquals(playerTurn, gameState.getPlayerTurn());
+        assertFalse(gameState.isCuePotted());
     }
 
     /**
@@ -218,7 +213,7 @@ class GameStateTest {
         Mockito.when(player2.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
 
         // Re-create game state with mocked players
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         RegularBall3D ball = (RegularBall3D) balls.get(2);
         assertEquals(ball.getType(), RegularBall3D.Type.FULL);
@@ -249,7 +244,7 @@ class GameStateTest {
         Mockito.when(player2.getBallType()).thenReturn(RegularBall3D.Type.UNASSIGNED);
 
         // Re-create game state with mocked players
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         RegularBall3D ball = (RegularBall3D) balls.get(4);
         assertEquals(ball.getType(), RegularBall3D.Type.STRIPED);
@@ -414,7 +409,7 @@ class GameStateTest {
         balls = constructBallsList(true, true, 2, 2);
         Ball3D eightBall = balls.get(1);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // Assign ball type to Player
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
@@ -440,7 +435,7 @@ class GameStateTest {
     void testPotEightBallLossPotAll() {
         balls = constructBallsList(true, true, 2, 1);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // Assign ball type to Player
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
@@ -467,9 +462,8 @@ class GameStateTest {
     @Test
     void testPotOnlyEightBallWin() {
         balls = constructBallsList(true, true, 0, 0);
-        Mockito.when(this.scene.getPoolBalls()).thenReturn(this.balls);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
@@ -492,9 +486,8 @@ class GameStateTest {
     @Test
     void testPotEightBallAndOthersWin() {
         balls = constructBallsList(true, true, 0, 3);
-        Mockito.when(this.scene.getPoolBalls()).thenReturn(this.balls);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
@@ -572,7 +565,7 @@ class GameStateTest {
     @Test
     void testAssignmentSimple() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         gameState.advanceTurn();
         // Now it's player 2's turn
@@ -589,7 +582,7 @@ class GameStateTest {
     @Test
     void testAssignmentDouble() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         gameState.advanceTurn();
         // Now it's player 2's turn
@@ -611,7 +604,7 @@ class GameStateTest {
     @Test
     void testAllPottedBalls() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
         gameState.onBallPotted(balls.get(2));
         gameState.onBallPotted(balls.get(0));
         gameState.advanceTurn(); // handle turn events
@@ -626,7 +619,7 @@ class GameStateTest {
     @Test
     void testAssignmentBreakShot() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // stillAtBreakShot
         gameState.onBallPotted(balls.get(2));
@@ -642,7 +635,7 @@ class GameStateTest {
     @Test
     void testAssignmentCuePot() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         gameState.advanceTurn();
         // not at breakshot but since cue ball is potted no type should be assigned
@@ -660,7 +653,7 @@ class GameStateTest {
     @Test
     void testAssignmentBreakShotPot() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
@@ -682,7 +675,7 @@ class GameStateTest {
     @Test
     void testAddPottedBallsWithEightBall() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
@@ -709,7 +702,7 @@ class GameStateTest {
     @Test
     void testAddPottedBallToRightPlayer() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
@@ -734,7 +727,7 @@ class GameStateTest {
     @Test
     void testAddPottedBallToNoPlayer() {
         balls = constructBallsList(true, true, 3, 3);
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // pot a ball during breakshot
         gameState.onBallPotted(balls.get(5));
@@ -754,7 +747,7 @@ class GameStateTest {
     void testPotCueAndEightBallEightFirst() {
         balls = constructBallsList(true, true, 0, 3);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
 
         // Pot eight ball for current Player
@@ -780,7 +773,7 @@ class GameStateTest {
     void testPotCueAndEightBallCueBallFirst() {
         balls = constructBallsList(true, true, 4, 0);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.STRIPED);
 
         // Pot eight ball for current Player
@@ -803,7 +796,7 @@ class GameStateTest {
     void testKeepTurnAfterBallPot() {
         balls = constructBallsList(true, true, 2, 2);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // Break shot
         gameState.advanceTurn();
@@ -822,7 +815,7 @@ class GameStateTest {
     void loseTurnAfterWrongFirstTouch() {
         balls = constructBallsList(true, true, 2, 2);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // Break shot
         gameState.advanceTurn();
@@ -843,7 +836,7 @@ class GameStateTest {
     void loseTurnWhenCueBallPotted() {
         balls = constructBallsList(true, true, 2, 2);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // Break shot
         gameState.advanceTurn();
@@ -866,7 +859,7 @@ class GameStateTest {
     void loseTurnWhenOnlyWrongBallPotted() {
         balls = constructBallsList(true, true, 2, 2);
 
-        gameState = new GameState(players, this.scene);
+        gameState = new GameState(players, balls);
 
         // Break shot
         gameState.advanceTurn();
