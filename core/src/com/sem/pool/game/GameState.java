@@ -139,8 +139,8 @@ public class GameState implements GameObserver {
      * turn and starting the subsequent Player's turn.
      */
     public void advanceTurn() {
-        boolean cuePotted = handleBallPotting();
-        handleTurnAdvancement(cuePotted);
+        handleBallPotting();
+        handleTurnAdvancement();
     }
 
     //    /**
@@ -227,11 +227,10 @@ public class GameState implements GameObserver {
      * Handles ball potting logic of all balls in the current turn,
      * including special cases on potting the cue and 8-ball, which might
      * result in the victory or loss of the game.
-     * @return Whether or not the cue ball was potted.
      */
     // UR anomaly false positive triggered by foreach loop (ball variable)
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    protected boolean handleBallPotting() {
+    protected void handleBallPotting() {
         // Check if Player has potted all of their assigned ball
         // type balls. We check for this before potting all balls
         // because a Player might pot the 8-ball and then all of
@@ -266,8 +265,6 @@ public class GameState implements GameObserver {
 
         // Reset potted balls for next turn
         currentPottedBalls.clear();
-        
-        return this.cueBallPotted;
     }
     
     public void setTypesAssigned(boolean typesAssigned) {
@@ -330,7 +327,7 @@ public class GameState implements GameObserver {
     // Warnings are suppressed because the 'DU'-anomaly isn't actually applicable here,
     // and it suddenly showed up. Very probable to be a bug in PMD.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void handleTurnAdvancement(boolean cuePotted) {
+    public void handleTurnAdvancement() {
         state = State.Idle;
         Player activePlayer = getActivePlayer();
 
@@ -348,7 +345,7 @@ public class GameState implements GameObserver {
         // - Did the player pot a ball of the wrong type
         // - Did the player pot a ball of the correct type
         // Special case: if any ball is potted during the break shot, keep the turn
-        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) || cuePotted) {
+        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) || this.cueBallPotted) {
             if (!correctFirstTouch
                     || !getActivePlayer().getPottedCorrectBall()) {
                 // Not all criteria were satisfied -> player loses the turn
