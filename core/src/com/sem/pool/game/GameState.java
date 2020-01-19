@@ -82,10 +82,6 @@ public class GameState implements GameObserver {
         return currentPottedBalls;
     }
 
-    public void setInMotion() {
-        this.state = State.InMotion;
-    }
-
     public boolean isInMotion() {
         return state == State.InMotion;
     }
@@ -188,10 +184,6 @@ public class GameState implements GameObserver {
     @Override
     public void onGameEnded() {
         this.state = State.Ended;
-    }
-
-    public boolean getTypesAssigned() {
-        return typesAssigned;
     }
 
     public List<Ball3D> getAllPottedBalls() {
