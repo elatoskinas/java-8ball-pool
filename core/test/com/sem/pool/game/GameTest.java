@@ -27,7 +27,6 @@ public class GameTest extends GameBaseTest {
         super.setUp();
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
-
     }
 
     /**
@@ -148,6 +147,7 @@ public class GameTest extends GameBaseTest {
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
+
         setupScenePoolBallsHelper(false, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -169,6 +169,7 @@ public class GameTest extends GameBaseTest {
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
+
         setupScenePoolBallsHelper(true, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);

@@ -47,7 +47,9 @@ class GameInputTest extends GameBaseTest {
         Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0, 0,0));
 
         gameState = new GameState(players, poolBalls);
+
         game = new Game(scene, input, gameState);
+
     }
 
     /**

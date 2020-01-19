@@ -6,7 +6,6 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,6 +30,7 @@ public class Game implements ObservableGame {
      * @param state The state of the game.
      */
     public Game(Scene3D scene, Input input, GameState state) {
+
         this.scene = scene;
         this.input = input;
         this.state = state;
@@ -46,7 +46,7 @@ public class Game implements ObservableGame {
      * Creates a new Game instance with the given scene and input objects.
      * @param scene  Scene to use for the Game
      * @param input  Input handler to use for the Game
-     * @return       New Game instance
+     * @return New Game instance
      */
     public static Game createNewGame(Scene3D scene, Input input) {
         // Create 2 players with differing IDs
@@ -159,7 +159,6 @@ public class Game implements ObservableGame {
 
                 CueBall3D cueBall = scene.getCueBall();
                 cue.shoot(cueBall);
-
                 scene.getSoundPlayer().playCueSound();
             } else {
                 // Cancel shot -> go back to rotating
@@ -265,5 +264,4 @@ public class Game implements ObservableGame {
     public void endGame() {
         observers.forEach(GameObserver::onGameEnded);
     }
-
 }

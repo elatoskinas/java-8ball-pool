@@ -3,6 +3,7 @@ package com.sem.pool.game;
 import com.badlogic.gdx.Input;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.screens.MainGame;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ abstract class GameBaseTest {
     protected transient Game game;
     protected transient List<Player> players;
     protected transient List<Ball3D> poolBalls;
+    protected transient MainGame mainGame;
 
     @BeforeEach
     void setUp() {

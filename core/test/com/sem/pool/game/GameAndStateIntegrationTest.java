@@ -31,7 +31,9 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         setupScenePoolBallsHelper(false, false, false);
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
+
         game = new Game(scene, input, gameState);
+
         game.startGame();
         assertFalse(game.determineIsInMotion());
         gameState.onMotion();
