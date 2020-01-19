@@ -254,15 +254,16 @@ public class Login implements Screen {
     // Therefor it should close the program.
     @SuppressWarnings({"PMD.DoNotCallSystemExit"})
     private void startGame(User user) {
-        ArrayList<User> users = new ArrayList<>();
-        users.add(user);
-
         // TODO: Let the user select there opponent and handle this more gracefully.
         User opponent = this.userController.getUser(0);
         if (opponent == null) {
             System.out.println("Failed to launch game, does player `0` exists?");
             System.exit(1);
         }
+
+        ArrayList<User> users = new ArrayList<>();
+        users.add(user);
+        users.add(opponent);
 
         // TODO: Send the users list to the game.
         this.game.startPool();
