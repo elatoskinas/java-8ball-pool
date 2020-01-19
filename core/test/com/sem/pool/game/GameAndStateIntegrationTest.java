@@ -18,7 +18,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     void setUp() {
         super.setUp();
         gameState = new GameState(players, poolBalls);
-        game = new Game(scene, input, gameState, mainGame);
+        game = new Game(scene, input, gameState);
     }
 
     /**
@@ -32,7 +32,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
 
-        game = new Game(scene, input, gameState, mainGame);
+        game = new Game(scene, input, gameState);
 
         game.startGame();
         assertFalse(game.determineIsInMotion());

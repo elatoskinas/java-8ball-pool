@@ -16,7 +16,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.game.Game;
 import com.sem.pool.scene.Scene3D;
-import com.sem.pool.screens.MainGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,14 +28,11 @@ import org.mockito.Mockito;
  */
 class GameInitializerTest {
     private transient AssetLoader assetLoader;
-    private transient ModelBatch modelBatch;
     private transient Input input;
 
     private transient Vector2 resolution;
-    private transient Vector3 cameraPosition;
 
     private transient GameInitializer gameInitializer;
-    private transient MainGame mainGame;
 
     @BeforeEach
     public void setUp() {
@@ -46,15 +42,14 @@ class GameInitializerTest {
 
         // Mock & instantiate all needed dependencies
         assetLoader = Mockito.mock(AssetLoader.class);
-        modelBatch = Mockito.mock(ModelBatch.class);
-        mainGame = Mockito.mock(MainGame.class);
+        ModelBatch modelBatch = Mockito.mock(ModelBatch.class);
         input = Mockito.mock(Input.class);
         resolution = new Vector2(width, height);
-        cameraPosition = Vector3.Z;
+        Vector3 cameraPosition = Vector3.Z;
 
         // Create new game initializer
         gameInitializer = new GameInitializer(assetLoader, modelBatch, input,
-                resolution, cameraPosition, mainGame);
+                resolution, cameraPosition);
 
         Bullet.init();
     }

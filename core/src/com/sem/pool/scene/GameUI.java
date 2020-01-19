@@ -2,13 +2,9 @@ package com.sem.pool.scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.game.Game;
 
@@ -20,7 +16,7 @@ public class GameUI {
     private transient Label cueForceLabel;
     private transient Label ballTypePlayerOneLabel;
     private transient Label ballTypePlayerTwoLabel;
-    private transient Button restartButton;
+
     private transient Stage stage;
     private transient Skin skin;
 
@@ -53,20 +49,6 @@ public class GameUI {
     }
 
     /**
-     * Add restart button.
-     * @param game Game to restart.
-     */
-    private void addRestartButton(Game game) {
-        restartButton = new TextButton("Restart", skin);
-        restartButton.addListener(new ClickListener() {
-            public void clicked(InputEvent e, float x, float y) {
-                game.restartGame();
-            }
-        });
-        restartButton.setPosition(Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 50);
-    }
-
-    /**
      * Add ball type label for players.
      */
     private void addBallTypeLabels() {
@@ -85,7 +67,7 @@ public class GameUI {
         stage.addActor(ballTypePlayerOneLabel);
         stage.addActor(ballTypePlayerTwoLabel);
         stage.addActor(cueForceLabel);
-        stage.addActor(restartButton);
+        //  stage.addActor(restartButton);
     }
 
     /**
@@ -93,7 +75,7 @@ public class GameUI {
      * @param scene the scene to get the force of the cue.
      */
     public void updateForceLabel(Scene3D scene) {
-        float forcePercentage = scene.getCue().getRelativeForcePercentage();
+        int forcePercentage = scene.getCue().getRelativeForcePercentage();
         cueForceLabel.setText("Force: " + forcePercentage + "%");
     }
 
@@ -102,7 +84,9 @@ public class GameUI {
      * @param game the game to get the player turn.
      */
     public void updatePlayerTurnLabel(Game game) {
-        playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn());
+        // + 1 to have player 1 and 2 instead of player 0 and 1
+        int playerTurn = game.getState().getPlayerTurn() + 1;
+        playerTurnLabel.setText("Turn: Player " + playerTurn);
     }
 
     /**
@@ -129,13 +113,12 @@ public class GameUI {
 
     /**
      * Create all UI elements and add them to the stage.
-     * @param game the game which is needed to create the restart button.
      */
-    public void createUI(Game game) {
+    public void createUI() {
         addPlayerTurnLabel();
         addCueForceLabel();
-        addRestartButton(game);
         addBallTypeLabels();
+
         addActors();
     }
 }

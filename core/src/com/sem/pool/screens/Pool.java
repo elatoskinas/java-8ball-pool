@@ -33,6 +33,7 @@ public class Pool implements Screen, GameObserver {
 
     private transient GameUI gameUI;
 
+
     // State flag to keep track of whether asset loading
     // has finished.
     private transient boolean loaded;
@@ -87,7 +88,7 @@ public class Pool implements Screen, GameObserver {
         // Create a Game initializer with the Game's internal parameters
         // required for making a Game.
         GameInitializer gameInitializer = new GameInitializer(assetLoader, modelBatch,
-                Gdx.input, resolution, CAMERA_POSITION, mainGame);
+                Gdx.input, resolution, CAMERA_POSITION);
 
         // Instantiate the game & retrieve the scene from the game
         game = gameInitializer.createGame();
@@ -160,7 +161,7 @@ public class Pool implements Screen, GameObserver {
     public void showUI() {
         gameUI = new GameUI();
 
-        gameUI.createUI(game);
+        gameUI.createUI();
 
         gameUI.render();
     }
