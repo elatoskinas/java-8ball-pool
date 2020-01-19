@@ -4,9 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.database.Database;
-import com.sem.pool.database.controllers.ResultController;
-import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.game.Game;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SoundPlayer;
@@ -31,8 +28,8 @@ public class GameInitializer {
      * @param resolution      Resolution of the game as a 2D vector
      * @param cameraPosition  Position of the camera as a 3D vector
      */
-    public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch,
-                           Input input, Vector2 resolution, Vector3 cameraPosition) {
+    public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch, Input input,
+                           Vector2 resolution, Vector3 cameraPosition) {
         this.assetLoader = assetLoader;
         this.modelBatch = modelBatch;
         this.input = input;

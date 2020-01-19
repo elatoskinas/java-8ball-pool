@@ -50,7 +50,9 @@ class GameInputTest extends GameBaseTest {
         Database.setTestMode();
 
         gameState = new GameState(players, poolBalls);
+
         game = new Game(scene, input, gameState);
+
     }
 
     /**

@@ -4,20 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.ResultController;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.User;
+
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
@@ -25,6 +20,7 @@ import com.sem.pool.game.GameObserver;
 import com.sem.pool.game.GameState;
 import com.sem.pool.game.Player;
 import com.sem.pool.scene.Ball3D;
+import com.sem.pool.scene.GameUI;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
@@ -43,9 +39,8 @@ public class Pool implements Screen, GameObserver {
     private static final Vector3 CAMERA_POSITION = new Vector3(0f, 100f, 0f);
     private transient Game game;
 
-    private transient Stage stage;
-    private transient Label playerTurnLabel;
-    private transient Button restartButton;
+    private transient GameUI gameUI;
+
 
     // State flag to keep track of whether asset loading
     // has finished.
@@ -170,37 +165,29 @@ public class Pool implements Screen, GameObserver {
         // Update the scene & game for the current iteration
         update(delta);
 
-        loadUI();
+        updateUI();
     }
 
     /**
-     * Load the UI elements like the playerturn.
+     * Updates the UI elements and renders them.
      */
-    public void loadUI() {
+    public void updateUI() {
         if (loaded) {
-            int playerTurn = game.getState().getPlayerTurn() + 1;
-            playerTurnLabel.setText("Player turn: " + playerTurn);
+            gameUI.updateForceLabel(scene);
+            gameUI.updatePlayerTurnLabel(game);
         }
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+        gameUI.render();
     }
 
     /**
-     * Shows the UI.
+     * Create gameUI and shows all elements.
      */
     public void showUI() {
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        gameUI = new GameUI();
 
-        TextureAtlas atlas = new TextureAtlas("uiskin.atlas");
-        Skin skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), atlas);
+        gameUI.createUI();
 
-        playerTurnLabel = new Label("", skin);
-        playerTurnLabel.setSize(200,50);
-        playerTurnLabel.setPosition(80,Gdx.graphics.getHeight() - 100);
-
-        stage.addActor(playerTurnLabel);
-        stage.act();
-        stage.draw();
+        gameUI.render();
     }
 
     @Override
