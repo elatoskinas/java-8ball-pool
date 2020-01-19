@@ -205,7 +205,7 @@ public class Game implements ObservableGame {
             stopMotion(touched);
 
             // Reset the cue ball if it was potted.
-            if (this.state.isCuePotted()) {
+            if (this.state.isCueBallPotted()) {
                 this.scene.recenterCueBall(this.scene.getCueBall());
             }
         }

@@ -123,7 +123,7 @@ class GameStateTest {
 
         gameState.advanceTurn();
         assertEquals(playerTurn, gameState.getPlayerTurn());
-        assertFalse(gameState.isCuePotted());
+        assertFalse(gameState.isCueBallPotted());
     }
 
     /**

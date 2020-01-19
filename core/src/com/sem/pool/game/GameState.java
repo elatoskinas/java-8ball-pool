@@ -363,7 +363,7 @@ public class GameState implements GameObserver {
         turnCount += 1;
     }
 
-    public boolean isCuePotted() {
+    public boolean isCueBallPotted() {
         return this.cueBallPotted;
     }
 
