@@ -4,12 +4,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.ResultController;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.game.Game;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SoundPlayer;
-import org.mockito.Mockito;
 
 /**
  * Class that abstracts the functionality of initializing the
@@ -100,10 +100,8 @@ public class GameInitializer {
     public Game createGame() {
         // Creates new scene
         Scene3D scene = createSceneFactory().createScene();
-        UserController userController = Mockito.mock(UserController.class);
-        ResultController resultController = Mockito.mock(ResultController.class);
 
         // Create & return new game
-        return Game.createNewGame(scene, input, userController, resultController);
+        return Game.createNewGame(scene, input);
     }
 }

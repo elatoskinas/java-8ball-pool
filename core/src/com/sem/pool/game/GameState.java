@@ -186,7 +186,7 @@ public class GameState implements GameObserver {
     }
 
     @Override
-    public void onGameEnded() {
+    public void onGameEnded(Player winner, List<Player> players) {
         this.state = State.Ended;
     }
 

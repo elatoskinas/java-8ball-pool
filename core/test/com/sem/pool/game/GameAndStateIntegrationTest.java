@@ -4,11 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
-import com.sem.pool.database.controllers.ResultController;
-import com.sem.pool.database.controllers.UserController;
-import com.sem.pool.database.models.User;
 import com.sem.pool.scene.Cue3D;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,10 +20,8 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         this.gameState = new GameState(players, poolBalls);
 
         Database.setTestMode();
-        this.userController = new UserController(Database.getInstance());
-        this.resultController = new ResultController(Database.getInstance());
 
-        game = new Game(scene, input, gameState, userController, resultController);
+        game = new Game(scene, input, gameState);
     }
 
     /**
@@ -40,7 +34,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         setupScenePoolBallsHelper(false, false, false);
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
-        game = new Game(scene, input, gameState, this.userController, this.resultController);
+        game = new Game(scene, input, gameState);
         game.startGame();
         assertFalse(game.determineIsInMotion());
         gameState.onMotion();
@@ -91,15 +85,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     void testEndGameOnWin() {
         final float deltaTime = 1f;
 
-        ResultController resultController = Mockito.mock(ResultController.class);
-        Mockito
-                .when(resultController.createResult(
-                        Mockito.any(User.class),
-                        Mockito.any(User.class)
-                ))
-                .thenReturn(true);
-
-        game = new Game(scene, input, gameState, userController, resultController);
+        game = new Game(scene, input, gameState);
 
         // Start game
         game.startGame();
@@ -113,7 +99,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         game.advanceGameLoop(deltaTime);
 
         // Ensure end game event is sent
-        Mockito.verify(observer).onGameEnded();
+        Mockito.verify(observer).onGameEnded(Mockito.any(Player.class), Mockito.any());
 
         assertTrue(gameState.isStopped());
     }

@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.ResultController;
 import com.sem.pool.database.controllers.UserController;
+import com.sem.pool.database.models.User;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
@@ -125,11 +126,8 @@ public class Pool implements Screen, GameObserver {
         // Create game state with the scene's pool balls and created players
         GameState gameState = new GameState(players, scene.getPoolBalls());
 
-        UserController userController = new UserController(Database.getInstance());
-        ResultController resultController = new ResultController(Database.getInstance());
-
         // Create game instance with GDX input, the scene and the created game state
-        game = new Game(scene, Gdx.input, gameState, userController, resultController);
+        game = new Game(scene, Gdx.input, gameState);
 
         // Start the game.
         game.startGame();
@@ -162,7 +160,8 @@ public class Pool implements Screen, GameObserver {
         // assetLoader update event is received in current iteration,
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
-            initializeScene();
+            this.initializeScene();
+            this.initializeGame();
         }
 
         // Clear depth buffer & color buffer masks
@@ -253,7 +252,17 @@ public class Pool implements Screen, GameObserver {
     }
 
     @Override
-    public void onGameEnded() {
+    public void onGameEnded(Player winner, List<Player> players) {
+        // Store the result.
+        Player loser = players.get(winner.getId() == 0 ? 1 : 0);
+        UserController userController = new UserController(Database.getInstance());
+        ResultController resultController = new ResultController(Database.getInstance());
+
+        User winnerUser = userController.getUser(winner.getId());
+        User loserUser = userController.getUser(loser.getId());
+
+        resultController.createResult(winnerUser, loserUser);
+
         // Go back to login screen when Game is ended
         // TODO: Change to stats/leaderboards screen
         mainGame.create();

@@ -7,9 +7,6 @@ import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
 import com.sem.pool.database.Database;
-import com.sem.pool.database.controllers.ResultController;
-import com.sem.pool.database.controllers.UserController;
-import com.sem.pool.database.models.User;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
@@ -30,11 +27,9 @@ public class GameTest extends GameBaseTest {
         super.setUp();
 
         Database.setTestMode();
-        this.userController = new UserController(Database.getInstance());
-        this.resultController = new ResultController(Database.getInstance());
         this.gameState = Mockito.mock(GameState.class);
 
-        game = new Game(scene, input, gameState, userController, resultController);
+        game = new Game(scene, input, gameState);
     }
 
     /**
@@ -44,7 +39,7 @@ public class GameTest extends GameBaseTest {
     @Test
     void testConstructor() {
         gameState = Mockito.mock(GameState.class);
-        Game game2 = new Game(scene, input, gameState, userController, resultController);
+        Game game2 = new Game(scene, input, gameState);
 
         assertEquals(scene, game2.getScene());
         assertEquals(input, game2.getInput());
@@ -154,7 +149,7 @@ public class GameTest extends GameBaseTest {
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
-        game = new Game(scene, input, gameState, userController, resultController);
+        game = new Game(scene, input, gameState);
         setupScenePoolBallsHelper(false, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -171,11 +166,10 @@ public class GameTest extends GameBaseTest {
      */
     @Test
     void testAdvanceGameLoopNotAdvanceTurn() {
-
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
-        game = new Game(scene, input, gameState, userController, resultController);
+        game = new Game(scene, input, gameState);
         setupScenePoolBallsHelper(true, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -263,10 +257,6 @@ public class GameTest extends GameBaseTest {
     void testEndGame() {
         Player winner = Mockito.mock(Player.class);
         Player loser = Mockito.mock(Player.class);
-        User user = this.userController.register("user", "password");
-
-        Mockito.when(winner.getId()).thenReturn(user.getUserID());
-        Mockito.when(loser.getId()).thenReturn(user.getUserID());
 
         ArrayList<Player> players = new ArrayList<>();
         players.add(winner);
@@ -380,17 +370,6 @@ public class GameTest extends GameBaseTest {
      */
     @Test
     public void testGameEndObservers() {
-        ResultController resultController = Mockito.mock(ResultController.class);
-        Mockito
-                .when(resultController.createResult(
-                        Mockito.any(User.class), Mockito.any(User.class)
-                ))
-                .thenReturn(true);
-        game = new Game(
-                this.scene, this.input, this.gameState,
-                this.userController, resultController
-        );
-
         final int observerCount = 3;
         final List<GameObserver> observers = setUpObservers(observerCount);
 
@@ -405,7 +384,7 @@ public class GameTest extends GameBaseTest {
 
         for (int i = 0; i < observers.size(); ++i) {
             GameObserver o = observers.get(i);
-            Mockito.verify(o).onGameEnded();
+            Mockito.verify(o).onGameEnded(winner, players);
         }
     }
 

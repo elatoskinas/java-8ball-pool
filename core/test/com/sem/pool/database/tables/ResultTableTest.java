@@ -1,14 +1,16 @@
 package com.sem.pool.database.tables;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
 import com.sem.pool.database.models.Result;
 import com.sem.pool.database.models.User;
-
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,11 +52,23 @@ public class ResultTableTest {
     public void testSaveFailed() throws SQLException {
         Connection conn = Mockito.mock(Connection.class);
         PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
-        ResultTable table = new ResultTable(conn);
+        DatabaseMetaData meta = Mockito.mock(DatabaseMetaData.class);
+        ResultSet tables = Mockito.mock(ResultSet.class);
 
         Mockito.when(conn.prepareStatement(Mockito.anyString())).thenReturn(stmt);
+        Mockito.when(conn.getMetaData()).thenReturn(meta);
         Mockito.when(stmt.executeUpdate()).thenReturn(0);
+        Mockito
+                .when(meta.getTables(
+                        Mockito.isNull(),
+                        Mockito.isNull(),
+                        Mockito.anyString(),
+                        Mockito.isNull()
+                ))
+                .thenReturn(tables);
+        Mockito.when(tables.isAfterLast()).thenReturn(false);
 
+        ResultTable table = new ResultTable(conn);
         User user = new User(69, "user", "pass");
         Result result = new Result(42, user, user);
 
@@ -83,5 +97,14 @@ public class ResultTableTest {
         Result result = new Result(42, user, user);
         assertTrue(this.resultTable.save(result));
         assertTrue(this.resultTable.save(result));
+    }
+
+    /**
+     * Test if the table name matches.
+     * This is to catch regression bugs
+     */
+    @Test
+    public void testTableName() throws SQLException {
+        assertEquals("Result", this.resultTable.getTableName());
     }
 }

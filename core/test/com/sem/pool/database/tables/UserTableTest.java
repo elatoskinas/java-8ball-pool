@@ -9,9 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
 import com.sem.pool.database.models.User;
-
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,15 +94,36 @@ public class UserTableTest {
     public void testInvalidStatement() throws SQLException {
         Connection conn = Mockito.mock(Connection.class);
         PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
-        UserTable table = new UserTable(conn);
+        DatabaseMetaData meta = Mockito.mock(DatabaseMetaData.class);
+        ResultSet tables = Mockito.mock(ResultSet.class);
 
         Mockito.when(conn.prepareStatement(Mockito.anyString())).thenReturn(stmt);
+        Mockito.when(conn.getMetaData()).thenReturn(meta);
         Mockito.when(stmt.executeUpdate()).thenThrow(SQLException.class);
+        Mockito
+                .when(meta.getTables(
+                        Mockito.isNull(),
+                        Mockito.isNull(),
+                        Mockito.anyString(),
+                        Mockito.isNull()
+                ))
+                .thenReturn(tables);
+        Mockito.when(tables.isAfterLast()).thenReturn(false);
 
+        UserTable table = new UserTable(conn);
         User user = new User(69, "user", "passwd");
 
         assertThrows(SQLException.class, () -> {
             table.save(user);
         });
+    }
+
+    /**
+     * Test if the table name matches.
+     * This is to catch regression bugs
+     */
+    @Test
+    public void testTableName() throws SQLException {
+        assertEquals("User", this.userTable.getTableName());
     }
 }

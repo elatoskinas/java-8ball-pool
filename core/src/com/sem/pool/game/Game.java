@@ -2,9 +2,6 @@ package com.sem.pool.game;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.database.controllers.ResultController;
-import com.sem.pool.database.controllers.UserController;
-import com.sem.pool.database.models.User;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
@@ -18,15 +15,13 @@ import java.util.Set;
 
 /**
  * Class that handles everything related to the pool game.
- * TODO: This is currently only a template, no functionality has been implemented as of yet.
- * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
+ * PMD warning suppressed, as it is caused by another bug within PMD.
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
     private transient GameState state;
-    private transient UserController userController;
-    private transient ResultController resultController;
     private transient Set<GameObserver> observers;
 
     /**
@@ -35,15 +30,10 @@ public class Game implements ObservableGame {
      * @param input The input the game should listen to.
      * @param state The state of the game.
      */
-    public Game(
-            Scene3D scene, Input input, GameState state,
-            UserController userController, ResultController resultController
-    ) {
+    public Game(Scene3D scene, Input input, GameState state) {
         this.scene = scene;
         this.input = input;
         this.state = state;
-        this.userController = userController;
-        this.resultController = resultController;
         this.observers = new HashSet<>();
         // Add State as an observer to the game
         // NOTE: Since the Game State is an observer,
@@ -58,10 +48,7 @@ public class Game implements ObservableGame {
      * @param input  Input handler to use for the Game
      * @return       New Game instance
      */
-    public static Game createNewGame(
-            Scene3D scene, Input input,
-            UserController userController, ResultController resultController
-    ) {
+    public static Game createNewGame(Scene3D scene, Input input) {
         // Create 2 players with differing IDs
         Player player1 = new Player(0);
         Player player2 = new Player(1);
@@ -73,7 +60,7 @@ public class Game implements ObservableGame {
         GameState gameState = new GameState(players, scene.getPoolBalls());
 
         // Create a Game object from the parameters
-        return new Game(scene, input, gameState, userController, resultController);
+        return new Game(scene, input, gameState);
     }
 
     public Scene3D getScene() {
@@ -255,18 +242,16 @@ public class Game implements ObservableGame {
     }
 
     /**
-     * End the game and save the score.
-     * @param winner The player that won.
-     * @param players All players participating, including the winner.
+     * End the game.
+     * Error suppressed as this is a bug in PMD.
+     * @param winner The winner of the game.
+     * @param players All players in the game.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void endGame(Player winner, List<Player> players) {
-        Player loser = players.get(winner.getId() == 0 ? 1 : 0);
-
-        User winnerUser = this.userController.getUser(winner.getId());
-        User loserUser = this.userController.getUser(loser.getId());
-
-        this.resultController.createResult(winnerUser, loserUser);
-        this.observers.forEach(GameObserver::onGameEnded);
+        for(GameObserver observer : this.observers) {
+            observer.onGameEnded(winner, players);
+        }
     }
     
     public Collection<GameObserver> getObservers() {

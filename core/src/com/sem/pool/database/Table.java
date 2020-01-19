@@ -5,38 +5,25 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.mockito.MockingDetails;
-import org.mockito.Mockito;
-
 /**
  * Abstract class, to be implemented by database tables implementations.
- * Look at `./models` for examples.
+ * Look at `./tables` for examples.
  */
 public abstract class Table {
     /**
      * Connection to use for queries.
      */
     protected final transient Connection conn;
-    /**
-     * Name of the table.
-     */
-    protected final transient String tableName;
 
     /**
      * Create the table instance.
      *
      * @param conn The connection to use.
      */
-    public Table(Connection conn, String tableName) throws SQLException {
+    public Table(Connection conn) throws SQLException {
         this.conn = conn;
-        this.tableName = tableName;
 
-
-        // To remove the need to add tables when mocking a connection.
-        MockingDetails details = Mockito.mockingDetails(conn);
-        if (!details.isMock()) {
-            this.ensureTable();
-        }
+        this.ensureTable();
     }
 
     /**
@@ -44,6 +31,12 @@ public abstract class Table {
      * Should be implemented by the extenders.
      */
     protected abstract void createTable() throws SQLException;
+
+    /**
+     * Name of the table.
+     * @return the name of the table.
+     */
+    protected abstract String getTableName();
 
     /**
      * Ensure that the table exists.
@@ -55,12 +48,10 @@ public abstract class Table {
     @SuppressWarnings("PMD.CloseResource")
     private void ensureTable() throws SQLException {
         DatabaseMetaData dbm = this.conn.getMetaData();
-        ResultSet tables = dbm.getTables(null, null, this.tableName, null);
+        ResultSet tables = dbm.getTables(null, null, this.getTableName(), null);
 
         try {
-            boolean createTable = tables.isAfterLast();
-
-            if (createTable) {
+            if (tables.isAfterLast()) {
                 this.createTable();
                 tables.close();
             }

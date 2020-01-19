@@ -12,13 +12,15 @@ import java.sql.Statement;
  * Users table, for in the database.
  */
 public class ResultTable extends Table {
+    public static final String TABLE_NAME = "Result";
+
     /**
      * Create the new instance.
      *
      * @param conn Conection to use.
      */
     public ResultTable(Connection conn) throws SQLException {
-        super(conn, "Result");
+        super(conn);
     }
 
     /**
@@ -46,7 +48,7 @@ public class ResultTable extends Table {
     @Override
     protected void createTable() throws SQLException {
         Statement stmt = this.conn.createStatement();
-        String query = "create table " + this.tableName + " ("
+        String query = "create table " + this.getTableName() + " ("
                 + "   gameId    integer primary key autoincrement,"
                 + "   winner    integer not null,"
                 + "   loser     integer not null,"
@@ -63,5 +65,9 @@ public class ResultTable extends Table {
             stmt.close();
         }
         stmt.close();
+    }
+
+    protected String getTableName() {
+        return ResultTable.TABLE_NAME;
     }
 }

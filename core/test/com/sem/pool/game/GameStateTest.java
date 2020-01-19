@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.database.Database;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
@@ -32,6 +33,8 @@ class GameStateTest {
         players.add(player1);
         players.add(player2);
         balls = constructBallsList(true, true, 2, 2);
+
+        Database.setTestMode();
 
         gameState = new GameState(players, balls);
     }
@@ -508,7 +511,14 @@ class GameStateTest {
      */
     @Test
     void testEndGame() {
-        gameState.onGameEnded();
+        Player winner = Mockito.mock(Player.class);
+        Player loser = Mockito.mock(Player.class);
+
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(winner);
+        players.add(loser);
+
+        gameState.onGameEnded(winner, players);
         assertTrue(gameState.isStopped());
     }
 

@@ -18,7 +18,7 @@ public class UserController {
      * @param db The database instance to use.
      */
     public UserController(Database db) {
-        this.table = (UserTable) db.table("User");
+        this.table = (UserTable) db.table(UserTable.TABLE_NAME);
     }
 
     /**

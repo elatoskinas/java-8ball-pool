@@ -13,13 +13,15 @@ import java.sql.Statement;
  * Users table, for in the database.
  */
 public class UserTable extends Table {
+    public static final String TABLE_NAME = "User";
+
     /**
      * Create the new instance.
      *
      * @param conn Conection to use.
      */
     public UserTable(Connection conn) throws SQLException {
-        super(conn, "User");
+        super(conn);
     }
 
     /**
@@ -108,7 +110,7 @@ public class UserTable extends Table {
     @Override
     protected void createTable() throws SQLException {
         Statement stmt = this.conn.createStatement();
-        String query = "create table " + this.tableName + " ("
+        String query = "create table " + this.getTableName() + " ("
                 + "   id       integer primary key autoincrement,"
                 + "   username text    not null unique,"
                 + "   password text    not null"
@@ -123,6 +125,10 @@ public class UserTable extends Table {
             stmt.close();
         }
         stmt.close();
+    }
+
+    protected String getTableName() {
+        return UserTable.TABLE_NAME;
     }
 
     private User statementToSingleUser(PreparedStatement stmt) throws SQLException {

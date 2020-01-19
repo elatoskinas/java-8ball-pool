@@ -19,7 +19,7 @@ public class ResultController {
      * @param db The database instance to use.
      */
     public ResultController(Database db) {
-        this.table = (ResultTable) db.table("Result");
+        this.table = (ResultTable) db.table(ResultTable.TABLE_NAME);
     }
 
     /**
