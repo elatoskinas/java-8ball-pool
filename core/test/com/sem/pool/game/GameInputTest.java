@@ -70,13 +70,15 @@ class GameInputTest extends GameBaseTest {
      */
     @Test
     public void testRotateCueIsCalledInDrag() {
-
-        CueBall3D ball = makeCueBall();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        cue.getModel().transform = mockMatrix;
         Cue3D cueSpy = Mockito.spy(cue);
-
+        cue.getModel().transform = mockMatrix;
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(new Vector3());
+        cueSpy.getModel().transform = mockMatrix;
+        CueBall3D ball = makeCueBall();
         Mockito.doNothing().when(cueSpy).rotateCue(ball);
-        Mockito.when(cueSpy.getCoordinates()).thenReturn(new Vector3(0, 0, 0));
-
+        Mockito.when(cueSpy.getCoordinates()).thenReturn(new Vector3());
         cueSpy.toDragPosition(new Vector3(1, 0, 0), ball);
 
         Mockito.verify(cueSpy, Mockito.times(1)).rotateCue(ball);
@@ -150,6 +152,9 @@ class GameInputTest extends GameBaseTest {
         Mockito.doNothing().when(cue).toDragPosition(any(Vector3.class), any(CueBall3D.class));
 
         cue.setState(Cue3D.State.Rotating);
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(new Vector3());
+        cue.getModel().transform = mockMatrix;
         game.processCueInput();
         assertEquals(Cue3D.State.Dragging, cue.getState());
 
@@ -163,9 +168,12 @@ class GameInputTest extends GameBaseTest {
      */
     @Test
     public void testRotateCue() {
-        CueBall3D cueball = makeCueBall();
+        Matrix4 mockMatrix = Mockito.mock(Matrix4.class);
+        Mockito.when(mockMatrix.getTranslation(Mockito.any())).thenReturn(new Vector3());
+        cue.getModel().transform = mockMatrix;
+        CueBall3D cueBall = makeCueBall();
         Mockito.when(cue.getCoordinates()).thenReturn(new Vector3(0, 0,0));
-        cue.rotateCue(cueball);
+        cue.rotateCue(cueBall);
         Mockito.verify(cue.getModel().transform).rotateRad(any(Vector3.class), any(float.class));
     }
 

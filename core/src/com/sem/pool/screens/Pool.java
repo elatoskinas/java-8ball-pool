@@ -153,7 +153,8 @@ public class Pool implements Screen, GameObserver {
      */
     public void loadUI() {
         if (loaded) {
-            playerTurnLabel.setText("Player turn: " + game.getState().getPlayerTurn());
+            int playerTurn = game.getState().getPlayerTurn() + 1;
+            playerTurnLabel.setText("Player turn: " + playerTurn);
         }
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();

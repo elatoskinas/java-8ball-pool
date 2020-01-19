@@ -18,6 +18,9 @@ import java.util.Set;
  * pdate observers are WinGame.
  * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
  */
+// We had to suppress DataflowAnomalyAnalysis warnings 4 times due to bugs in PMD
+// Because of this, PMD started complaining again.
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class GameState implements GameObserver {
     private transient List<Player> players;
     private transient Set<Ball3D> remainingBalls;
@@ -320,10 +323,13 @@ public class GameState implements GameObserver {
     /**
      * Method to handle all logic with regards to gaining an extra turn.
      */
+    // Warnings are suppressed because the 'DU'-anomaly isn't actually applicable here,
+    // and it suddenly showed up. Very probable to be a bug in PMD.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void handleTurnAdvancement(boolean cuePotted) {
         state = State.Idle;
         Player activePlayer = getActivePlayer();
-        
+
         boolean correctFirstTouch;
         if (firstBallTouched instanceof RegularBall3D) {
             RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
@@ -331,17 +337,19 @@ public class GameState implements GameObserver {
         } else {
             correctFirstTouch = false;
         }
-        
+
         // Check for four criteria:
         // - Did the player touch the right type of ball first
         // - Did the player not pot the cue ball
         // - Did the player pot a ball of the wrong type
         // - Did the player pot a ball of the correct type
-        if (!correctFirstTouch
-                || cuePotted
-                || !getActivePlayer().getPottedCorrectBall()) {
-            // Not all criteria were satisfied -> player loses the turn
-            loseTurn();
+        // Special case: if any ball is potted during the break shot, keep the turn
+        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) || cuePotted) {
+            if (!correctFirstTouch
+                    || !getActivePlayer().getPottedCorrectBall()) {
+                // Not all criteria were satisfied -> player loses the turn
+                loseTurn();
+            }
         }
 
         // Reset temporary variable
