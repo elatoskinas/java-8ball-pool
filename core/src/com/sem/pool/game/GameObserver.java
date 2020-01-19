@@ -2,6 +2,8 @@ package com.sem.pool.game;
 
 import com.sem.pool.scene.Ball3D;
 
+import java.util.List;
+
 /**
  * Interface that represents an observer of an ObservableGame.
  * Contains methods to react to events posted by an ObservableGame class.
@@ -37,6 +39,8 @@ public interface GameObserver {
 
     /**
      * Event that is triggered when the observed Game ends.
+     * @param winner The winner of the game.
+     * @param players a list of participating player, including the winner.
      */
-    public void onGameEnded();
+    public void onGameEnded(Player winner, List<Player> players);
 }

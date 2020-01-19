@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.database.Database;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
@@ -26,6 +27,8 @@ class GameStateTest {
 
     @BeforeEach
     public void setUp() {
+        Database.setTestMode();
+
         Player player1 = new Player(0);
         Player player2 = new Player(1);
         players = new ArrayList<>();
@@ -413,7 +416,7 @@ class GameStateTest {
 
         // Assign ball type to Player
         gameState.getActivePlayer().assignBallType(RegularBall3D.Type.FULL);
-
+        
         // Pot eight ball for current Player
         gameState.onBallPotted(eightBall);
         gameState.handleBallPotting();
@@ -508,7 +511,14 @@ class GameStateTest {
      */
     @Test
     void testEndGame() {
-        gameState.onGameEnded();
+        Player winner = Mockito.mock(Player.class);
+        Player loser = Mockito.mock(Player.class);
+
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(winner);
+        players.add(loser);
+
+        gameState.onGameEnded(winner, players);
         assertTrue(gameState.isStopped());
     }
 

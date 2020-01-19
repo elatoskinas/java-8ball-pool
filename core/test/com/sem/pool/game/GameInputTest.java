@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.sem.pool.database.Database;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
@@ -46,6 +47,8 @@ class GameInputTest extends GameBaseTest {
         Mockito.when(scene.getCue()).thenReturn(cue);
         Mockito.when(scene.getUnprojectedMousePosition()).thenReturn(new Vector3(0, 0,0));
 
+        Database.setTestMode();
+
         gameState = new GameState(players, poolBalls);
 
         game = new Game(scene, input, gameState);
@@ -57,7 +60,6 @@ class GameInputTest extends GameBaseTest {
      */
     @Test
     public void testRotateCueIsCalled() {
-
         CueBall3D ball = makeCueBall();
         Cue3D cueSpy = Mockito.spy(cue);
         Mockito.doNothing().when(cueSpy).rotateCue(ball);

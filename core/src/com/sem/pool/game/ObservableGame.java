@@ -3,6 +3,7 @@ package com.sem.pool.game;
 import com.sem.pool.scene.Ball3D;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface that represents a Game that can be observed by multiple
@@ -51,5 +52,5 @@ public interface ObservableGame {
     /**
      * Ends the game.
      */
-    public void endGame();
+    public void endGame(Player winner, List<Player> players);
 }

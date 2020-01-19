@@ -18,7 +18,7 @@ public class UserController {
      * @param db The database instance to use.
      */
     public UserController(Database db) {
-        this.table = (UserTable) db.table("User");
+        this.table = (UserTable) db.table(UserTable.TABLE_NAME);
     }
 
     /**
@@ -84,5 +84,31 @@ public class UserController {
         }
 
         return false;
+    }
+
+    /**
+     * Get a user by ID.
+     * @param id The ID of the user to get.
+     * @return The user if found, NULL if not.
+     */
+    public User getUser(int id) {
+        try {
+            return this.table.getUser(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get a user by username.
+     * @param username The username to get
+     * @return The user if found, NULL if not.
+     */
+    public User getUser(String username) {
+        try {
+            return this.table.getUser(username);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

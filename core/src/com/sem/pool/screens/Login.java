@@ -18,6 +18,8 @@ import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.User;
 
+import java.util.ArrayList;
+
 /**
  * This class implements the Login screen.
  */
@@ -98,8 +100,6 @@ public class Login implements Screen {
     public void pause() {
     }
 
-    ;
-
     /**
      * Resuming of the paused screen.
      * It's currently not possible to pause, so you can't resume either.
@@ -107,8 +107,6 @@ public class Login implements Screen {
     @Override
     public void resume() {
     }
-
-    ;
 
     /**
      * Hide the screen.
@@ -118,8 +116,6 @@ public class Login implements Screen {
     public void hide() {
         this.dispose();
     }
-
-    ;
 
     /**
      * Dispose of the screen.
@@ -131,8 +127,6 @@ public class Login implements Screen {
         this.skin.dispose();
         this.atlas.dispose();
     }
-
-    ;
 
     /**
      * Show the username field.
@@ -231,7 +225,7 @@ public class Login implements Screen {
             return;
         }
 
-        this.game.startPool();
+        this.startGame(user);
     }
 
     /**
@@ -253,6 +247,24 @@ public class Login implements Screen {
             return;
         }
 
+        this.startGame(user);
+    }
+
+    // The system.exit() call is an exceptional case, where the program can't recover from.
+    // Therefor it should close the program.
+    @SuppressWarnings({"PMD.DoNotCallSystemExit"})
+    private void startGame(User user) {
+        // TODO: Let the user select there opponent and handle this more gracefully.
+        User opponent = this.userController.getUser("testUser");
+        if (opponent == null) {
+            this.userController.register("testUser", "passwd");
+        }
+
+        ArrayList<User> users = new ArrayList<>();
+        users.add(user);
+        users.add(opponent);
+
+        // TODO: Send the users list to the game.
         this.game.startPool();
     }
 }

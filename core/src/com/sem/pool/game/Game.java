@@ -14,9 +14,9 @@ import java.util.Set;
 
 /**
  * Class that handles everything related to the pool game.
- * TODO: This is currently only a template, no functionality has been implemented as of yet.
- * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
+ * PMD warning suppressed, as it is caused by another bug within PMD.
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
@@ -86,7 +86,7 @@ public class Game implements ObservableGame {
         if (state.isStarted()) {
             // Check if Game has a winning Player
             if (state.getWinningPlayer().isPresent()) {
-                endGame();
+                endGame(this.state.getWinningPlayer().get(), this.state.getPlayers());
             } else {
                 // Check if any ball is in motion
                 determineIsInMotion();
@@ -241,7 +241,19 @@ public class Game implements ObservableGame {
         observers.remove(observer);
     }
 
-    @Override
+    /**
+     * End the game.
+     * Error suppressed as this is a bug in PMD.
+     * @param winner The winner of the game.
+     * @param players All players in the game.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public void endGame(Player winner, List<Player> players) {
+        for (GameObserver observer : this.observers) {
+            observer.onGameEnded(winner, players);
+        }
+    }
+    
     public Collection<GameObserver> getObservers() {
         return observers;
     }
@@ -259,10 +271,5 @@ public class Game implements ObservableGame {
     @Override
     public void stopMotion(Ball3D touched) {
         observers.forEach(x -> x.onMotionStop(touched));
-    }
-
-    @Override
-    public void endGame() {
-        observers.forEach(GameObserver::onGameEnded);
     }
 }

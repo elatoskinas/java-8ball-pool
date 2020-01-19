@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
+import com.sem.pool.database.models.Result;
 import com.sem.pool.database.models.User;
+import com.sem.pool.database.tables.ResultTable;
+import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserControllerTest {
@@ -59,5 +63,43 @@ public class UserControllerTest {
     public void existingUser() {
         this.userController.register("real", "foobar");
         assertTrue(this.userController.exists("real"));
+    }
+
+    @Test
+    public void getUserById() {
+        User user = this.userController.register("user", "pass");
+        User user2 = this.userController.getUser(user.getUserID());
+        assertEquals(user, user2);
+    }
+
+    @Test
+    public void getUserByIdFailed() throws SQLException {
+        Database db = Mockito.mock(Database.class);
+        ResultTable table = Mockito.mock(ResultTable.class);
+        UserController userController = new UserController(db);
+
+        Mockito.when(db.table(Mockito.anyString())).thenReturn(table);
+        Mockito.when(table.save(Mockito.any(Result.class))).thenThrow(SQLException.class);
+
+        assertNull(userController.getUser(0));
+    }
+
+    @Test
+    public void getUserByUsername() {
+        User user = this.userController.register("username", "S3cr!d");
+        User user2 = this.userController.getUser("username");
+        assertEquals(user, user2);
+    }
+
+    @Test
+    public void getUserByUsernameFailed() throws SQLException {
+        Database db = Mockito.mock(Database.class);
+        ResultTable table = Mockito.mock(ResultTable.class);
+        UserController userController = new UserController(db);
+
+        Mockito.when(db.table(Mockito.anyString())).thenReturn(table);
+        Mockito.when(table.save(Mockito.any(Result.class))).thenThrow(SQLException.class);
+
+        assertNull(userController.getUser("thiswillfail"));
     }
 }
