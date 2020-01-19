@@ -202,6 +202,11 @@ public class Game implements ObservableGame {
             scene.clearFirstTouched();
 
             stopMotion(touched);
+
+            // Reset the cue ball if it was potted.
+            if (this.state.isCueBallPotted()) {
+                this.scene.recenterCueBall(this.scene.getCueBall());
+            }
         }
 
         return false;
@@ -219,10 +224,6 @@ public class Game implements ObservableGame {
     public void potBall(Ball3D ball) {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
-
-        if (ball instanceof CueBall3D) {
-            this.scene.recenterCueBall((CueBall3D) ball);
-        }
 
         // Notify all observers of the potted ball
         for (GameObserver o : observers) {

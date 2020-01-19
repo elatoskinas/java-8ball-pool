@@ -30,6 +30,7 @@ public class GameState implements GameObserver {
     private transient int playerTurn;
     private transient int turnCount;
     private transient boolean typesAssigned; // if ball types have been assigned yet
+    private transient boolean cueBallPotted;
 
     private transient Player winningPlayer;
 
@@ -58,6 +59,8 @@ public class GameState implements GameObserver {
         this.currentPottedBalls = new ArrayList<>();
         this.allPottedBalls = new ArrayList<>();
         this.typesAssigned = false;
+        this.cueBallPotted = false;
+
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
             if (!(ball instanceof CueBall3D)) {
@@ -80,10 +83,6 @@ public class GameState implements GameObserver {
 
     public List<Ball3D> getCurrentPottedBalls() {
         return currentPottedBalls;
-    }
-
-    public void setInMotion() {
-        this.state = State.InMotion;
     }
 
     public boolean isInMotion() {
@@ -140,8 +139,8 @@ public class GameState implements GameObserver {
      * turn and starting the subsequent Player's turn.
      */
     public void advanceTurn() {
-        boolean cuePotted = handleBallPotting();
-        handleTurnAdvancement(cuePotted);
+        handleBallPotting();
+        handleTurnAdvancement();
     }
 
     //    /**
@@ -228,21 +227,18 @@ public class GameState implements GameObserver {
      * Handles ball potting logic of all balls in the current turn,
      * including special cases on potting the cue and 8-ball, which might
      * result in the victory or loss of the game.
-     * @return Whether or not the cue ball was potted.
      */
     // UR anomaly false positive triggered by foreach loop (ball variable)
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    protected boolean handleBallPotting() {
-        // TODO: Special cue ball handling
-
+    protected void handleBallPotting() {
         // Check if Player has potted all of their assigned ball
         // type balls. We check for this before potting all balls
         // because a Player might pot the 8-ball and then all of
         // their balls after, which would result in a win when
         // it should be a loss.
         boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
+        this.cueBallPotted = false;
         boolean eightPotted = false;
-        boolean cuePotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
             if (!typesAssigned && !(ball instanceof CueBall3D)) {
@@ -255,7 +251,7 @@ public class GameState implements GameObserver {
             } else if (ball instanceof EightBall3D) {
                 eightPotted = true;
             } else if (ball instanceof CueBall3D) {
-                cuePotted = true;
+                this.cueBallPotted = true;
             }
 
             // Remove the ball from the remaining balls set
@@ -264,13 +260,11 @@ public class GameState implements GameObserver {
 
         // 8-ball potted
         if (eightPotted) {
-            winGame(allPotted, cuePotted);
+            winGame(allPotted, this.cueBallPotted);
         }
 
         // Reset potted balls for next turn
         currentPottedBalls.clear();
-        
-        return cuePotted;
     }
     
     public void setTypesAssigned(boolean typesAssigned) {
@@ -333,7 +327,7 @@ public class GameState implements GameObserver {
     // Warnings are suppressed because the 'DU'-anomaly isn't actually applicable here,
     // and it suddenly showed up. Very probable to be a bug in PMD.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public void handleTurnAdvancement(boolean cuePotted) {
+    public void handleTurnAdvancement() {
         state = State.Idle;
         Player activePlayer = getActivePlayer();
 
@@ -351,7 +345,7 @@ public class GameState implements GameObserver {
         // - Did the player pot a ball of the wrong type
         // - Did the player pot a ball of the correct type
         // Special case: if any ball is potted during the break shot, keep the turn
-        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) || cuePotted) {
+        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) || this.cueBallPotted) {
             if (!correctFirstTouch
                     || !getActivePlayer().getPottedCorrectBall()) {
                 // Not all criteria were satisfied -> player loses the turn
@@ -364,6 +358,10 @@ public class GameState implements GameObserver {
         
         // Increment the turn counter
         turnCount += 1;
+    }
+
+    public boolean isCueBallPotted() {
+        return this.cueBallPotted;
     }
 
     /**
