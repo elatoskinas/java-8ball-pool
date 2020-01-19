@@ -38,6 +38,11 @@ public class CueBall3DTest extends Ball3DTest {
         ).thenReturn(
                 new Vector3(0, 0, 0)
         );
+        Mockito.when(
+                mockModel.transform.trn(Mockito.any(Vector3.class))
+        ).thenReturn(
+                mockModel.transform
+        );
 
         Ball3D ball = getBall(0, mockModel);
         ball.setSpeed(speed);

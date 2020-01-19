@@ -189,6 +189,10 @@ public class GameState implements GameObserver {
         this.state = State.Ended;
     }
 
+    public boolean getTypesAssigned() {
+        return typesAssigned;
+    }
+
     public List<Ball3D> getAllPottedBalls() {
         return allPottedBalls;
     }
