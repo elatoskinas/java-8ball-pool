@@ -6,6 +6,7 @@ import com.sem.pool.database.models.User;
 import com.sem.pool.database.tables.ResultTable;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Controller of the Result table.
@@ -36,6 +37,18 @@ public class ResultController {
         } catch (SQLException stack) {
             stack.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * Get a list of results.
+     */
+    public ArrayList<Result> getAll() {
+        try {
+            return this.table.getAll();
+        } catch (SQLException stack) {
+            stack.printStackTrace();
+            return new ArrayList<>();
         }
     }
 }

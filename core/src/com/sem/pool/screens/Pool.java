@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.ResultController;
@@ -24,6 +25,7 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.GameUI;
 import com.sem.pool.scene.Scene3D;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -94,8 +96,13 @@ public class Pool extends UiScreen implements Screen, GameObserver {
         GameInitializer gameInitializer = new GameInitializer(assetLoader, modelBatch,
                 Gdx.input, resolution, CAMERA_POSITION);
 
+        // Create the players
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(new Player(this.game.getPlayer().getUserID()));
+        players.add(new Player(this.game.getOpponent().getUserID()));
+
         // Instantiate the game & retrieve the scene from the game
-        this.poolGame = gameInitializer.createGame();
+        this.poolGame = gameInitializer.createGame(players);
         this.scene = this.poolGame.getScene();
 
         // Update the camera of the scene to point to the right location
@@ -196,19 +203,19 @@ public class Pool extends UiScreen implements Screen, GameObserver {
     }
 
     @Override
-    public void onGameEnded(Player winner, List<Player> players) {
+    public void onGameEnded(Player winnerPlayer, List<Player> players) {
         // Store the result.
-        Player loser = players.get(winner.getId() == 0 ? 1 : 0);
         UserController userController = new UserController(Database.getInstance());
         ResultController resultController = new ResultController(Database.getInstance());
 
-        User winnerUser = userController.getUser(winner.getId());
-        User loserUser = userController.getUser(loser.getId());
+        User winner = userController.getUser(winnerPlayer.getId());
+        User loser = winnerPlayer.getId() == this.game.getPlayer().getUserID() ?
+                this.game.getOpponent() : this.game.getPlayer();
+        this.game.setWinner(winner);
 
-        resultController.createResult(winnerUser, loserUser);
+        resultController.createResult(winner, loser);
 
-        // Go back to login screen when Game is ended
-        // TODO: Change to stats/leaderboards screen
-        this.game.create();
+        // Go to the leaderboard screen.
+        this.game.setScreen(new Leaderboard(this.game));
     }
 }

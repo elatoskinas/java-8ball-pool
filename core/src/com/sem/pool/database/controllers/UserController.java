@@ -40,8 +40,8 @@ public class UserController {
             if (user.checkPassword(password)) {
                 return user;
             }
-        } catch (SQLException ignored) {
-            ignored.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return null;
