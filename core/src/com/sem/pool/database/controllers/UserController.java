@@ -5,6 +5,7 @@ import com.sem.pool.database.models.User;
 import com.sem.pool.database.tables.UserTable;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Controller of the User table.
@@ -109,6 +110,18 @@ public class UserController {
             return this.table.getUser(username);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * Get a list of all users.
+     * @return A list of all users in the database.
+     */
+    public ArrayList<User> getUsers() {
+        try {
+            return this.table.getUsers();
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
     }
 }

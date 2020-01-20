@@ -23,19 +23,13 @@ import java.util.ArrayList;
 /**
  * This class implements the Login screen.
  */
-public class Login implements Screen {
-    private transient MainGame game;
-    private transient Stage stage;
-    private transient Skin skin;
-    private transient TextureAtlas atlas;
+public class Login extends UiScreen implements Screen {
     private transient TextField userfield;
     private transient TextField passfield;
     private transient Label outLabel;
-    private transient UserController userController;
 
     public Login(MainGame game) {
-        this.game = game;
-        this.userController = new UserController(Database.getInstance());
+        super(game);
     }
 
     /**
@@ -47,12 +41,12 @@ public class Login implements Screen {
         // Set up the screen.
         this.stage = new Stage(new FitViewport(1000, 1000));
         Gdx.input.setInputProcessor(stage);
-        Table table = new Table();
-        table.setFillParent(true);
         this.atlas = new TextureAtlas("uiskin.atlas");
         this.skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), this.atlas);
 
         // Render the elements.
+        Table table = new Table();
+        table.setFillParent(true);
         table.setPosition(0, 0);
         table.defaults().spaceBottom(10);
         table.row().fill().expandX();
@@ -79,53 +73,6 @@ public class Login implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-    }
-
-    /**
-     * Resize event of the screen.
-     *
-     * @param w The new width
-     * @param h The new height
-     */
-    @Override
-    public void resize(int w, int h) {
-        stage.getViewport().update(w, h);
-    }
-
-    /**
-     * Pausing of the screen.
-     * This is currently not needed, so it is empty.
-     */
-    @Override
-    public void pause() {
-    }
-
-    /**
-     * Resuming of the paused screen.
-     * It's currently not possible to pause, so you can't resume either.
-     */
-    @Override
-    public void resume() {
-    }
-
-    /**
-     * Hide the screen.
-     * This is currently just killing the screen.
-     */
-    @Override
-    public void hide() {
-        this.dispose();
-    }
-
-    /**
-     * Dispose of the screen.
-     * Cleaning up any old objects.
-     */
-    @Override
-    public void dispose() {
-        this.stage.dispose();
-        this.skin.dispose();
-        this.atlas.dispose();
     }
 
     /**
@@ -218,7 +165,8 @@ public class Login implements Screen {
             return;
         }
 
-        User user = this.userController.login(username, password);
+        UserController userController = new UserController(Database.getInstance());
+        User user = userController.login(username, password);
 
         if (user == null) {
             this.outLabel.setText("Invalid username/password!");
@@ -240,7 +188,8 @@ public class Login implements Screen {
             return;
         }
 
-        User user = this.userController.register(username, password);
+        UserController userController = new UserController(Database.getInstance());
+        User user = userController.register(username, password);
 
         if (user == null) {
             this.outLabel.setText("User already exists!");
@@ -250,21 +199,12 @@ public class Login implements Screen {
         this.startGame(user);
     }
 
-    // The system.exit() call is an exceptional case, where the program can't recover from.
-    // Therefor it should close the program.
-    @SuppressWarnings({"PMD.DoNotCallSystemExit"})
+    /**
+     * Start the game.
+     * @param user The user to play as.
+     */
     private void startGame(User user) {
-        // TODO: Let the user select there opponent and handle this more gracefully.
-        User opponent = this.userController.getUser("testUser");
-        if (opponent == null) {
-            this.userController.register("testUser", "passwd");
-        }
-
-        ArrayList<User> users = new ArrayList<>();
-        users.add(user);
-        users.add(opponent);
-
-        // TODO: Send the users list to the game.
-        this.game.startPool();
+        this.game.setPlayer(user);
+        this.game.setScreen(new SelectOpponent(this.game));
     }
 }

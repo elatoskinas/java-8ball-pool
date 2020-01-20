@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * Users table, for in the database.
@@ -56,6 +57,38 @@ public class UserTable extends Table {
         stmt.setString(1, username);
 
         return this.statementToSingleUser(stmt);
+    }
+
+    /**
+     * Get a list of all users.
+     * @return A list of user objects.
+     * @throws SQLException SQL exceptions.
+     */
+    @SuppressWarnings("PMD.CloseResource")
+    public ArrayList<User> getUsers() throws SQLException {
+        String sql = "select id, username, password from User";
+        PreparedStatement stmt = this.conn.prepareStatement(sql);
+        ArrayList<User> users = new ArrayList<>();
+
+        try (ResultSet res = stmt.executeQuery()) {
+            if (res.isAfterLast()) {
+                stmt.close();
+                res.close();
+                return users;
+            }
+
+            while(res.next()) {
+                int id = res.getInt("id");
+                String dataUser = res.getString("username");
+                String pass = res.getString("password");
+
+                users.add(new User(id, dataUser, pass));
+            }
+
+            stmt.close();
+            res.close();
+            return users;
+        }
     }
 
     /**
