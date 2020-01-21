@@ -31,6 +31,7 @@ public class GameState implements GameObserver {
     private transient int turnCount;
     private transient boolean typesAssigned; // if ball types have been assigned yet
     private transient boolean cueBallPotted;
+    private transient boolean eightBallPotted;
 
     private transient Player winningPlayer;
 
@@ -238,39 +239,58 @@ public class GameState implements GameObserver {
         // it should be a loss.
         boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
         this.cueBallPotted = false;
-        boolean eightPotted = false;
+        this.eightBallPotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
-            if (!typesAssigned && !(ball instanceof CueBall3D)) {
-                allPottedBalls.add(ball); // until types are assigned
-                // keep track of balls potted
-            }
-
-            if (ball instanceof RegularBall3D) {
-                potRegularBall((RegularBall3D) ball);
-            } else if (ball instanceof EightBall3D) {
-                eightPotted = true;
-            } else if (ball instanceof CueBall3D) {
-                this.cueBallPotted = true;
-            }
+            // Handle logic for potting the ball
+            potSingleBall(ball);
 
             // Remove the ball from the remaining balls set
             remainingBalls.remove(ball);
         }
 
         // 8-ball potted
-        if (eightPotted) {
+        if (this.eightBallPotted) {
             winGame(allPotted, this.cueBallPotted);
         }
 
         // Reset potted balls for next turn
         currentPottedBalls.clear();
     }
-    
+
+    /**
+     * Pots a single ball by handling any necessary state
+     * changes baseed on the ball type.
+     * @param ball  Ball to pot
+     */
+    private void potSingleBall(Ball3D ball) {
+        handleUnassignedBallPotting(ball);
+
+        if (ball instanceof RegularBall3D) {
+            potRegularBall((RegularBall3D) ball);
+        } else if (ball instanceof EightBall3D) {
+            this.eightBallPotted = true;
+        } else if (ball instanceof CueBall3D) {
+            this.cueBallPotted = true;
+        }
+    }
+
+    /**
+     * Handles keeping tack of potting balls when the ball
+     * types are not yet assigned to the players.
+     * Does nothing if the ball types are already assigned.
+     * @param ball  Ball to pot
+     */
+    private void handleUnassignedBallPotting(Ball3D ball) {
+        if (!typesAssigned && !(ball instanceof CueBall3D)) {
+            allPottedBalls.add(ball); // until types are assigned
+            // keep track of balls potted
+        }
+    }
+
     public void setTypesAssigned(boolean typesAssigned) {
         this.typesAssigned = typesAssigned;
     }
-
     /**
      * Logic for a regular ball pot.
      * If the players don't have a ball type -> assign ball types to players.
