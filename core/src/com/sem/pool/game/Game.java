@@ -90,14 +90,24 @@ public class Game implements ObservableGame {
             } else {
                 // Check if any ball is in motion
                 determineIsInMotion();
-
-                if (state.isInMotion()) {
-                    moveBalls(deltaTime);
-                } else if (state.isIdle()) {
-                    respondToInput();
-                }
+                performGameLoopAction(deltaTime);
             }
         } // Do nothing if game is not started
+    }
+
+    /**
+     * Performs an action in the game loop based on the
+     * internal state of the game.
+     * This could be moving the balls or responding
+     * to user input.
+     * @param deltaTime  deltaTime, time between current and last frame.
+     */
+    private void performGameLoopAction(float deltaTime) {
+        if (state.isInMotion()) {
+            moveBalls(deltaTime);
+        } else if (state.isIdle()) {
+            respondToInput();
+        }
     }
 
     /**
