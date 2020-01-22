@@ -102,20 +102,4 @@ public class CollisionHandler {
         co0.dispose();
         return r;
     }
-
-    /**
-     * Method which can be called to reflect a vector off another vector
-     * which can be used for changing direction after collision.
-     * @param directionV direction of our object.
-     * @param normalV normal of the object we collide with.
-     * @return a new Vector3 which is the reflected vector.
-     */
-    public static Vector3 reflectVector(Vector3 directionV, Vector3 normalV) {
-        Vector3 direction = new Vector3(directionV);
-        Vector3 normal = new Vector3(normalV);
-        direction.nor();
-        normal.nor();
-        Vector3 reflectedVector = direction.add(normal.scl(-2 * direction.dot(normal)));
-        return new Vector3(reflectedVector.nor());
-    }
 }
