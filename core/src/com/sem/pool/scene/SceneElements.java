@@ -1,38 +1,28 @@
 package com.sem.pool.scene;
 
-import java.util.List;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Environment;
 
 /**
- * Collection of 3D Scene elements that are part
- * of a Game of Pool.
- * This class groups the objects together in one cohesive unit.
+ * Collection of Scene elements that handle functionalities
+ * and the environment of the Scene, such as the Camera or
+ * lighting.
+ * This class groups such objects together in one cohesive unit.
  */
 public final class SceneElements {
-    private final List<Ball3D> poolBalls;
-    private final Table3D table;
-    private final Cue3D cue;
+    private final Environment environment;
+    private final Camera camera;
+    private final SoundPlayer soundPlayer;
 
     /**
      * Creates a new group of Scene elements.
-     * @param poolBalls  List of pool balls
-     * @param table      3D Table object
-     * @param cue        3D Cue object
+     * @param environment    Environment of the Scene
+     * @param camera         Camera of the Scene
+     * @param soundPlayer    Sound Player to use for the Scene
      */
-    public SceneElements(List<Ball3D> poolBalls, Table3D table, Cue3D cue) {
-        this.poolBalls = poolBalls;
-        this.table = table;
-        this.cue = cue;
-    }
-
-    public List<Ball3D> getPoolBalls() {
-        return poolBalls;
-    }
-
-    public Table3D getTable() {
-        return table;
-    }
-
-    public Cue3D getCue() {
-        return cue;
+    public SceneElements(Environment environment, Camera camera, SoundPlayer soundPlayer) {
+        this.environment = environment;
+        this.camera = camera;
+        this.soundPlayer = soundPlayer;
     }
 }

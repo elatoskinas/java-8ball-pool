@@ -21,13 +21,13 @@ public class Scene3D {
     // Scene elements
     private final transient Environment environment;
     private final transient Camera camera;
+    private final transient SoundPlayer soundPlayer;
     private final transient List<ModelInstance> models;
 
     // Game elements
     private final transient List<Ball3D> poolBalls;
     private final transient Table3D table;
     private final transient Cue3D cue;
-    private transient SoundPlayer soundPlayer;
 
     // Represents the first ball touched on the last
     // check of trigger collisions.
@@ -291,9 +291,5 @@ public class Scene3D {
 
     public SoundPlayer getSoundPlayer() {
         return this.soundPlayer;
-    }
-
-    public void setSoundPlayer(SoundPlayer soundPlayer) {
-        this.soundPlayer = soundPlayer;
     }
 }
