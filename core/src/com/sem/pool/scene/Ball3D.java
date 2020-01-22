@@ -1,10 +1,5 @@
 package com.sem.pool.scene;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.acos;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -184,12 +179,6 @@ public abstract class Ball3D extends Object3D {
      * @param other Other ball.
      * @return whether the ball collided with the other ball.
      */
-    // PMD gives a few DD warnings because the values of variables such as phi
-    // are sometimes changed several times (because of conditions) before being used.
-    // If it is not all changed in one line PMD gives a DD warning.
-    // However since sometimes the conditions don't apply we cannot do it in one line.
-    // Thus we suppress the warning.
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public boolean checkCollision(Ball3D other) {
         // balls placed below the table (when potted) should not collide.
         if (this.getCoordinates().y < 0 || other.getCoordinates().y < 0) {

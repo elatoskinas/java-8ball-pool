@@ -1,6 +1,5 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.CollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithm;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionAlgorithmConstructionInfo;

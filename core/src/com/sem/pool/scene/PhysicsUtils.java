@@ -1,11 +1,11 @@
 package com.sem.pool.scene;
 
-import com.badlogic.gdx.math.Vector3;
-
 import static java.lang.Math.PI;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Utility class that allows calculating various collision related
@@ -29,6 +29,24 @@ public class PhysicsUtils {
         return new Vector3(reflectedVector.nor());
     }
 
+    /**
+     * Calculates new speeds for the given collision scenario, given
+     * the direction & speed of the collider & collidee, and the direction
+     * from collider to collidee.
+     * @param direction1     Collider direction
+     * @param speed1         Collider speed
+     * @param directionTo    Direction from collider to collidee
+     * @param direction2     Collidee direction
+     * @param speed2         Collidee speed
+     * @return Array with 2 elements, where the first is the collider's new speed,
+     *         and the second is the collidee's speed.
+     */
+    // PMD gives a few DD warnings because the values of variables such as phi
+    // are sometimes changed several times (because of conditions) before being used.
+    // If it is not all changed in one line PMD gives a DD warning.
+    // However since sometimes the conditions don't apply we cannot do it in one line.
+    // Thus we suppress the warning.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public static float[] getSpeedOnCollision(Vector3 direction1, float speed1, Vector3 directionTo,
                                               Vector3 direction2, float speed2) {
         // Calculate phi, the angle of the direction of collision.
@@ -86,7 +104,8 @@ public class PhysicsUtils {
      * @param phi Angle of collision between objects.
      * @return Speed in the x direction after collision.
      */
-    private static double calculateVx(double v1, double v2, double theta1, double theta2, double phi) {
+    private static double calculateVx(double v1, double v2, double theta1,
+                                      double theta2, double phi) {
         return v2 * cos(theta2 - phi) * cos(phi) + v1 * sin(theta1 - phi)
                 * cos(phi + (PI / 2));
     }
@@ -100,7 +119,8 @@ public class PhysicsUtils {
      * @param phi Angle of collision between objects.
      * @return Speed in the z direction after collision.
      */
-    private static double calculateVz(double v1, double v2, double theta1, double theta2, double phi) {
+    private static double calculateVz(double v1, double v2, double theta1,
+                                      double theta2, double phi) {
         return v2 * cos(theta2 - phi) * sin(phi) + v1 * sin(theta1 - phi)
                 * sin(phi + (PI / 2));
     }

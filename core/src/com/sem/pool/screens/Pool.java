@@ -1,7 +1,6 @@
 package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -16,9 +15,7 @@ import com.sem.pool.database.models.User;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
-import com.sem.pool.game.GameObserver;
 import com.sem.pool.game.Player;
-import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.GameUI;
 import com.sem.pool.scene.Scene3D;
 
