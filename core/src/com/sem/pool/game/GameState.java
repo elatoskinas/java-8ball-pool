@@ -291,13 +291,14 @@ public class GameState implements GameObserver {
     public void setTypesAssigned(boolean typesAssigned) {
         this.typesAssigned = typesAssigned;
     }
+
     /**
      * Logic for a regular ball pot.
      * If the players don't have a ball type -> assign ball types to players.
+     * PMD calls a warning because a change is made to an object and not always used.
+     * This warning is incorrect and therefore ignored.
      * @param ball regular ball
      */
-    // PMD calls a warning because a change is made to an object and not always used.
-    // This warning is incorrect and therefore ignored.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void potRegularBall(RegularBall3D ball) {
         Player activePlayer = getActivePlayer();
@@ -344,9 +345,6 @@ public class GameState implements GameObserver {
     /**
      * Method to handle all logic with regards to gaining an extra turn.
      */
-    // Warnings are suppressed because the 'DU'-anomaly isn't actually applicable here,
-    // and it suddenly showed up. Very probable to be a bug in PMD.
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void handleTurnAdvancement() {
         state = State.Idle;
         Player activePlayer = getActivePlayer();
@@ -405,6 +403,9 @@ public class GameState implements GameObserver {
      * @return  True if the Player contacted the right pool balls to
      *          gain next turn.
      */
+    // Warnings are suppressed because the 'DU'-anomaly isn't actually applicable here,
+    // and it suddenly showed up. Very probable to be a bug in PMD.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private boolean isBallContactValid() {
         // Check whether the first touched ball is correct
         boolean firstTouchCorrect = false;

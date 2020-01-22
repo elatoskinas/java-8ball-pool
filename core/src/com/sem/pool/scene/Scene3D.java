@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,9 +149,9 @@ public class Scene3D {
 
     /**
      * Resets the cue ball to the default position, after being potted.
-     * PMD errors are ignored, as this is a bug within PMD.
-     * It gives an error of an undefined variable in the foreach,
-     * but it's defined in the block.
+     * PMD errors for Dataflow Anomaly Analysis ignored due to it being
+     * a bug in PMD. This is caused by the magnitude variable not being
+     * recognized as a defined variable outside of the loop.
      * @param ball The cue ball.
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -183,10 +182,14 @@ public class Scene3D {
 
     /**
      * Checks whether there exists a ball that collides with the
-     * indacated ball.
+     * indicated ball.
+     * PMD errors are ignored, as this is a bug within PMD.
+     * It gives an error of an undefined variable in the foreach,
+     * but it's defined in the block.
      * @param ball  Ball to check for collision
      * @return  True if there is a ball that collides with the specified ball.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private boolean existsCollidingBall(Ball3D ball) {
         for (Ball3D other : this.gameElements.getPoolBalls()) {
             if (ball.equals(other)) {
