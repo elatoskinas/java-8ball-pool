@@ -1,5 +1,7 @@
 package com.sem.pool.scene;
 
+import com.sem.pool.game.GameConstants;
+
 import java.util.List;
 
 /**
@@ -34,5 +36,9 @@ public final class GameElements {
 
     public Cue3D getCue() {
         return cue;
+    }
+
+    public CueBall3D getCueBall() {
+        return (CueBall3D) poolBalls.get(GameConstants.CUEBALL_ID);
     }
 }

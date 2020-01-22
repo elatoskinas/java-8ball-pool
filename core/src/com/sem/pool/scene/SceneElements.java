@@ -25,4 +25,16 @@ public final class SceneElements {
         this.camera = camera;
         this.soundPlayer = soundPlayer;
     }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public SoundPlayer getSoundPlayer() {
+        return soundPlayer;
+    }
 }
