@@ -220,19 +220,7 @@ public class Scene3D {
             ball.getModel().transform.setTranslation(new Vector3(x, y, z));
             ball.getHitBox().updateLocation(ball.getModel().transform);
 
-            boolean doesCollide = false;
-
-            for (Ball3D other : this.getPoolBalls()) {
-                if (ball.equals(other)) {
-                    continue;
-                }
-
-                CollisionHandler handler = ball.getCollisionHandler();
-                if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
-                    doesCollide = true;
-                    break;
-                }
-            }
+            boolean doesCollide = existsCollidingBall(ball);
 
             if (!doesCollide) {
                 break;
@@ -240,6 +228,27 @@ public class Scene3D {
 
             magnitude += 0.1;
         }
+    }
+
+    /**
+     * Checks whether there exists a ball that collides with the
+     * indacated ball.
+     * @param ball  Ball to check for collision
+     * @return  True if there is a ball that collides with the specified ball.
+     */
+    private boolean existsCollidingBall(Ball3D ball) {
+        for (Ball3D other : this.getPoolBalls()) {
+            if (ball.equals(other)) {
+                continue;
+            }
+
+            CollisionHandler handler = ball.getCollisionHandler();
+            if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
