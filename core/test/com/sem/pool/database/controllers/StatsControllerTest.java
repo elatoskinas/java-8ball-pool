@@ -20,9 +20,6 @@ public class StatsControllerTest {
      */
     @Test
     public void getTopTest() throws SQLException {
-        Database db = Mockito.mock(Database.class);
-        ResultTable table = Mockito.mock(ResultTable.class);
-
         ArrayList<Result> results = new ArrayList<>();
         User user0 = new User(42, "Hello", "hashedpassword");
         User user1 = new User(666, "World", "password");
@@ -32,6 +29,9 @@ public class StatsControllerTest {
         results.add(new Result(42 / 2, user2, user0));
         results.add(new Result(42 * 2, user2, user1));
         results.add(new Result(42 * 2, user2, user3));
+
+        Database db = Mockito.mock(Database.class);
+        ResultTable table = Mockito.mock(ResultTable.class);
 
         Mockito.when(db.table(Mockito.anyString())).thenReturn(table);
         Mockito.when(table.getAll()).thenReturn(results);

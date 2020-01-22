@@ -54,4 +54,43 @@ public class Stats {
     public User getUser() {
         return this.user;
     }
+
+    /**
+     * Implement the equals method.
+     * @param object The object to compare against.
+     * @return If the object was equals to this.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Stats)) {
+            return false;
+        }
+
+        Stats other = (Stats) object;
+
+        if (!this.results.equals(other.results)) {
+            return false;
+        } else if (!this.user.equals(other.user)) {
+            return false;
+        }
+
+        return this.wins.equals(other.wins);
+    }
+
+    /**
+     * Override the hashcode.
+     * @return The hashcode of this object.
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result *= 31 * result;
+        result += this.user.hashCode();
+        result *= 31 * result;
+        result += this.results.hashCode();
+        result *= 31 * result;
+        result += this.wins.hashCode();
+
+        return result;
+    }
 }

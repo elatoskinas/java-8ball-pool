@@ -7,13 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
 import com.sem.pool.database.models.Result;
-import com.sem.pool.database.models.Stats;
 import com.sem.pool.database.models.User;
 import com.sem.pool.database.tables.ResultTable;
+import com.sem.pool.database.tables.UserTable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import com.sem.pool.database.tables.UserTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,7 +31,7 @@ public class UserControllerTest {
      */
     @Test
     public void login() {
-        User testUser = new User("real", "foobar");
+        User testUser = new User(42, "real", "foobar");
         this.userController.register("real", "foobar");
         assertEquals(testUser, this.userController.login("real", "foobar"));
     }
@@ -60,7 +58,7 @@ public class UserControllerTest {
      */
     @Test
     public void register() {
-        User testUser = new User("other", "foobar");
+        User testUser = new User(42, "other", "foobar");
         assertEquals(testUser, this.userController.register("other", "foobar"));
     }
 

@@ -38,9 +38,10 @@ public class ResultTable extends Table {
         UserController userController = new UserController(Database.getInstance());
         String sql = "select gameId, winner, loser from Result";
         PreparedStatement stmt = this.conn.prepareStatement(sql);
-        ArrayList<Result> results = new ArrayList<>();
 
         try (ResultSet res = stmt.executeQuery()) {
+            ArrayList<Result> results = new ArrayList<>();
+
             if (res.isAfterLast()) {
                 stmt.close();
                 res.close();
