@@ -61,9 +61,6 @@ public class GameState implements GameObserver {
         this.typesAssigned = false;
         this.cueBallPotted = false;
 
-        // Initializes the starting player at random.
-        this.playerTurn = (int) Math.round(Math.random());
-        
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
             if (!(ball instanceof CueBall3D)) {
@@ -146,7 +143,16 @@ public class GameState implements GameObserver {
      * for the break shot.
      */
     public void onGameStarted() {
+        initStartingPlayer();
+
         this.state = State.Idle;
+    }
+
+    /**
+     * Initializes the starting player at random.
+     */
+    public void initStartingPlayer() {
+        playerTurn = (int) Math.round(Math.random());
     }
 
     /**
@@ -351,7 +357,10 @@ public class GameState implements GameObserver {
             if (!correctFirstTouch
                     || !getActivePlayer().getPottedCorrectBall()) {
                 // Not all criteria were satisfied -> player loses the turn
-                loseTurn();
+                
+                // Increment player turn and wrap turn ID around
+                // players size to keep it within bounds
+                playerTurn = (playerTurn + 1) % players.size();
             }
         }
 
@@ -360,15 +369,6 @@ public class GameState implements GameObserver {
         
         // Increment the turn counter
         turnCount += 1;
-    }
-
-    /**
-     * Handles the game logic when a player loses its turn.
-     */
-    protected void loseTurn() {
-        // Increment player turn and wrap turn ID around
-        // players size to keep it within bounds
-        playerTurn = (playerTurn + 1) % players.size();
     }
     
     /**
