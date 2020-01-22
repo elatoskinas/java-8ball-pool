@@ -29,7 +29,7 @@ import java.util.List;
  * the 3D pool scene and all the interactions.
  * TODO: Split this off into smaller components?
  */
-public class Pool implements Screen, GameObserver {
+public class Pool extends GameScreen {
     private transient MainGame mainGame;
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
@@ -180,44 +180,8 @@ public class Pool implements Screen, GameObserver {
     }
 
     @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
     public void show() {
         showUI();
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void onGameStarted() {
-
-    }
-
-    @Override
-    public void onBallPotted(Ball3D ball) {
-
-    }
-
-    @Override
-    public void onMotion() {
-
-    }
-
-    @Override
-    public void onMotionStop(Ball3D lastTouched) {
-
     }
 
     @Override
@@ -235,5 +199,15 @@ public class Pool implements Screen, GameObserver {
         // Go back to login screen when Game is ended
         // TODO: Change to stats/leaderboards screen
         mainGame.create();
+    }
+
+    @Override
+    public void pause() {
+        System.out.println("Pausing game...");
+    }
+
+    @Override
+    public void resume() {
+        System.out.println("Resuming game");
     }
 }
