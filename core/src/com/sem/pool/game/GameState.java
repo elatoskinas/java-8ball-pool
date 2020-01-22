@@ -29,8 +29,8 @@ public class GameState implements GameObserver {
 
     private transient int playerTurn;
     private transient int turnCount;
-    private transient boolean typesAssigned; // if ball types have been assigned yet
-    private transient boolean cueBallPotted;
+    private boolean typesAssigned; // if ball types have been assigned yet
+    private boolean cueBallPotted;
 
     private transient Player winningPlayer;
 
@@ -61,6 +61,9 @@ public class GameState implements GameObserver {
         this.typesAssigned = false;
         this.cueBallPotted = false;
 
+        // Initializes the starting player at random.
+        this.playerTurn = (int) Math.round(Math.random());
+        
         // Add all pool balls except cue ball to remaining balls set
         for (Ball3D ball : poolBalls) {
             if (!(ball instanceof CueBall3D)) {
@@ -101,6 +104,27 @@ public class GameState implements GameObserver {
         return playerTurn;
     }
 
+    public boolean getTypesAssigned() {
+        return typesAssigned;
+    }
+
+    public void setTypesAssigned(boolean typesAssigned) {
+        this.typesAssigned = typesAssigned;
+    }
+
+    public List<Ball3D> getAllPottedBalls() {
+        return allPottedBalls;
+    }
+
+
+    public boolean isCueBallPotted() {
+        return this.cueBallPotted;
+    }
+
+    public void setCueBallPotted(boolean b) {
+        this.cueBallPotted = b;
+    }
+
     /**
      * Gets the active player.
      * @return active player
@@ -122,16 +146,7 @@ public class GameState implements GameObserver {
      * for the break shot.
      */
     public void onGameStarted() {
-        initStartingPlayer();
-
         this.state = State.Idle;
-    }
-
-    /**
-     * Initializes the starting player at random.
-     */
-    public void initStartingPlayer() {
-        playerTurn = (int) Math.round(Math.random());
     }
 
     /**
@@ -188,15 +203,7 @@ public class GameState implements GameObserver {
     public void onGameEnded(Player winner, List<Player> players) {
         this.state = State.Ended;
     }
-
-    public boolean getTypesAssigned() {
-        return typesAssigned;
-    }
-
-    public List<Ball3D> getAllPottedBalls() {
-        return allPottedBalls;
-    }
-
+    
     /**
      * Pots the specified ball for the current turn of the Game State.
      * @param ball  Ball to pot
@@ -264,10 +271,6 @@ public class GameState implements GameObserver {
 
         // Reset potted balls for next turn
         currentPottedBalls.clear();
-    }
-    
-    public void setTypesAssigned(boolean typesAssigned) {
-        this.typesAssigned = typesAssigned;
     }
 
     /**
@@ -357,14 +360,6 @@ public class GameState implements GameObserver {
         
         // Increment the turn counter
         turnCount += 1;
-    }
-
-    public boolean isCueBallPotted() {
-        return this.cueBallPotted;
-    }
-    
-    public void setCueBallPotted(boolean b) {
-        this.cueBallPotted = b;
     }
 
     /**
