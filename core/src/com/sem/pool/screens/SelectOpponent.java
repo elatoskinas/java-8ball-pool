@@ -6,7 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
@@ -80,7 +84,7 @@ public class SelectOpponent extends UiScreen implements Screen {
         User[] users = userList.toArray(new User[0]);
         out.setItems(users);
 
-        if(userList.size() == 0) {
+        if (userList.size() == 0) {
             this.showEmpty(table);
         }
 
@@ -106,9 +110,9 @@ public class SelectOpponent extends UiScreen implements Screen {
      * @param table The table to add it to.
      * @return The button added.
      */
-    private Button showSubmit(Table table) {
+    private TextButton showSubmit(Table table) {
         SelectOpponent screen = this;
-        Button submit = new TextButton("Begin Game", this.skin);
+        TextButton submit = new TextButton("Begin Game", this.skin);
 
         submit.addListener(new ClickListener() {
             public void clicked(InputEvent e, float x, float y) {
@@ -126,7 +130,7 @@ public class SelectOpponent extends UiScreen implements Screen {
      * This will start the game.
      */
     private void handleSubmit() {
-        if(this.list.getSelected() == null) {
+        if (this.list.getSelected() == null) {
             return;
         }
 
