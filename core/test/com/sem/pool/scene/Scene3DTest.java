@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Matrix4;
 import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
@@ -341,38 +340,5 @@ class Scene3DTest {
         Mockito.when(scene.getCueBall()).thenCallRealMethod();
 
         assertEquals(ball, scene.getCueBall());
-    }
-
-    /**
-     * Test the resetting of the cue ball.
-     * The PMD error is ignored, as fixing it would decrease the readability of the test.
-     */
-    @Test
-    @SuppressWarnings("checkstyle:variabledeclarationusagedistance")
-    public void testRecenterCueBall() {
-        CueBall3D cue = Mockito.mock(CueBall3D.class);
-        Ball3D ball = Mockito.mock(Ball3D.class);
-        ModelInstance model = Mockito.mock(ModelInstance.class);
-        Matrix4 transform = Mockito.mock(Matrix4.class);
-        Matrix4 newTransform = Mockito.mock(Matrix4.class);
-        CollisionHandler collisionHandler = Mockito.mock(CollisionHandler.class);
-        final HitBox hitBox = Mockito.mock(HitBox.class);
-
-        model.transform = transform;
-        this.scene.getPoolBalls().add(cue);
-        this.scene.getPoolBalls().add(ball);
-
-        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
-        Mockito.when(cue.getModel()).thenReturn(model);
-        Mockito.when(cue.getHitBox()).thenReturn(hitBox);
-        Mockito.when(cue.getCollisionHandler()).thenReturn(collisionHandler);
-        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
-        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
-        Mockito
-                .when(collisionHandler.checkHitBoxCollision(hitBox, hitBox))
-                .thenReturn(true)
-                .thenReturn(false);
-
-        this.scene.recenterCueBall(cue);
     }
 }

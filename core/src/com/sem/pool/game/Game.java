@@ -129,7 +129,12 @@ public class Game implements ObservableGame {
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
     protected void respondToInput() {
-        processCueInput();
+        if (this.state.isCueBallPotted()) {
+            this.state.setCueBallPotted(!this.scene.placeCueBall(input));
+        } else {
+            processCueInput();
+        }
+        
     }
 
     /**
@@ -202,11 +207,6 @@ public class Game implements ObservableGame {
             scene.clearFirstTouched();
 
             stopMotion(touched);
-
-            // Reset the cue ball if it was potted.
-            if (this.state.isCueBallPotted()) {
-                this.scene.recenterCueBall(this.scene.getCueBall());
-            }
         }
 
         return false;

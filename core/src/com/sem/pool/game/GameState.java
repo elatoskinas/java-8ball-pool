@@ -237,7 +237,6 @@ public class GameState implements GameObserver {
         // their balls after, which would result in a win when
         // it should be a loss.
         boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
-        this.cueBallPotted = false;
         boolean eightPotted = false;
 
         for (Ball3D ball : currentPottedBalls) {
@@ -362,6 +361,10 @@ public class GameState implements GameObserver {
 
     public boolean isCueBallPotted() {
         return this.cueBallPotted;
+    }
+    
+    public void setCueBallPotted(boolean b) {
+        this.cueBallPotted = b;
     }
 
     /**
