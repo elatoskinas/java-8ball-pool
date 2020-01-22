@@ -76,7 +76,7 @@ public class Game implements ObservableGame {
      * @param deltaTime deltaTime, time between current and last frame.
      */
     public void advanceGameLoop(float deltaTime) {
-        if (state.isStarted()) {
+        if (!state.isStarted()) {
             // Do nothing if game is not started
             return;
         }
