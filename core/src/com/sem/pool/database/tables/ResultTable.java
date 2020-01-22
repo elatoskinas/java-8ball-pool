@@ -30,8 +30,10 @@ public class ResultTable extends Table {
 
     /**
      * Get a list of all results.
+     * Warnings suppressed as this is an known bug within PMD.
      * @return An Arraylist of results.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public ArrayList<Result> getAll() throws SQLException {
         UserController userController = new UserController(Database.getInstance());
         String sql = "select gameId, winner, loser from Result";
@@ -45,7 +47,7 @@ public class ResultTable extends Table {
                 return results;
             }
 
-            while(res.next()) {
+            while (res.next()) {
                 int id = res.getInt("gameId");
                 int winnerId = res.getInt("winner");
                 int loserId = res.getInt("loser");
@@ -80,7 +82,6 @@ public class ResultTable extends Table {
     /**
      * Create the table.
      * This is only called if the table does not exist.
-     *
      * @throws SQLException SQL Errors.
      */
     @Override

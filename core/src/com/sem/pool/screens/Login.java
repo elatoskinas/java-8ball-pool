@@ -18,8 +18,6 @@ import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.User;
 
-import java.util.ArrayList;
-
 /**
  * This class implements the Login screen.
  */

@@ -19,15 +19,6 @@ public class MainGame extends Game {
         this.setScreen(new Login(this));
     }
 
-    /**
-     * Reset the game.
-     */
-    public void reset() {
-        this.player = null;
-        this.opponent = null;
-        this.winner = null;
-    }
-
     public User getPlayer() {
         return this.player;
     }

@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.ResultController;
@@ -209,8 +208,9 @@ public class Pool extends UiScreen implements Screen, GameObserver {
         ResultController resultController = new ResultController(Database.getInstance());
 
         User winner = userController.getUser(winnerPlayer.getId());
-        User loser = winnerPlayer.getId() == this.game.getPlayer().getUserID() ?
-                this.game.getOpponent() : this.game.getPlayer();
+        User loser = winnerPlayer.getId() == this.game.getPlayer().getUserID()
+                ? this.game.getOpponent()
+                : this.game.getPlayer();
         this.game.setWinner(winner);
 
         resultController.createResult(winner, loser);

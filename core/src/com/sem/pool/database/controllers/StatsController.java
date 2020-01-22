@@ -10,10 +10,20 @@ import java.util.HashMap;
 public class StatsController {
     private transient ResultController resultController;
 
+    /**
+     * Create a new statistics database.
+     * @param db The database class to use.
+     */
     public StatsController(Database db) {
         this.resultController = new ResultController(db);
     }
 
+    /**
+     * Get the top statistics.
+     * Warnings suppressed as this is an known bug within PMD.
+     * @return A list of statistics, ordered in descending order.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public ArrayList<Stats> getTop() {
         ArrayList<Result> results = this.resultController.getAll();
         HashMap<Integer, Stats> stats = new HashMap<>();

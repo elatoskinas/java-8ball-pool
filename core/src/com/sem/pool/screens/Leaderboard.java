@@ -6,17 +6,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
-import com.sem.pool.database.controllers.ResultController;
 import com.sem.pool.database.controllers.StatsController;
-import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.Stats;
-import com.sem.pool.database.models.User;
-
-import java.util.ArrayList;
 
 public class Leaderboard extends UiScreen implements Screen {
     private transient StatsController statsController;
@@ -79,8 +77,10 @@ public class Leaderboard extends UiScreen implements Screen {
 
     /**
      * Show the title of the page.
+     * Warnings suppressed as this is an known bug within PMD.
      * @param table The table to add to.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void showTop(Table table) {
         Label placeTitle = new Label("#", this.skin);
         placeTitle.setColor(1, 1, 1, 0.7f);
@@ -101,7 +101,7 @@ public class Leaderboard extends UiScreen implements Screen {
         table.row();
 
         int index = 1;
-        for(Stats stat : this.statsController.getTop()) {
+        for (Stats stat : this.statsController.getTop()) {
             Label place = new Label(Integer.toString(index), this.skin);
             table.add(place);
 
@@ -126,7 +126,7 @@ public class Leaderboard extends UiScreen implements Screen {
      */
     private void showReturn(Table table) {
         Leaderboard screen = this;
-        Button ret = new TextButton("Return", this.skin);
+        TextButton ret = new TextButton("Return", this.skin);
 
         ret.addListener(new ClickListener() {
             public void clicked(InputEvent e, float x, float y) {
@@ -142,7 +142,6 @@ public class Leaderboard extends UiScreen implements Screen {
      */
     private void handleReturn() {
         this.game.setScreen(new Login(this.game));
-        this.game.reset();
     }
 
     /**
