@@ -810,14 +810,11 @@ class GameStateTest {
 
         gameState = new GameState(players, balls);
 
-        // Break shot
-        gameState.advanceTurn();
         // Keep track of current player and pot a ball
         Player current = gameState.getActivePlayer();
         gameState.onBallPotted(balls.get(2));
+        gameState.onMotionStop(balls.get(2)); // Advances turn
 
-        gameState.onMotionStop(balls.get(2));
-        
         assertEquals(current, gameState.getActivePlayer());
     }
 
@@ -831,7 +828,7 @@ class GameStateTest {
 
         gameState = new GameState(players, balls);
 
-        // Break shot
+        // Skip break shot
         gameState.advanceTurn();
         // pot a ball to assign types
         gameState.onBallPotted(balls.get(2));

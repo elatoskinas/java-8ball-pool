@@ -351,26 +351,10 @@ public class GameState implements GameObserver {
         state = State.Idle;
         Player activePlayer = getActivePlayer();
 
-        boolean correctFirstTouch;
-        if (firstBallTouched instanceof RegularBall3D) {
-            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
-            correctFirstTouch = firstTouched.getType() == activePlayer.getBallType();
-        } else {
-            correctFirstTouch = false;
-        }
-
-        // Check for four criteria:
-        // - Did the player touch the right type of ball first
-        // - Did the player not pot the cue ball
-        // - Did the player pot a ball of the wrong type
-        // - Did the player pot a ball of the correct type
-        // Special case: if any ball is potted during the break shot, keep the turn
-        if (!(turnCount == 0 && !allPottedBalls.isEmpty()) || this.cueBallPotted) {
-            if (!correctFirstTouch
-                    || !getActivePlayer().getPottedCorrectBall()) {
-                // Not all criteria were satisfied -> player loses the turn
-                loseTurn();
-            }
+        // Advance turn to the next Player if the current
+        // player should lose their turn.
+        if (doesPlayerLoseTurn()) {
+            loseTurn();
         }
 
         // Reset temporary variable
@@ -378,6 +362,60 @@ public class GameState implements GameObserver {
         
         // Increment the turn counter
         turnCount += 1;
+    }
+
+    /**
+     * Determines whether the active Player should lose their current turn.
+     * Check for four criteria:
+     * - Did the player touch the right type of ball first
+     * - Did the player not pot the cue ball
+     * - Did the player pot a ball of the wrong type
+     * - Did the player pot a ball of the correct type
+     *  Special case: if any ball is potted during the break shot, keep the turn
+     * @return  True if the active Player should lose their turn.
+     */
+    private boolean doesPlayerLoseTurn() {
+        // Not all criteria were satisfied -> player loses the turn
+        return !isPlayerRegularPottingValid() || cueBallPotted;
+    }
+
+    /**
+     * Checks whether the Player satisfies all conditions for regular
+     * ball potting to gain the next turn.
+     * @return  True if the Player has not violated any potting rules
+     *          for regular (non-cue) ball potting.
+     */
+    private boolean isPlayerRegularPottingValid() {
+        // If break shot, we only care if the Player potted
+        // any balls at all
+        if (turnCount == 0) {
+            return !allPottedBalls.isEmpty();
+        } else {
+            // If not break shot, we have to verify
+            // that the Player touched & potted the
+            // correct ball type.
+            return isBallContactValid();
+        }
+    }
+
+    /**
+     * Checks whether the Player contacted the cue ball with the valid
+     * pool balls to gain the next turn. This includes touching
+     * and potting the correct ball first.
+     * @return  True if the Player contacted the right pool balls to
+     *          gain next turn.
+     */
+    private boolean isBallContactValid() {
+        // Check whether the first touched ball is correct
+        boolean firstTouchCorrect = false;
+
+        if (firstBallTouched instanceof RegularBall3D) {
+            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
+            firstTouchCorrect = firstTouched.getType() == getActivePlayer().getBallType();
+        }
+
+        // Additional check to see whether the Player potted the correct ball
+        return firstTouchCorrect && getActivePlayer().getPottedCorrectBall();
     }
 
     public boolean isCueBallPotted() {
