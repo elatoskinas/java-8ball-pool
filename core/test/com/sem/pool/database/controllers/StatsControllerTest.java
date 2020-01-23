@@ -41,16 +41,16 @@ public class StatsControllerTest {
 
         assertEquals(4, result.size());
         assertEquals(user2, result.get(0).getUser());
-        assertEquals(1f, result.get(0).getWL());
+        assertEquals(1f, result.get(0).getWinLossRatio());
         assertEquals(3, result.get(0).getGameCount());
         assertEquals(user0, result.get(1).getUser());
-        assertEquals(.5f, result.get(1).getWL());
+        assertEquals(.5f, result.get(1).getWinLossRatio());
         assertEquals(2, result.get(1).getGameCount());
         assertEquals(user1, result.get(2).getUser());
-        assertEquals(0f, result.get(2).getWL());
+        assertEquals(0f, result.get(2).getWinLossRatio());
         assertEquals(2, result.get(2).getGameCount());
         assertEquals(user3, result.get(3).getUser());
-        assertEquals(0f, result.get(3).getWL());
+        assertEquals(0f, result.get(3).getWinLossRatio());
         assertEquals(1, result.get(3).getGameCount());
     }
 }

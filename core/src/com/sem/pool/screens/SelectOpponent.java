@@ -1,7 +1,6 @@
 package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,10 +18,17 @@ import com.sem.pool.database.models.User;
 
 import java.util.ArrayList;
 
-public class SelectOpponent extends UiScreen implements Screen {
+/**
+ * Opponent selection view.
+ */
+public class SelectOpponent extends UiScreen {
     private transient List<User> list;
     private transient UserController userController;
 
+    /**
+     * Create the opponent selection view.
+     * @param game The game to put the game state in.
+     */
     public SelectOpponent(MainGame game) {
         super(game);
         this.userController = new UserController(Database.getInstance());
@@ -59,16 +65,12 @@ public class SelectOpponent extends UiScreen implements Screen {
 
     /**
      * Show the output label on the screen.
-     *
      * @param table The table to add to.
-     * @return The label to change when there is a message.
      */
-    private Label showHeader(Table table) {
+    private void showHeader(Table table) {
         Label out = new Label("Select an opponent", this.skin);
         out.setFontScale(1.5f);
         table.add(out).row();
-
-        return out;
     }
 
     /**
@@ -95,22 +97,18 @@ public class SelectOpponent extends UiScreen implements Screen {
     /**
      * Show a message that there are no available opponents.
      * @param table The table to insert to.
-     * @return The new message.
      */
-    private Label showEmpty(Table table) {
+    private void showEmpty(Table table) {
         Label out = new Label("There are no opponents to choose from :(", this.skin);
         out.setColor(1, 0, 0, 1);
         table.add(out).row();
-
-        return out;
     }
 
     /**
      * Show the submit button.
      * @param table The table to add it to.
-     * @return The button added.
      */
-    private TextButton showSubmit(Table table) {
+    private void showSubmit(Table table) {
         SelectOpponent screen = this;
         TextButton submit = new TextButton("Begin Game", this.skin);
 
@@ -121,8 +119,6 @@ public class SelectOpponent extends UiScreen implements Screen {
         });
 
         table.add(submit).colspan(2);
-
-        return submit;
     }
 
     /**

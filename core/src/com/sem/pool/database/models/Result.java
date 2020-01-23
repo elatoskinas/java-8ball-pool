@@ -1,5 +1,7 @@
 package com.sem.pool.database.models;
 
+import java.util.Objects;
+
 /**
  * Result object, from the database.
  */
@@ -67,12 +69,6 @@ public class Result {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 31 * result;
-        result += this.winner.hashCode();
-        result *= 31 * result;
-        result += this.loser.hashCode();
-
-        return result;
+        return Objects.hash(this.winner, this.loser);
     }
 }

@@ -1,7 +1,6 @@
 package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,9 +15,17 @@ import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.StatsController;
 import com.sem.pool.database.models.Stats;
 
-public class Leaderboard extends UiScreen implements Screen {
+/**
+ * Leaderboard view.
+ * Shows the winner of the game, and the top players.
+ */
+public class Leaderboard extends UiScreen {
     private transient StatsController statsController;
 
+    /**
+     * Create the new leaderboard screen.
+     * @param game The game to pull game state from.
+     */
     public Leaderboard(MainGame game) {
         super(game);
         this.statsController = new StatsController(Database.getInstance());
@@ -76,11 +83,9 @@ public class Leaderboard extends UiScreen implements Screen {
     }
 
     /**
-     * Show the title of the page.
-     * Warnings suppressed as this is an known bug within PMD.
+     * Show the actual leaderboard.
      * @param table The table to add to.
      */
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void showTop(Table table) {
         Label placeTitle = new Label("#", this.skin);
         placeTitle.setColor(1, 1, 1, 0.7f);
@@ -100,6 +105,16 @@ public class Leaderboard extends UiScreen implements Screen {
 
         table.row();
 
+        this.showTopList(table);
+    }
+
+    /**
+     * Render the top players on the screen.
+     * Warnings suppressed as this is an known bug within PMD.
+     * @param table The table to render to.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    private void showTopList(Table table) {
         int index = 1;
         for (Stats stat : this.statsController.getTop()) {
             Label place = new Label(Integer.toString(index), this.skin);
@@ -108,7 +123,7 @@ public class Leaderboard extends UiScreen implements Screen {
             Label username = new Label(stat.getUser().getUsername(), this.skin);
             table.add(username);
 
-            float wl = (float) Math.floor(stat.getWL() * 100) / 100;
+            float wl = (float) Math.floor(stat.getWinLossRatio() * 100) / 100;
             Label winLoss = new Label(Float.toString(wl), this.skin);
             table.add(winLoss);
 

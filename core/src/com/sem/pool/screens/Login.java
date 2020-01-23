@@ -1,7 +1,6 @@
 package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,7 +20,7 @@ import com.sem.pool.database.models.User;
 /**
  * This class implements the Login screen.
  */
-public class Login extends UiScreen implements Screen {
+public class Login extends UiScreen {
     private transient TextField userfield;
     private transient TextField passfield;
     private transient Label outLabel;

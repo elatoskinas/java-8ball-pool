@@ -42,6 +42,7 @@ public class ResultController {
 
     /**
      * Get a list of results.
+     * @return A list of results. Empty if an error occurred.
      */
     public ArrayList<Result> getAll() {
         try {

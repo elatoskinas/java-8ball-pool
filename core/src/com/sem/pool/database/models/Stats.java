@@ -1,7 +1,11 @@
 package com.sem.pool.database.models;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+/**
+ * Statistic model. This is a virtual table derived from the Result and User table.
+ */
 public class Stats {
     private transient User user;
     private transient ArrayList<Result> results;
@@ -35,7 +39,7 @@ public class Stats {
      * Get the win / lose ratio of this player.
      * @return THe win / lose ratio.
      */
-    public float getWL() {
+    public float getWinLossRatio() {
         if (this.results.size() == 0) {
             return 0;
         }
@@ -83,14 +87,6 @@ public class Stats {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 31 * result;
-        result += this.user.hashCode();
-        result *= 31 * result;
-        result += this.results.hashCode();
-        result *= 31 * result;
-        result += this.wins.hashCode();
-
-        return result;
+        return Objects.hash(this.user, this.results, this.wins);
     }
 }

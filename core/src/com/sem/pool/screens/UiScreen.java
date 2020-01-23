@@ -5,12 +5,20 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class UiScreen implements Screen {
+/**
+ * Base screen for the UI.
+ * All screen should extend this class, and reimplement methods if needed.
+ */
+public abstract class UiScreen implements Screen {
     protected transient MainGame game;
     protected transient Stage stage;
     protected transient Skin skin;
     protected transient TextureAtlas atlas;
 
+    /**
+     * Create the new screen.
+     * @param game Game state to pull from.
+     */
     public UiScreen(MainGame game) {
         this.game = game;
     }

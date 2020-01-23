@@ -1,7 +1,6 @@
 package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -32,7 +31,7 @@ import java.util.List;
  * the 3D pool scene and all the interactions.
  * TODO: Split this off into smaller components?
  */
-public class Pool extends UiScreen implements Screen, GameObserver {
+public class Pool extends UiScreen implements GameObserver {
     private static final Vector3 CAMERA_POSITION = new Vector3(0f, 100f, 0f);
 
     private transient AssetLoader assetLoader;

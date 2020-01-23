@@ -16,7 +16,7 @@ public class StatsTest {
 
         assertEquals(0, stats.getGameCount());
         assertEquals(user, stats.getUser());
-        assertEquals(0, stats.getWL());
+        assertEquals(0, stats.getWinLossRatio());
     }
 
     /**
@@ -32,13 +32,13 @@ public class StatsTest {
 
         assertEquals(user0, stats.getUser());
         assertEquals(1, stats.getGameCount());
-        assertEquals(0.f, stats.getWL());
+        assertEquals(0.f, stats.getWinLossRatio());
 
         Result result1 = new Result(42, user0, user1);
         stats.addResult(result1);
 
         assertEquals(2, stats.getGameCount());
-        assertEquals(0.5f, stats.getWL());
+        assertEquals(0.5f, stats.getWinLossRatio());
     }
 
     /**
