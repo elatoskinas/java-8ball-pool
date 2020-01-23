@@ -130,13 +130,23 @@ public class Game implements ObservableGame {
      */
     protected void respondToInput() {
         if (this.state.isCueBallPotted()) {
-            this.state.setCueBallPotted(!this.scene.placeCueBall(input));
+            handleCueBallPlacement();
         } else {
             processCueInput();
         }
         
     }
 
+    /**
+     * Method to handle the replacement of the cue ball when necessary.
+     */
+    protected void handleCueBallPlacement() {
+        // The placeCueBall method returns true iff the cue ball was placed successfully,
+        // if this is the case, the cueBallPotted variable will be set to false.
+        // Otherwise, the cueBallPotted variable will be set to true.
+        this.state.setCueBallPotted(!this.scene.placeCueBall(input));
+    }
+    
     /**
      * Process the input mouse input for the cue.
      */
