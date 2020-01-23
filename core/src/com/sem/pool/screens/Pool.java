@@ -54,7 +54,7 @@ public class Pool extends UiScreen implements GameObserver {
         modelBatch = new ModelBatch();
 
         // Initialize viewport to the relevant width & height
-        this.stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth()));
+        this.stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         // Initialize the Bullet wrapper used for collisions
         Bullet.init();

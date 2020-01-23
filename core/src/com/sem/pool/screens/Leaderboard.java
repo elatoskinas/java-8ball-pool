@@ -2,15 +2,10 @@ package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.StatsController;
 import com.sem.pool.database.models.Stats;
@@ -37,35 +32,25 @@ public class Leaderboard extends UiScreen {
      */
     @Override
     public void show() {
-        // Set up the screen.
-        this.stage = new Stage(new FitViewport(1000, 1000));
-        Gdx.input.setInputProcessor(stage);
-        this.atlas = new TextureAtlas("uiskin.atlas");
-        this.skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), this.atlas);
+        super.show();
 
         // Render the elements.
-        Table table = new Table();
-        table.setFillParent(true);
-        table.setPosition(0, 0);
-        table.defaults().spaceBottom(10);
-        table.row().fill().expandX().row();
-        this.showHeader(table);
-        this.showWinner(table);
-        this.showTop(table);
-        this.showReturn(table);
+        this.showHeader();
+        this.showWinner();
+        this.showTop();
+        this.showReturn();
 
         // Push it out.
-        table.pack();
-        stage.addActor(table);
-        stage.act();
-        stage.draw();
+        this.table.pack();
+        this.stage.addActor(this.table);
+        this.stage.act();
+        this.stage.draw();
     }
 
     /**
      * Show the title of the page.
-     * @param table The table to add to.
      */
-    private void showHeader(Table table) {
+    private void showHeader() {
         Label out = new Label("Leaderboard", this.skin);
         out.setFontScale(1.5f);
         table.add(out).row();
@@ -73,9 +58,8 @@ public class Leaderboard extends UiScreen {
 
     /**
      * Show the title of the page.
-     * @param table The table to add to.
      */
-    private void showWinner(Table table) {
+    private void showWinner() {
         String text = this.game.getWinner().getUsername() + " has won the game!";
         Label out = new Label(text, this.skin);
         out.setColor(0, 1, 0, 1);
@@ -84,62 +68,60 @@ public class Leaderboard extends UiScreen {
 
     /**
      * Show the actual leaderboard.
-     * @param table The table to add to.
      */
-    private void showTop(Table table) {
+    private void showTop() {
         Label placeTitle = new Label("#", this.skin);
         placeTitle.setColor(1, 1, 1, 0.7f);
-        table.add(placeTitle);
+        this.table.add(placeTitle);
 
         Label usernameTitle = new Label("Player", this.skin);
         usernameTitle.setColor(1, 1, 1, 0.7f);
-        table.add(usernameTitle);
+        this.table.add(usernameTitle);
 
         Label winLossTitle = new Label("W/L", this.skin);
         winLossTitle.setColor(1, 1, 1, 0.7f);
-        table.add(winLossTitle);
+        this.table.add(winLossTitle);
 
         Label gameCountTitle = new Label("Total Games", this.skin);
         gameCountTitle.setColor(1, 1, 1, 0.7f);
-        table.add(gameCountTitle);
+        this.table.add(gameCountTitle);
 
-        table.row();
+        this.table.row();
 
-        this.showTopList(table);
+        this.showTopList();
     }
 
     /**
      * Render the top players on the screen.
      * Warnings suppressed as this is an known bug within PMD.
-     * @param table The table to render to.
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private void showTopList(Table table) {
+    private void showTopList() {
         int index = 1;
+
         for (Stats stat : this.statsController.getTop()) {
             Label place = new Label(Integer.toString(index), this.skin);
-            table.add(place);
+            this.table.add(place);
 
             Label username = new Label(stat.getUser().getUsername(), this.skin);
-            table.add(username);
+            this.table.add(username);
 
             float wl = (float) Math.floor(stat.getWinLossRatio() * 100) / 100;
             Label winLoss = new Label(Float.toString(wl), this.skin);
-            table.add(winLoss);
+            this.table.add(winLoss);
 
             Label gameCount = new Label(Integer.toString(stat.getGameCount()), this.skin);
-            table.add(gameCount);
+            this.table.add(gameCount);
 
-            table.row();
+            this.table.row();
             index++;
         }
     }
 
     /**
      * Show the return button, which sends the user back to the login screen.
-     * @param table The table to add to.
      */
-    private void showReturn(Table table) {
+    private void showReturn() {
         Leaderboard screen = this;
         TextButton ret = new TextButton("Return", this.skin);
 
@@ -149,7 +131,7 @@ public class Leaderboard extends UiScreen {
             }
         });
 
-        table.add(ret).colspan(2);
+        this.table.add(ret).colspan(2);
     }
 
     /**

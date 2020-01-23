@@ -1,9 +1,12 @@
 package com.sem.pool.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
  * Base screen for the UI.
@@ -14,6 +17,7 @@ public abstract class UiScreen implements Screen {
     protected transient Stage stage;
     protected transient Skin skin;
     protected transient TextureAtlas atlas;
+    protected transient Table table;
 
     /**
      * Create the new screen.
@@ -29,7 +33,18 @@ public abstract class UiScreen implements Screen {
      */
     @Override
     public void show() {
+        // Set up the screen.
+        this.stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        Gdx.input.setInputProcessor(this.stage);
+        this.atlas = new TextureAtlas("uiskin.atlas");
+        this.skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), this.atlas);
 
+        // Render the elements.
+        this.table = new Table();
+        this.table.setFillParent(true);
+        this.table.setPosition(0, 0);
+        this.table.defaults().spaceBottom(10);
+        this.table.row().fill().expandX().row();
     }
 
     /**

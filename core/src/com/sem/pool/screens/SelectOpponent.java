@@ -2,16 +2,11 @@ package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.database.Database;
 import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.User;
@@ -40,45 +35,33 @@ public class SelectOpponent extends UiScreen {
      */
     @Override
     public void show() {
-        // Set up the screen.
-        this.stage = new Stage(new FitViewport(1000, 1000));
-        Gdx.input.setInputProcessor(stage);
-        this.atlas = new TextureAtlas("uiskin.atlas");
-        this.skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), this.atlas);
+        super.show();
 
-        // Render the elements.
-        Table table = new Table();
-        table.setFillParent(true);
-        table.setPosition(0, 0);
-        table.defaults().spaceBottom(10);
-        table.row().fill().expandX().row();
-        this.showHeader(table);
-        this.list = this.showList(table);
-        this.showSubmit(table);
+        this.showHeader();
+        this.list = this.showList();
+        this.showSubmit();
 
         // Push it out.
-        table.pack();
-        stage.addActor(table);
-        stage.act();
-        stage.draw();
+        this.table.pack();
+        this.stage.addActor(this.table);
+        this.stage.act();
+        this.stage.draw();
     }
 
     /**
      * Show the output label on the screen.
-     * @param table The table to add to.
      */
-    private void showHeader(Table table) {
+    private void showHeader() {
         Label out = new Label("Select an opponent", this.skin);
         out.setFontScale(1.5f);
-        table.add(out).row();
+        this.table.add(out).row();
     }
 
     /**
      * Show the list of opponents.
-     * @param table The table to add it to.
      * @return The list added.
      */
-    private List<User> showList(Table table) {
+    private List<User> showList() {
         List<User> out = new List<>(this.skin);
 
         ArrayList<User> userList = this.userController.getUsers();
@@ -87,28 +70,26 @@ public class SelectOpponent extends UiScreen {
         out.setItems(users);
 
         if (userList.size() == 0) {
-            this.showEmpty(table);
+            this.showEmpty();
         }
 
-        table.add(out).row();
+        this.table.add(out).row();
         return out;
     }
 
     /**
      * Show a message that there are no available opponents.
-     * @param table The table to insert to.
      */
-    private void showEmpty(Table table) {
+    private void showEmpty() {
         Label out = new Label("There are no opponents to choose from :(", this.skin);
         out.setColor(1, 0, 0, 1);
-        table.add(out).row();
+        this.table.add(out).row();
     }
 
     /**
      * Show the submit button.
-     * @param table The table to add it to.
      */
-    private void showSubmit(Table table) {
+    private void showSubmit() {
         SelectOpponent screen = this;
         TextButton submit = new TextButton("Begin Game", this.skin);
 
@@ -118,7 +99,7 @@ public class SelectOpponent extends UiScreen {
             }
         });
 
-        table.add(submit).colspan(2);
+        this.table.add(submit).colspan(2);
     }
 
     /**
