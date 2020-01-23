@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * Users table, for in the database.
@@ -59,6 +60,39 @@ public class UserTable extends Table {
     }
 
     /**
+     * Get a list of all users.
+     * Warnings suppressed as this is an known bug within PMD.
+     * @return A list of user objects.
+     * @throws SQLException SQL exceptions.
+     */
+    @SuppressWarnings({"PMD.CloseResource", "PMD.DataflowAnomalyAnalysis"})
+    public ArrayList<User> getUsers() throws SQLException {
+        String sql = "select id, username, password from User";
+        PreparedStatement stmt = this.conn.prepareStatement(sql);
+        ArrayList<User> users = new ArrayList<>();
+
+        try (ResultSet res = stmt.executeQuery()) {
+            if (res.isAfterLast()) {
+                stmt.close();
+                res.close();
+                return users;
+            }
+
+            while (res.next()) {
+                int id = res.getInt("id");
+                String dataUser = res.getString("username");
+                String pass = res.getString("password");
+
+                users.add(new User(id, dataUser, pass));
+            }
+
+            stmt.close();
+            res.close();
+            return users;
+        }
+    }
+
+    /**
      * Save a user object.
      *
      * @param user The user to save.
@@ -76,7 +110,6 @@ public class UserTable extends Table {
 
     /**
      * Update an exiting user object.
-     *
      * @param user The user to update.
      * @return The result.
      * @throws SQLException SQL errors.

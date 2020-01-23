@@ -132,7 +132,6 @@ public class User {
 
     /**
      * Override the equals method.
-     *
      * @param other Object to test against.
      * @return True iff they are equal
      */
@@ -143,14 +142,10 @@ public class User {
 
         User otherUser = (User) other;
 
-        if (this.existing && otherUser.existing && this.id != otherUser.id) {
+        if (this.existing != otherUser.existing) {
             return false;
         }
 
-        if (!this.username.equals(otherUser.username)) {
-            return false;
-        }
-
-        return true;
+        return this.username.equals(otherUser.username);
     }
 }
