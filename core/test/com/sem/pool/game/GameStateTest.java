@@ -669,7 +669,8 @@ class GameStateTest {
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
         gameState.onBallPotted(balls.get(3));
-        gameState.onMotionStop(balls.get(5)); // handle turn, this results in player 0 keeping their turn
+        // handle turn, this results in player 0 keeping their turn
+        gameState.onMotionStop(balls.get(5)); 
         // Player 0 pots full ball
         gameState.onBallPotted(balls.get(2));
         gameState.onMotionStop(balls.get(2)); // handle turn
@@ -1017,7 +1018,7 @@ class GameStateTest {
 
     /**
      * Test case to verify that a player can place the cue ball 
-     * when the previous player made an incorrect first touch
+     * when the previous player made an incorrect first touch.
      */
     @Test
     void canPlaceCueBallIncorrectTouch() {
