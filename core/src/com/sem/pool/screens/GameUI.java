@@ -92,7 +92,7 @@ public class GameUI {
      * @param game the game to get the player turn.
      */
     public void updateBallTypeLabels(Game game) {
-        if (game.getState().getTypesAssigned()) {
+        if (game.getState().getBallPottingHandler().getTypesAssigned()) {
             String ballTypePlayerOne = game.getState().getTurnHandler()
                     .getPlayers().get(0).getBallType().toString();
             ballTypePlayerOneLabel.setText("Player 1: " + ballTypePlayerOne);

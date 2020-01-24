@@ -72,7 +72,10 @@ public class GameTest extends GameBaseTest {
         Mockito.when(this.scene.getCueBall()).thenReturn(cue);
         game.startGame();
 
-        Mockito.verify(this.scene, Mockito.never()).placeCueBall(Mockito.any(Input.class));
+        Mockito.verify(this.scene, Mockito.never()).recenterCueBall(Mockito.any(CueBall3D.class));
+        game.determineIsInMotion();
+
+        Mockito.verify(this.scene).recenterCueBall(Mockito.any(CueBall3D.class));
     }
 
     /**

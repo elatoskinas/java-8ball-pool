@@ -857,7 +857,7 @@ class GameStateTest {
         gameState.onMotionStop(balls.get(2));
         
         assertEquals(current, gameState.getTurnHandler().getActivePlayer());
-        assertFalse(gameState.getTypesAssigned());
+        assertFalse(gameState.getBallPottingHandler().getTypesAssigned());
     }
 
     /**

@@ -23,7 +23,7 @@ public class Scene3D {
     private final transient List<ModelInstance> models;
 
     // Game elements
-    protected final transient GameElements gameElements;
+    private final transient GameElements gameElements;
 
     // Represents the first ball touched on the last
     // check of trigger collisions.

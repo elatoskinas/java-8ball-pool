@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public class BallPottingHandler {
     private transient GameBallState gameBallState;
-    private transient boolean typesAssigned;
+    private transient boolean typesAssigned; // if ball types have been assigned yet
 
     /**
      * Creates a new instance of a Ball Potting Handler with the
@@ -26,15 +26,6 @@ public class BallPottingHandler {
 
     public boolean getTypesAssigned() {
         return typesAssigned;
-    }
-
-    /**
-     * Pots the specified ball for the current turn of the Game State.
-     * @param ball  Ball to pot
-     */
-    public void potBall(Ball3D ball) {
-        // Pot ball in current turn
-        gameBallState.addPottedBall(ball);
     }
 
     /**
