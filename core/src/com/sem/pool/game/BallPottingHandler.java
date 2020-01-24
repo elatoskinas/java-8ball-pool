@@ -29,15 +29,6 @@ public class BallPottingHandler {
     }
 
     /**
-     * Pots the specified ball for the current turn of the Game State.
-     * @param ball  Ball to pot
-     */
-    public void potBall(Ball3D ball) {
-        // Pot ball in current turn
-        gameBallState.addPottedBall(ball);
-    }
-
-    /**
      * Adds all the balls that were potted before types were
      * assigned to the proper player.
      */
