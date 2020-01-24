@@ -5,14 +5,21 @@ import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class that handles the ball potting logic.
+ * Provides an API to invoke ball potting handling.
+ */
 public class BallPottingHandler {
     private transient GameBallState gameBallState;
     private transient boolean typesAssigned;
 
+    /**
+     * Creates a new instance of a Ball Potting Handler with the
+     * specified game ball state to keep track of.
+     * @param gameBallState  Game ball state instance
+     */
     public BallPottingHandler(GameBallState gameBallState) {
         this.gameBallState = gameBallState;
     }

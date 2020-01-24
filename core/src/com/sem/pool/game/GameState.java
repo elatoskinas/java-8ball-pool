@@ -1,9 +1,6 @@
 package com.sem.pool.game;
 
 import com.sem.pool.scene.Ball3D;
-import com.sem.pool.scene.CueBall3D;
-import com.sem.pool.scene.EightBall3D;
-import com.sem.pool.scene.RegularBall3D;
 
 import java.util.List;
 import java.util.Optional;
@@ -154,6 +151,7 @@ public class GameState implements GameObserver {
         // Pot ball in current turn
         gameBallState.addPottedBall(ball);
     }
+
     /**
      * Returns an object representing the winning Player.
      * If there is no winner yet, the returned Optional object
