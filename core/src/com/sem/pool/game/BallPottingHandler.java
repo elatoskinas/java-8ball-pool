@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public class BallPottingHandler {
     private transient GameBallState gameBallState;
-    private transient boolean typesAssigned;
+    private transient boolean typesAssigned; // if ball types have been assigned yet
 
     /**
      * Creates a new instance of a Ball Potting Handler with the

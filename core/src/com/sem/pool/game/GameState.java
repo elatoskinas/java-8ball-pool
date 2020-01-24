@@ -16,7 +16,6 @@ import java.util.Optional;
 // Because of this, PMD started complaining again.
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class GameState implements GameObserver {
-    private transient boolean typesAssigned; // if ball types have been assigned yet
     private transient Player winningPlayer; // Winning Player
 
     public enum State {
@@ -39,7 +38,6 @@ public class GameState implements GameObserver {
      */
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
         this.state = State.Stopped;
-        this.typesAssigned = false;
         this.gameBallState = new GameBallState(poolBalls);
         this.turnHandler = new TurnHandler(players);
         this.ballPottingHandler = new BallPottingHandler(gameBallState);
@@ -136,10 +134,6 @@ public class GameState implements GameObserver {
     @Override
     public void onGameEnded(Player winner, List<Player> players) {
         this.state = State.Ended;
-    }
-
-    public boolean getTypesAssigned() {
-        return typesAssigned;
     }
 
     /**
