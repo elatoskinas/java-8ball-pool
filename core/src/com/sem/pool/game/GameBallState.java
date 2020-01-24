@@ -172,10 +172,20 @@ public class GameBallState {
 
         if (firstTouched instanceof RegularBall3D) {
             RegularBall3D firstTouchedRegular = (RegularBall3D) firstTouched;
-            firstTouchCorrect = firstTouchedRegular.getType()
-                    == activePlayer.getBallType();
+            if (activePlayer.getBallType() != RegularBall3D.Type.UNASSIGNED) {
+                firstTouchCorrect = firstTouchedRegular.getType()
+                        == activePlayer.getBallType();
+            } else {
+                firstTouchCorrect = true;
+            }
         }
 
+        // If the first touch was incorrect,
+        // then the next player can place the cue ball wherever it wants
+        if (!firstTouchCorrect) {
+            this.markCueBallAsPotted();
+        }
+        
         // Additional check to see whether the Player potted the correct ball
         return firstTouchCorrect && activePlayer.getPottedCorrectBall();
     }
