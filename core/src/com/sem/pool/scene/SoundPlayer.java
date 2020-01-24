@@ -23,20 +23,11 @@ public class SoundPlayer {
      */
     public SoundPlayer(AssetLoader assetLoader) {
         this.assetLoader = assetLoader;
-        assetLoader.initializeAssets();
         // load sound files.
-        if (assetLoader.getAssetManager().update()) {
-            potSound = assetLoader.getPotSound();
-            cueSound = assetLoader.getCueSound();
-            tableSound = assetLoader.getTableSound();
-            ballSound = assetLoader.getBallSound();
-        } else {
-            assetLoader.getAssetManager().finishLoading();
-            potSound = assetLoader.getPotSound();
-            cueSound = assetLoader.getCueSound();
-            tableSound = assetLoader.getTableSound();
-            ballSound = assetLoader.getBallSound();
-        }
+        potSound = assetLoader.getPotSound();
+        cueSound = assetLoader.getCueSound();
+        tableSound = assetLoader.getTableSound();
+        ballSound = assetLoader.getBallSound();
     }
 
     /**
@@ -44,9 +35,7 @@ public class SoundPlayer {
      * @param sound Music object which will be played if the sound is not already being played.
      */
     private void playSound(Music sound) {
-        if (sound != null) {
-            sound.play();
-        }
+        sound.play();
     }
 
     /**
