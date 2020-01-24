@@ -5,11 +5,8 @@ import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
 import com.sem.pool.scene.RegularBall3D;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Class to keep track of the current state of the game with regards to the rules.
@@ -89,7 +86,7 @@ public class GameState implements GameObserver {
      */
     public void advanceTurn() {
         handleBallPotting();
-        turnHandler.advanceTurn(doesPlayerLoseTurn());
+        turnHandler.advanceTurn(gameBallState);
         state = State.Idle;
     }
 
@@ -285,65 +282,6 @@ public class GameState implements GameObserver {
         postPotBalls(); // adds balls that were potted
         // before assignment to the proper player.
         typesAssigned = true;
-    }
-
-    /**
-     * Determines whether the active Player should lose their current turn.
-     * Check for four criteria:
-     * - Did the player touch the right type of ball first
-     * - Did the player not pot the cue ball
-     * - Did the player pot a ball of the wrong type
-     * - Did the player pot a ball of the correct type
-     *  Special case: if any ball is potted during the break shot, keep the turn
-     * @return  True if the active Player should lose their turn.
-     */
-    private boolean doesPlayerLoseTurn() {
-        // Not all criteria were satisfied -> player loses the turn
-        return !isPlayerRegularPottingValid() || gameBallState.isCueBallPotted();
-    }
-
-    /**
-     * Checks whether the Player satisfies all conditions for regular
-     * ball potting to gain the next turn.
-     * @return  True if the Player has not violated any potting rules
-     *          for regular (non-cue) ball potting.
-     */
-    private boolean isPlayerRegularPottingValid() {
-        // If break shot, we only care if the Player potted
-        // any balls at all
-        if (turnHandler.getTurnCount() == 0) {
-            return gameBallState.existsPottedPreassignedBall();
-        } else {
-            // If not break shot, we have to verify
-            // that the Player touched & potted the
-            // correct ball type.
-            return isBallContactValid();
-        }
-    }
-
-    /**
-     * Checks whether the Player contacted the cue ball with the valid
-     * pool balls to gain the next turn. This includes touching
-     * and potting the correct ball first.
-     * @return  True if the Player contacted the right pool balls to
-     *          gain next turn.
-     */
-    // Warnings are suppressed because the 'DU'-anomaly isn't actually applicable here,
-    // and it suddenly showed up. Very probable to be a bug in PMD.
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private boolean isBallContactValid() {
-        // Check whether the first touched ball is correct
-        boolean firstTouchCorrect = false;
-
-        Ball3D firstTouched = gameBallState.getFirstBallTouched();
-
-        if (firstTouched instanceof RegularBall3D) {
-            RegularBall3D firstTouchedRegular = (RegularBall3D) firstTouched;
-            firstTouchCorrect = firstTouchedRegular.getType() == turnHandler.getActivePlayer().getBallType();
-        }
-
-        // Additional check to see whether the Player potted the correct ball
-        return firstTouchCorrect && turnHandler.getActivePlayer().getPottedCorrectBall();
     }
     
     /**

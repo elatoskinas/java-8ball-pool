@@ -286,7 +286,8 @@ class GameStateTest {
     @Test
     void testGetInactivePlayer() {
         int inactivePlayerIndex = gameState.getTurnHandler().getPlayerTurn() + 1;
-        assertEquals(players.get(inactivePlayerIndex), gameState.getTurnHandler().getNextInactivePlayer());
+        assertEquals(players.get(inactivePlayerIndex),
+                gameState.getTurnHandler().getNextInactivePlayer());
     }
 
 

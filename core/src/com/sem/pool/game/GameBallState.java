@@ -2,6 +2,7 @@ package com.sem.pool.game;
 
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
+import com.sem.pool.scene.RegularBall3D;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -144,5 +145,31 @@ public class GameBallState {
      */
     public boolean existsPottedPreassignedBall() {
         return !allPottedBalls.isEmpty();
+    }
+
+    /**
+     * Checks whether the Player contacted the cue ball with the valid
+     * pool balls to gain the next turn. This includes touching
+     * and potting the correct ball first.
+     * @return  True if the Player contacted the right pool balls to
+     *          gain next turn.
+     */
+    // Warnings are suppressed because the 'DU'-anomaly isn't actually applicable here,
+    // and it suddenly showed up. Very probable to be a bug in PMD.
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public boolean isBallContactValid(Player activePlayer) {
+        // Check whether the first touched ball is correct
+        boolean firstTouchCorrect = false;
+
+        Ball3D firstTouched = getFirstBallTouched();
+
+        if (firstTouched instanceof RegularBall3D) {
+            RegularBall3D firstTouchedRegular = (RegularBall3D) firstTouched;
+            firstTouchCorrect = firstTouchedRegular.getType()
+                    == activePlayer.getBallType();
+        }
+
+        // Additional check to see whether the Player potted the correct ball
+        return firstTouchCorrect && activePlayer.getPottedCorrectBall();
     }
 }

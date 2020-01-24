@@ -1,12 +1,12 @@
 package com.sem.pool.game;
 
-import com.sem.pool.scene.Ball3D;
-import com.sem.pool.scene.CueBall3D;
-import com.sem.pool.scene.EightBall3D;
-import com.sem.pool.scene.RegularBall3D;
-
-import java.util.Arrays;
-import java.util.List;
+//import com.sem.pool.scene.Ball3D;
+//import com.sem.pool.scene.CueBall3D;
+//import com.sem.pool.scene.EightBall3D;
+//import com.sem.pool.scene.RegularBall3D;
+//
+//import java.util.Arrays;
+//import java.util.List;
 
 public class BallPottingHandler {
 //    private transient GameBallState gameBallState;
@@ -85,7 +85,8 @@ public class BallPottingHandler {
 //     * changes baseed on the ball type.
 //     * @param ball  Ball to pot
 //     */
-//    private void potSingleBall(Ball3D ball, Player activePlayer, Player nextPlayer, int turnCount) {
+//    private void potSingleBall(Ball3D ball, Player activePlayer,
+//    Player nextPlayer, int turnCount) {
 //        handleUnassignedBallPotting(ball);
 //
 //        if (ball instanceof RegularBall3D) {
@@ -121,7 +122,8 @@ public class BallPottingHandler {
 //     * @param ball regular ball
 //     */
 //    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-//    public void potRegularBall(RegularBall3D ball, Player activePlayer, Player nextPlayer, int turnCount) {
+//    public void potRegularBall(RegularBall3D ball, Player activePlayer,
+//    Player nextPlayer, int turnCount) {
 //        // if turncount == 0, this is the first turn (breakshot)
 //        // so types should not be assigned
 //        if (turnCount > 0 && !typesAssigned) {
@@ -143,7 +145,8 @@ public class BallPottingHandler {
 //     * The other player gets the other ball type
 //     * @param ball first regular ball that is potted in a valid way
 //     */
-//    public void assignBallTypesToPlayers(RegularBall3D ball, Player activePlayer, Player nextPlayer) {
+//    public void assignBallTypesToPlayers(RegularBall3D ball,
+//    Player activePlayer, Player nextPlayer) {
 //        activePlayer.assignBallType(ball.getType());
 //        RegularBall3D.Type otherType;
 //

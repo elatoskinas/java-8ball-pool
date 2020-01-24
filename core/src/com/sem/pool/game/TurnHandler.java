@@ -47,12 +47,16 @@ public class TurnHandler {
         return this.turnCount;
     }
 
-    public void advanceTurn(boolean shouldLoseTurn) {
+    /**
+     * Advances to the next turn. The end result might be
+     * that the player still keeps their turn.
+     */
+    public void advanceTurn(GameBallState gameBallState) {
         Player activePlayer = getActivePlayer();
 
         // Advance turn to the next Player if the current
         // player should lose their turn.
-        if (shouldLoseTurn) {
+        if (doesPlayerLoseTurn(gameBallState)) {
             loseTurn();
         }
 
@@ -61,6 +65,40 @@ public class TurnHandler {
 
         // Increment the turn counter
         turnCount += 1;
+    }
+
+    /**
+     * Determines whether the active Player should lose their current turn.
+     * Check for four criteria:
+     * - Did the player touch the right type of ball first
+     * - Did the player not pot the cue ball
+     * - Did the player pot a ball of the wrong type
+     * - Did the player pot a ball of the correct type
+     *  Special case: if any ball is potted during the break shot, keep the turn
+     * @return  True if the active Player should lose their turn.
+     */
+    private boolean doesPlayerLoseTurn(GameBallState gameBallState) {
+        // Not all criteria were satisfied -> player loses the turn
+        return !isPlayerRegularPottingValid(gameBallState) || gameBallState.isCueBallPotted();
+    }
+
+    /**
+     * Checks whether the Player satisfies all conditions for regular
+     * ball potting to gain the next turn.
+     * @return  True if the Player has not violated any potting rules
+     *          for regular (non-cue) ball potting.
+     */
+    private boolean isPlayerRegularPottingValid(GameBallState gameBallState) {
+        // If break shot, we only care if the Player potted
+        // any balls at all
+        if (getTurnCount() == 0) {
+            return gameBallState.existsPottedPreassignedBall();
+        } else {
+            // If not break shot, we have to verify
+            // that the Player touched & potted the
+            // correct ball type.
+            return gameBallState.isBallContactValid(getActivePlayer());
+        }
     }
 
     /**
