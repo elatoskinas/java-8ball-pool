@@ -166,19 +166,7 @@ public class GameBallState {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public boolean isBallContactValid(Player activePlayer) {
         // Check whether the first touched ball is correct
-        boolean firstTouchCorrect = false;
-
-        Ball3D firstTouched = getFirstBallTouched();
-
-        if (firstTouched instanceof RegularBall3D) {
-            RegularBall3D firstTouchedRegular = (RegularBall3D) firstTouched;
-            if (activePlayer.getBallType() != RegularBall3D.Type.UNASSIGNED) {
-                firstTouchCorrect = firstTouchedRegular.getType()
-                        == activePlayer.getBallType();
-            } else {
-                firstTouchCorrect = true;
-            }
-        }
+        boolean firstTouchCorrect = assertCorrectTouch(activePlayer);
 
         // If the first touch was incorrect,
         // then the next player can place the cue ball wherever it wants
@@ -188,5 +176,37 @@ public class GameBallState {
         
         // Additional check to see whether the Player potted the correct ball
         return firstTouchCorrect && activePlayer.getPottedCorrectBall();
+    }
+
+    /**
+     * Method that asserts whether the first touch of the current player was correct.
+     * @param activePlayer The current active player.
+     * @return True iff the first touch was correct.
+     */
+    private boolean assertCorrectTouch(Player activePlayer) {
+        Ball3D firstTouched = getFirstBallTouched();
+
+        if (firstTouched instanceof RegularBall3D) {
+            RegularBall3D firstTouchedRegular = (RegularBall3D) firstTouched;
+            return assertCorrectType(activePlayer, firstTouchedRegular);
+        }
+        
+        return false;
+    }
+
+    /**
+     * Method that asserts whether the type of a first touched ball was correct 
+     * for the current active player.
+     * @param activePlayer The current active player.
+     * @param firstTouched The ball the player first touched.
+     * @return True iff the type was correct
+     */
+    private boolean assertCorrectType(Player activePlayer, RegularBall3D firstTouched) {
+        // If the assigned type of the player is UNASSIGNED, then any first touch is correct.
+        if (activePlayer.getBallType() != RegularBall3D.Type.UNASSIGNED) {
+            return firstTouched.getType() == activePlayer.getBallType();
+        } else {
+            return true;
+        }
     }
 }
