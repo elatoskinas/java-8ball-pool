@@ -365,7 +365,7 @@ class GameStateTest {
 
         Player player = gameState.getTurnHandler().getActivePlayer();
         player.assignBallType(type);
-        gameState.setTypesAssigned(true);
+        gameState.getBallPottingHandler().setTypesAssigned(true);
 
         for (int i = 0; i < potCount; ++i) {
             RegularBall3D ball = Mockito.mock(RegularBall3D.class);
@@ -387,7 +387,7 @@ class GameStateTest {
     void testHandleBallPottingMultipleSDiffering() {
         final RegularBall3D.Type type = RegularBall3D.Type.FULL;
         Player player = gameState.getTurnHandler().getActivePlayer();
-        gameState.setTypesAssigned(true);
+        gameState.getBallPottingHandler().setTypesAssigned(true);
         player.assignBallType(type);
 
         RegularBall3D ball1 = Mockito.mock(RegularBall3D.class);
@@ -396,8 +396,8 @@ class GameStateTest {
         Mockito.when(ball1.getType()).thenReturn(RegularBall3D.Type.FULL);
         Mockito.when(ball2.getType()).thenReturn(RegularBall3D.Type.STRIPED);
 
-        gameState.potRegularBall(ball1);
-        gameState.potRegularBall(ball2);
+        gameState.getBallPottingHandler().potRegularBall(ball1, gameState.getTurnHandler());
+        gameState.getBallPottingHandler().potRegularBall(ball2, gameState.getTurnHandler());
 
         gameState.advanceTurn();
         assertEquals(1, player.getPottedBalls().size());
@@ -420,7 +420,7 @@ class GameStateTest {
         
         // Pot eight ball for current Player
         gameState.onBallPotted(eightBall);
-        gameState.handleBallPotting();
+        gameState.advanceTurn();
 
         Player expectedWinner = gameState.getTurnHandler().getNextInactivePlayer();
         Optional<Player> winner = gameState.getWinningPlayer();
@@ -448,7 +448,7 @@ class GameStateTest {
         gameState.onBallPotted(balls.get(2));
         gameState.onBallPotted(balls.get(3));
         gameState.onBallPotted(balls.get(1));
-        gameState.handleBallPotting();
+        gameState.advanceTurn();
 
         Player expectedWinner = gameState.getTurnHandler().getNextInactivePlayer();
         Optional<Player> winner = gameState.getWinningPlayer();
@@ -472,7 +472,7 @@ class GameStateTest {
 
         // Pot eight ball for current Player
         gameState.onBallPotted(balls.get(1));
-        gameState.handleBallPotting();
+        gameState.advanceTurn();
 
         Player expectedWinner = gameState.getTurnHandler().getActivePlayer();
         Optional<Player> winner = gameState.getWinningPlayer();
@@ -497,7 +497,7 @@ class GameStateTest {
         // Pot eight ball for current Player
         gameState.onBallPotted(balls.get(3));
         gameState.onBallPotted(balls.get(1));
-        gameState.handleBallPotting();
+        gameState.advanceTurn();
 
         Player expectedWinner = gameState.getTurnHandler().getActivePlayer();
         Optional<Player> winner = gameState.getWinningPlayer();
@@ -691,7 +691,6 @@ class GameStateTest {
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
         gameState.onBallPotted(balls.get(3));
-        gameState.onBallPotted(balls.get(1)); // should not be added,
         // if this happens the game should immediately end.
         gameState.advanceTurn();
         // Player 1 pots full ball
@@ -718,9 +717,8 @@ class GameStateTest {
         // pot a two balls during breakshot
         gameState.onBallPotted(balls.get(5));
         gameState.onBallPotted(balls.get(3));
-        gameState.onBallPotted(balls.get(1)); // should not be added,
         // if this happens the game should immediately end.
-        gameState.advanceTurn(); // player 0 keeps the turn here, 
+        gameState.advanceTurn(); // player 0 keeps the turn here,
         // as a ball was potted during the break shot
         // Player 2 pots full ball
         gameState.onBallPotted(balls.get(2));
@@ -765,7 +763,7 @@ class GameStateTest {
         // Pot eight ball for current Player
         gameState.onBallPotted(balls.get(1));
         gameState.onBallPotted(balls.get(0));
-        gameState.handleBallPotting();
+        gameState.advanceTurn();
 
         // Next Player is the winner
         Player expectedWinner = gameState.getTurnHandler().getNextInactivePlayer();
@@ -791,7 +789,7 @@ class GameStateTest {
         // Pot eight ball for current Player
         gameState.onBallPotted(balls.get(0));
         gameState.onBallPotted(balls.get(1));
-        gameState.handleBallPotting();
+        gameState.advanceTurn();
 
         // Next Player is the winner
         Player expectedWinner = gameState.getTurnHandler().getNextInactivePlayer();
@@ -898,10 +896,10 @@ class GameStateTest {
         // Keep track of current player and pot a ball
         gameState.onBallPotted(balls.get(2));
         // Pot the cue ball
-        gameState.onBallPotted(balls.get(1));
+        gameState.onBallPotted(balls.get(0));
         Player current = gameState.getTurnHandler().getActivePlayer();
 
-        gameState.onMotionStop(balls.get(1));
+        gameState.onMotionStop(balls.get(2));
 
         assertNotEquals(current, gameState.getTurnHandler().getActivePlayer());
     }
