@@ -86,7 +86,7 @@ public class Game implements ObservableGame {
         if (state.isStarted()) {
             // Check if Game has a winning Player
             if (state.getWinningPlayer().isPresent()) {
-                endGame(this.state.getWinningPlayer().get(), this.state.getPlayers());
+                endGame(this.state.getWinningPlayer().get(), this.state.getTurnHandler().getPlayers());
             } else {
                 // Check if any ball is in motion
                 determineIsInMotion();

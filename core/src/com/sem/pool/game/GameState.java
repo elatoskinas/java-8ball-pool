@@ -22,9 +22,6 @@ import java.util.Set;
 // Because of this, PMD started complaining again.
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class GameState implements GameObserver {
-    private transient List<Player> players;
-    private transient int playerTurn;
-    private transient int turnCount;
     private transient boolean typesAssigned; // if ball types have been assigned yet
     private transient Player winningPlayer; // Winning Player
 
@@ -37,6 +34,7 @@ public class GameState implements GameObserver {
 
     private transient State state;
     private transient GameBallState gameBallState;
+    private transient TurnHandler turnHandler;
 
     /**
      * Creates a new game state with the specified Players and
@@ -46,17 +44,13 @@ public class GameState implements GameObserver {
      */
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
         this.state = State.Stopped;
-        this.players = players;
         this.typesAssigned = false;
         this.gameBallState = new GameBallState(poolBalls);
+        this.turnHandler = new TurnHandler(players);
     }
 
     public boolean isStarted() {
         return state != State.Stopped && state != State.Ended;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
     }
 
     public boolean isInMotion() {
@@ -71,28 +65,12 @@ public class GameState implements GameObserver {
         return !isStarted();
     }
 
-    public int getPlayerTurn() {
-        return playerTurn;
-    }
-
     public GameBallState getGameBallState() {
         return this.gameBallState;
     }
 
-    /**
-     * Gets the active player.
-     * @return active player
-     */
-    public Player getActivePlayer() {
-        return players.get(playerTurn);
-    }
-
-    /**
-     * Gets the next inactive player.
-     * @return an inactive player
-     */
-    public Player getNextInactivePlayer() {
-        return players.get((playerTurn + 1) % players.size());
+    public TurnHandler getTurnHandler() {
+        return this.turnHandler;
     }
 
     /**
@@ -100,16 +78,9 @@ public class GameState implements GameObserver {
      * for the break shot.
      */
     public void onGameStarted() {
-        initStartingPlayer();
+        turnHandler.initializeStartingPlayer();
 
         this.state = State.Idle;
-    }
-
-    /**
-     * Initializes the starting player at random.
-     */
-    public void initStartingPlayer() {
-        playerTurn = (int) Math.round(Math.random());
     }
 
     /**
@@ -118,7 +89,8 @@ public class GameState implements GameObserver {
      */
     public void advanceTurn() {
         handleBallPotting();
-        handleTurnAdvancement();
+        turnHandler.advanceTurn(doesPlayerLoseTurn());
+        state = State.Idle;
     }
 
     //    /**
@@ -144,10 +116,10 @@ public class GameState implements GameObserver {
     public void winGame(boolean allPotted, boolean cuePotted) {
         if (allPotted && !cuePotted) {
             // All balls + 8-ball potted; Active player wins.
-            winningPlayer = getActivePlayer();
+            winningPlayer = turnHandler.getActivePlayer();
         } else {
             // Not all balls potted; Other Player wins.
-            winningPlayer = getNextInactivePlayer();
+            winningPlayer = turnHandler.getNextInactivePlayer();
         }
     }
 
@@ -190,7 +162,7 @@ public class GameState implements GameObserver {
     private void postPotBalls() {
         for (Ball3D pottedBall: gameBallState.getAllPottedBalls()) {
             if (pottedBall instanceof RegularBall3D) {
-                for (Player player: players) {
+                for (Player player : turnHandler.getPlayers()) {
                     player.potBall((RegularBall3D) pottedBall);
                 }
             }
@@ -211,7 +183,8 @@ public class GameState implements GameObserver {
         // because a Player might pot the 8-ball and then all of
         // their balls after, which would result in a win when
         // it should be a loss.
-        boolean allPotted = getActivePlayer().allBallsPotted(gameBallState.getRemainingBalls());
+        boolean allPotted = turnHandler.getActivePlayer()
+                .allBallsPotted(gameBallState.getRemainingBalls());
         gameBallState.resetBallPotFlags();
 
         for (Ball3D ball : gameBallState.getCurrentPottedBalls()) {
@@ -273,11 +246,11 @@ public class GameState implements GameObserver {
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void potRegularBall(RegularBall3D ball) {
-        Player activePlayer = getActivePlayer();
+        Player activePlayer = turnHandler.getActivePlayer();
 
         // if turncount == 0, this is the first turn (breakshot)
         // so types should not be assigned
-        if (turnCount > 0 && !typesAssigned) {
+        if (turnHandler.getTurnCount() > 0 && !typesAssigned) {
             assignBallTypesToPlayers(ball);
         }
 
@@ -286,7 +259,7 @@ public class GameState implements GameObserver {
             if (activePlayer.getBallType() == ball.getType()) {
                 activePlayer.potBall(ball);
             } else { // else pot for other player.
-                getNextInactivePlayer().potBall(ball);
+                turnHandler.getNextInactivePlayer().potBall(ball);
             }
         }
     }
@@ -297,8 +270,8 @@ public class GameState implements GameObserver {
      * @param ball first regular ball that is potted in a valid way
      */
     public void assignBallTypesToPlayers(RegularBall3D ball) {
-        Player activePlayer = getActivePlayer();
-        Player otherPlayer = getNextInactivePlayer();
+        Player activePlayer = turnHandler.getActivePlayer();
+        Player otherPlayer = turnHandler.getNextInactivePlayer();
         activePlayer.assignBallType(ball.getType());
         RegularBall3D.Type otherType;
 
@@ -312,26 +285,6 @@ public class GameState implements GameObserver {
         postPotBalls(); // adds balls that were potted
         // before assignment to the proper player.
         typesAssigned = true;
-    }
-
-    /**
-     * Method to handle all logic with regards to gaining an extra turn.
-     */
-    public void handleTurnAdvancement() {
-        state = State.Idle;
-        Player activePlayer = getActivePlayer();
-
-        // Advance turn to the next Player if the current
-        // player should lose their turn.
-        if (doesPlayerLoseTurn()) {
-            loseTurn();
-        }
-
-        // Reset temporary variable
-        activePlayer.setPottedCorrectBall(false);
-        
-        // Increment the turn counter
-        turnCount += 1;
     }
 
     /**
@@ -358,7 +311,7 @@ public class GameState implements GameObserver {
     private boolean isPlayerRegularPottingValid() {
         // If break shot, we only care if the Player potted
         // any balls at all
-        if (turnCount == 0) {
+        if (turnHandler.getTurnCount() == 0) {
             return gameBallState.existsPottedPreassignedBall();
         } else {
             // If not break shot, we have to verify
@@ -386,20 +339,11 @@ public class GameState implements GameObserver {
 
         if (firstTouched instanceof RegularBall3D) {
             RegularBall3D firstTouchedRegular = (RegularBall3D) firstTouched;
-            firstTouchCorrect = firstTouchedRegular.getType() == getActivePlayer().getBallType();
+            firstTouchCorrect = firstTouchedRegular.getType() == turnHandler.getActivePlayer().getBallType();
         }
 
         // Additional check to see whether the Player potted the correct ball
-        return firstTouchCorrect && getActivePlayer().getPottedCorrectBall();
-    }
-
-    /**
-     * Handles the game logic when a player loses its turn.
-     */
-    protected void loseTurn() {
-        // Increment player turn and wrap turn ID around
-        // players size to keep it within bounds
-        playerTurn = (playerTurn + 1) % players.size();
+        return firstTouchCorrect && turnHandler.getActivePlayer().getPottedCorrectBall();
     }
     
     /**
