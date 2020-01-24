@@ -1,12 +1,17 @@
 package com.sem.pool.database.tables;
 
+import com.sem.pool.database.Database;
 import com.sem.pool.database.Table;
+import com.sem.pool.database.controllers.UserController;
 import com.sem.pool.database.models.Result;
+import com.sem.pool.database.models.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * Users table, for in the database.
@@ -24,8 +29,44 @@ public class ResultTable extends Table {
     }
 
     /**
+     * Get a list of all results.
+     * Warnings suppressed as this is an known bug within PMD.
+     * @return An Arraylist of results.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public ArrayList<Result> getAll() throws SQLException {
+        UserController userController = new UserController(Database.getInstance());
+        String sql = "select gameId, winner, loser from Result";
+        PreparedStatement stmt = this.conn.prepareStatement(sql);
+
+        try (ResultSet res = stmt.executeQuery()) {
+            ArrayList<Result> results = new ArrayList<>();
+
+            if (res.isAfterLast()) {
+                stmt.close();
+                res.close();
+                return results;
+            }
+
+            while (res.next()) {
+                int id = res.getInt("gameId");
+                int winnerId = res.getInt("winner");
+                int loserId = res.getInt("loser");
+
+                User winner = userController.getUser(winnerId);
+                User loser = userController.getUser(loserId);
+
+                results.add(new Result(id, winner, loser));
+            }
+
+            stmt.close();
+            res.close();
+            return results;
+        }
+    }
+
+    /**
      * Save a Result.
-     *
      * @param result The result to save.
      * @return If the saving succeeded.
      * @throws SQLException SQL errors.
@@ -42,7 +83,6 @@ public class ResultTable extends Table {
     /**
      * Create the table.
      * This is only called if the table does not exist.
-     *
      * @throws SQLException SQL Errors.
      */
     @Override

@@ -16,5 +16,8 @@ public class ResultTest {
         assertEquals(42, result.getGameID());
         assertEquals(user, result.getWinner());
         assertEquals(user, result.getLoser());
+
+        Result result2 = new Result(42, user, user);
+        assertEquals(result2.hashCode(), result.hashCode());
     }
 }

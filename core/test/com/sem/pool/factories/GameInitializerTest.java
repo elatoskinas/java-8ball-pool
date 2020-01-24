@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.sem.pool.game.Game;
 import com.sem.pool.scene.Scene3D;
+import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -151,7 +152,7 @@ class GameInitializerTest {
         Mockito.when(assetManager.update()).thenReturn(true);
         Mockito.when(assetLoader.getAssetManager()).thenReturn(assetManager);
 
-        Game game = gameInitializer.createGame();
+        Game game = gameInitializer.createGame(new ArrayList<>());
 
         assertNotNull(game);
         assertNotNull(game.getScene());

@@ -7,15 +7,26 @@ import com.sem.pool.scene.Ball3D;
 
 import java.util.List;
 
-public abstract class GameScreen implements Screen, GameObserver {
+public abstract class GameScreen extends UiScreen implements GameObserver {
+    /**
+     * Create the new screen.
+     *
+     * @param game Game state to pull from.
+     */
+    public GameScreen(MainGame game) {
+        super(game);
+    }
+
     @Override
     public void resize(int width, int height) {
         System.out.println("Resizing: " + width + ", " + height);
+        super.resize(width, height);
     }
 
     @Override
     public void hide() {
         System.out.println("Hiding game");
+        super.hide();
     }
 
     @Override
