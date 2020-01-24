@@ -2,11 +2,20 @@ package com.sem.pool.game;
 
 import java.util.List;
 
+/**
+ * Class responsible for handling the turns in a Pool game.
+ * Keeps track of the Players and the current turn, as well
+ * as the overall turn count.
+ */
 public class TurnHandler {
     private transient List<Player> players;
     private transient int playerTurn;
     private transient int turnCount;
 
+    /**
+     * Creates a new Turn Handler with the specified players.
+     * @param players  Players of the Game
+     */
     public TurnHandler(List<Player> players) {
         this.players = players;
         this.turnCount = 0;
@@ -50,6 +59,7 @@ public class TurnHandler {
     /**
      * Advances to the next turn. The end result might be
      * that the player still keeps their turn.
+     * @param gameBallState  State of the pool balls
      */
     public void advanceTurn(GameBallState gameBallState) {
         Player activePlayer = getActivePlayer();
