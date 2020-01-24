@@ -99,6 +99,8 @@ public class TurnHandler {
      *          for regular (non-cue) ball potting.
      */
     private boolean isPlayerRegularPottingValid(GameBallState gameBallState) {
+        boolean isValid = gameBallState.isBallContactValid(getActivePlayer());;
+        
         // If break shot, we only care if the Player potted
         // any balls at all
         if (getTurnCount() == 0) {
@@ -107,7 +109,7 @@ public class TurnHandler {
             // If not break shot, we have to verify
             // that the Player touched & potted the
             // correct ball type.
-            return gameBallState.isBallContactValid(getActivePlayer());
+            return isValid;
         }
     }
 
