@@ -95,11 +95,13 @@ public class TurnHandler {
     /**
      * Checks whether the Player satisfies all conditions for regular
      * ball potting to gain the next turn.
+     * The PMD error is suppressed, as it is a bug in PMD.
      * @return  True if the Player has not violated any potting rules
      *          for regular (non-cue) ball potting.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private boolean isPlayerRegularPottingValid(GameBallState gameBallState) {
-        boolean isValid = gameBallState.isBallContactValid(getActivePlayer());;
+        boolean isValid = gameBallState.isBallContactValid(getActivePlayer());
         
         // If break shot, we only care if the Player potted
         // any balls at all
