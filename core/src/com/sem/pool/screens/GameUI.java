@@ -17,6 +17,7 @@ public class GameUI {
     private transient Label cueForceLabel;
     private transient Label ballTypePlayerOneLabel;
     private transient Label ballTypePlayerTwoLabel;
+    private transient Label placeCueBallLabel;
 
     private transient Stage stage;
     private transient Skin skin;
@@ -30,7 +31,6 @@ public class GameUI {
 
         TextureAtlas atlas = new TextureAtlas("uiskin.atlas");
         skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), atlas);
-
     }
 
     /**
@@ -61,14 +61,11 @@ public class GameUI {
     }
 
     /**
-     * Add all actors/UI-elements to the stage.
+     * Add cue force label.
      */
-    private void addActors() {
-        stage.addActor(playerTurnLabel);
-        stage.addActor(ballTypePlayerOneLabel);
-        stage.addActor(ballTypePlayerTwoLabel);
-        stage.addActor(cueForceLabel);
-        //  stage.addActor(restartButton);
+    private void addPlaceCueBallLabel() {
+        placeCueBallLabel = new Label("", skin);
+        placeCueBallLabel.setPosition(Gdx.graphics.getWidth() - 300,100);
     }
 
     /**
@@ -107,6 +104,19 @@ public class GameUI {
     }
 
     /**
+     * Updates the place cue ball label.
+     * @param game the game to get the gamestate
+     *            to check if the player can place the cue ball.
+     */
+    public void updatePlaceCueBallLabel(Game game) {
+        if (game.getState().canPlaceCueBall()) {
+            placeCueBallLabel.setText("Please place the cueball");
+        } else {
+            placeCueBallLabel.setText("");
+        }
+    }
+
+    /**
      * Renders the UI.
      */
     public void render() {
@@ -121,7 +131,19 @@ public class GameUI {
         addPlayerTurnLabel();
         addCueForceLabel();
         addBallTypeLabels();
+        addPlaceCueBallLabel();
 
         addActors();
+    }
+
+    /**
+     * Add all actors/UI-elements to the stage.
+     */
+    private void addActors() {
+        stage.addActor(playerTurnLabel);
+        stage.addActor(ballTypePlayerOneLabel);
+        stage.addActor(ballTypePlayerTwoLabel);
+        stage.addActor(cueForceLabel);
+        stage.addActor(placeCueBallLabel);
     }
 }

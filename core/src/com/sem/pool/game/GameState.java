@@ -159,4 +159,13 @@ public class GameState implements GameObserver {
     public boolean isCueBallPotted() {
         return gameBallState.isCueBallPotted();
     }
+
+    /**
+     * Method to check whether the cue ball can be replaced onto the board.
+     * Used for UI purposes.
+     * @return true iff the current player is able to replace the cue ball on the board.
+     */
+    public boolean canPlaceCueBall() {
+        return gameBallState.isCueBallPotted() && this.isIdle();
+    }
 }

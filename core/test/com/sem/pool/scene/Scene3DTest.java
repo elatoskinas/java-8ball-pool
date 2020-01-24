@@ -1,14 +1,17 @@
 package com.sem.pool.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
@@ -34,6 +37,9 @@ class Scene3DTest {
     transient Table3D table;
     transient Cue3D cue;
     transient SoundPlayer soundPlayer;
+    
+    transient GameElements gameElements;
+    transient SceneElements sceneElements;
 
     /**
      * Handles setting up the test fixture by
@@ -51,8 +57,8 @@ class Scene3DTest {
         cue = Mockito.mock(Cue3D.class);
         soundPlayer = Mockito.mock(SoundPlayer.class);
 
-        GameElements gameElements = new GameElements(poolBalls, table, cue);
-        SceneElements sceneElements = new SceneElements(environment, camera, soundPlayer);
+        gameElements = new GameElements(poolBalls, table, cue);
+        sceneElements = new SceneElements(environment, camera, soundPlayer);
 
         scene = new Scene3D(batch, gameElements, sceneElements);
     }
@@ -344,35 +350,139 @@ class Scene3DTest {
     }
 
     /**
-     * Test the resetting of the cue ball.
-     * The PMD error is ignored, as fixing it would decrease the readability of the test.
+     * Test to verify whether all correct calls are made when the cue ball
+     * is placed correctly.
      */
     @Test
-    @SuppressWarnings("checkstyle:variabledeclarationusagedistance")
-    public void testRecenterCueBall() {
-        CueBall3D cue = Mockito.mock(CueBall3D.class);
-        Ball3D ball = Mockito.mock(Ball3D.class);
-        ModelInstance model = Mockito.mock(ModelInstance.class);
+    void testValidCueBallPlacement() {
+        // Set up the spy object
+        Scene3D spyScene = Mockito.spy(scene);
+        Mockito.doReturn(new Vector3(1, 21, 0)).when(spyScene).getUnprojectedMousePosition();
+
+        // Set up the mock cue ball object, and handle its methods
+        CueBall3D cueBall = Mockito.mock(CueBall3D.class);
+        Mockito.doReturn(true).when(cueBall).checkWithinBounds();
+        Mockito.doReturn(cueBall).when(spyScene).getCueBall();
+
+        ModelInstance modelInstance = Mockito.mock(ModelInstance.class);
         Matrix4 transform = Mockito.mock(Matrix4.class);
-        Matrix4 newTransform = Mockito.mock(Matrix4.class);
-        CollisionHandler collisionHandler = Mockito.mock(CollisionHandler.class);
-        final HitBox hitBox = Mockito.mock(HitBox.class);
+        modelInstance.transform = transform;
+        Mockito.doReturn(modelInstance).when(cueBall).getModel();
 
-        model.transform = transform;
-        this.scene.getPoolBalls().add(cue);
-        this.scene.getPoolBalls().add(ball);
+        HitBox hitBox = Mockito.mock(HitBox.class);
+        Mockito.doReturn(hitBox).when(cueBall).getHitBox();
 
-        Mockito.when(ball.getHitBox()).thenReturn(hitBox);
-        Mockito.when(cue.getModel()).thenReturn(model);
-        Mockito.when(cue.getHitBox()).thenReturn(hitBox);
-        Mockito.when(cue.getCollisionHandler()).thenReturn(collisionHandler);
-        Mockito.when(transform.set(Mockito.any(float[].class))).thenReturn(newTransform);
-        Mockito.doNothing().when(hitBox).updateLocation(Mockito.any(Matrix4.class));
-        Mockito
-                .when(collisionHandler.checkHitBoxCollision(hitBox, hitBox))
-                .thenReturn(true)
-                .thenReturn(false);
+        // Set up mock object for another ball
+        Ball3D otherBall = Mockito.mock(Ball3D.class);
+        HitBox otherHitBox = Mockito.mock(HitBox.class);
+        Mockito.doReturn(otherHitBox).when(otherBall).getHitBox();
 
-        this.scene.recenterCueBall(cue);
+        // Have the other ball be returned when the method 
+        // looks for the remaining balls on the board
+        List<Ball3D> list = new ArrayList<>();
+        list.add(cueBall);
+        list.add(otherBall);
+        Mockito.doReturn(list).when(spyScene).getPoolBalls();
+
+        // Set up mock object for the collision handler
+        CollisionHandler handler = Mockito.mock(CollisionHandler.class);
+        Mockito.doReturn(false).when(handler).checkHitBoxCollision(hitBox, otherHitBox);
+        Mockito.doReturn(handler).when(cueBall).getCollisionHandler();
+
+        // Set up the mock input object
+        Input input = Mockito.mock(Input.class);
+        Mockito.doReturn(true).when(input).isButtonPressed(Input.Buttons.LEFT);
+
+        assertTrue(spyScene.placeCueBall(input));
+
+        Mockito.verify(transform).setTranslation(new Vector3(1, 0.28f, 0));
+        Mockito.verify(hitBox).updateLocation(transform);
+    }
+
+    /**
+     * Test to verify whether all correct calls are made when the cue ball
+     * is placed out of bounds.
+     */
+    @Test
+    void testOutOfBoundsCueBallPlacement() {
+        // Set up the spy object
+        Scene3D spyScene = Mockito.spy(scene);
+        Mockito.doReturn(new Vector3(0, 5, 3)).when(spyScene).getUnprojectedMousePosition();
+
+        // Set up the mock cue ball object, and handle its methods
+        CueBall3D cueBall = Mockito.mock(CueBall3D.class);
+        Mockito.doReturn(false).when(cueBall).checkWithinBounds();
+        Mockito.doReturn(cueBall).when(spyScene).getCueBall();
+
+        ModelInstance modelInstance = Mockito.mock(ModelInstance.class);
+        Matrix4 transform = Mockito.mock(Matrix4.class);
+        modelInstance.transform = transform;
+        Mockito.doReturn(modelInstance).when(cueBall).getModel();
+
+        HitBox hitBox = Mockito.mock(HitBox.class);
+        Mockito.doReturn(hitBox).when(cueBall).getHitBox();
+
+        // Set up the mock input object
+        Input input = Mockito.mock(Input.class);
+        Mockito.doReturn(true).when(input).isButtonPressed(Input.Buttons.LEFT);
+
+        assertFalse(spyScene.placeCueBall(input));
+
+        Mockito.verify(transform).setTranslation(new Vector3(0, 0.28f, 3));
+        Mockito.verify(hitBox).updateLocation(transform);
+    }
+
+    /**
+     * Test case to verify that the ball is not placed successfully when
+     * it collides with another ball on the table.
+     */
+    @Test
+    void testCollidingCueBallPlacement() {
+        // Set up the mock cue ball object, and handle its methods
+        CueBall3D cueBall = Mockito.mock(CueBall3D.class);
+        Mockito.doReturn(true).when(cueBall).checkWithinBounds();
+
+        ModelInstance modelInstance = Mockito.mock(ModelInstance.class);
+        Matrix4 transform = Mockito.mock(Matrix4.class);
+        modelInstance.transform = transform;
+        Mockito.doReturn(modelInstance).when(cueBall).getModel();
+
+        HitBox hitBox = Mockito.mock(HitBox.class);
+        Mockito.doReturn(hitBox).when(cueBall).getHitBox();
+
+        // Set up mock object for another ball
+        Ball3D otherBall = Mockito.mock(Ball3D.class);
+        HitBox otherHitBox = Mockito.mock(HitBox.class);
+        Mockito.doReturn(otherHitBox).when(otherBall).getHitBox();
+
+        // Have the other ball be returned when the method 
+        // looks for the remaining balls on the board
+        List<Ball3D> list = new ArrayList<>();
+        list.add(cueBall);
+        list.add(otherBall);
+        
+        // Set up the scene object under test again, as we need a specific set of balls
+        poolBalls = list;
+        gameElements = new GameElements(poolBalls, table, cue);
+        scene = new Scene3D(batch, gameElements, sceneElements);
+        
+        // Set up the spy object
+        Scene3D spyScene = Mockito.spy(scene);
+        Mockito.doReturn(new Vector3(2, 20, 0)).when(spyScene).getUnprojectedMousePosition();
+        Mockito.doReturn(cueBall).when(spyScene).getCueBall();
+        
+        // Set up mock object for the collision handler
+        CollisionHandler handler = Mockito.mock(CollisionHandler.class);
+        Mockito.doReturn(true).when(handler).checkHitBoxCollision(hitBox, otherHitBox);
+        Mockito.doReturn(handler).when(cueBall).getCollisionHandler();
+        
+        // Set up the mock input object
+        Input input = Mockito.mock(Input.class);
+        Mockito.doReturn(true).when(input).isButtonPressed(Input.Buttons.LEFT);
+
+        assertFalse(spyScene.placeCueBall(input));
+
+        Mockito.verify(transform).setTranslation(new Vector3(2, 0.28f, 0));
+        Mockito.verify(hitBox).updateLocation(transform);
     }
 }

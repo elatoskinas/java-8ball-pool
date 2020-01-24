@@ -4,13 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.scene.NullBall;
+
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
- * Class for unit tests for the Game Stete class
+ * Class for unit tests for the GameState class.
  */
 class GameStateTest extends GameStateBaseTest {
     /**
@@ -87,6 +89,98 @@ class GameStateTest extends GameStateBaseTest {
 
         gameState.onGameEnded(winner, players);
         assertTrue(gameState.isStopped());
+    }
+
+    /**
+     * Test case to verify that the player cannot place the cue ball 
+     * when the state is not yet idle. 
+     */
+    @Test
+    void placeCueBallNotIdle() {
+        GameState spyGameState = Mockito.spy(gameState);
+        Mockito.doReturn(false).when(spyGameState).isIdle();
+
+        // Pot the cue ball
+        spyGameState.onBallPotted(balls.get(0));
+        spyGameState.onMotionStop(balls.get(2));
+
+        assertFalse(spyGameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that the cue ball cannot be placed when it is not potted.
+     */
+    @Test
+    void placeCueBallNotPotted() {
+        GameState spyGameState = Mockito.spy(gameState);
+        Mockito.doReturn(true).when(spyGameState).isIdle();
+
+        assertFalse(spyGameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that the cue ball can be placed when 
+     * it is both potted and the state is idle.
+     */
+    @Test
+    void canPlaceCueBallPotted() {
+        GameState spyGameState = Mockito.spy(gameState);
+        Mockito.doReturn(true).when(spyGameState).isIdle();
+
+        // Pot the cue ball
+        spyGameState.onBallPotted(balls.get(0));
+        spyGameState.onMotionStop(balls.get(2));
+
+        assertTrue(spyGameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that the cue ball can be replaced
+     * when the player did not touch a single ball.
+     */
+    @Test
+    void canPlaceCueBallNoTouch() {
+        // Don't hit a single ball
+        gameState.onMotionStop(new NullBall());
+
+        assertTrue(gameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that no touches are considered 'incorrect'
+     * before types are assigned.
+     */
+    @Test
+    void cannotPlaceCueBallUnassignedTypes() {
+        // Hit a solid ball
+        gameState.onMotionStop(balls.get(2));
+        assertFalse(gameState.canPlaceCueBall());
+
+        // Hit a striped ball
+        gameState.onMotionStop(balls.get(4));
+        assertFalse(gameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that a player can place the cue ball 
+     * when the previous player made an incorrect first touch.
+     */
+    @Test
+    void canPlaceCueBallIncorrectTouch() {
+        // Break shot
+        gameState.onMotionStop(balls.get(2));
+
+        // Have player 2 pot a solid ball
+        gameState.onBallPotted(balls.get(2));
+        gameState.onMotionStop(balls.get(2));
+
+        // Now, player 2 keeps the turn
+        // Have player 2 touch a striped ball
+        gameState.onMotionStop(balls.get(4));
+
+        // Assert that the active player is player 1, and the cue ball can be placed.
+        assertEquals(gameState.getTurnHandler().getActivePlayer(), players.get(0));
+        assertTrue(gameState.canPlaceCueBall());
     }
 
     //    /**
