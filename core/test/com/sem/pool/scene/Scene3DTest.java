@@ -54,7 +54,10 @@ class Scene3DTest {
         cue = Mockito.mock(Cue3D.class);
         soundPlayer = Mockito.mock(SoundPlayer.class);
 
-        scene = new Scene3D(environment, camera, poolBalls, table, cue, batch, soundPlayer);
+        GameElements gameElements = new GameElements(poolBalls, table, cue);
+        SceneElements sceneElements = new SceneElements(environment, camera, soundPlayer);
+
+        scene = new Scene3D(batch, gameElements, sceneElements);
     }
 
     /**
@@ -92,16 +95,18 @@ class Scene3DTest {
     public void testConstructorModelsSizeBallsPresent() {
         final int ballCount = 6;
 
-        List<Ball3D> poolBalls2 = new ArrayList<>();
+        poolBalls.clear();
 
         for (int i = 0; i < ballCount; ++i) {
-            poolBalls2.add(Mockito.mock(Ball3D.class));
+            poolBalls.add(Mockito.mock(Ball3D.class));
         }
 
-        scene = new Scene3D(environment, camera, poolBalls2, table, cue, batch, soundPlayer);
+        GameElements newGameElements = new GameElements(poolBalls, table, cue);
+        SceneElements newSceneElements = new SceneElements(environment, camera, soundPlayer);
+        scene = new Scene3D(batch, newGameElements, newSceneElements);
 
         // Poolballs + Table + Cue
-        int expectedSize = poolBalls2.size() + 2;
+        int expectedSize = poolBalls.size() + 2;
         int actualSize = scene.getModels().size();
         assertEquals(expectedSize, actualSize);
     }
@@ -335,13 +340,8 @@ class Scene3DTest {
      */
     @Test
     public void testGetCueBall() {
-        Scene3D scene = Mockito.mock(Scene3D.class);
         Ball3D ball = Mockito.mock(CueBall3D.class);
-        ArrayList<Ball3D> balls = new ArrayList<>();
-        balls.add(ball);
-
-        Mockito.when(scene.getPoolBalls()).thenReturn(balls);
-        Mockito.when(scene.getCueBall()).thenCallRealMethod();
+        scene.getPoolBalls().add(ball);
 
         assertEquals(ball, scene.getCueBall());
     }

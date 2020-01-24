@@ -150,7 +150,6 @@ public class GameTest extends GameBaseTest {
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
 
-        Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
     }
 
@@ -160,7 +159,6 @@ public class GameTest extends GameBaseTest {
      */
     @Test
     void testAdvanceGameLoopAdvanceTurn() {
-
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);

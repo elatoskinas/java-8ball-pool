@@ -2,6 +2,7 @@ package com.sem.pool.database.tables;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sem.pool.database.Database;
@@ -12,6 +13,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -101,10 +103,54 @@ public class ResultTableTest {
 
     /**
      * Test if the table name matches.
-     * This is to catch regression bugs
+     * This is to catch regression bugs.
      */
     @Test
-    public void testTableName() throws SQLException {
+    public void testTableName() {
         assertEquals("Result", this.resultTable.getTableName());
+    }
+
+    /**
+     * Test if fetching a empty table returns zero results.
+     * @throws SQLException Database error, should not happen.
+     */
+    @Test
+    public void testGetAll() throws SQLException {
+        ArrayList<Result> result = this.resultTable.getAll();
+
+        assertNotNull(result);
+        assertEquals(new ArrayList<>(), result);
+    }
+
+    /**
+     * Test if fetching a filled table returns it's contents.
+     * @throws SQLException Database error, should not happen.
+     */
+    @Test
+    public void testGetAllWithData() throws SQLException {
+        UserTable userTable = (UserTable) Database.getInstance().table("User");
+
+        User user0 = new User(0, "Hello", "password");
+        User user1 = new User(1, "World", "123456");
+        User user2 = new User(2, "!", "%^&*(*&^%$");
+        userTable.save(user0);
+        userTable.save(user1);
+        userTable.save(user2);
+
+        User user0DB = userTable.getUser("Hello");
+        User user1DB = userTable.getUser("World");
+        User user2DB = userTable.getUser("!");
+
+        Result result0 = new Result(user0DB, user1DB);
+        Result result1 = new Result(user1DB, user2DB);
+        this.resultTable.save(result0);
+        this.resultTable.save(result1);
+
+        ArrayList<Result> result = this.resultTable.getAll();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(result0, result.get(0));
+        assertEquals(result1, result.get(1));
     }
 }

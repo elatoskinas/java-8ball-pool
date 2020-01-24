@@ -97,7 +97,7 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         game.addObserver(observer);
 
         // Win game & advance to next game loop iteration
-        gameState.winGame(false, false);
+        gameState.winGame(false);
         game.advanceGameLoop(deltaTime);
 
         // Ensure end game event is sent
