@@ -944,4 +944,47 @@ class GameStateTest {
         
         assertNotEquals(current, gameState.getTurnHandler().getActivePlayer());
     }
+
+    /**
+     * Test case to verify that the player cannot place the cue ball 
+     * when the state is not yet idle. 
+     */
+    @Test
+    void placeCueBallNotIdle() {
+        GameState spyGameState = Mockito.spy(gameState);
+        Mockito.doReturn(false).when(spyGameState).isIdle();
+        
+        // Pot the cue ball
+        spyGameState.onBallPotted(balls.get(0));
+        spyGameState.onMotionStop(balls.get(2));
+        
+        assertFalse(spyGameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that the cue ball cannot be placed when it is not potted.
+     */
+    @Test
+    void placeCueBallNotPotted() {
+        GameState spyGameState = Mockito.spy(gameState);
+        Mockito.doReturn(true).when(spyGameState).isIdle();
+        
+        assertFalse(spyGameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that the cue ball can be placed when 
+     * it is both potted and the state is idle.
+     */
+    @Test
+    void canPlaceCueBall() {
+        GameState spyGameState = Mockito.spy(gameState);
+        Mockito.doReturn(true).when(spyGameState).isIdle();
+
+        // Pot the cue ball
+        spyGameState.onBallPotted(balls.get(0));
+        spyGameState.onMotionStop(balls.get(2));
+
+        assertTrue(spyGameState.canPlaceCueBall());
+    }
 }

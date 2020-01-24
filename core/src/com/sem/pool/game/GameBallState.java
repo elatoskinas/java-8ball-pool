@@ -125,6 +125,13 @@ public class GameBallState {
     }
 
     /**
+     * Resets the ball potting flag for the cue ball from the previous turn.
+     */
+    public void resetCueBall() {
+        this.cueBallPotted = false;
+    }
+
+    /**
      * Marks the eight ball as potted.
      */
     public void markEightBallAsPotted() {
