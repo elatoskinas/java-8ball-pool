@@ -5,8 +5,11 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.game.Game;
+import com.sem.pool.game.Player;
 import com.sem.pool.scene.Scene3D;
 import com.sem.pool.scene.SoundPlayer;
+
+import java.util.ArrayList;
 
 /**
  * Class that abstracts the functionality of initializing the
@@ -28,8 +31,8 @@ public class GameInitializer {
      * @param resolution      Resolution of the game as a 2D vector
      * @param cameraPosition  Position of the camera as a 3D vector
      */
-    public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch,
-                           Input input, Vector2 resolution, Vector3 cameraPosition) {
+    public GameInitializer(AssetLoader assetLoader, ModelBatch modelBatch, Input input,
+                           Vector2 resolution, Vector3 cameraPosition) {
         this.assetLoader = assetLoader;
         this.modelBatch = modelBatch;
         this.input = input;
@@ -94,11 +97,11 @@ public class GameInitializer {
      * Creates a new Game with its own Scene.
      * @return  object of new Game.
      */
-    public Game createGame() {
+    public Game createGame(ArrayList<Player> players) {
         // Creates new scene
         Scene3D scene = createSceneFactory().createScene();
 
         // Create & return new game
-        return Game.createNewGame(scene, input);
+        return Game.createNewGame(scene, input, players);
     }
 }

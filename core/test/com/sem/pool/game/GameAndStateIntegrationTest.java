@@ -3,8 +3,8 @@ package com.sem.pool.game;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.database.Database;
 import com.sem.pool.scene.Cue3D;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,7 +17,10 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-        gameState = new GameState(players, poolBalls);
+        this.gameState = new GameState(players, poolBalls);
+
+        Database.setTestMode();
+
         game = new Game(scene, input, gameState);
     }
 
@@ -31,7 +34,9 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         setupScenePoolBallsHelper(false, false, false);
         Cue3D cue = Mockito.mock(Cue3D.class);
         Mockito.when(scene.getCue()).thenReturn(cue);
+
         game = new Game(scene, input, gameState);
+
         game.startGame();
         assertFalse(game.determineIsInMotion());
         gameState.onMotion();
@@ -82,6 +87,8 @@ class GameAndStateIntegrationTest extends GameBaseTest {
     void testEndGameOnWin() {
         final float deltaTime = 1f;
 
+        game = new Game(scene, input, gameState);
+
         // Start game
         game.startGame();
 
@@ -90,11 +97,11 @@ class GameAndStateIntegrationTest extends GameBaseTest {
         game.addObserver(observer);
 
         // Win game & advance to next game loop iteration
-        gameState.winGame(false, false);
+        gameState.winGame(false);
         game.advanceGameLoop(deltaTime);
 
         // Ensure end game event is sent
-        Mockito.verify(observer).onGameEnded();
+        Mockito.verify(observer).onGameEnded(Mockito.any(Player.class), Mockito.any());
 
         assertTrue(gameState.isStopped());
     }

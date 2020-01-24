@@ -8,18 +8,38 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * Users table, for in the database.
  */
 public class UserTable extends Table {
+    public static final String TABLE_NAME = "User";
+
     /**
      * Create the new instance.
      *
      * @param conn Conection to use.
      */
     public UserTable(Connection conn) throws SQLException {
-        super(conn, "User");
+        super(conn);
+    }
+
+    /**
+     * Get a user by id.
+     * Warning suppressed as it's a false positive.
+     *
+     * @param id The ID of the user to get.
+     * @return A user object.
+     * @throws SQLException SQL exceptions.
+     */
+    @SuppressWarnings("PMD.CloseResource")
+    public User getUser(int id) throws SQLException {
+        String sql = "select id, username, password from User where id = ?";
+        PreparedStatement stmt = this.conn.prepareStatement(sql);
+        stmt.setInt(1, id);
+
+        return this.statementToSingleUser(stmt);
     }
 
     /**
@@ -35,24 +55,40 @@ public class UserTable extends Table {
         String sql = "select id, username, password from User where username = ?";
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, username);
-        ResultSet res = stmt.executeQuery();
 
-        if (res.isAfterLast()) {
+        return this.statementToSingleUser(stmt);
+    }
+
+    /**
+     * Get a list of all users.
+     * Warnings suppressed as this is an known bug within PMD.
+     * @return A list of user objects.
+     * @throws SQLException SQL exceptions.
+     */
+    @SuppressWarnings({"PMD.CloseResource", "PMD.DataflowAnomalyAnalysis"})
+    public ArrayList<User> getUsers() throws SQLException {
+        String sql = "select id, username, password from User";
+        PreparedStatement stmt = this.conn.prepareStatement(sql);
+        ArrayList<User> users = new ArrayList<>();
+
+        try (ResultSet res = stmt.executeQuery()) {
+            if (res.isAfterLast()) {
+                stmt.close();
+                res.close();
+                return users;
+            }
+
+            while (res.next()) {
+                int id = res.getInt("id");
+                String dataUser = res.getString("username");
+                String pass = res.getString("password");
+
+                users.add(new User(id, dataUser, pass));
+            }
+
             stmt.close();
             res.close();
-            return null;
-        }
-
-        try {
-            res.next();
-            int id = res.getInt("id");
-            String dataUser = res.getString("username");
-            String pass = res.getString("password");
-
-            return new User(id, dataUser, pass);
-        } finally {
-            stmt.close();
-            res.close();
+            return users;
         }
     }
 
@@ -69,18 +105,11 @@ public class UserTable extends Table {
         stmt.setString(1, user.getUsername());
         stmt.setString(2, user.getPassword());
 
-        try {
-            return stmt.executeUpdate() > 0;
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
-        }
-
-        return false;
+        return stmt.executeUpdate() > 0;
     }
 
     /**
      * Update an exiting user object.
-     *
      * @param user The user to update.
      * @return The result.
      * @throws SQLException SQL errors.
@@ -113,21 +142,36 @@ public class UserTable extends Table {
      */
     @Override
     protected void createTable() throws SQLException {
-        Statement stmt = this.conn.createStatement();
-        String query = "create table " + this.tableName + " ("
-                + "   id       integer primary key autoincrement,"
-                + "   username text    not null unique,"
-                + "   password text    not null"
-                + ")";
-
-        // This comment is to ignore IntelIJ to complain about a "fix" which would make
-        // PMD complain again.
-        // noinspection TryFinallyCanBeTryWithResources
-        try {
+        try (Statement stmt = this.conn.createStatement()) {
+            String query = "create table " + this.getTableName() + " ("
+                    + "   id       integer primary key autoincrement,"
+                    + "   username text    not null unique,"
+                    + "   password text    not null"
+                    + ")";
             stmt.execute(query);
-        } finally {
-            stmt.close();
         }
-        stmt.close();
+    }
+
+    protected String getTableName() {
+        return UserTable.TABLE_NAME;
+    }
+
+    private User statementToSingleUser(PreparedStatement stmt) throws SQLException {
+        try (ResultSet res = stmt.executeQuery()) {
+            if (res.isAfterLast()) {
+                stmt.close();
+                res.close();
+                return null;
+            }
+
+            res.next();
+            int id = res.getInt("id");
+            String dataUser = res.getString("username");
+            String pass = res.getString("password");
+
+            stmt.close();
+            res.close();
+            return new User(id, dataUser, pass);
+        }
     }
 }

@@ -228,6 +228,20 @@ public class Cue3DTest {
         assertEquals(new Vector3(-1, 0, 0), mousePosition);
     }
 
+    /**
+     * Test case to verify that the correct force percentage is returned.
+     */
+    @Test
+    public void testGetRelativeForcePercentage() {
+        cue.setCurrentForce(0);
+        assertEquals(0, cue.getRelativeForcePercentage());
+
+        cue.setCurrentForce(0.5f * GameConstants.MAX_CUE_FORCE);
+        assertEquals(50, cue.getRelativeForcePercentage());
+
+        cue.setCurrentForce(GameConstants.MAX_CUE_FORCE);
+        assertEquals(100, cue.getRelativeForcePercentage());
+    }
 
     /**
      * Helper method for testing Cue Shot direction given the
@@ -280,5 +294,7 @@ public class Cue3DTest {
 
         return new CueBall3D(GameConstants.CUEBALL_ID, ballModel);
     }
+
+
 
 }

@@ -1,46 +1,41 @@
 package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.sem.pool.factories.AssetLoader;
+import com.sem.pool.database.Database;
+import com.sem.pool.database.controllers.ResultController;
+import com.sem.pool.database.controllers.UserController;
+import com.sem.pool.database.models.User;
 
+import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
-import com.sem.pool.game.GameObserver;
-import com.sem.pool.scene.Ball3D;
+import com.sem.pool.game.Player;
 import com.sem.pool.scene.Scene3D;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main Pool Game application class that handles
  * the 3D pool scene and all the interactions.
  * TODO: Split this off into smaller components?
  */
-public class Pool implements Screen, GameObserver {
-    private transient MainGame mainGame;
+public class Pool extends GameScreen {
+    private static final Vector3 CAMERA_POSITION = new Vector3(0f, 100f, 0f);
+
     private transient AssetLoader assetLoader;
     private transient ModelBatch modelBatch;
     private transient Scene3D scene;
-    private static final Vector3 CAMERA_POSITION = new Vector3(0f, 100f, 0f);
-    private transient Game game;
-
-    private transient Stage stage;
-    private transient Label playerTurnLabel;
-    private transient Button restartButton;
-
-    // State flag to keep track of whether asset loading
-    // has finished.
+    private transient Game poolGame;
+    private transient GameUI gameUI;
     private transient boolean loaded;
 
     /**
@@ -49,13 +44,14 @@ public class Pool implements Screen, GameObserver {
      * game.
      */
     public Pool(MainGame game) {
-        this.mainGame = game;
+        super(game);
+
         initializeAssetLoader();
         // Initialize model batch for rendering
         modelBatch = new ModelBatch();
 
         // Initialize viewport to the relevant width & height
-        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         // Initialize the Bullet wrapper used for collisions
         Bullet.init();
@@ -95,18 +91,23 @@ public class Pool implements Screen, GameObserver {
         GameInitializer gameInitializer = new GameInitializer(assetLoader, modelBatch,
                 Gdx.input, resolution, CAMERA_POSITION);
 
+        // Create the players
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(new Player(this.game.getPlayer().getUserID()));
+        players.add(new Player(this.game.getOpponent().getUserID()));
+
         // Instantiate the game & retrieve the scene from the game
-        game = gameInitializer.createGame();
-        scene = game.getScene();
+        this.poolGame = gameInitializer.createGame(players);
+        this.scene = this.poolGame.getScene();
 
         // Update the camera of the scene to point to the right location
-        scene.getCamera().update();
+        this.scene.getCamera().update();
 
         // Make the Pool game observe the Game loop class to receive events.
-        game.addObserver(this);
+        this.poolGame.addObserver(this);
 
-        // Start the Game.
-        game.startGame();
+        // Start the game.
+        this.poolGame.startGame();
 
         // The assets of the game are now fully loaded
         loaded = true;
@@ -119,11 +120,13 @@ public class Pool implements Screen, GameObserver {
      */
     private void update(float deltaTime) {
         // Render the scene only if the game is loaded
-        if (loaded) {
-            // Advance the game loop of the game & render scene
-            game.advanceGameLoop(deltaTime);
-            scene.render();
+        if (!loaded) {
+            return;
         }
+
+        // Advance the game loop of the game & render scene
+        this.poolGame.advanceGameLoop(deltaTime);
+        this.scene.render();
     }
 
     /**
@@ -136,7 +139,7 @@ public class Pool implements Screen, GameObserver {
         // assetLoader update event is received in current iteration,
         // then load the game.
         if (!loaded && assetLoader.getAssetManager().update()) {
-            initializeScene();
+            this.initializeScene();
         }
 
         // Clear depth buffer & color buffer masks
@@ -145,91 +148,61 @@ public class Pool implements Screen, GameObserver {
         // Update the scene & game for the current iteration
         update(delta);
 
-        loadUI();
+        updateUI();
     }
 
     /**
-     * Load the UI elements like the playerturn.
+     * Updates the UI elements and renders them.
      */
-    public void loadUI() {
+    public void updateUI() {
         if (loaded) {
-            int playerTurn = game.getState().getPlayerTurn() + 1;
-            playerTurnLabel.setText("Player turn: " + playerTurn);
+            gameUI.updateForceLabel(scene);
+            gameUI.updatePlayerTurnLabel(this.poolGame);
+            gameUI.updateBallTypeLabels(this.poolGame);
+            gameUI.updatePlaceCueBallLabel(this.poolGame);
         }
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-    }
 
-    /**
-     * Shows the UI.
-     */
-    public void showUI() {
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-
-        TextureAtlas atlas = new TextureAtlas("uiskin.atlas");
-        Skin skin = new Skin(Gdx.files.internal("config/skin/uiskin.json"), atlas);
-
-        playerTurnLabel = new Label("", skin);
-        playerTurnLabel.setSize(200,50);
-        playerTurnLabel.setPosition(80,Gdx.graphics.getHeight() - 100);
-
-        stage.addActor(playerTurnLabel);
-        stage.act();
-        stage.draw();
+        gameUI.render();
     }
 
     @Override
     public void dispose() {
         scene.dispose();
         assetLoader.dispose();
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
     }
 
     @Override
     public void show() {
-        showUI();
+        gameUI = new GameUI();
+        gameUI.createUI();
+        gameUI.render();
     }
 
     @Override
-    public void hide() {
+    public void onGameEnded(Player winnerPlayer, List<Player> players) {
+        // Store the result.
+        UserController userController = new UserController(Database.getInstance());
+        ResultController resultController = new ResultController(Database.getInstance());
+
+        User winner = userController.getUser(winnerPlayer.getId());
+        User loser = winnerPlayer.getId() == this.game.getPlayer().getUserID()
+                ? this.game.getOpponent()
+                : this.game.getPlayer();
+        this.game.setWinner(winner);
+
+        resultController.createResult(winner, loser);
+
+        // Go to the leaderboard screen.
+        this.game.setScreen(new Leaderboard(this.game));
     }
 
     @Override
     public void pause() {
+        System.out.println("Pausing game...");
     }
 
     @Override
     public void resume() {
-    }
-
-    @Override
-    public void onGameStarted() {
-
-    }
-
-    @Override
-    public void onBallPotted(Ball3D ball) {
-
-    }
-
-    @Override
-    public void onMotion() {
-
-    }
-
-    @Override
-    public void onMotionStop(Ball3D lastTouched) {
-
-    }
-
-    @Override
-    public void onGameEnded() {
-        // Go back to login screen when Game is ended
-        // TODO: Change to stats/leaderboards screen
-        mainGame.create();
+        System.out.println("Resuming game");
     }
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 
 import com.badlogic.gdx.Input;
+import com.sem.pool.database.Database;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
@@ -20,14 +21,15 @@ import org.junit.jupiter.api.Test;
 
 import org.mockito.Mockito;
 
-
 public class GameTest extends GameBaseTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-        gameState = Mockito.mock(GameState.class);
-        game = new Game(scene, input, gameState);
 
+        Database.setTestMode();
+        this.gameState = Mockito.mock(GameState.class);
+
+        this.game = new Game(scene, input, this.gameState);
     }
 
     /**
@@ -55,7 +57,23 @@ public class GameTest extends GameBaseTest {
     @Test
     void testStartGameInMotion() {
         game.startGame();
+
         assertFalse(game.determineIsInMotion());
+    }
+
+    /**
+     * Test that the ball potting method is called appropriately.
+     */
+    @Test
+    void testBallPotting() {
+        CueBall3D cue = Mockito.mock(CueBall3D.class);
+        Mockito.when(this.gameState.isCueBallPotted()).thenReturn(true);
+        Mockito.when(this.gameState.isInMotion()).thenReturn(true);
+        Mockito.when(this.scene.getCueBall()).thenReturn(cue);
+        game.startGame();
+
+        Mockito.verify(this.scene, Mockito.never()).placeCueBall(Mockito.any(Input.class));
+        game.determineIsInMotion();
     }
 
     /**
@@ -133,7 +151,6 @@ public class GameTest extends GameBaseTest {
         final float deltaTime = 42f;
         game.advanceGameLoop(deltaTime);
 
-        Mockito.verifyNoInteractions(scene);
         Mockito.verifyNoInteractions(input);
     }
 
@@ -143,11 +160,11 @@ public class GameTest extends GameBaseTest {
      */
     @Test
     void testAdvanceGameLoopAdvanceTurn() {
-
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
+
         setupScenePoolBallsHelper(false, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -164,11 +181,11 @@ public class GameTest extends GameBaseTest {
      */
     @Test
     void testAdvanceGameLoopNotAdvanceTurn() {
-
         scene = Mockito.mock(Scene3D.class);
         input = Mockito.mock(Input.class);
         gameState = Mockito.mock(GameState.class);
         game = new Game(scene, input, gameState);
+
         setupScenePoolBallsHelper(true, false);
 
         Mockito.when(gameState.isStarted()).thenReturn(true);
@@ -250,6 +267,21 @@ public class GameTest extends GameBaseTest {
     }
 
     /**
+     * Test if the end game method works.
+     */
+    @Test
+    void testEndGame() {
+        Player winner = Mockito.mock(Player.class);
+        Player loser = Mockito.mock(Player.class);
+
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(winner);
+        players.add(loser);
+
+        game.endGame(winner, players);
+    }
+
+    /*
      * Test if the recenterCue method is called when potting the cue ball.
      */
     @Test
@@ -261,7 +293,6 @@ public class GameTest extends GameBaseTest {
 
         // Verify ball is potted
         Mockito.verify(ball).pot();
-        Mockito.verify(this.scene).recenterCueBall(ball);
     }
 
     /**
@@ -357,11 +388,18 @@ public class GameTest extends GameBaseTest {
         final int observerCount = 3;
         final List<GameObserver> observers = setUpObservers(observerCount);
 
-        game.endGame();
+        Player winner = Mockito.mock(Player.class);
+        Player loser = Mockito.mock(Player.class);
+
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(winner);
+        players.add(loser);
+
+        game.endGame(winner, players);
 
         for (int i = 0; i < observers.size(); ++i) {
             GameObserver o = observers.get(i);
-            Mockito.verify(o).onGameEnded();
+            Mockito.verify(o).onGameEnded(winner, players);
         }
     }
 

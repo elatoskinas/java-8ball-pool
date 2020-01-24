@@ -6,7 +6,6 @@ import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.Scene3D;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,9 +14,9 @@ import java.util.Set;
 
 /**
  * Class that handles everything related to the pool game.
- * TODO: This is currently only a template, no functionality has been implemented as of yet.
- * TODO: Remove PMD suppressions for avoid duplicate literals; These were added for TODO methods.
+ * PMD warning suppressed, as it is caused by another bug within PMD.
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class Game implements ObservableGame {
     private transient Scene3D scene;
     private transient Input input;
@@ -31,6 +30,7 @@ public class Game implements ObservableGame {
      * @param state The state of the game.
      */
     public Game(Scene3D scene, Input input, GameState state) {
+
         this.scene = scene;
         this.input = input;
         this.state = state;
@@ -46,16 +46,9 @@ public class Game implements ObservableGame {
      * Creates a new Game instance with the given scene and input objects.
      * @param scene  Scene to use for the Game
      * @param input  Input handler to use for the Game
-     * @return       New Game instance
+     * @return New Game instance
      */
-    public static Game createNewGame(Scene3D scene, Input input) {
-        // Create 2 players with differing IDs
-        Player player1 = new Player(0);
-        Player player2 = new Player(1);
-        List<Player> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-
+    public static Game createNewGame(Scene3D scene, Input input, ArrayList<Player> players) {
         // Create game state with the scene's pool balls & the two players
         GameState gameState = new GameState(players, scene.getPoolBalls());
 
@@ -83,21 +76,35 @@ public class Game implements ObservableGame {
      * @param deltaTime deltaTime, time between current and last frame.
      */
     public void advanceGameLoop(float deltaTime) {
-        if (state.isStarted()) {
-            // Check if Game has a winning Player
-            if (state.getWinningPlayer().isPresent()) {
-                endGame();
-            } else {
-                // Check if any ball is in motion
-                determineIsInMotion();
+        if (!state.isStarted()) {
+            // Do nothing if game is not started
+            return;
+        }
 
-                if (state.isInMotion()) {
-                    moveBalls(deltaTime);
-                } else if (state.isIdle()) {
-                    respondToInput();
-                }
-            }
-        } // Do nothing if game is not started
+        // Check if Game has a winning Player
+        if (state.getWinningPlayer().isPresent()) {
+            endGame(this.state.getWinningPlayer().get(),
+                    this.state.getTurnHandler().getPlayers());
+        } else {
+            // Check if any ball is in motion
+            determineIsInMotion();
+            performGameLoopAction(deltaTime);
+        }
+    }
+
+    /**
+     * Performs an action in the game loop based on the
+     * internal state of the game.
+     * This could be moving the balls or responding
+     * to user input.
+     * @param deltaTime  deltaTime, time between current and last frame.
+     */
+    private void performGameLoopAction(float deltaTime) {
+        if (state.isInMotion()) {
+            moveBalls(deltaTime);
+        } else if (state.isIdle()) {
+            respondToInput();
+        }
     }
 
     /**
@@ -129,9 +136,25 @@ public class Game implements ObservableGame {
      * Method to handle any input by the player(s), should ignore input if invalid.
      */
     protected void respondToInput() {
-        processCueInput();
+        if (this.state.isCueBallPotted()) {
+            handleCueBallPlacement();
+        } else {
+            processCueInput();
+        }
+        
     }
 
+    /**
+     * Method to handle the replacement of the cue ball when necessary.
+     */
+    protected void handleCueBallPlacement() {
+        // The placeCueBall method returns true iff the cue ball was placed successfully,
+        // if this is the case, the cueBallPotted variable will be set to false.
+        if (this.scene.placeCueBall(input)) {
+            this.state.getGameBallState().resetCueBall();
+        }
+    }
+    
     /**
      * Process the input mouse input for the cue.
      */
@@ -159,7 +182,6 @@ public class Game implements ObservableGame {
 
                 CueBall3D cueBall = scene.getCueBall();
                 cue.shoot(cueBall);
-
                 scene.getSoundPlayer().playCueSound();
             } else {
                 // Cancel shot -> go back to rotating
@@ -221,10 +243,6 @@ public class Game implements ObservableGame {
         // Pot the ball (handles potting the ball visually)
         ball.pot();
 
-        if (ball instanceof CueBall3D) {
-            this.scene.recenterCueBall((CueBall3D) ball);
-        }
-
         // Notify all observers of the potted ball
         for (GameObserver o : observers) {
             o.onBallPotted(ball);
@@ -241,7 +259,19 @@ public class Game implements ObservableGame {
         observers.remove(observer);
     }
 
-    @Override
+    /**
+     * End the game.
+     * Error suppressed as this is a bug in PMD.
+     * @param winner The winner of the game.
+     * @param players All players in the game.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public void endGame(Player winner, List<Player> players) {
+        for (GameObserver observer : this.observers) {
+            observer.onGameEnded(winner, players);
+        }
+    }
+    
     public Collection<GameObserver> getObservers() {
         return observers;
     }
@@ -260,10 +290,4 @@ public class Game implements ObservableGame {
     public void stopMotion(Ball3D touched) {
         observers.forEach(x -> x.onMotionStop(touched));
     }
-
-    @Override
-    public void endGame() {
-        observers.forEach(GameObserver::onGameEnded);
-    }
-
 }

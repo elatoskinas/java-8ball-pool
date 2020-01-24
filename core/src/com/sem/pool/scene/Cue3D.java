@@ -270,4 +270,12 @@ public class Cue3D extends Object3D {
         hideCue();
     }
 
+    /**
+     * Returns the percentage of the current force till the max force.
+     * @return int force percentage
+     */
+    public int getRelativeForcePercentage() {
+        float relativeForce = getCurrentForce() / GameConstants.MAX_CUE_FORCE;
+        return (int) (100 * relativeForce);
+    }
 }

@@ -5,6 +5,7 @@ import com.sem.pool.database.models.User;
 import com.sem.pool.database.tables.UserTable;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Controller of the User table.
@@ -18,7 +19,7 @@ public class UserController {
      * @param db The database instance to use.
      */
     public UserController(Database db) {
-        this.table = (UserTable) db.table("User");
+        this.table = (UserTable) db.table(UserTable.TABLE_NAME);
     }
 
     /**
@@ -39,8 +40,8 @@ public class UserController {
             if (user.checkPassword(password)) {
                 return user;
             }
-        } catch (SQLException ignored) {
-            ignored.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -84,5 +85,43 @@ public class UserController {
         }
 
         return false;
+    }
+
+    /**
+     * Get a user by ID.
+     * @param id The ID of the user to get.
+     * @return The user if found, NULL if not.
+     */
+    public User getUser(int id) {
+        try {
+            return this.table.getUser(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get a user by username.
+     * @param username The username to get
+     * @return The user if found, NULL if not.
+     */
+    public User getUser(String username) {
+        try {
+            return this.table.getUser(username);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get a list of all users.
+     * @return A list of all users in the database.
+     */
+    public ArrayList<User> getUsers() {
+        try {
+            return this.table.getUsers();
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 }
