@@ -23,20 +23,10 @@ import java.util.Set;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class GameState implements GameObserver {
     private transient List<Player> players;
-    private transient Set<Ball3D> remainingBalls;
-    private transient List<Ball3D> currentPottedBalls; // Balls potted in current turn
-    private transient List<Ball3D> allPottedBalls; // All Balls potted in any turn.
-
     private transient int playerTurn;
     private transient int turnCount;
     private transient boolean typesAssigned; // if ball types have been assigned yet
-    private transient boolean cueBallPotted;
-    private transient boolean eightBallPotted;
-
-    private transient Player winningPlayer;
-
-    // First ball touched in current turn
-    private transient Ball3D firstBallTouched;
+    private transient Player winningPlayer; // Winning Player
 
     public enum State {
         Stopped,
@@ -46,6 +36,7 @@ public class GameState implements GameObserver {
     }
 
     private transient State state;
+    private transient GameBallState gameBallState;
 
     /**
      * Creates a new game state with the specified Players and
@@ -56,18 +47,8 @@ public class GameState implements GameObserver {
     public GameState(List<Player> players, List<Ball3D> poolBalls) {
         this.state = State.Stopped;
         this.players = players;
-        this.remainingBalls = new HashSet<>();
-        this.currentPottedBalls = new ArrayList<>();
-        this.allPottedBalls = new ArrayList<>();
         this.typesAssigned = false;
-        this.cueBallPotted = false;
-
-        // Add all pool balls except cue ball to remaining balls set
-        for (Ball3D ball : poolBalls) {
-            if (!(ball instanceof CueBall3D)) {
-                remainingBalls.add(ball);
-            }
-        }
+        this.gameBallState = new GameBallState(poolBalls);
     }
 
     public boolean isStarted() {
@@ -76,14 +57,6 @@ public class GameState implements GameObserver {
 
     public List<Player> getPlayers() {
         return players;
-    }
-
-    public Set<Ball3D> getRemainingBalls() {
-        return remainingBalls;
-    }
-
-    public List<Ball3D> getCurrentPottedBalls() {
-        return currentPottedBalls;
     }
 
     public boolean isInMotion() {
@@ -100,6 +73,10 @@ public class GameState implements GameObserver {
 
     public int getPlayerTurn() {
         return playerTurn;
+    }
+
+    public GameBallState getGameBallState() {
+        return this.gameBallState;
     }
 
     /**
@@ -181,7 +158,7 @@ public class GameState implements GameObserver {
 
     @Override
     public void onMotionStop(Ball3D touched) {
-        this.firstBallTouched = touched;
+        gameBallState.setFirstBallTouched(touched);
         advanceTurn();
     }
 
@@ -194,17 +171,14 @@ public class GameState implements GameObserver {
         return typesAssigned;
     }
 
-    public List<Ball3D> getAllPottedBalls() {
-        return allPottedBalls;
-    }
-
     /**
      * Pots the specified ball for the current turn of the Game State.
      * @param ball  Ball to pot
      */
+    @Override
     public void onBallPotted(Ball3D ball) {
         // Pot ball in current turn
-        currentPottedBalls.add(ball);
+        gameBallState.addPottedBall(ball);
     }
 
     /**
@@ -214,14 +188,14 @@ public class GameState implements GameObserver {
     // Since the issue is raised due to a bug in PMD, it is suppressed.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void postPotBalls() {
-        for (Ball3D pottedBall: allPottedBalls) {
+        for (Ball3D pottedBall: gameBallState.getAllPottedBalls()) {
             if (pottedBall instanceof RegularBall3D) {
                 for (Player player: players) {
                     player.potBall((RegularBall3D) pottedBall);
                 }
             }
         }
-        allPottedBalls.clear();
+        gameBallState.clearPreAssignedPottedBalls();
     }
 
     /**
@@ -237,25 +211,24 @@ public class GameState implements GameObserver {
         // because a Player might pot the 8-ball and then all of
         // their balls after, which would result in a win when
         // it should be a loss.
-        boolean allPotted = getActivePlayer().allBallsPotted(remainingBalls);
-        this.cueBallPotted = false;
-        this.eightBallPotted = false;
+        boolean allPotted = getActivePlayer().allBallsPotted(gameBallState.getRemainingBalls());
+        gameBallState.resetBallPotFlags();
 
-        for (Ball3D ball : currentPottedBalls) {
+        for (Ball3D ball : gameBallState.getCurrentPottedBalls()) {
             // Handle logic for potting the ball
             potSingleBall(ball);
 
             // Remove the ball from the remaining balls set
-            remainingBalls.remove(ball);
+            gameBallState.removeBall(ball);
         }
 
         // 8-ball potted
-        if (this.eightBallPotted) {
-            winGame(allPotted, this.cueBallPotted);
+        if (gameBallState.isEightBallPotted()) {
+            winGame(allPotted, gameBallState.isCueBallPotted());
         }
 
         // Reset potted balls for next turn
-        currentPottedBalls.clear();
+        gameBallState.clearPottedBalls();
     }
 
     /**
@@ -269,9 +242,9 @@ public class GameState implements GameObserver {
         if (ball instanceof RegularBall3D) {
             potRegularBall((RegularBall3D) ball);
         } else if (ball instanceof EightBall3D) {
-            this.eightBallPotted = true;
+            gameBallState.markEightBallAsPotted();
         } else if (ball instanceof CueBall3D) {
-            this.cueBallPotted = true;
+            gameBallState.markCueBallAsPotted();
         }
     }
 
@@ -283,8 +256,7 @@ public class GameState implements GameObserver {
      */
     private void handleUnassignedBallPotting(Ball3D ball) {
         if (!typesAssigned && !(ball instanceof CueBall3D)) {
-            allPottedBalls.add(ball); // until types are assigned
-            // keep track of balls potted
+            gameBallState.addPreAssignedPottedBall(ball);
         }
     }
 
@@ -374,7 +346,7 @@ public class GameState implements GameObserver {
      */
     private boolean doesPlayerLoseTurn() {
         // Not all criteria were satisfied -> player loses the turn
-        return !isPlayerRegularPottingValid() || cueBallPotted;
+        return !isPlayerRegularPottingValid() || gameBallState.isCueBallPotted();
     }
 
     /**
@@ -387,7 +359,7 @@ public class GameState implements GameObserver {
         // If break shot, we only care if the Player potted
         // any balls at all
         if (turnCount == 0) {
-            return !allPottedBalls.isEmpty();
+            return gameBallState.existsPottedPreassignedBall();
         } else {
             // If not break shot, we have to verify
             // that the Player touched & potted the
@@ -410,17 +382,15 @@ public class GameState implements GameObserver {
         // Check whether the first touched ball is correct
         boolean firstTouchCorrect = false;
 
-        if (firstBallTouched instanceof RegularBall3D) {
-            RegularBall3D firstTouched = (RegularBall3D) firstBallTouched;
-            firstTouchCorrect = firstTouched.getType() == getActivePlayer().getBallType();
+        Ball3D firstTouched = gameBallState.getFirstBallTouched();
+
+        if (firstTouched instanceof RegularBall3D) {
+            RegularBall3D firstTouchedRegular = (RegularBall3D) firstTouched;
+            firstTouchCorrect = firstTouchedRegular.getType() == getActivePlayer().getBallType();
         }
 
         // Additional check to see whether the Player potted the correct ball
         return firstTouchCorrect && getActivePlayer().getPottedCorrectBall();
-    }
-
-    public boolean isCueBallPotted() {
-        return this.cueBallPotted;
     }
 
     /**
@@ -440,6 +410,10 @@ public class GameState implements GameObserver {
      */
     public Optional<Player> getWinningPlayer() {
         return Optional.ofNullable(winningPlayer);
+    }
+
+    public boolean isCueBallPotted() {
+        return gameBallState.isCueBallPotted();
     }
 
     // Might come useful at some point; Determines count for specified
