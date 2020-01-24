@@ -4,14 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sem.pool.scene.NullBall;
+
 import java.util.ArrayList;
 
-import com.sem.pool.scene.NullBall;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
- * Class for unit tests for the Game Stete class
+ * Class for unit tests for the GameState class.
  */
 class GameStateTest extends GameStateBaseTest {
     /**
