@@ -27,7 +27,6 @@ class GameStateTurnIntegrationTest extends GameStateBaseTest {
 
         gameState.advanceTurn();
         assertEquals(playerTurn, gameState.getTurnHandler().getPlayerTurn());
-        assertFalse(gameState.getGameBallState().isCueBallPotted());
     }
 
     /**
