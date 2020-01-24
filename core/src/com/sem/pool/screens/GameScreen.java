@@ -1,6 +1,5 @@
 package com.sem.pool.screens;
 
-import com.badlogic.gdx.Screen;
 import com.sem.pool.game.GameObserver;
 import com.sem.pool.game.Player;
 import com.sem.pool.scene.Ball3D;
