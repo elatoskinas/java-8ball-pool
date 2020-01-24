@@ -37,6 +37,9 @@ class Scene3DTest {
     transient Table3D table;
     transient Cue3D cue;
     transient SoundPlayer soundPlayer;
+    
+    transient GameElements gameElements;
+    transient SceneElements sceneElements;
 
     /**
      * Handles setting up the test fixture by
@@ -54,8 +57,8 @@ class Scene3DTest {
         cue = Mockito.mock(Cue3D.class);
         soundPlayer = Mockito.mock(SoundPlayer.class);
 
-        GameElements gameElements = new GameElements(poolBalls, table, cue);
-        SceneElements sceneElements = new SceneElements(environment, camera, soundPlayer);
+        gameElements = new GameElements(poolBalls, table, cue);
+        sceneElements = new SceneElements(environment, camera, soundPlayer);
 
         scene = new Scene3D(batch, gameElements, sceneElements);
     }
@@ -435,14 +438,9 @@ class Scene3DTest {
      */
     @Test
     void testCollidingCueBallPlacement() {
-        // Set up the spy object
-        Scene3D spyScene = Mockito.spy(scene);
-        Mockito.doReturn(new Vector3(2, 20, 0)).when(spyScene).getUnprojectedMousePosition();
-
         // Set up the mock cue ball object, and handle its methods
         CueBall3D cueBall = Mockito.mock(CueBall3D.class);
         Mockito.doReturn(true).when(cueBall).checkWithinBounds();
-        Mockito.doReturn(cueBall).when(spyScene).getCueBall();
 
         ModelInstance modelInstance = Mockito.mock(ModelInstance.class);
         Matrix4 transform = Mockito.mock(Matrix4.class);
@@ -451,18 +449,27 @@ class Scene3DTest {
 
         HitBox hitBox = Mockito.mock(HitBox.class);
         Mockito.doReturn(hitBox).when(cueBall).getHitBox();
-        
+
         // Set up mock object for another ball
         Ball3D otherBall = Mockito.mock(Ball3D.class);
         HitBox otherHitBox = Mockito.mock(HitBox.class);
         Mockito.doReturn(otherHitBox).when(otherBall).getHitBox();
-        
+
         // Have the other ball be returned when the method 
         // looks for the remaining balls on the board
         List<Ball3D> list = new ArrayList<>();
         list.add(cueBall);
         list.add(otherBall);
-        Mockito.doReturn(list).when(spyScene).getPoolBalls();
+        
+        // Set up the scene object under test again, as we need a specific set of balls
+        poolBalls = list;
+        gameElements = new GameElements(poolBalls, table, cue);
+        scene = new Scene3D(batch, gameElements, sceneElements);
+        
+        // Set up the spy object
+        Scene3D spyScene = Mockito.spy(scene);
+        Mockito.doReturn(new Vector3(2, 20, 0)).when(spyScene).getUnprojectedMousePosition();
+        Mockito.doReturn(cueBall).when(spyScene).getCueBall();
         
         // Set up mock object for the collision handler
         CollisionHandler handler = Mockito.mock(CollisionHandler.class);

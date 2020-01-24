@@ -23,7 +23,7 @@ public class Scene3D {
     private final transient List<ModelInstance> models;
 
     // Game elements
-    private final transient GameElements gameElements;
+    protected final transient GameElements gameElements;
 
     // Represents the first ball touched on the last
     // check of trigger collisions.
@@ -167,19 +167,16 @@ public class Scene3D {
             ball.getHitBox().updateLocation(ball.getModel().transform);
 
             // Move the cue ball to the desired spot and check if it collides with any balls
-            boolean doesCollide = false;
-            for (Ball3D other : this.getPoolBalls()) {
-                if (ball.equals(other)) {
-                    continue;
-                }
             boolean doesCollide = existsCollidingBall(ball);
 
-            if (!doesCollide) {
-                break;
+            // If the cue ball does not collide with any balls already on the table,
+            // and it is within bounds of the table, return true
+            if (!doesCollide && ball.checkWithinBounds()) {
+                return true;
             }
-
-            magnitude += 0.1;
         }
+        
+        return false;
     }
 
     /**
@@ -202,15 +199,6 @@ public class Scene3D {
             if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
                 return true;
             }
-            
-            // If the cue ball does not collide with any balls already on the table,
-            // and it is within bounds of the table, return true
-            if (!doesCollide && ball.checkWithinBounds()) {
-                return true;
-            }
-        }
-        
-        return false;
         }
 
         return false;

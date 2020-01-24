@@ -150,8 +150,9 @@ public class Game implements ObservableGame {
     protected void handleCueBallPlacement() {
         // The placeCueBall method returns true iff the cue ball was placed successfully,
         // if this is the case, the cueBallPotted variable will be set to false.
-        // Otherwise, the cueBallPotted variable will be set to true.
-        this.state.setCueBallPotted(!this.scene.placeCueBall(input));
+        if (this.scene.placeCueBall(input)) {
+            this.state.getGameBallState().resetBallPotFlags();
+        }
     }
     
     /**
