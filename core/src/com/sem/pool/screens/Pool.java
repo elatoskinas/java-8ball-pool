@@ -160,6 +160,7 @@ public class Pool extends GameScreen {
             gameUI.updateForceLabel(scene);
             gameUI.updatePlayerTurnLabel(this.poolGame);
             gameUI.updateBallTypeLabels(this.poolGame);
+            gameUI.updatePlaceCueBallLabel(this.poolGame);
         }
 
         gameUI.render();
