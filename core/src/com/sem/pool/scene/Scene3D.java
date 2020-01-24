@@ -1,7 +1,6 @@
 package com.sem.pool.scene;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -149,45 +148,36 @@ public class Scene3D {
     }
 
     /**
-     * Lets the player choose the location of the cue ball after it has been potted.
-     * PMD errors are ignored, as this is a bug within PMD.
-     * It gives an error of an undefined variable in the foreach,
-     * but it's defined in the block.
-     * @param input The input handler.
-     * @return True iff the cue ball was placed correctly
+     * Resets the cue ball to the default position, after being potted.
+     * PMD errors for Dataflow Anomaly Analysis ignored due to it being
+     * a bug in PMD. This is caused by the magnitude variable not being
+     * recognized as a defined variable outside of the loop.
+     * @param ball The cue ball.
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public boolean placeCueBall(Input input) {
-        CueBall3D ball = this.getCueBall();
-        
-        if (input.isButtonPressed(Input.Buttons.LEFT)) {
-            Vector3 mousePosition = this.getUnprojectedMousePosition();
-            ball.getModel().transform
-                    .setTranslation(new Vector3(mousePosition.x, 0.28f, mousePosition.z));
+    public void recenterCueBall(CueBall3D ball) {
+        float magnitude = 0f;
+
+        // This will not result in an endless loop,
+        // unless there is no possible location for the ball.
+        // As this is not possible an endless loop also is not possible.
+        while (true) {
+            ball.getModel().transform.set(ball.getModel().transform.idt());
+
+            float x = -1.75f  + ((float) Math.random() - 0.5f) * magnitude;
+            float y = 0.28f;
+            float z = ((float) Math.random() - 0.5f) * magnitude;
+            ball.getModel().transform.setTranslation(new Vector3(x, y, z));
             ball.getHitBox().updateLocation(ball.getModel().transform);
 
-            // Move the cue ball to the desired spot and check if it collides with any balls
-            boolean doesCollide = false;
-            for (Ball3D other : this.getPoolBalls()) {
-                if (ball.equals(other)) {
-                    continue;
-                }
+            boolean doesCollide = existsCollidingBall(ball);
 
-                CollisionHandler handler = ball.getCollisionHandler();
-                if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
-                    doesCollide = true;
-                    break;
-                }
+            if (!doesCollide) {
+                break;
             }
-            
-            // If the cue ball does not collide with any balls already on the table,
-            // and it is within bounds of the table, return true
-            if (!doesCollide && ball.checkWithinBounds()) {
-                return true;
-            }
+
+            magnitude += 0.1;
         }
-        
-        return false;
     }
 
     /**
