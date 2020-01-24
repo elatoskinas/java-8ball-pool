@@ -10,6 +10,7 @@ import com.sem.pool.database.Database;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.CueBall3D;
 import com.sem.pool.scene.EightBall3D;
+import com.sem.pool.scene.NullBall;
 import com.sem.pool.scene.RegularBall3D;
 
 import java.util.ArrayList;
@@ -976,7 +977,7 @@ class GameStateTest {
      * it is both potted and the state is idle.
      */
     @Test
-    void canPlaceCueBall() {
+    void canPlaceCueBallPotted() {
         GameState spyGameState = Mockito.spy(gameState);
         Mockito.doReturn(true).when(spyGameState).isIdle();
 
@@ -985,5 +986,54 @@ class GameStateTest {
         spyGameState.onMotionStop(balls.get(2));
 
         assertTrue(spyGameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that the cue ball can be replaced
+     * when the player did not touch a single ball.
+     */
+    @Test
+    void canPlaceCueBallNoTouch() {
+        // Don't hit a single ball
+        gameState.onMotionStop(new NullBall());
+
+        assertTrue(gameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that no touches are considered 'incorrect'
+     * before types are assigned.
+     */
+    @Test
+    void cannotPlaceCueBallUnassignedTypes() {
+        // Hit a solid ball
+        gameState.onMotionStop(balls.get(2));
+        assertFalse(gameState.canPlaceCueBall());
+
+        // Hit a striped ball
+        gameState.onMotionStop(balls.get(4));
+        assertFalse(gameState.canPlaceCueBall());
+    }
+
+    /**
+     * Test case to verify that a player can place the cue ball 
+     * when the previous player made an incorrect first touch
+     */
+    @Test
+    void canPlaceCueBallIncorrectTouch() {
+        // Break shot
+        gameState.onMotionStop(balls.get(2));
+        
+        // Have player 2 pot a solid ball
+        gameState.onBallPotted(balls.get(2));
+        gameState.onMotionStop(balls.get(2));
+        
+        // Now, player 2 keeps the turn
+        // Have player 2 touch a striped ball
+        gameState.onMotionStop(balls.get(4));
+        
+        // Assert that the active player is player 1, and the cue ball can be placed.
+        assertEquals(gameState.getTurnHandler().getActivePlayer(), players.get(0));
+        assertTrue(gameState.canPlaceCueBall());
     }
 }
