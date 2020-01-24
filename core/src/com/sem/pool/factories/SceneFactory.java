@@ -9,7 +9,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.sem.pool.game.GameConstants;
 import com.sem.pool.scene.Ball3D;
 import com.sem.pool.scene.Cue3D;
+import com.sem.pool.scene.GameElements;
 import com.sem.pool.scene.Scene3D;
+import com.sem.pool.scene.SceneElements;
 import com.sem.pool.scene.SoundPlayer;
 import com.sem.pool.scene.Table3D;
 
@@ -129,7 +131,10 @@ public class SceneFactory {
         Camera camera = cameraFactory.createCamera();
         // Create scene with the constructed objects
 
-        return new Scene3D(environment, camera, poolBalls, table, cue, modelBatch, soundPlayer);
+        GameElements gameElements = new GameElements(poolBalls, table, cue);
+        SceneElements sceneElements = new SceneElements(environment, camera, soundPlayer);
+
+        return new Scene3D(modelBatch, gameElements, sceneElements);
     }
 
     /**

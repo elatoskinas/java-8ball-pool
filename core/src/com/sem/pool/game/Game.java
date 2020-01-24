@@ -83,16 +83,27 @@ public class Game implements ObservableGame {
 
         // Check if Game has a winning Player
         if (state.getWinningPlayer().isPresent()) {
-            endGame(this.state.getWinningPlayer().get(), this.state.getPlayers());
+            endGame(this.state.getWinningPlayer().get(),
+                    this.state.getTurnHandler().getPlayers());
         } else {
             // Check if any ball is in motion
             determineIsInMotion();
+            performGameLoopAction(deltaTime);
+        }
+    }
 
-            if (state.isInMotion()) {
-                moveBalls(deltaTime);
-            } else if (state.isIdle()) {
-                respondToInput();
-            }
+    /**
+     * Performs an action in the game loop based on the
+     * internal state of the game.
+     * This could be moving the balls or responding
+     * to user input.
+     * @param deltaTime  deltaTime, time between current and last frame.
+     */
+    private void performGameLoopAction(float deltaTime) {
+        if (state.isInMotion()) {
+            moveBalls(deltaTime);
+        } else if (state.isIdle()) {
+            respondToInput();
         }
     }
 

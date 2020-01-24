@@ -17,10 +17,7 @@ import com.sem.pool.database.models.User;
 import com.sem.pool.factories.AssetLoader;
 import com.sem.pool.factories.GameInitializer;
 import com.sem.pool.game.Game;
-import com.sem.pool.game.GameObserver;
 import com.sem.pool.game.Player;
-import com.sem.pool.scene.Ball3D;
-import com.sem.pool.scene.GameUI;
 import com.sem.pool.scene.Scene3D;
 
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ import java.util.List;
  * the 3D pool scene and all the interactions.
  * TODO: Split this off into smaller components?
  */
-public class Pool extends UiScreen implements GameObserver {
+public class Pool extends GameScreen {
     private static final Vector3 CAMERA_POSITION = new Vector3(0f, 100f, 0f);
 
     private transient AssetLoader assetLoader;
@@ -181,26 +178,6 @@ public class Pool extends UiScreen implements GameObserver {
     }
 
     @Override
-    public void onGameStarted() {
-
-    }
-
-    @Override
-    public void onBallPotted(Ball3D ball) {
-
-    }
-
-    @Override
-    public void onMotion() {
-
-    }
-
-    @Override
-    public void onMotionStop(Ball3D lastTouched) {
-
-    }
-
-    @Override
     public void onGameEnded(Player winnerPlayer, List<Player> players) {
         // Store the result.
         UserController userController = new UserController(Database.getInstance());
@@ -216,5 +193,15 @@ public class Pool extends UiScreen implements GameObserver {
 
         // Go to the leaderboard screen.
         this.game.setScreen(new Leaderboard(this.game));
+    }
+
+    @Override
+    public void pause() {
+        System.out.println("Pausing game...");
+    }
+
+    @Override
+    public void resume() {
+        System.out.println("Resuming game");
     }
 }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import com.sem.pool.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +18,11 @@ public class Scene3D {
     private final transient ModelBatch modelBatch;
 
     // Scene elements
-    private final transient Environment environment;
-    private final transient Camera camera;
+    private final transient SceneElements sceneElements;
     private final transient List<ModelInstance> models;
 
     // Game elements
-    private final transient List<Ball3D> poolBalls;
-    private final transient Table3D table;
-    private final transient Cue3D cue;
-    private transient SoundPlayer soundPlayer;
+    private final transient GameElements gameElements;
 
     // Represents the first ball touched on the last
     // check of trigger collisions.
@@ -37,71 +32,34 @@ public class Scene3D {
      * Creates an instance of a 3D Pool Game scene from the specified
      * parameters of the scene.
      *
-     * @param environment Environment settings of the scene (e.g. light)
-     * @param camera      Camera used in the scene
-     * @param poolBalls   List of pool balls part of the scene
-     * @param table       The table to use for the scene
-     * @param cue         The cue to use for the scene
-     * @param batch       Model Batch to use for rendering
+     * @param batch         Model Batch to use for rendering
+     * @param gameElements  Game element collection (Balls, Table and Cue)
+     * @param sceneElements Scene element collection (Camera, Environment, Sound Player)
      */
-    public Scene3D(Environment environment, Camera camera, List<Ball3D> poolBalls,
-                   Table3D table, Cue3D cue, ModelBatch batch, SoundPlayer soundPlayer) {
-        this.environment = environment;
-        this.camera = camera;
-        this.poolBalls = poolBalls;
-        this.table = table;
-        this.cue = cue;
+    public Scene3D(ModelBatch batch, GameElements gameElements, SceneElements sceneElements) {
+        this.gameElements = gameElements;
+        this.sceneElements = sceneElements;
         this.modelBatch = batch;
-        this.soundPlayer = soundPlayer;
+
         // For all the pool balls and the table, add the models
         // of the entities to a single List for rendering.
         this.models = new ArrayList<>();
-        models.add(table.getModel());
-        models.add(cue.getModel());
+        models.add(gameElements.getTable().getModel());
+        models.add(gameElements.getCue().getModel());
 
-        for (Ball3D ball : poolBalls) {
+        for (Ball3D ball : gameElements.getPoolBalls()) {
             models.add(ball.getModel());
             ball.setUpBoxes();
-            // can be used to quickly simulate a ball moving and colliding
-            // if (ball instanceof CueBall3D) {
-            // ball.setDirection(new Vector3(1,0,0));
-            // ball.setSpeed(0.2f);
-            // }
         }
     }
-
-    public Environment getEnvironment() {
-        return environment;
-    }
-
-    public Camera getCamera() {
-        return camera;
-    }
-
-    public List<ModelInstance> getModels() {
-        return models;
-    }
-
-    public List<Ball3D> getPoolBalls() {
-        return poolBalls;
-    }
-
-    public Table3D getTable() {
-        return table;
-    }
-
-    public Cue3D getCue() {
-        return cue;
-    }
-
 
     /**
      * Renders the scene with the scene's models, environment
      * and camera. Should be called on every game loop iteration.
      */
     public void render() {
-        modelBatch.begin(camera);
-        modelBatch.render(models, environment);
+        modelBatch.begin(sceneElements.getCamera());
+        modelBatch.render(models, sceneElements.getEnvironment());
         modelBatch.end();
     }
 
@@ -128,6 +86,7 @@ public class Scene3D {
     // defined loop in the method.
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public List<Ball3D> triggerCollisions() {
+        List<Ball3D> poolBalls = gameElements.getPoolBalls();
         List<Ball3D> potted = new ArrayList<>();
 
         for (int i = 0; i < poolBalls.size(); i++) {
@@ -135,14 +94,14 @@ public class Scene3D {
 
             // Check collisions between the board and
             // every ball in the scene
-            if (table.checkCollision(ball)) {
-                soundPlayer.playTableCollisionSound();
+            if (gameElements.getTable().checkCollision(ball)) {
+                sceneElements.getSoundPlayer().playTableCollisionSound();
             }
 
             // Check if ball is potted
-            boolean potResult = table.checkIfPot(ball);
+            boolean potResult = gameElements.getTable().checkIfPot(ball);
             if (potResult) {
-                soundPlayer.playPotSound();
+                sceneElements.getSoundPlayer().playPotSound();
                 potted.add(ball);
             }
 
@@ -150,7 +109,7 @@ public class Scene3D {
                 Ball3D other = poolBalls.get(j);
                 boolean collided = ball.checkCollision(other);
                 if (collided) {
-                    soundPlayer.playBallCollisionSound();
+                    sceneElements.getSoundPlayer().playBallCollisionSound();
                 }
                 updateFirstTouched(ball, other, collided);
             }
@@ -166,17 +125,8 @@ public class Scene3D {
      */
     public Vector3 getUnprojectedMousePosition() {
         Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mousePosition);
+        sceneElements.getCamera().unproject(mousePosition);
         return mousePosition;
-    }
-
-    /**
-     * Returns the cue-ball.
-     *
-     * @return CueBall3D cue-ball
-     */
-    public CueBall3D getCueBall() {
-        return (CueBall3D) getPoolBalls().get(GameConstants.CUEBALL_ID);
     }
 
     /**
@@ -199,9 +149,9 @@ public class Scene3D {
 
     /**
      * Resets the cue ball to the default position, after being potted.
-     * PMD errors are ignored, as this is a bug within PMD.
-     * It gives an error of an undefined variable in the foreach,
-     * but it's defined in the block.
+     * PMD errors for Dataflow Anomaly Analysis ignored due to it being
+     * a bug in PMD. This is caused by the magnitude variable not being
+     * recognized as a defined variable outside of the loop.
      * @param ball The cue ball.
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -220,19 +170,7 @@ public class Scene3D {
             ball.getModel().transform.setTranslation(new Vector3(x, y, z));
             ball.getHitBox().updateLocation(ball.getModel().transform);
 
-            boolean doesCollide = false;
-
-            for (Ball3D other : this.getPoolBalls()) {
-                if (ball.equals(other)) {
-                    continue;
-                }
-
-                CollisionHandler handler = ball.getCollisionHandler();
-                if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
-                    doesCollide = true;
-                    break;
-                }
-            }
+            boolean doesCollide = existsCollidingBall(ball);
 
             if (!doesCollide) {
                 break;
@@ -240,6 +178,31 @@ public class Scene3D {
 
             magnitude += 0.1;
         }
+    }
+
+    /**
+     * Checks whether there exists a ball that collides with the
+     * indicated ball.
+     * PMD errors are ignored, as this is a bug within PMD.
+     * It gives an error of an undefined variable in the foreach,
+     * but it's defined in the block.
+     * @param ball  Ball to check for collision
+     * @return  True if there is a ball that collides with the specified ball.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    private boolean existsCollidingBall(Ball3D ball) {
+        for (Ball3D other : this.gameElements.getPoolBalls()) {
+            if (ball.equals(other)) {
+                continue;
+            }
+
+            CollisionHandler handler = ball.getCollisionHandler();
+            if (handler.checkHitBoxCollision(ball.getHitBox(), other.getHitBox())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -280,11 +243,35 @@ public class Scene3D {
         }
     }
 
-    public SoundPlayer getSoundPlayer() {
-        return this.soundPlayer;
+    public Environment getEnvironment() {
+        return sceneElements.getEnvironment();
     }
 
-    public void setSoundPlayer(SoundPlayer soundPlayer) {
-        this.soundPlayer = soundPlayer;
+    public Camera getCamera() {
+        return sceneElements.getCamera();
+    }
+
+    public List<ModelInstance> getModels() {
+        return models;
+    }
+
+    public List<Ball3D> getPoolBalls() {
+        return gameElements.getPoolBalls();
+    }
+
+    public Table3D getTable() {
+        return gameElements.getTable();
+    }
+
+    public Cue3D getCue() {
+        return gameElements.getCue();
+    }
+
+    public SoundPlayer getSoundPlayer() {
+        return sceneElements.getSoundPlayer();
+    }
+
+    public CueBall3D getCueBall() {
+        return gameElements.getCueBall();
     }
 }

@@ -68,7 +68,7 @@ public class Table3D extends Object3D {
     public boolean checkCollision(Ball3D ball) {
         for (HitBox hitBox: hitBoxes) {
             if (collisionHandler.checkHitBoxCollision(ball.getHitBox(), hitBox)) {
-                Vector3 newDirection = collisionHandler.reflectVector(
+                Vector3 newDirection = PhysicsUtils.reflectVector(
                         new Vector3(ball.getDirection()),
                         new Vector3(hitBox.getNormal()));
                 ball.setDirection(newDirection);

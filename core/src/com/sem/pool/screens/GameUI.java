@@ -1,4 +1,4 @@
-package com.sem.pool.scene;
+package com.sem.pool.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.sem.pool.game.Game;
+import com.sem.pool.scene.Scene3D;
 
 /**
  * GameUI that adds and updates all UI elements.
@@ -85,7 +86,7 @@ public class GameUI {
      */
     public void updatePlayerTurnLabel(Game game) {
         // + 1 to have player 1 and 2 instead of player 0 and 1
-        int playerTurn = game.getState().getPlayerTurn() + 1;
+        int playerTurn = game.getState().getTurnHandler().getPlayerTurn() + 1;
         playerTurnLabel.setText("Turn: Player " + playerTurn);
     }
 
@@ -94,11 +95,13 @@ public class GameUI {
      * @param game the game to get the player turn.
      */
     public void updateBallTypeLabels(Game game) {
-        if (game.getState().getTypesAssigned()) {
-            String ballTypePlayerOne = game.getState().getPlayers().get(0).getBallType().toString();
+        if (game.getState().getBallPottingHandler().getTypesAssigned()) {
+            String ballTypePlayerOne = game.getState().getTurnHandler()
+                    .getPlayers().get(0).getBallType().toString();
             ballTypePlayerOneLabel.setText("Player 1: " + ballTypePlayerOne);
 
-            String ballTypePlayerTwo = game.getState().getPlayers().get(1).getBallType().toString();
+            String ballTypePlayerTwo = game.getState().getTurnHandler()
+                    .getPlayers().get(1).getBallType().toString();
             ballTypePlayerTwoLabel.setText("Player 2: " + ballTypePlayerTwo);
         }
     }
